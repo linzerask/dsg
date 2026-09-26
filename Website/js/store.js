@@ -8598,26 +8598,31 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
   },
 
   async getAdminLeagues() {
-    let local = loadLocal('dsg_admin_leagues', 1);
+    let local = loadLocal('dsg_admin_leagues', 2);
     
     // Check Firestore
     try {
       const leagueSnap = await getDoc(doc(db, 'system', 'leagues_data'));
       if (leagueSnap.exists() && leagueSnap.data()?.data) {
-        const fbLeagues = leagueSnap.data().data;
-        trySetLocal('dsg_admin_leagues_v1', JSON.stringify(fbLeagues));
+        let fbLeagues = leagueSnap.data().data;
+        fbLeagues = fbLeagues.map(l => (l.id === 13 || l.name === 'Liga 25/26' || l.seasonKey === '2025/2026') ? { ...l, status: 'Inaktiv' } : l);
+        trySetLocal('dsg_admin_leagues_v2', JSON.stringify(fbLeagues));
         return fbLeagues;
       }
     } catch(e) {
       console.warn("Could not fetch leagues from Firebase:", e);
     }
 
-    if (local) return local;
+    if (local) {
+      local = local.map(l => (l.id === 13 || l.name === 'Liga 25/26' || l.seasonKey === '2025/2026') ? { ...l, status: 'Inaktiv' } : l);
+      return local;
+    }
 
     try {
       const res = await fetch('data/leagues.json');
-      const data = await res.json();
-      trySetLocal('dsg_admin_leagues_v1', JSON.stringify(data));
+      let data = await res.json();
+      data = data.map(l => (l.id === 13 || l.name === 'Liga 25/26' || l.seasonKey === '2025/2026') ? { ...l, status: 'Inaktiv' } : l);
+      trySetLocal('dsg_admin_leagues_v2', JSON.stringify(data));
       
       // Upload initial leagues to Firestore
       setDoc(doc(db, 'system', 'leagues_data'), { data: data, lastUpdated: Date.now() })
@@ -8628,7 +8633,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
   },
 
   saveAdminLeagues(leagues) {
-    trySetLocal('dsg_admin_leagues_v1', JSON.stringify(leagues));
+    trySetLocal('dsg_admin_leagues_v2', JSON.stringify(leagues));
     setDoc(doc(db, 'system', 'leagues_data'), { data: leagues, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (leagues):", e));
     window.dispatchEvent(new CustomEvent('leagues-updated'));
