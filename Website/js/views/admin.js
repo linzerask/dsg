@@ -2,6 +2,8 @@ import { Store } from '../store.js';
 import { Router } from '../router.js';
 import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js';
 import { renderAdminTeams, initAdminTeams } from './adminTeams.js';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js';
 
 export const viewAdmin = () => {
   return `
@@ -101,18 +103,13 @@ export const viewAdmin = () => {
             <div id="admin-matches-list" style="display: flex; flex-direction: column; gap: var(--space-sm);"></div>
           </div>
         </div>
-        <div id="admin-teams" class="admin-section" style="display: none;">
-          <h2>Teams verwalten</h2>
-          <div style="margin-top: var(--space-md); display: flex; align-items: center; gap: var(--space-sm);">
-            <select id="team-season-select" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;"></select>
-          </div>
-          <form id="team-form" style="margin-top: var(--space-md); max-width: 500px; display: flex; gap: var(--space-sm);">
-            <input type="text" id="team-name" placeholder="Neuer Teamname..." required style="flex: 1; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">
-            <button type="submit" style="background: var(--color-accent); color: #000; font-weight: 700; padding: var(--space-sm) var(--space-md); border-radius: 4px; cursor: pointer;">Hinzufügen</button>
-          </form>
-          <div id="admin-teams-list" style="margin-top: var(--space-xl); display: flex; flex-direction: column; gap: var(--space-sm);"></div>
+                <div id="admin-players" class="admin-section" style="display: none;">
+          ${renderAdminPlayers()}
         </div>
-        <div id="admin-news" class="admin-section" style="display: none;">
+        <div id="admin-teams" class="admin-section" style="display: none;">
+          ${renderAdminTeams()}
+        </div>
+<div id="admin-news" class="admin-section" style="display: none;">
           <h2>News verwalten</h2>
           <form id="news-form" style="margin-top: var(--space-md); max-width: 500px; display: flex; flex-direction: column; gap: var(--space-md);">
             <input type="hidden" id="news-id">
@@ -183,6 +180,9 @@ export const viewAdmin = () => {
 };
 
 export const bindAdmin = () => {
+  initAdminPlayers();
+  initAdminTeams();
+
   // Navigation
   const btns = document.querySelectorAll('.admin-nav-btn');
   btns.forEach(btn => {
@@ -197,7 +197,10 @@ export const bindAdmin = () => {
       e.target.style.color = 'var(--color-text-primary)';
       
       document.querySelectorAll('.admin-section').forEach(sec => sec.style.display = 'none');
-      const target = document.getElementById(e.target.dataset.target);
+      const targetId = e.target.dataset.target;
+      if (targetId === 'admin-players') initAdminPlayers();
+      if (targetId === 'admin-teams') initAdminTeams();
+      const target = document.getElementById(targetId);
       target.style.display = 'block';
       anime({ targets: target, opacity: [0, 1], translateY: [10, 0], duration: 400 });
     });
