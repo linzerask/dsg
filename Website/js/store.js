@@ -108,7 +108,7 @@ const loadLocal = (prefix, maxVer) => {
 export const Store = {
   init() {
     // Eagerly load local memory so the app doesn't block on network
-    memoryData = loadLocal('dsg_data', 34) || INITIAL_DATA;
+    memoryData = loadLocal('dsg_data', 35) || INITIAL_DATA;
     memoryNews = loadLocal('dsg_articles', 18) || INITIAL_DATA.news || [];
     memoryGallery = loadLocal('dsg_gallery', 18) || INITIAL_DATA.gallery || [];
 
@@ -132,7 +132,7 @@ export const Store = {
       // Sync Data
       if (dataSnap.exists() && dataSnap.data().data) {
         const fbData = dataSnap.data().data;
-        const localData = loadLocal('dsg_data', 34);
+        const localData = loadLocal('dsg_data', 35);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
           memoryData = localData;
           needsMigration = true;
@@ -141,7 +141,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 34);
+        let legacyData = loadLocal('dsg_data', 35);
         if (!legacyData) legacyData = INITIAL_DATA;
         memoryData = legacyData;
         needsMigration = true;
@@ -335,7 +335,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
         await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v34', JSON.stringify(memoryData));
+      trySetLocal('dsg_data_v35', JSON.stringify(memoryData));
       trySetLocal('dsg_articles_v18', JSON.stringify(memoryNews));
       trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
       console.log("Migrated local data to Firebase.");
@@ -355,7 +355,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
   saveData(data) {
     data.lastUpdated = Date.now();
     memoryData = data;
-    trySetLocal('dsg_data_v34', JSON.stringify(data));
+    trySetLocal('dsg_data_v35', JSON.stringify(data));
     
     const fbSaveData = JSON.parse(JSON.stringify(data));
     if (fbSaveData.seasons && fbSaveData.seasons["2025/2026"]) {
