@@ -610,13 +610,17 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
 
 
   async getAdminTeams() {
-    let local = loadLocal('dsg_admin_teams', 1);
+    let local = loadLocal('dsg_admin_teams', 2);
     if (local) return local;
     try {
       const res = await fetch('data/teams.json');
       const data = await res.json();
-      trySetLocal('dsg_admin_teams_v1', JSON.stringify(data));
-      return data;
+      const normalized = data.map(t => ({
+        ...t,
+        Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv'
+      }));
+      trySetLocal('dsg_admin_teams_v2', JSON.stringify(normalized));
+      return normalized;
     } catch(e) { return []; }
   },
 
@@ -637,7 +641,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
   },
 
   saveAdminTeams(teams) {
-    trySetLocal('dsg_admin_teams_v1', JSON.stringify(teams));
+    trySetLocal('dsg_admin_teams_v2', JSON.stringify(teams));
     window.dispatchEvent(new CustomEvent('teams-updated'));
   },
 
