@@ -1,4 +1,4 @@
-const INITIAL_DATA = {
+﻿const INITIAL_DATA = {
   news: [
     {
       id: 1,
@@ -12,21 +12,21 @@ const INITIAL_DATA = {
       title: "Meisterentscheidung am DSG Platz am 12. Juni 2026",
       date: "2026-06-12",
       author: "Michael Angerbauer",
-      excerpt: "Am DSG Platz in Linz fiel am 12. Juni die endgültige Entscheidung über die diesjährige Meisterschaft."
+      excerpt: "Am DSG Platz in Linz fiel am 12. Juni die endgÃ¼ltige Entscheidung Ã¼ber die diesjÃ¤hrige Meisterschaft."
     },
     {
       id: 3,
       title: "Saisonabschluss bei sommerlichen Temperaturen",
       date: "2026-06-08",
       author: "Michael Angerbauer",
-      excerpt: "Das entscheidende Meisterschaftsspiel am 8. Juni war von hohen Temperaturen geprägt, beide Teams zeigten vollen Einsatz."
+      excerpt: "Das entscheidende Meisterschaftsspiel am 8. Juni war von hohen Temperaturen geprÃ¤gt, beide Teams zeigten vollen Einsatz."
     },
     {
       id: 4,
       title: "Viele Tore und Verschiebungen in der Tabelle in Runde 13",
       date: "2026-06-01",
       author: "Michael Angerbauer",
-      excerpt: "In der 13. Runde der DSG Liga fielen zahlreiche Tore, was zu wichtigen Veränderungen in der Gesamttabelle führte."
+      excerpt: "In der 13. Runde der DSG Liga fielen zahlreiche Tore, was zu wichtigen VerÃ¤nderungen in der Gesamttabelle fÃ¼hrte."
     }
   ],
   currentSeason: "2026/2027",
@@ -61,7 +61,7 @@ const INITIAL_DATA = {
       id: 'meisterfeier-2026',
       title: 'Meisterfeier 2026',
       date: '12. Juni 2026',
-      excerpt: 'Feierlicher Fußballabend am DSG Platz mit Ehrung des neuen Meisters SV Croatia Linz.',
+      excerpt: 'Feierlicher FuÃŸballabend am DSG Platz mit Ehrung des neuen Meisters SV Croatia Linz.',
       image: 'stadion.png',
       images: [
         { url: 'stadion.png', title: 'Meisterfeier 2026' }
@@ -108,7 +108,7 @@ const loadLocal = (prefix, maxVer) => {
 export const Store = {
   init() {
     // Eagerly load local memory so the app doesn't block on network
-    memoryData = loadLocal('dsg_data', 32) || INITIAL_DATA;
+    memoryData = loadLocal('dsg_data', 33) || INITIAL_DATA;
     memoryNews = loadLocal('dsg_articles', 18) || INITIAL_DATA.news || [];
     memoryGallery = loadLocal('dsg_gallery', 18) || INITIAL_DATA.gallery || [];
 
@@ -132,7 +132,7 @@ export const Store = {
       // Sync Data
       if (dataSnap.exists() && dataSnap.data().data) {
         const fbData = dataSnap.data().data;
-        const localData = loadLocal('dsg_data', 32);
+        const localData = loadLocal('dsg_data', 33);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
           memoryData = localData;
           needsMigration = true;
@@ -141,7 +141,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 32);
+        let legacyData = loadLocal('dsg_data', 33);
         if (!legacyData) legacyData = INITIAL_DATA;
         memoryData = legacyData;
         needsMigration = true;
@@ -181,117 +181,28 @@ export const Store = {
         needsMigration = true;
       }
 
-                              // START ONE-TIME MIGRATION FOR R3
+                              // FIX ENCODING AND DATES
 if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     let season = memoryData.seasons["2026/2027"];
-    let realEvents = [
-        {
-            home: "Union Heiligenberg",
-            away: "DSG St. Josef/Oed FC",
-            status: "Abgesagt 3:0",
-            score: "3:0*",
-            ht: "",
-            events: []
-        },
-        {
-            home: "Walker FC",
-            away: "DSG Union Traun",
-            status: "Played",
-            score: "0:0",
-            ht: "0:0",
-            events: [
-                { type: "yellow", name: "Christoph M�hlbacher", team: "Walker FC" },
-                { type: "yellow", name: "Ioan Gafincu", team: "DSG Union Traun" },
-                { type: "yellow", name: "Sebastian G�ttfert", team: "DSG Union Traun" }
-            ]
-        },
-        {
-            home: "FC Gornjak",
-            away: "Etehad Linz",
-            status: "Played",
-            score: "1:4",
-            ht: "1:1",
-            events: [
-                { type: "yellow", name: "Vladica Petrovic", team: "FC Gornjak" },
-                { type: "yellow", name: "Marco Rajcic", team: "FC Gornjak" },
-                { type: "goal", name: "Hamid Fouladi", team: "Etehad Linz" },
-                { type: "goal", name: "Hamid Fouladi", team: "Etehad Linz" },
-                { type: "goal", name: "Hamid Fouladi", team: "Etehad Linz" },
-                { type: "goal", name: "Zia Ghaderi", team: "Etehad Linz" }
-            ]
-        }
-    ];
+    let m = season.matches.find(m => m.home === "Walker FC" && m.away === "DSG Union Traun" && m.status === "Played");
+    if (m) {
+        m.events.forEach(e => {
+            if (e.name.includes("hlbacher")) e.name = "Christoph Mühlbacher";
+            if (e.name.includes("ttfert")) e.name = "Sebastian Göttfert";
+            e.player = e.name;
+        });
+    }
+    
+    let m2 = season.matches.find(m => m.home === "FC Gornjak" && m.away === "Etehad Linz");
+    if (m2) {
+        m2.date = "19.09.26";
+        m2.time = "17:00";
+    }
 
-    realEvents.forEach(re => {
-        // Find the match in Round 3 (we assume it's roughly ID 107, 108, 109, but let's just find by teams)
-        // Wait, Round 9 also has these exact same matchups! We only want to update the one with the earlier date or just the first match we find.
-        let match = season.matches.find(m => m.home === re.home && m.away === re.away);
-        if (match) {
-            match.status = re.status;
-            match.score = re.score;
-            match.ht = re.ht;
-            match.events = re.events;
-            match.events.forEach(e => { e.player = e.name; }); 
-            match.scorers = match.events.filter(e => e.type === "goal");
-            match.cards = match.events.filter(e => e.type === "yellow" || e.type === "red" || e.type === "yellowRed");
-        }
-    });
-    
-    season.teams.forEach(t => {
-        t.played = 0; t.won = 0; t.drawn = 0; t.lost = 0; t.gf = 0; t.ga = 0; t.points = 0;
-    });
-    season.stats.topScorers = [];
-    season.stats.cards = [];
-    
-    season.matches.forEach(m => {
-        if (m.status !== "Played" && m.status !== "Abgesagt 3:0" && m.status !== "Abgesagt 0:3") return;
-        let homeTeam = season.teams.find(t => t.name === m.home);
-        let awayTeam = season.teams.find(t => t.name === m.away);
-        if (!homeTeam || !awayTeam) return;
-        
-        let hg = 0, ag = 0;
-        if (m.status === "Abgesagt 3:0") { hg = 3; ag = 0; }
-        else if (m.status === "Abgesagt 0:3") { hg = 0; ag = 3; }
-        else if (m.score) {
-            let pts = m.score.split(':');
-            if (pts.length === 2) {
-                hg = parseInt(pts[0].trim());
-                ag = parseInt(pts[1].trim());
-            }
-        }
-        
-        homeTeam.played++; awayTeam.played++;
-        homeTeam.gf += hg; homeTeam.ga += ag;
-        awayTeam.gf += ag; awayTeam.ga += hg;
-        
-        if (hg > ag) { homeTeam.won++; homeTeam.points += 3; awayTeam.lost++; }
-        else if (ag > hg) { awayTeam.won++; awayTeam.points += 3; homeTeam.lost++; }
-        else { homeTeam.drawn++; awayTeam.drawn++; homeTeam.points += 1; awayTeam.points += 1; }
-        
-        if (m.scorers) {
-            m.scorers.forEach(s => {
-                let obj = season.stats.topScorers.find(ts => ts.name === s.name && ts.team === s.team);
-                if (!obj) { obj = { name: s.name, team: s.team, goals: 0 }; season.stats.topScorers.push(obj); }
-                obj.goals++;
-            });
-        }
-        if (m.cards) {
-            m.cards.forEach(c => {
-                let obj = season.stats.cards.find(tc => tc.name === c.name && tc.team === c.team);
-                if (!obj) { obj = { name: c.name, team: c.team, yellow: 0, yellowRed: 0, red: 0 }; season.stats.cards.push(obj); }
-                if (c.type === "yellow") obj.yellow++;
-                if (c.type === "yellowRed") obj.yellowRed++;
-                if (c.type === "red") obj.red++;
-            });
-        }
-    });
-    
-    season.stats.topScorers.sort((a,b) => b.goals - a.goals);
-    
     memoryData.lastUpdated = Date.now();
     needsMigration = true;
 }
-// END ONE-TIME MIGRATION FOR R3
+// END FIX
 
         // --- HARDCODED HISTORICAL DATA ---
       if (!memoryData.seasons) memoryData.seasons = {};
@@ -349,7 +260,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
         await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v32', JSON.stringify(memoryData));
+      trySetLocal('dsg_data_v33', JSON.stringify(memoryData));
       trySetLocal('dsg_articles_v18', JSON.stringify(memoryNews));
       trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
       console.log("Migrated local data to Firebase.");
@@ -369,7 +280,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
   saveData(data) {
     data.lastUpdated = Date.now();
     memoryData = data;
-    trySetLocal('dsg_data_v32', JSON.stringify(data));
+    trySetLocal('dsg_data_v33', JSON.stringify(data));
     
     const fbSaveData = JSON.parse(JSON.stringify(data));
     if (fbSaveData.seasons && fbSaveData.seasons["2025/2026"]) {
@@ -644,6 +555,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     }
   }
 };
+
 
 
 
