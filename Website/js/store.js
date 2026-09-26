@@ -207,6 +207,14 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
                 { type: "yellow", name: "Vladica Petrovic", team: "FC Gornjak" },
                 { type: "yellow", name: "Sani Stancic", team: "FC Gornjak" }
             ]
+        },
+        {
+            home: "Walker FC",
+            away: "SV Croatia Linz",
+            status: "Abgesagt 0:3",
+            score: "0:3",
+            ht: "",
+            events: []
         }
     ];
 
@@ -335,7 +343,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
         await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v35', JSON.stringify(memoryData));
+      trySetLocal('dsg_data_v36', JSON.stringify(memoryData));
       trySetLocal('dsg_articles_v18', JSON.stringify(memoryNews));
       trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
       console.log("Migrated local data to Firebase.");
@@ -355,7 +363,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
   saveData(data) {
     data.lastUpdated = Date.now();
     memoryData = data;
-    trySetLocal('dsg_data_v35', JSON.stringify(data));
+    trySetLocal('dsg_data_v36', JSON.stringify(data));
     
     const fbSaveData = JSON.parse(JSON.stringify(data));
     if (fbSaveData.seasons && fbSaveData.seasons["2025/2026"]) {
