@@ -610,8 +610,22 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
 
 
   async getAdminTeams() {
-    let local = loadLocal('dsg_admin_teams', 2);
+    let local = loadLocal('dsg_admin_teams', 3);
+    
+    // Check Firestore
+    try {
+      const teamSnap = await getDoc(doc(db, 'system', 'teams_data'));
+      if (teamSnap.exists() && teamSnap.data()?.data) {
+        const fbTeams = teamSnap.data().data;
+        trySetLocal('dsg_admin_teams_v3', JSON.stringify(fbTeams));
+        return fbTeams;
+      }
+    } catch(e) {
+      console.warn("Could not fetch teams from Firebase:", e);
+    }
+
     if (local) return local;
+
     try {
       const res = await fetch('data/teams.json');
       const data = await res.json();
@@ -619,30 +633,91 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
         ...t,
         Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv'
       }));
-      trySetLocal('dsg_admin_teams_v2', JSON.stringify(normalized));
+      trySetLocal('dsg_admin_teams_v3', JSON.stringify(normalized));
+      
+      // Upload initial teams to Firestore
+      setDoc(doc(db, 'system', 'teams_data'), { data: normalized, lastUpdated: Date.now() })
+        .catch(e => console.error("Firebase save error (teams):", e));
+        
       return normalized;
     } catch(e) { return []; }
   },
 
+  saveAdminTeams(teams) {
+    trySetLocal('dsg_admin_teams_v3', JSON.stringify(teams));
+    setDoc(doc(db, 'system', 'teams_data'), { data: teams, lastUpdated: Date.now() })
+      .catch(e => console.error("Firebase save error (teams):", e));
+    window.dispatchEvent(new CustomEvent('teams-updated'));
+  },
+
   async getAdminPlayers() {
-    let local = loadLocal('dsg_admin_players', 1);
+    let local = loadLocal('dsg_admin_players', 2);
+
+    // Try reading from Firebase Firestore
+    try {
+      const metaSnap = await getDoc(doc(db, 'system', 'players_meta'));
+      if (metaSnap.exists() && metaSnap.data()?.parts) {
+        const partsCount = metaSnap.data().parts;
+        const partPromises = [];
+        for (let i = 0; i < partsCount; i++) {
+          partPromises.push(getDoc(doc(db, 'system', `players_part_${i}`)));
+        }
+        const partSnaps = await Promise.all(partPromises);
+        let fbPlayers = [];
+        for (const snap of partSnaps) {
+          if (snap.exists() && snap.data()?.data) {
+            fbPlayers = fbPlayers.concat(snap.data().data);
+          }
+        }
+        if (fbPlayers.length > 0) {
+          trySetLocal('dsg_admin_players_v2', JSON.stringify(fbPlayers));
+          return fbPlayers;
+        }
+      }
+    } catch(e) {
+      console.warn("Could not fetch players from Firebase:", e);
+    }
+
     if (local) return local;
+
     try {
       const res = await fetch('data/players.json');
       const data = await res.json();
-      trySetLocal('dsg_admin_players_v1', JSON.stringify(data));
+      trySetLocal('dsg_admin_players_v2', JSON.stringify(data));
+
+      // Upload initial players to Firebase in chunks of 1500
+      this._savePlayersToFirebase(data);
+
       return data;
     } catch(e) { return []; }
   },
 
   saveAdminPlayers(players) {
-    trySetLocal('dsg_admin_players_v1', JSON.stringify(players));
+    trySetLocal('dsg_admin_players_v2', JSON.stringify(players));
+    this._savePlayersToFirebase(players);
     window.dispatchEvent(new CustomEvent('players-updated'));
   },
 
-  saveAdminTeams(teams) {
-    trySetLocal('dsg_admin_teams_v2', JSON.stringify(teams));
-    window.dispatchEvent(new CustomEvent('teams-updated'));
+  _savePlayersToFirebase(players) {
+    const CHUNK_SIZE = 1500;
+    const chunks = [];
+    for (let i = 0; i < players.length; i += CHUNK_SIZE) {
+      chunks.push(players.slice(i, i + CHUNK_SIZE));
+    }
+
+    // Save meta
+    setDoc(doc(db, 'system', 'players_meta'), { 
+      count: players.length, 
+      parts: chunks.length, 
+      lastUpdated: Date.now() 
+    }).catch(e => console.error("Firebase save error (players_meta):", e));
+
+    // Save each chunk
+    chunks.forEach((chunk, idx) => {
+      setDoc(doc(db, 'system', `players_part_${idx}`), { 
+        data: chunk 
+      }).catch(e => console.error(`Firebase save error (players_part_${idx}):`, e));
+    });
   },
 
   getGallery() {
