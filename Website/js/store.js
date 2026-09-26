@@ -1,4 +1,4 @@
-﻿const INITIAL_DATA = {
+const INITIAL_DATA = {
   news: [
     {
       id: 1,
@@ -12,21 +12,21 @@
       title: "Meisterentscheidung am DSG Platz am 12. Juni 2026",
       date: "2026-06-12",
       author: "Michael Angerbauer",
-      excerpt: "Am DSG Platz in Linz fiel am 12. Juni die endgÃ¼ltige Entscheidung Ã¼ber die diesjÃ¤hrige Meisterschaft."
+      excerpt: "Am DSG Platz in Linz fiel am 12. Juni die endgültige Entscheidung über die diesjährige Meisterschaft."
     },
     {
       id: 3,
       title: "Saisonabschluss bei sommerlichen Temperaturen",
       date: "2026-06-08",
       author: "Michael Angerbauer",
-      excerpt: "Das entscheidende Meisterschaftsspiel am 8. Juni war von hohen Temperaturen geprÃ¤gt, beide Teams zeigten vollen Einsatz."
+      excerpt: "Das entscheidende Meisterschaftsspiel am 8. Juni war von hohen Temperaturen geprägt, beide Teams zeigten vollen Einsatz."
     },
     {
       id: 4,
       title: "Viele Tore und Verschiebungen in der Tabelle in Runde 13",
       date: "2026-06-01",
       author: "Michael Angerbauer",
-      excerpt: "In der 13. Runde der DSG Liga fielen zahlreiche Tore, was zu wichtigen VerÃ¤nderungen in der Gesamttabelle fÃ¼hrte."
+      excerpt: "In der 13. Runde der DSG Liga fielen zahlreiche Tore, was zu wichtigen Veränderungen in der Gesamttabelle führte."
     }
   ],
   currentSeason: "2026/2027",
@@ -61,7 +61,7 @@
       id: 'meisterfeier-2026',
       title: 'Meisterfeier 2026',
       date: '12. Juni 2026',
-      excerpt: 'Feierlicher FuÃŸballabend am DSG Platz mit Ehrung des neuen Meisters SV Croatia Linz.',
+      excerpt: 'Feierlicher Fußballabend am DSG Platz mit Ehrung des neuen Meisters SV Croatia Linz.',
       image: 'stadion.png',
       images: [
         { url: 'stadion.png', title: 'Meisterfeier 2026' }
@@ -108,7 +108,7 @@ const loadLocal = (prefix, maxVer) => {
 export const Store = {
   init() {
     // Eagerly load local memory so the app doesn't block on network
-    memoryData = loadLocal('dsg_data', 35) || INITIAL_DATA;
+    memoryData = loadLocal('dsg_data', 36) || INITIAL_DATA;
     memoryNews = loadLocal('dsg_articles', 18) || INITIAL_DATA.news || [];
     memoryGallery = loadLocal('dsg_gallery', 18) || INITIAL_DATA.gallery || [];
 
@@ -132,7 +132,7 @@ export const Store = {
       // Sync Data
       if (dataSnap.exists() && dataSnap.data().data) {
         const fbData = dataSnap.data().data;
-        const localData = loadLocal('dsg_data', 35);
+        const localData = loadLocal('dsg_data', 36);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
           memoryData = localData;
           needsMigration = true;
@@ -141,7 +141,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 35);
+        let legacyData = loadLocal('dsg_data', 36);
         if (!legacyData) legacyData = INITIAL_DATA;
         memoryData = legacyData;
         needsMigration = true;
