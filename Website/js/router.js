@@ -4,20 +4,20 @@ import { viewLiga, bindLigaTabs } from './views/liga.js';
 import { viewArchiv } from './views/simpleViews.js';
 import { viewOrganisation, bindOrganisation } from './views/organisation.js';
 import { viewGalerie, bindGalerie } from './views/galerie.js';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1790460000000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1790461500000';
 import { viewArticle, bindArticle } from './views/article.js';
 import { viewImpressum } from './views/impressum.js';
 import { viewDatenschutz } from './views/datenschutz.js';
 
 const routes = {
-  '/': { render: viewHome },
-  '/liga': { render: viewLiga, bind: bindLigaTabs },
-  '/news': { render: viewNews, bind: bindNews },
-  '/organisation': { render: viewOrganisation, bind: bindOrganisation },
-  '/galerie': { render: viewGalerie, bind: bindGalerie },
-  '/archiv': { render: viewArchiv },
-  '/impressum': { render: viewImpressum },
-  '/datenschutz': { render: viewDatenschutz },
+  '/': { render: () => viewHome() },
+  '/liga': { render: () => viewLiga(), bind: () => bindLigaTabs() },
+  '/news': { render: () => viewNews(), bind: () => bindNews() },
+  '/organisation': { render: () => viewOrganisation(), bind: () => bindOrganisation() },
+  '/galerie': { render: () => viewGalerie(), bind: () => bindGalerie() },
+  '/archiv': { render: () => viewArchiv() },
+  '/impressum': { render: () => viewImpressum() },
+  '/datenschutz': { render: () => viewDatenschutz() },
   '/admin': { 
     render: () => {
       if(sessionStorage.getItem('dsg_admin') === 'true') return viewAdmin();

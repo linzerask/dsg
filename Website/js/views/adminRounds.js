@@ -64,7 +64,7 @@ export const renderAdminRounds = () => {
             <div class="glass-card modal-content" style="width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
                     <h3 id="round-modal-title" style="margin: 0; font-size: 1.3rem;">Runde bearbeiten</h3>
-                    <button type="button" class="btn-close-round-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: #007bff; color: #fff; border: none; cursor: pointer;">Zurück</button>
+                    <button type="button" class="btn-close-round-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
                 </div>
                 
                 <form id="round-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
@@ -105,7 +105,7 @@ export const renderAdminRounds = () => {
                     </div>
 
                     <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
-                        <button type="submit" id="btn-save-round" class="primary-btn" style="flex: 1; padding: 10px; font-weight: 700; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer;">Aktualisieren</button>
+                        <button type="submit" id="btn-save-round" class="primary-btn" style="flex: 1; padding: 10px; font-weight: 700; background: var(--color-accent); color: #000; border: none; border-radius: 4px; cursor: pointer;">Aktualisieren</button>
                     </div>
                 </form>
             </div>
@@ -116,7 +116,7 @@ export const renderAdminRounds = () => {
             <div class="glass-card modal-content" style="width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
                     <h3 style="margin: 0; font-size: 1.3rem;">Spiel hinzufügen</h3>
-                    <button type="button" class="btn-close-game-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: #007bff; color: #fff; border: none; cursor: pointer;">Zurück</button>
+                    <button type="button" class="btn-close-game-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
                 </div>
                 
                 <form id="game-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
@@ -161,7 +161,7 @@ export const renderAdminRounds = () => {
                     </div>
 
                     <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
-                        <button type="submit" class="primary-btn" style="flex: 1; padding: 10px; font-weight: 700; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer;">Erstellen</button>
+                        <button type="submit" class="primary-btn" style="flex: 1; padding: 10px; font-weight: 700; background: var(--color-accent); color: #000; border: none; border-radius: 4px; cursor: pointer;">Erstellen</button>
                     </div>
                 </form>
             </div>
@@ -260,9 +260,9 @@ const renderTable = () => {
                 </td>
                 <td style="text-align: center;">
                     <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
-                        <button class="btn-edit-round" data-idx="${rawIndex}" style="background: #007bff; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Edit</button>
-                        <button class="btn-delete-round" data-idx="${rawIndex}" style="background: #dc3545; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Delete</button>
-                        <button class="btn-add-game-to-round" data-idx="${rawIndex}" ${!isActive ? 'disabled style="opacity: 0.5; cursor: not-allowed; background: #6c757d; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600;"' : 'style="background: #007bff; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer;"'}>Spiel anlegen</button>
+                        <button class="btn-edit-round" data-idx="${rawIndex}" style="background: var(--color-accent); color: #000; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">Editieren</button>
+                        <button class="btn-delete-round" data-idx="${rawIndex}" style="background: #dc3545; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Löschen</button>
+                        <button class="btn-add-game-to-round" data-idx="${rawIndex}" ${!isActive ? 'disabled style="opacity: 0.5; cursor: not-allowed; background: #6c757d; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600;"' : 'style="background: var(--color-accent); color: #000; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer;"'}>Spiel anlegen</button>
                     </div>
                 </td>
             </tr>

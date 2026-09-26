@@ -1,8 +1,7 @@
 import { Router } from './router.js';
-
 import { Store } from './store.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+const initApp = () => {
   Store.init();
   Router.init();
 
@@ -11,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const openBtn = document.getElementById('open-drawer');
   const closeBtn = document.getElementById('close-drawer');
 
-  openBtn.addEventListener('click', () => {
+  openBtn?.addEventListener('click', () => {
     anime({
       targets: drawer,
       right: 0,
@@ -20,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  closeBtn.addEventListener('click', () => {
+  closeBtn?.addEventListener('click', () => {
     anime({
       targets: drawer,
       right: '-100%',
@@ -39,4 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
-});
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}

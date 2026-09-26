@@ -1,9 +1,9 @@
 import { Store } from '../store.js';
-import { Router } from '../router.js';
+
 
 let currentViewSeason = "2026/2027";
 
-export const viewLiga = () => {
+export function viewLiga() {
   const data = Store.getData();
   if (!data.seasons || !data.seasons[currentViewSeason]) {
     currentViewSeason = Object.keys(data.seasons || {}).pop() || "2026/2027";
@@ -396,7 +396,7 @@ export const viewLiga = () => {
   `;
 };
 
-export const bindLigaTabs = () => {
+export function bindLigaTabs() {
   const trigger = document.getElementById('season-custom-trigger');
   const optionsWrapper = document.getElementById('season-custom-options');
   const options = document.querySelectorAll('.season-option');
@@ -418,7 +418,7 @@ export const bindLigaTabs = () => {
         const selectedValue = e.target.dataset.value;
         if (currentViewSeason !== selectedValue) {
           currentViewSeason = selectedValue;
-          Router.handleRoute();
+          window.dispatchEvent(new CustomEvent('data-updated'));
         } else {
           optionsWrapper.classList.remove('open');
         }
