@@ -569,6 +569,7 @@ main {
 
 .form-dot {
   width: 12px;
+  flex-shrink: 0;
   height: 12px;
   border-radius: 50%;
   display: inline-block;
@@ -609,7 +610,7 @@ main {
   }
   
   .liga-row, .liga-header {
-    grid-template-columns: 25px 1fr 65px 40px !important;
+    grid-template-columns: 25px 1fr 75px 40px !important;
   }
 }
 
