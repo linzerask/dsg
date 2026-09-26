@@ -1,5 +1,17 @@
 import { Store } from '../store.js';
 
+const ICONS = {
+  ball: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); vertical-align: middle;"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 9 17 15 17 16 12 12 8"></polygon></svg>`,
+  calendar: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); vertical-align: middle;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
+  calendarSm: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); vertical-align: -2px; margin-right: 4px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
+  clockSm: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); vertical-align: -2px; margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`,
+  pinSm: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); vertical-align: -2px; margin-right: 4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`,
+  trophy: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); vertical-align: middle;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H8c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1h8c.55 0 1-.45 1-1v-1c0-.55-.45-1-1-1h-1c-.55 0-1-.45-1-1v-2.34"></path><path d="M6 4h12a2 2 0 0 1 2 2v3a6 6 0 0 1-6 6h0a6 6 0 0 1-6-6V6a2 2 0 0 1 2-2Z"></path></svg>`,
+  target: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); vertical-align: middle;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`,
+  newspaper: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); vertical-align: middle;"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>`,
+  handshake: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); vertical-align: middle;"><path d="m11 17 2 2a1 1 0 0 0 1.42 0l4.58-4.58a1 1 0 0 0 0-1.42l-2-2"></path><path d="m3 11 8.5 8.5a2.12 2.12 0 0 0 3 0l6-6a2.12 2.12 0 0 0 0-3L13 3"></path><path d="m2 16 6-6"></path><path d="m15 3 6 6"></path></svg>`
+};
+
 export const viewHome = () => {
   const data = Store.getData();
   const defaultHomeSeason = data.currentSeason || "2026/2027";
@@ -116,8 +128,10 @@ export const viewHome = () => {
           <span style="font-size: 1.1rem; font-weight: 900; color: var(--color-accent); background: rgba(0,0,0,0.04); padding: 4px 12px; border-radius: 6px;">VS</span>
           <h3 style="font-size: clamp(1.2rem, 3vw, 1.7rem); font-weight: 700; margin: 0; color: var(--color-text-primary);">${nextMatch.away}</h3>
         </div>
-        <p style="margin-top: var(--space-sm); color: var(--color-text-secondary); font-size: 0.95rem; font-weight: 500;">
-          📅 ${formattedDate}${nextMatch.time ? ' | ⏰ ' + nextMatch.time + ' Uhr' : ''} | 📍 ${loc}
+        <p style="margin-top: var(--space-sm); color: var(--color-text-secondary); font-size: 0.95rem; font-weight: 500; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 16px;">
+          <span>${ICONS.calendarSm}${formattedDate}</span>
+          ${nextMatch.time ? `<span>${ICONS.clockSm}${nextMatch.time} Uhr</span>` : ''}
+          <span>${ICONS.pinSm}${loc}</span>
         </p>
       </div>
     `;
@@ -126,7 +140,6 @@ export const viewHome = () => {
   // Render Match Center Rows
   const renderMatchRow = (m, isResult = false) => {
     const formattedDate = formatMatchDate(m.date);
-    const loc = m.location || m.venue || 'DSG-Platz';
     const isCanceled = (m.status || '').toLowerCase().includes('abgesagt');
     
     return `
@@ -177,7 +190,7 @@ export const viewHome = () => {
         <div class="glass-card stagger-item">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
             <h2 style="font-size: 1.4rem; margin: 0; display: flex; align-items: center; gap: 8px;">
-              <span>⚽</span> Letzte Ergebnisse
+              <span>${ICONS.ball}</span> Letzte Ergebnisse
             </h2>
             <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Saison ${defaultHomeSeason}</span>
           </div>
@@ -192,7 +205,7 @@ export const viewHome = () => {
         <div class="glass-card stagger-item">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
             <h2 style="font-size: 1.4rem; margin: 0; display: flex; align-items: center; gap: 8px;">
-              <span>📅</span> Nächste Spiele
+              <span>${ICONS.calendar}</span> Nächste Spiele
             </h2>
             <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Spielplan</span>
           </div>
@@ -210,7 +223,7 @@ export const viewHome = () => {
         <div class="glass-card stagger-item">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
             <h2 style="font-size: 1.4rem; margin: 0; display: flex; align-items: center; gap: 8px;">
-              <span>🏆</span> Top 5 Tabelle
+              <span>${ICONS.trophy}</span> Top 5 Tabelle
             </h2>
             <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Saison ${defaultHomeSeason}</span>
           </div>
@@ -225,7 +238,7 @@ export const viewHome = () => {
         <div class="glass-card stagger-item">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
             <h2 style="font-size: 1.4rem; margin: 0; display: flex; align-items: center; gap: 8px;">
-              <span>🎯</span> Torschützen
+              <span>${ICONS.target}</span> Torschützen
             </h2>
             <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Top Scorer</span>
           </div>
@@ -240,7 +253,10 @@ export const viewHome = () => {
 
       <!-- News Section -->
       <div class="news-section stagger-item" style="margin-top: var(--space-xl);">
-        <h2 style="margin-bottom: var(--space-md); font-size: 2rem;">Aktuelle Nachrichten</h2>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: var(--space-md);">
+          <span>${ICONS.newspaper}</span>
+          <h2 style="font-size: 2rem; margin: 0;">Aktuelle Nachrichten</h2>
+        </div>
         <div class="news-carousel">
           ${newsCards}
         </div>
@@ -248,7 +264,9 @@ export const viewHome = () => {
       
       <!-- Sponsor Marquee -->
       <div class="marquee-container stagger-item" style="margin-top: var(--space-xl); margin-bottom: var(--space-xl);">
-        <h3 style="text-align: center; color: var(--color-text-secondary); margin-bottom: var(--space-md);">Offizielle Partner</h3>
+        <h3 style="text-align: center; color: var(--color-text-secondary); margin-bottom: var(--space-md); display: flex; justify-content: center; align-items: center; gap: 8px;">
+          <span>${ICONS.handshake}</span> Offizielle Partner
+        </h3>
         <div class="marquee">
           <div class="marquee-content">
             <img src="dsg.avif" alt="Sponsor" />
