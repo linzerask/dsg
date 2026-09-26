@@ -108,7 +108,7 @@ const loadLocal = (prefix, maxVer) => {
 export const Store = {
   init() {
     // Eagerly load local memory so the app doesn't block on network
-    memoryData = loadLocal('dsg_data', 26) || INITIAL_DATA;
+    memoryData = loadLocal('dsg_data', 27) || INITIAL_DATA;
     memoryNews = loadLocal('dsg_articles', 18) || INITIAL_DATA.news || [];
     memoryGallery = loadLocal('dsg_gallery', 18) || INITIAL_DATA.gallery || [];
 
@@ -132,7 +132,7 @@ export const Store = {
       // Sync Data
       if (dataSnap.exists() && dataSnap.data().data) {
         const fbData = dataSnap.data().data;
-        const localData = loadLocal('dsg_data', 26);
+        const localData = loadLocal('dsg_data', 27);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
           memoryData = localData;
           needsMigration = true;
@@ -141,7 +141,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 26);
+        let legacyData = loadLocal('dsg_data', 27);
         if (!legacyData) legacyData = INITIAL_DATA;
         memoryData = legacyData;
         needsMigration = true;
@@ -181,95 +181,93 @@ export const Store = {
         needsMigration = true;
       }
 
-                              // START ONE-TIME MIGRATION FOR MATCHES ROUND 3 AND 4
+                              // START ONE-TIME MIGRATION FOR ROUND 4 TO 9 FIXES
 if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     let season = memoryData.seasons["2026/2027"];
-    let matchUpdates = [
-        {
-            home: "Union Heiligenberg", away: "DSG St. Josef/Oed FC",
-            status: "Abgesagt 3:0", score: "3:0", ht: "",
-            events: []
-        },
-        {
-            home: "Walker FC", away: "DSG Union Traun",
-            status: "Played", score: "0:0", ht: "0:0",
-            events: []
-        },
-        {
-            home: "FC Gornjak", away: "Etehad Linz",
-            status: "Played", score: "1:4", ht: "1:1",
-            events: [
-                { type: "goal", name: "Ilija Stojchovski", team: "FC Gornjak" },
-                { type: "yellow", name: "Sasa Nedic", team: "FC Gornjak" },
-                { type: "yellow", name: "Milos Zivkovic", team: "FC Gornjak" },
-                { type: "goal", name: "Abdullah Temori", team: "Etehad Linz" },
-                { type: "goal", name: "Abdullah Temori", team: "Etehad Linz" },
-                { type: "goal", name: "Zia Ghaderi", team: "Etehad Linz" },
-                { type: "goal", name: "Hamid Fouladi", team: "Etehad Linz" },
-                { type: "yellow", name: "Askraf Laeli", team: "Etehad Linz" },
-                { type: "yellow", name: "Abdullah Temori", team: "Etehad Linz" },
-                { type: "yellow", name: "Zia Ghaderi", team: "Etehad Linz" }
-            ]
-        },
-        {
-            home: "DSG Union Traun", away: "FC Gornjak",
-            status: "Played", score: "8:2", ht: "4:1",
-            events: [
-                { type: "goal", name: "Georgia Adrian Melci", team: "DSG Union Traun" },
-                { type: "goal", name: "Georgia Adrian Melci", team: "DSG Union Traun" },
-                { type: "goal", name: "Georgia Adrian Melci", team: "DSG Union Traun" },
-                { type: "goal", name: "Georgia Adrian Melci", team: "DSG Union Traun" },
-                { type: "goal", name: "Manuel Kapfhammer", team: "DSG Union Traun" },
-                { type: "goal", name: "Thomas Mathis", team: "DSG Union Traun" },
-                { type: "goal", name: "Manuel Winklehner", team: "DSG Union Traun" },
-                { type: "goal", name: "David Schobesberger", team: "DSG Union Traun" },
-                { type: "yellow", name: "Manuel Kapfhammer", team: "DSG Union Traun" },
-                { type: "goal", name: "Ilija Stojchovski", team: "FC Gornjak" },
-                { type: "goal", name: "Ilija Stojchovski", team: "FC Gornjak" },
-                { type: "yellow", name: "Ilija Stojchovski", team: "FC Gornjak" },
-                { type: "yellow", name: "Sasa Nedic", team: "FC Gornjak" }
-            ]
-        },
-        {
-            home: "SV Croatia Linz", away: "Walker FC",
-            status: "Played", score: "6:1", ht: "2:0",
-            events: [
-                { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-                { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-                { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-                { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-                { type: "goal", name: "Marko Burg", team: "SV Croatia Linz" },
-                { type: "goal", name: "Ante Zuljevic", team: "SV Croatia Linz" },
-                { type: "goal", name: "Martin Brenner", team: "Walker FC" },
-                { type: "yellow", name: "Martin Brenner", team: "Walker FC" }
-            ]
-        },
-        {
-            home: "DSG St. Josef/Oed FC", away: "Etehad Linz",
-            status: "Played", score: "2:0", ht: "1:0",
-            events: [
-                { type: "goal", name: "Kevin Tiepelt", team: "DSG St. Josef/Oed FC" },
-                { type: "goal", name: "Kevin Tiepelt", team: "DSG St. Josef/Oed FC" },
-                { type: "yellow", name: "Manuel Stadler", team: "DSG St. Josef/Oed FC" },
-                { type: "yellow", name: "Askraf Laeli", team: "Etehad Linz" },
-                { type: "yellow", name: "Zia Ghaderi", team: "Etehad Linz" },
-                { type: "red", name: "Mohammad Sharifi", team: "Etehad Linz" }
-            ]
-        }
+    
+    // We will reset the matches array from id 110 onwards
+    // Wait, let's just update the specific matches.
+    // 4. Runde
+    let m109 = season.matches.find(m => m.id === 109 || (m.home === "DSG Union Traun" && m.away === "FC Gornjak")); // played
+    if (m109) {
+        m109.date = "2026-09-25T19:00:00"; // Fr
+    }
+    
+    let m110 = season.matches.find(m => m.id === 110 || (m.home === "SV Croatia Linz" && m.away === "Walker FC") || (m.home === "Walker FC" && m.away === "SV Croatia Linz"));
+    if (m110) {
+        m110.home = "Walker FC";
+        m110.away = "SV Croatia Linz";
+        m110.status = "Upcoming";
+        m110.score = "-:-";
+        m110.ht = "";
+        m110.events = [];
+        m110.scorers = [];
+        m110.cards = [];
+        m110.date = "2026-09-26T15:00:00";
+    }
+    
+    let m111 = season.matches.find(m => m.id === 111 || (m.home === "DSG St. Josef/Oed FC" && m.away === "Etehad Linz"));
+    if (m111) {
+        m111.status = "Upcoming";
+        m111.score = "-:-";
+        m111.ht = "";
+        m111.events = [];
+        m111.scorers = [];
+        m111.cards = [];
+        m111.date = "2026-10-14T19:00:00"; // Mi
+    }
+    
+    // 5. Runde
+    let r5 = [
+        { id: 112, home: "Etehad Linz", away: "Walker FC", date: "2026-10-02T19:00:00" },
+        { id: 113, home: "DSG Union Traun", away: "SV Croatia Linz", date: "2026-10-02T19:00:00" },
+        { id: 114, home: "FC Gornjak", away: "Union Heiligenberg", date: "2026-10-03T15:00:00" }
     ];
     
-    matchUpdates.forEach(update => {
-        let match = season.matches.find(m => m.home === update.home && m.away === update.away);
+    // 6. Runde
+    let r6 = [
+        { id: 115, home: "DSG Union Traun", away: "DSG St. Josef/Oed FC", date: "2026-10-09T19:00:00" },
+        { id: 116, home: "Walker FC", away: "FC Gornjak", date: "2026-10-10T15:00:00" },
+        { id: 117, home: "Union Heiligenberg", away: "SV Croatia Linz", date: "2026-11-07T15:00:00" }
+    ];
+    
+    // 7. Runde
+    let r7 = [
+        { id: 118, home: "Union Heiligenberg", away: "FC Gornjak", date: "2026-10-16T19:00:00" },
+        { id: 119, home: "SV Croatia Linz", away: "DSG Union Traun", date: "2026-10-17T15:00:00" },
+        { id: 120, home: "Walker FC", away: "Etehad Linz", date: "2026-10-17T15:00:00" }
+    ];
+    
+    // 8. Runde
+    let r8 = [
+        { id: 121, home: "SV Croatia Linz", away: "FC Gornjak", date: "2026-10-24T15:00:00" },
+        { id: 122, home: "DSG St. Josef/Oed FC", away: "Walker FC", date: "2026-10-24T17:00:00" },
+        { id: 123, home: "Etehad Linz", away: "Union Heiligenberg", date: "2026-10-24T15:00:00" }
+    ];
+    
+    // 9. Runde
+    let r9 = [
+        { id: 124, home: "Union Heiligenberg", away: "DSG St. Josef/Oed FC", date: "2026-10-30T19:00:00" },
+        { id: 125, home: "FC Gornjak", away: "Etehad Linz", date: "2026-10-31T15:00:00" },
+        { id: 126, home: "Walker FC", away: "DSG Union Traun", date: "2026-10-31T15:00:00" }
+    ];
+    
+    let allUpdates = [...r5, ...r6, ...r7, ...r8, ...r9];
+    allUpdates.forEach(u => {
+        let match = season.matches.find(m => m.id === u.id);
         if (match) {
-            match.status = update.status;
-            match.score = update.score;
-            match.ht = update.ht;
-            match.events = update.events;
-            match.scorers = match.events.filter(e => e.type === "goal");
-            match.cards = match.events.filter(e => e.type === "yellow" || e.type === "red" || e.type === "yellowRed");
+            match.home = u.home;
+            match.away = u.away;
+            match.date = u.date;
+            match.status = "Upcoming";
+            match.score = "-:-";
+            match.ht = "";
+            match.events = [];
+            match.scorers = [];
+            match.cards = [];
         }
     });
-    
+
     season.teams.forEach(t => {
         t.played = 0; t.won = 0; t.drawn = 0; t.lost = 0; t.gf = 0; t.ga = 0; t.points = 0;
     });
@@ -325,7 +323,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     memoryData.lastUpdated = Date.now();
     needsMigration = true;
 }
-// END ONE-TIME MIGRATION FOR MATCHES ROUND 3 AND 4
+// END ONE-TIME MIGRATION FOR ROUND 4 TO 9 FIXES
 
         // --- HARDCODED HISTORICAL DATA ---
       if (!memoryData.seasons) memoryData.seasons = {};
@@ -383,7 +381,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
         await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v26', JSON.stringify(memoryData));
+      trySetLocal('dsg_data_v27', JSON.stringify(memoryData));
       trySetLocal('dsg_articles_v18', JSON.stringify(memoryNews));
       trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
       console.log("Migrated local data to Firebase.");
@@ -403,7 +401,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
   saveData(data) {
     data.lastUpdated = Date.now();
     memoryData = data;
-    trySetLocal('dsg_data_v26', JSON.stringify(data));
+    trySetLocal('dsg_data_v27', JSON.stringify(data));
     
     const fbSaveData = JSON.parse(JSON.stringify(data));
     if (fbSaveData.seasons && fbSaveData.seasons["2025/2026"]) {
@@ -678,6 +676,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     }
   }
 };
+
 
 
 
