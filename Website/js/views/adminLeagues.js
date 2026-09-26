@@ -63,7 +63,7 @@ export const renderAdminLeagues = () => {
 
         <!-- Edit / Create League Modal -->
         <div id="league-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
-            <div class="glass-card" style="background: var(--color-surface); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <div style="background: var(--color-surface); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: var(--glass-border);">
                 <h3 id="modal-league-title" style="margin-bottom: var(--space-md);">Liga bearbeiten</h3>
                 <form id="league-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-league-id">
@@ -95,10 +95,10 @@ export const renderAdminLeagues = () => {
 
         <!-- League Data Inspection Popup (Grid/Tables for Tabelle, Spielberichte, Karten, Tore) -->
         <div id="league-data-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px);">
-            <div class="glass-card" style="background: var(--color-surface); max-width: 900px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; border-radius: var(--border-radius-md); box-shadow: 0 15px 35px rgba(0,0,0,0.3); border: var(--glass-border); overflow: hidden;">
+            <div style="background: var(--color-surface); max-width: 900px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; border-radius: var(--border-radius-md); box-shadow: 0 15px 35px rgba(0,0,0,0.35); border: var(--glass-border); overflow: hidden;">
                 
-                <!-- Modal Top Header -->
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-border); background: rgba(255,255,255,0.02);">
+                <!-- Fixed Modal Top Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--color-border); background: rgba(0,0,0,0.02); flex-shrink: 0;">
                     <div style="display: flex; align-items: center; gap: var(--space-sm);">
                         <h3 id="league-data-title" style="margin: 0; font-size: 1.25rem; font-weight: 700;">Liga Details</h3>
                         <span id="league-data-badge" class="badge badge-secondary" style="font-size: 0.75rem;">Inaktiv</span>
@@ -106,16 +106,16 @@ export const renderAdminLeagues = () => {
                     <button type="button" id="btn-close-data-modal" style="background: none; border: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--color-text-secondary); padding: 4px 8px;">&times;</button>
                 </div>
 
-                <!-- Modal Sub-Nav Tabs -->
-                <div style="display: flex; gap: var(--space-xs); padding: var(--space-xs) var(--space-lg); border-bottom: 1px solid var(--color-border); background: rgba(0,0,0,0.02); overflow-x: auto;">
-                    <button class="modal-tab-btn active" data-modal-tab="table" style="padding: 6px 14px; font-size: 0.85rem; font-weight: 600; border-radius: 4px; border: none; cursor: pointer; background: var(--color-accent); color: #000;">📊 Tabelle</button>
-                    <button class="modal-tab-btn" data-modal-tab="matches" style="padding: 6px 14px; font-size: 0.85rem; font-weight: 600; border-radius: 4px; border: none; cursor: pointer; background: none; color: var(--color-text-secondary);">⚽ Spielberichte</button>
-                    <button class="modal-tab-btn" data-modal-tab="cards" style="padding: 6px 14px; font-size: 0.85rem; font-weight: 600; border-radius: 4px; border: none; cursor: pointer; background: none; color: var(--color-text-secondary);">🟨 Karten</button>
-                    <button class="modal-tab-btn" data-modal-tab="scorers" style="padding: 6px 14px; font-size: 0.85rem; font-weight: 600; border-radius: 4px; border: none; cursor: pointer; background: none; color: var(--color-text-secondary);">🎯 Tore</button>
+                <!-- Fixed Modal Sub-Nav Tabs (Never scrolls out of view) -->
+                <div id="league-data-tab-bar" style="display: flex; gap: 8px; padding: 12px 24px; border-bottom: 1px solid var(--color-border); background: rgba(0,0,0,0.03); overflow-x: auto; flex-shrink: 0;">
+                    <button class="modal-tab-btn" data-modal-tab="table" style="padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">📊 Tabelle</button>
+                    <button class="modal-tab-btn" data-modal-tab="matches" style="padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">⚽ Spielberichte</button>
+                    <button class="modal-tab-btn" data-modal-tab="cards" style="padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">🟨 Karten</button>
+                    <button class="modal-tab-btn" data-modal-tab="scorers" style="padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">🎯 Tore</button>
                 </div>
 
-                <!-- Modal Scrollable Content Container -->
-                <div id="league-data-content" style="padding: var(--space-lg); overflow-y: auto; flex: 1;">
+                <!-- Scrollable Content Area -->
+                <div id="league-data-content" style="padding: 24px; overflow-y: auto; flex: 1; min-height: 300px;">
                     <!-- Injected dynamically based on active tab -->
                 </div>
             </div>
@@ -193,16 +193,16 @@ const renderTable = () => {
                     <button class="btn btn-outline edit-single-league-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px;">Bearbeiten</button>
                 </td>
                 <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="table" data-idx="${rawIndex}" style="background: none; border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Tabelle</button>
+                    <button class="btn-league-view" data-action="table" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Tabelle</button>
                 </td>
                 <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="matches" data-idx="${rawIndex}" style="background: none; border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Spielberichte</button>
+                    <button class="btn-league-view" data-action="matches" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Spielberichte</button>
                 </td>
                 <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="cards" data-idx="${rawIndex}" style="background: none; border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Karten</button>
+                    <button class="btn-league-view" data-action="cards" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Karten</button>
                 </td>
                 <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="scorers" data-idx="${rawIndex}" style="background: none; border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Tore</button>
+                    <button class="btn-league-view" data-action="scorers" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Tore</button>
                 </td>
             </tr>
         `;
@@ -224,6 +224,25 @@ const renderTable = () => {
     });
 };
 
+const updateModalTabsUI = () => {
+    document.querySelectorAll('.modal-tab-btn').forEach(btn => {
+        const tab = btn.getAttribute('data-modal-tab');
+        if (tab === currentModalTab) {
+            btn.style.background = 'var(--color-accent)';
+            btn.style.color = '#000';
+            btn.style.borderColor = 'var(--color-accent)';
+            btn.style.fontWeight = '700';
+            btn.classList.add('active');
+        } else {
+            btn.style.background = 'var(--color-surface)';
+            btn.style.color = 'var(--color-text-primary)';
+            btn.style.borderColor = 'var(--color-border)';
+            btn.style.fontWeight = '600';
+            btn.classList.remove('active');
+        }
+    });
+};
+
 const openLeagueDataModal = (idx, tab = 'table') => {
     if (idx === null || !leaguesData[idx]) return;
     selectedLeague = leaguesData[idx];
@@ -240,21 +259,47 @@ const openLeagueDataModal = (idx, tab = 'table') => {
         badge.className = `badge ${status === 'Aktiv' ? 'badge-success' : 'badge-secondary'}`;
     }
 
-    // Update modal tab buttons UI
-    document.querySelectorAll('.modal-tab-btn').forEach(btn => {
-        if (btn.getAttribute('data-modal-tab') === currentModalTab) {
-            btn.style.background = 'var(--color-accent)';
-            btn.style.color = '#000';
-            btn.classList.add('active');
-        } else {
-            btn.style.background = 'none';
-            btn.style.color = 'var(--color-text-secondary)';
-            btn.classList.remove('active');
-        }
-    });
-
+    updateModalTabsUI();
     renderModalContent();
     if (modal) modal.style.display = 'flex';
+};
+
+const getMatchGoals = (m) => {
+    if (m.events && m.events.length > 0) {
+        return m.events.filter(e => e.type === 'goal').map(e => ({
+            name: e.name || e.player,
+            team: e.team,
+            minute: e.minute
+        }));
+    }
+    if (m.scorers && m.scorers.length > 0) {
+        return m.scorers.map(s => ({
+            name: s.name || s.player,
+            team: s.team,
+            count: s.count || 1
+        }));
+    }
+    return [];
+};
+
+const getMatchCards = (m) => {
+    if (m.cards && m.cards.length > 0) {
+        return m.cards.map(c => ({
+            name: c.name || c.player,
+            team: c.team,
+            type: c.type || 'yellow',
+            minute: c.minute
+        }));
+    }
+    if (m.events && m.events.length > 0) {
+        return m.events.filter(e => e.type === 'yellow' || e.type === 'yellowRed' || e.type === 'red').map(e => ({
+            name: e.name || e.player,
+            team: e.team,
+            type: e.type,
+            minute: e.minute
+        }));
+    }
+    return [];
 };
 
 const renderModalContent = () => {
@@ -267,10 +312,10 @@ const renderModalContent = () => {
 
     if (!seasonData) {
         container.innerHTML = `
-            <div style="text-align: center; padding: var(--space-xl) var(--space-md); color: var(--color-text-secondary);">
-                <div style="font-size: 2.5rem; margin-bottom: var(--space-sm);">📁</div>
-                <h4 style="color: var(--color-text-primary); margin-bottom: var(--space-xs);">Keine Spieldaten vorhanden</h4>
-                <p style="font-size: 0.9rem; max-width: 400px; margin: 0 auto;">Für die Saison <strong>${selectedLeague.name} (${seasonKey})</strong> wurden noch keine Daten erfasst oder importiert.</p>
+            <div style="text-align: center; padding: 40px 20px; color: var(--color-text-secondary);">
+                <div style="font-size: 2.5rem; margin-bottom: 12px;">📁</div>
+                <h4 style="color: var(--color-text-primary); margin-bottom: 6px;">Keine Spieldaten vorhanden</h4>
+                <p style="font-size: 0.9rem; max-width: 420px; margin: 0 auto;">Für die Saison <strong>${selectedLeague.name} (${seasonKey})</strong> wurden noch keine Daten erfasst oder importiert.</p>
             </div>
         `;
         return;
@@ -286,7 +331,7 @@ const renderModalContent = () => {
         });
 
         if (teams.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary);">Keine Mannschaften eingetragen.</p>';
+            container.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary); padding: 20px;">Keine Mannschaften eingetragen.</p>';
             return;
         }
 
@@ -329,62 +374,122 @@ const renderModalContent = () => {
             </div>
         `;
     } else if (currentModalTab === 'matches') {
-        const matches = seasonData.matches || [];
+        const matches = seasonData.schedule || seasonData.matches || [];
         if (matches.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary);">Keine Spielberichte vorhanden.</p>';
+            container.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary); padding: 20px;">Keine Spielberichte vorhanden.</p>';
             return;
         }
 
         // Group matches by round
         const roundsMap = {};
         matches.forEach(m => {
-            const r = m.round || 1;
+            let r = m.round || '1. Runde';
+            if (typeof r === 'number') r = `${r}. Runde`;
             if (!roundsMap[r]) roundsMap[r] = [];
             roundsMap[r].push(m);
         });
 
-        const roundKeys = Object.keys(roundsMap).sort((a, b) => parseInt(a) - parseInt(b));
+        const roundKeys = Object.keys(roundsMap).sort((a, b) => {
+            const numA = parseInt(a.replace(/\D/g, '')) || 0;
+            const numB = parseInt(b.replace(/\D/g, '')) || 0;
+            return numA - numB;
+        });
 
         container.innerHTML = `
-            <div style="display: flex; flex-direction: column; gap: var(--space-lg);">
-                ${roundKeys.map(rNum => `
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                ${roundKeys.map(rKey => `
                     <div>
-                        <h4 style="color: var(--color-accent); margin-bottom: var(--space-sm); border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Runde ${rNum}</h4>
-                        <div style="display: flex; flex-direction: column; gap: var(--space-xs);">
-                            ${roundsMap[rNum].map(m => {
+                        <h4 style="color: var(--color-accent); font-size: 1.1rem; margin-bottom: 12px; border-bottom: 2px solid rgba(0,179,65,0.2); padding-bottom: 6px;">${rKey}</h4>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            ${roundsMap[rKey].map((m, mIdx) => {
+                                const matchId = `m-${rKey.replace(/\s+/g, '')}-${mIdx}`;
                                 const isCanceled = (m.status || '').toLowerCase().includes('abgesagt');
                                 const isPostponed = (m.status || '').toLowerCase().includes('verschoben');
                                 let statusBadge = '';
-                                if (isCanceled) statusBadge = `<span class="badge" style="background: #e74c3c; color: white;">${m.status}</span>`;
-                                else if (isPostponed) statusBadge = `<span class="badge" style="background: #f39c12; color: white;">Verschoben</span>`;
+                                if (isCanceled) statusBadge = `<span class="badge" style="background: #e74c3c; color: white; font-size: 0.7rem;">${m.status}</span>`;
+                                else if (isPostponed) statusBadge = `<span class="badge" style="background: #f39c12; color: white; font-size: 0.7rem;">Verschoben</span>`;
 
-                                let scorersList = '';
-                                if (m.scorers && m.scorers.length > 0) {
-                                    scorersList = `<div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 4px;">⚽ ${m.scorers.map(s => `${s.name} (${s.team}${s.count > 1 ? ` ${s.count}x` : ''})`).join(', ')}</div>`;
+                                const goals = getMatchGoals(m);
+                                const cards = getMatchCards(m);
+                                const hasDetails = goals.length > 0 || cards.length > 0;
+
+                                let goalsHtml = '<p style="color: var(--color-text-secondary); font-size: 0.8rem; margin: 0; font-style: italic;">Keine Tore eingetragen.</p>';
+                                if (goals.length > 0) {
+                                    goalsHtml = `
+                                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                                            ${goals.map(g => `
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 0.85rem;">
+                                                    <span style="font-weight: 600; color: var(--color-text-primary);">${g.name} ${g.count > 1 ? `(${g.count}x)` : ''} ${g.minute ? `(${g.minute}')` : ''}</span>
+                                                    <span style="color: var(--color-text-secondary); font-size: 0.8rem;">${g.team}</span>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    `;
                                 }
 
-                                let cardsList = '';
-                                if (m.cards && m.cards.length > 0) {
-                                    cardsList = `<div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">🟨 ${m.cards.map(c => `${c.name} (${c.team}${c.minute ? ` ${c.minute}'` : ''})`).join(', ')}</div>`;
+                                let cardsHtml = '<p style="color: var(--color-text-secondary); font-size: 0.8rem; margin: 0; font-style: italic;">Keine Karten erfasst.</p>';
+                                if (cards.length > 0) {
+                                    cardsHtml = `
+                                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                                            ${cards.map(c => {
+                                                let cardIcon = '🟨';
+                                                if (c.type === 'yellowRed') cardIcon = '🟨🟥';
+                                                else if (c.type === 'red') cardIcon = '🟥';
+                                                return `
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 0.85rem;">
+                                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                                            <span>${cardIcon}</span>
+                                                            <span style="font-weight: 600; color: var(--color-text-primary);">${c.name} ${c.minute ? `(${c.minute}')` : ''}</span>
+                                                        </div>
+                                                        <span style="color: var(--color-text-secondary); font-size: 0.8rem;">${c.team}</span>
+                                                    </div>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                    `;
                                 }
 
                                 return `
-                                    <div class="glass-card" style="padding: 10px var(--space-md); border-radius: 4px; display: flex; flex-direction: column; gap: 4px;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                                            <span style="font-size: 0.8rem; color: var(--color-text-secondary);">${m.date || ''} ${m.time ? `• ${m.time} Uhr` : ''}</span>
-                                            <span style="font-size: 0.8rem; color: var(--color-text-secondary);">${m.location ? `📍 ${m.location}` : ''}</span>
-                                        </div>
-                                        <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--space-sm); margin: 4px 0;">
-                                            <strong style="text-align: right; color: var(--color-text-primary);">${m.home || m.homeTeam || '-'}</strong>
-                                            <div style="text-align: center; min-width: 80px;">
-                                                <span style="font-size: 1.1rem; font-weight: 900; color: ${isCanceled ? '#e74c3c' : 'var(--color-accent)'};">${m.score || '-:-'}</span>
-                                                ${m.halftime ? `<div style="font-size: 0.75rem; color: var(--color-text-secondary);">(HT ${m.halftime})</div>` : ''}
-                                                ${statusBadge}
+                                    <div class="match-item-card" style="border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); overflow: hidden; transition: border-color 0.2s;">
+                                        <!-- Main Compact Header (Clickable for dropdown) -->
+                                        <div class="match-toggle-header" data-target="${matchId}" style="padding: 12px 16px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; user-select: none;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--color-text-secondary);">
+                                                <span>📅 ${m.date || ''} ${m.time ? `• ${m.time} Uhr` : ''}</span>
+                                                <span>${m.location ? `📍 ${m.location}` : ''}</span>
                                             </div>
-                                            <strong style="text-align: left; color: var(--color-text-primary);">${m.away || m.awayTeam || '-'}</strong>
+                                            <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;">
+                                                <div style="text-align: right; font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">${m.home || m.homeTeam || '-'}</div>
+                                                <div style="text-align: center; min-width: 90px; display: flex; flex-direction: column; align-items: center;">
+                                                    <span style="font-size: 1.15rem; font-weight: 900; color: ${isCanceled ? '#e74c3c' : 'var(--color-accent)'};">${m.score || '-:-'}</span>
+                                                    ${m.ht ? `<span style="font-size: 0.75rem; color: var(--color-text-secondary);">(HT ${m.ht})</span>` : (m.halftime ? `<span style="font-size: 0.75rem; color: var(--color-text-secondary);">(HT ${m.halftime})</span>` : '')}
+                                                    ${statusBadge}
+                                                </div>
+                                                <div style="text-align: left; font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">${m.away || m.awayTeam || '-'}</div>
+                                            </div>
+                                            <div style="display: flex; justify-content: center; align-items: center; margin-top: 2px;">
+                                                <span class="accordion-hint" style="font-size: 0.75rem; color: var(--color-accent); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                                    <span class="hint-text">Details anzeigen</span> <span class="hint-arrow">▼</span>
+                                                </span>
+                                            </div>
                                         </div>
-                                        ${scorersList}
-                                        ${cardsList}
+
+                                        <!-- Collapsible Event Details -->
+                                        <div id="${matchId}" class="match-details-body" style="display: none; padding: 16px; border-top: 1px solid var(--color-border); background: rgba(0,0,0,0.015);">
+                                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                                <div>
+                                                    <h5 style="margin: 0 0 10px 0; color: var(--color-text-primary); font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                                        <span>⚽</span> Tore
+                                                    </h5>
+                                                    ${goalsHtml}
+                                                </div>
+                                                <div>
+                                                    <h5 style="margin: 0 0 10px 0; color: var(--color-text-primary); font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                                        <span>🟨</span> Karten
+                                                    </h5>
+                                                    ${cardsHtml}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 `;
                             }).join('')}
@@ -393,10 +498,28 @@ const renderModalContent = () => {
                 `).join('')}
             </div>
         `;
+
+        // Bind match accordion toggles
+        container.querySelectorAll('.match-toggle-header').forEach(header => {
+            header.onclick = (e) => {
+                const targetId = header.getAttribute('data-target');
+                const targetBody = document.getElementById(targetId);
+                const hintText = header.querySelector('.hint-text');
+                const hintArrow = header.querySelector('.hint-arrow');
+
+                if (targetBody) {
+                    const isVisible = targetBody.style.display === 'block';
+                    targetBody.style.display = isVisible ? 'none' : 'block';
+                    if (hintText) hintText.innerText = isVisible ? 'Details anzeigen' : 'Details ausblenden';
+                    if (hintArrow) hintArrow.innerText = isVisible ? '▼' : '▲';
+                }
+            };
+        });
+
     } else if (currentModalTab === 'cards') {
         const cardsList = seasonData.stats?.cards || seasonData.cards || [];
         if (cardsList.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary);">Keine Karteneinträge für diese Saison vorhanden.</p>';
+            container.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary); padding: 20px;">Keine Karteneinträge für diese Saison vorhanden.</p>';
             return;
         }
 
@@ -439,7 +562,7 @@ const renderModalContent = () => {
     } else if (currentModalTab === 'scorers') {
         const scorersList = seasonData.stats?.topScorers || seasonData.topScorers || seasonData.scorers || [];
         if (scorersList.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary);">Keine Torschützen für diese Saison vorhanden.</p>';
+            container.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary); padding: 20px;">Keine Torschützen für diese Saison vorhanden.</p>';
             return;
         }
 
@@ -585,17 +708,7 @@ const bindEvents = () => {
         btn.onclick = (e) => {
             const tab = e.currentTarget.getAttribute('data-modal-tab');
             currentModalTab = tab;
-            document.querySelectorAll('.modal-tab-btn').forEach(b => {
-                if (b === e.currentTarget) {
-                    b.style.background = 'var(--color-accent)';
-                    b.style.color = '#000';
-                    b.classList.add('active');
-                } else {
-                    b.style.background = 'none';
-                    b.style.color = 'var(--color-text-secondary)';
-                    b.classList.remove('active');
-                }
-            });
+            updateModalTabsUI();
             renderModalContent();
         };
     });
