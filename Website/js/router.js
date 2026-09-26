@@ -4,7 +4,7 @@ import { viewLiga, bindLigaTabs } from './views/liga.js';
 import { viewArchiv } from './views/simpleViews.js';
 import { viewOrganisation, bindOrganisation } from './views/organisation.js';
 import { viewGalerie, bindGalerie } from './views/galerie.js';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1790461500000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1790462500000';
 import { viewArticle, bindArticle } from './views/article.js';
 import { viewImpressum } from './views/impressum.js';
 import { viewDatenschutz } from './views/datenschutz.js';
@@ -26,7 +26,7 @@ const routes = {
           <div class="glass-card stagger-item" style="text-align: center; max-width: 400px; width: 100%;">
             <h2 style="margin-bottom: var(--space-md);">Verwaltung Login</h2>
             <input type="password" id="pin-input" placeholder="PIN eingeben" style="width: 100%; padding: var(--space-sm); background: var(--color-surface); border: var(--glass-border); color: var(--color-text-primary); text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; border-radius: 4px; margin-bottom: var(--space-md);">
-            <button id="pin-btn" style="width: 100%; background: var(--color-accent); color: #000; font-weight: 700; padding: var(--space-sm); border-radius: 4px;">Login</button>
+            <button id="pin-btn" style="width: 100%; background: var(--color-accent); color: #fff; font-weight: 700; padding: var(--space-sm); border-radius: 4px;">Login</button>
           </div>
         </div>
       `;

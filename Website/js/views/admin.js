@@ -13,8 +13,7 @@ export const viewAdmin = () => {
       <aside class="glass-card stagger-item" style="border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; height: 100%; border-left: none;">
         <h2 style="font-size: 1.5rem; color: var(--color-accent); margin-bottom: var(--space-lg);">Admin Panel</h2>
         <nav style="display: flex; flex-direction: column; gap: var(--space-sm);">
-          <button class="admin-nav-btn active" data-target="admin-scores" style="text-align: left; padding: var(--space-sm); color: var(--color-text-primary); font-weight: 700; background: rgba(0,0,0,0.05); border-radius: 4px;">Spielergebnisse</button>
-          <button class="admin-nav-btn" data-target="admin-rounds" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Spielrunden</button>
+          <button class="admin-nav-btn active" data-target="admin-rounds" style="text-align: left; padding: var(--space-sm); color: var(--color-text-primary); font-weight: 700; background: rgba(0,0,0,0.05); border-radius: 4px;">Spielrunden</button>
           <button class="admin-nav-btn" data-target="admin-players" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Spieler verwalten</button>
           <button class="admin-nav-btn" data-target="admin-teams" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Teams verwalten</button>
           <button class="admin-nav-btn" data-target="admin-leagues" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Ligen verwalten</button>
@@ -23,91 +22,7 @@ export const viewAdmin = () => {
         </nav>
       </aside>
       <div class="admin-content" style="padding: var(--space-lg);">
-        <div id="admin-scores" class="admin-section stagger-item">
-          <h2>Spielergebnisse & Daten</h2>
-          <form id="score-form" style="margin-top: var(--space-md); max-width: 800px; display: flex; flex-direction: column; gap: var(--space-md);">
-            <input type="hidden" id="match-id">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm);">
-              <div>
-                <label style="font-size: 0.8rem; color: var(--color-text-secondary);">Saison</label>
-                <select id="match-season" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px; width: 100%;"></select>
-              </div>
-              <div>
-                <label style="font-size: 0.8rem; color: var(--color-text-secondary);">Runde</label>
-                <input type="number" id="match-round" min="1" value="1" required style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px; width: 100%;">
-              </div>
-              <div>
-                <label style="font-size: 0.8rem; color: var(--color-text-secondary);">Datum</label>
-                <input type="date" id="match-date" required style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px; width: 100%;">
-              </div>
-              <div>
-                <label style="font-size: 0.8rem; color: var(--color-text-secondary);">Status</label>
-                <select id="match-status" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px; width: 100%;">
-                  <option value="Upcoming" selected>Ausstehend / Geplant</option>
-                  <option value="Played">Gespielt</option>
-                  <option value="Postponed">Verschoben</option>
-                  <option value="Canceled">Abgesagt</option>
-                  <option value="Abgesagt 3:0">Abgesagt 3:0</option>
-                  <option value="Abgesagt 0:3">Abgesagt 0:3</option>
-                </select>
-              </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: var(--space-sm); align-items: center; margin-top: var(--space-sm);">
-              <select id="team-a" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px; width: 100%;">
-                <option value="">-- Team A wählen --</option>
-              </select>
-              <span style="font-weight: 700;">vs.</span>
-              <select id="team-b" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px; width: 100%;">
-                <option value="">-- Team B wählen --</option>
-              </select>
-            </div>
-            
-            <div id="score-inputs" style="display: flex; flex-direction: column; gap: var(--space-md); margin-top: var(--space-md);">
-               <div style="display: flex; flex-direction: column; gap: 5px;">
-                 <label style="font-size: 0.8rem; color: var(--color-text-secondary);">Halbzeitstand</label>
-                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <input type="number" id="ht-goals-a" placeholder="HZ A" min="0" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px; width: 100%;">
-                    <span>:</span>
-                    <input type="number" id="ht-goals-b" placeholder="HZ B" min="0" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px; width: 100%;">
-                 </div>
-               </div>
-               <div style="display: flex; flex-direction: column; gap: 5px;">
-                 <label style="font-size: 0.8rem; color: var(--color-text-secondary);">Endstand</label>
-                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <input type="number" id="ft-goals-a" placeholder="End A" min="0" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px; width: 100%;">
-                    <span>:</span>
-                    <input type="number" id="ft-goals-b" placeholder="End B" min="0" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px; width: 100%;">
-                 </div>
-               </div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-top: var(--space-md);">
-              <div class="glass-card" style="padding: var(--space-sm);">
-                <h4 style="margin-bottom: 10px;">Heimteam Ereignisse</h4>
-                <div id="events-home" style="display: flex; flex-direction: column; gap: 5px;"></div>
-                <button type="button" class="btn btn-outline" id="add-event-home" style="width: 100%; margin-top: 10px; font-size: 0.8rem;">+ Ereignis hinzufügen</button>
-              </div>
-              <div class="glass-card" style="padding: var(--space-sm);">
-                <h4 style="margin-bottom: 10px;">Auswärtsteam Ereignisse</h4>
-                <div id="events-away" style="display: flex; flex-direction: column; gap: 5px;"></div>
-                <button type="button" class="btn btn-outline" id="add-event-away" style="width: 100%; margin-top: 10px; font-size: 0.8rem;">+ Ereignis hinzufügen</button>
-              </div>
-            </div>
-
-            <div style="display: flex; gap: 10px; margin-top: var(--space-md);">
-              <button type="submit" id="match-submit-btn" style="flex: 1; background: var(--color-accent); color: #fff; font-weight: 700; padding: var(--space-sm); border-radius: 4px; cursor: pointer;">Spiel speichern</button>
-              <button type="button" id="match-cancel-btn" style="display:none; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">Bearbeiten abbrechen</button>
-            </div>
-          </form>
-          
-          <div style="margin-top: var(--space-xl);">
-            <h3>Vorhandene Spiele</h3>
-            <select id="match-list-season" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: 5px 10px; border-radius: 4px; margin-bottom: var(--space-md);"></select>
-            <div id="admin-matches-list" style="display: flex; flex-direction: column; gap: var(--space-sm);"></div>
-          </div>
-        </div>
-        <div id="admin-rounds" class="admin-section" style="display: none;">
+        <div id="admin-rounds" class="admin-section stagger-item" style="display: block;">
           ${renderAdminRounds()}
         </div>
         <div id="admin-players" class="admin-section" style="display: none;">
