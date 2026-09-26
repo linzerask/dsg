@@ -409,45 +409,67 @@ const renderModalContent = () => {
                                 if (isCanceled) statusBadge = `<span class="badge" style="background: #e74c3c; color: white; font-size: 0.7rem;">${m.status}</span>`;
                                 else if (isPostponed) statusBadge = `<span class="badge" style="background: #f39c12; color: white; font-size: 0.7rem;">Verschoben</span>`;
 
+                                const isTeamMatch = (itemTeam, targetTeam) => {
+                                    if (!itemTeam || !targetTeam) return false;
+                                    const clean = s => s.toLowerCase().replace(/[^a-z0-9]/g, '').replace(/^(fc|sc|sv|union|dsg|ask|askoe|st|sankt)/g, '');
+                                    const a = clean(itemTeam);
+                                    const b = clean(targetTeam);
+                                    return itemTeam.toLowerCase().trim() === targetTeam.toLowerCase().trim() ||
+                                           (a.length > 2 && b.length > 2 && (a.includes(b) || b.includes(a)));
+                                };
+
+                                const homeName = m.home || m.homeTeam || 'Heim';
+                                const awayName = m.away || m.awayTeam || 'Gast';
+
                                 const goals = getMatchGoals(m);
                                 const cards = getMatchCards(m);
-                                const hasDetails = goals.length > 0 || cards.length > 0;
 
-                                let goalsHtml = '<p style="color: var(--color-text-secondary); font-size: 0.8rem; margin: 0; font-style: italic;">Keine Tore eingetragen.</p>';
-                                if (goals.length > 0) {
-                                    goalsHtml = `
-                                        <div style="display: flex; flex-direction: column; gap: 6px;">
-                                            ${goals.map(g => `
-                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 0.85rem;">
-                                                    <span style="font-weight: 600; color: var(--color-text-primary);">${g.name} ${g.count > 1 ? `(${g.count}x)` : ''} ${g.minute ? `(${g.minute}')` : ''}</span>
-                                                    <span style="color: var(--color-text-secondary); font-size: 0.8rem;">${g.team}</span>
+                                const homeGoals = goals.filter(g => isTeamMatch(g.team, homeName));
+                                const awayGoals = goals.filter(g => !isTeamMatch(g.team, homeName) && (isTeamMatch(g.team, awayName) || !isTeamMatch(g.team, homeName)));
+
+                                const homeCards = cards.filter(c => isTeamMatch(c.team, homeName));
+                                const awayCards = cards.filter(c => !isTeamMatch(c.team, homeName) && (isTeamMatch(c.team, awayName) || !isTeamMatch(c.team, homeName)));
+
+                                const renderTeamGoals = (teamGoals) => {
+                                    if (!teamGoals || teamGoals.length === 0) {
+                                        return '<p style="color: var(--color-text-secondary); font-size: 0.8rem; margin: 0; font-style: italic; padding: 4px 8px;">Keine Tore</p>';
+                                    }
+                                    return `
+                                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                                            ${teamGoals.map(g => `
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 0.85rem;">
+                                                    <span style="font-weight: 600; color: var(--color-text-primary);">${g.name} ${g.count > 1 ? `<span style="color: var(--color-accent); font-weight: 700;">(${g.count}x)</span>` : ''}</span>
+                                                    <span style="font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600;">${g.minute ? `${g.minute}'` : '⚽'}</span>
                                                 </div>
                                             `).join('')}
                                         </div>
                                     `;
-                                }
+                                };
 
-                                let cardsHtml = '<p style="color: var(--color-text-secondary); font-size: 0.8rem; margin: 0; font-style: italic;">Keine Karten erfasst.</p>';
-                                if (cards.length > 0) {
-                                    cardsHtml = `
-                                        <div style="display: flex; flex-direction: column; gap: 6px;">
-                                            ${cards.map(c => {
+                                const renderTeamCards = (teamCards) => {
+                                    if (!teamCards || teamCards.length === 0) {
+                                        return '<p style="color: var(--color-text-secondary); font-size: 0.8rem; margin: 0; font-style: italic; padding: 4px 8px;">Keine Karten</p>';
+                                    }
+                                    return `
+                                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                                            ${teamCards.map(c => {
                                                 let cardIcon = '🟨';
-                                                if (c.type === 'yellowRed') cardIcon = '🟨🟥';
-                                                else if (c.type === 'red') cardIcon = '🟥';
+                                                let cardColor = 'var(--color-text-primary)';
+                                                if (c.type === 'yellowRed') { cardIcon = '🟨🟥'; cardColor = '#f39c12'; }
+                                                else if (c.type === 'red') { cardIcon = '🟥'; cardColor = '#e74c3c'; }
                                                 return `
-                                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 0.85rem;">
+                                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 0.85rem;">
                                                         <div style="display: flex; align-items: center; gap: 6px;">
                                                             <span>${cardIcon}</span>
-                                                            <span style="font-weight: 600; color: var(--color-text-primary);">${c.name} ${c.minute ? `(${c.minute}')` : ''}</span>
+                                                            <span style="font-weight: 600; color: ${cardColor};">${c.name}</span>
                                                         </div>
-                                                        <span style="color: var(--color-text-secondary); font-size: 0.8rem;">${c.team}</span>
+                                                        <span style="font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600;">${c.minute ? `${c.minute}'` : ''}</span>
                                                     </div>
                                                 `;
                                             }).join('')}
                                         </div>
                                     `;
-                                }
+                                };
 
                                 return `
                                     <div class="match-item-card" style="border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); overflow: hidden; transition: border-color 0.2s;">
@@ -458,13 +480,13 @@ const renderModalContent = () => {
                                                 <span>${m.location ? `📍 ${m.location}` : ''}</span>
                                             </div>
                                             <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;">
-                                                <div style="text-align: right; font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">${m.home || m.homeTeam || '-'}</div>
+                                                <div style="text-align: right; font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">${homeName}</div>
                                                 <div style="text-align: center; min-width: 90px; display: flex; flex-direction: column; align-items: center;">
                                                     <span style="font-size: 1.15rem; font-weight: 900; color: ${isCanceled ? '#e74c3c' : 'var(--color-accent)'};">${m.score || '-:-'}</span>
                                                     ${m.ht ? `<span style="font-size: 0.75rem; color: var(--color-text-secondary);">(HT ${m.ht})</span>` : (m.halftime ? `<span style="font-size: 0.75rem; color: var(--color-text-secondary);">(HT ${m.halftime})</span>` : '')}
                                                     ${statusBadge}
                                                 </div>
-                                                <div style="text-align: left; font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">${m.away || m.awayTeam || '-'}</div>
+                                                <div style="text-align: left; font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">${awayName}</div>
                                             </div>
                                             <div style="display: flex; justify-content: center; align-items: center; margin-top: 2px;">
                                                 <span class="accordion-hint" style="font-size: 0.75rem; color: var(--color-accent); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
@@ -473,21 +495,54 @@ const renderModalContent = () => {
                                             </div>
                                         </div>
 
-                                        <!-- Collapsible Event Details -->
+                                        <!-- Collapsible Event Details (Grouped by Team: Home on Left, Away on Right) -->
                                         <div id="${matchId}" class="match-details-body" style="display: none; padding: 16px; border-top: 1px solid var(--color-border); background: rgba(0,0,0,0.015);">
-                                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                                                <div>
-                                                    <h5 style="margin: 0 0 10px 0; color: var(--color-text-primary); font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
-                                                        <span>⚽</span> Tore
-                                                    </h5>
-                                                    ${goalsHtml}
+                                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                                                
+                                                <!-- Home Team Events (Left) -->
+                                                <div style="display: flex; flex-direction: column; gap: 12px; border-right: 1px solid var(--color-border); padding-right: 16px;">
+                                                    <div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem; border-bottom: 2px solid rgba(0,179,65,0.4); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                                                        <span style="color: var(--color-text-primary); font-weight: 800;">${homeName}</span>
+                                                        <span style="font-size: 0.7rem; color: var(--color-accent); font-weight: 700; background: rgba(0,179,65,0.1); padding: 2px 6px; border-radius: 4px;">HEIM</span>
+                                                    </div>
+                                                    
+                                                    <div>
+                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
+                                                            <span>⚽</span> Tore (${homeGoals.reduce((sum, g) => sum + (g.count || 1), 0)})
+                                                        </div>
+                                                        ${renderTeamGoals(homeGoals)}
+                                                    </div>
+
+                                                    <div>
+                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
+                                                            <span>🟨</span> Karten (${homeCards.length})
+                                                        </div>
+                                                        ${renderTeamCards(homeCards)}
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <h5 style="margin: 0 0 10px 0; color: var(--color-text-primary); font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
-                                                        <span>🟨</span> Karten
-                                                    </h5>
-                                                    ${cardsHtml}
+
+                                                <!-- Away Team Events (Right) -->
+                                                <div style="display: flex; flex-direction: column; gap: 12px; padding-left: 4px;">
+                                                    <div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem; border-bottom: 2px solid rgba(0,179,65,0.4); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                                                        <span style="color: var(--color-text-primary); font-weight: 800;">${awayName}</span>
+                                                        <span style="font-size: 0.7rem; color: var(--color-accent); font-weight: 700; background: rgba(0,179,65,0.1); padding: 2px 6px; border-radius: 4px;">GAST</span>
+                                                    </div>
+                                                    
+                                                    <div>
+                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
+                                                            <span>⚽</span> Tore (${awayGoals.reduce((sum, g) => sum + (g.count || 1), 0)})
+                                                        </div>
+                                                        ${renderTeamGoals(awayGoals)}
+                                                    </div>
+
+                                                    <div>
+                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
+                                                            <span>🟨</span> Karten (${awayCards.length})
+                                                        </div>
+                                                        ${renderTeamCards(awayCards)}
+                                                    </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
