@@ -4,7 +4,7 @@ let teamsData = [];
 let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 15;
-let currentSort = { column: 'Name', asc: true };
+let currentSort = { column: 'Status', asc: true };
 
 export const renderAdminTeams = () => {
     return `
@@ -107,7 +107,7 @@ export const initAdminTeams = async () => {
             Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv'
         }));
         filteredData = [...teamsData];
-        sortData('Name', true);
+        sortData('Status', true);
     }
     
     bindEvents();
@@ -224,6 +224,14 @@ const applyFilters = () => {
 const sortData = (column, asc) => {
     currentSort = { column, asc };
     filteredData.sort((a, b) => {
+        if (column === 'Status') {
+            const priority = { 'Aktiv': 1, 'Inaktiv': 2 };
+            const pA = priority[a.Status] || 99;
+            const pB = priority[b.Status] || 99;
+            if (pA !== pB) return asc ? pA - pB : pB - pA;
+            return (a.Name || '').localeCompare(b.Name || '');
+        }
+
         const valA = (a[column] || '').toString().toLowerCase();
         const valB = (b[column] || '').toString().toLowerCase();
         

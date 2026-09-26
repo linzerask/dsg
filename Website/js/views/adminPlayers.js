@@ -260,6 +260,14 @@ const applyFilters = () => {
 const sortData = (column, asc) => {
     currentSort = { column, asc };
     filteredData.sort((a, b) => {
+        if (column === 'Status') {
+            const priority = { 'Aktiv': 1, 'Inaktiv': 2, 'Archiviert': 3 };
+            const pA = priority[a.Status] || 99;
+            const pB = priority[b.Status] || 99;
+            if (pA !== pB) return asc ? pA - pB : pB - pA;
+            return (b.seit || '').localeCompare(a.seit || '');
+        }
+
         const valA = (a[column] || '').toString().toLowerCase();
         const valB = (b[column] || '').toString().toLowerCase();
         if (valA < valB) return asc ? -1 : 1;
