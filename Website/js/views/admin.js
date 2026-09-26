@@ -96,7 +96,7 @@ export const viewAdmin = () => {
             </div>
 
             <div style="display: flex; gap: 10px; margin-top: var(--space-md);">
-              <button type="submit" id="match-submit-btn" style="flex: 1; background: var(--color-accent); color: #000; font-weight: 700; padding: var(--space-sm); border-radius: 4px; cursor: pointer;">Spiel speichern</button>
+              <button type="submit" id="match-submit-btn" style="flex: 1; background: var(--color-accent); color: #fff; font-weight: 700; padding: var(--space-sm); border-radius: 4px; cursor: pointer;">Spiel speichern</button>
               <button type="button" id="match-cancel-btn" style="display:none; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">Bearbeiten abbrechen</button>
             </div>
           </form>
@@ -135,7 +135,7 @@ export const viewAdmin = () => {
             <input type="file" id="news-image-file" accept="image/*" multiple style="display: none; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">
             
             <div style="display: flex; gap: 10px;">
-              <button type="submit" id="news-submit-btn" style="flex: 1; background: var(--color-accent); color: #000; font-weight: 700; padding: var(--space-sm); border-radius: 4px;">News verÃ¶ffentlichen</button>
+              <button type="submit" id="news-submit-btn" style="flex: 1; background: var(--color-accent); color: #fff; font-weight: 700; padding: var(--space-sm); border-radius: 4px;">News veröffentlichen</button>
               <button type="button" id="news-cancel-btn" style="display:none; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">Bearbeiten abbrechen</button>
             </div>
           </form>
@@ -169,7 +169,7 @@ export const viewAdmin = () => {
             <input type="file" id="gal-images-file" accept="image/*" multiple style="display: none; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">
             
             <div style="display: flex; gap: 10px;">
-              <button type="submit" id="gal-submit-btn" style="flex: 1; background: var(--color-accent); color: #000; font-weight: 700; padding: var(--space-sm); border-radius: 4px;">Album erstellen</button>
+              <button type="submit" id="gal-submit-btn" style="flex: 1; background: var(--color-accent); color: #fff; font-weight: 700; padding: var(--space-sm); border-radius: 4px;">Album erstellen</button>
               <button type="button" id="gal-cancel-btn" style="display:none; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">Bearbeiten abbrechen</button>
             </div>
           </form>
