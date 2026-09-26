@@ -11461,6 +11461,7 @@ export const Store = {
       delete fbSaveData.seasons["2025/2026"];
     }
     setDoc(doc(db, 'system', 'liga_data'), { data: fbSaveData }).catch(e => console.error("Firebase save error:", e));
+    window.dispatchEvent(new CustomEvent('data-updated'));
   },
 
   getNews() {
@@ -11475,6 +11476,7 @@ export const Store = {
     memoryNews = memoryNews.filter(a => String(a.id) !== String(id));
     trySetLocal('dsg_articles_v18', JSON.stringify(memoryNews));
     setDoc(doc(db, 'system', 'news_data'), { data: memoryNews }).catch(e => console.error("Firebase save error:", e));
+    window.dispatchEvent(new CustomEvent('data-updated'));
   },
   
   addNews(title, excerpt, content, image, gallery) {
@@ -11916,6 +11918,7 @@ export const Store = {
     memoryGallery = memoryGallery.filter(a => String(a.id) !== String(id));
     trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
     setDoc(doc(db, 'system', 'gallery_data'), { data: memoryGallery }).catch(e => console.error("Firebase save error:", e));
+    window.dispatchEvent(new CustomEvent('data-updated'));
   },
 
   addAlbum(title, date, excerpt, coverImage, imagesArray) {
