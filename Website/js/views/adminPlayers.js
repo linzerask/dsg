@@ -203,6 +203,17 @@ const renderTable = () => {
     });
 };
 
+const formatDateForInput = (dateStr) => {
+    if (!dateStr || dateStr === '-' || dateStr.startsWith('0000')) return '';
+    if (dateStr.includes('.')) {
+        const parts = dateStr.split('.');
+        if (parts.length === 3) {
+            return `${parts[2].padStart(4, '20')}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        }
+    }
+    return dateStr;
+};
+
 const openEditModal = (idx = null) => {
     const modal = document.getElementById('player-modal');
     const title = document.getElementById('modal-player-title');
@@ -216,8 +227,8 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-player-id').value = idx;
         document.getElementById('edit-vorname').value = p.Vorname || '';
         document.getElementById('edit-nachname').value = p.Nachname || '';
-        document.getElementById('edit-geburt').value = p.Geburtsdatum || '';
-        document.getElementById('edit-seit').value = p.seit || '';
+        document.getElementById('edit-geburt').value = formatDateForInput(p.Geburtsdatum);
+        document.getElementById('edit-seit').value = formatDateForInput(p.seit);
         document.getElementById('edit-status').value = p.Status || 'Aktiv';
         deleteBtn.style.display = 'block';
     } else {

@@ -59,20 +59,12 @@ export const renderAdminTeams = () => {
         <!-- Edit / Create Team Modal -->
         <div id="team-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
             <div class="glass-card" style="background: var(--color-surface); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-                <h3 id="modal-team-title" style="margin-bottom: var(--space-md);">Team bearbeiten</h3>
+                <h3 id="modal-team-title" style="margin-bottom: var(--space-md);">Mannschaft bearbeiten</h3>
                 <form id="team-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-team-id">
                     <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Team Name</label>
+                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Mannschaftsname</label>
                         <input type="text" id="edit-team-name" class="admin-input" style="width: 100%;" required>
-                    </div>
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Aktiv seit</label>
-                        <input type="date" id="edit-team-aktiv-seit" class="admin-input" style="width: 100%;">
-                    </div>
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Inaktiv seit</label>
-                        <input type="date" id="edit-team-inaktiv-seit" class="admin-input" style="width: 100%;">
                     </div>
                     <div>
                         <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Status</label>
@@ -81,11 +73,19 @@ export const renderAdminTeams = () => {
                             <option value="Inaktiv">Inaktiv</option>
                         </select>
                     </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Aktiv seit:</label>
+                        <input type="date" id="edit-team-aktiv-seit" class="admin-input" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Inaktiv seit:</label>
+                        <input type="date" id="edit-team-inaktiv-seit" class="admin-input" style="width: 100%;">
+                    </div>
                     <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); justify-content: space-between; align-items: center;">
                         <button type="button" id="btn-delete-team" class="btn" style="background: #e74c3c; color: white; padding: 8px 16px;">Löschen</button>
                         <div style="display: flex; gap: var(--space-sm); margin-left: auto;">
                             <button type="button" id="btn-close-team-modal" class="btn btn-outline" style="padding: 8px 16px;">Abbrechen</button>
-                            <button type="submit" class="btn-dsg" style="padding: 8px 18px;">Speichern</button>
+                            <button type="submit" class="btn-dsg" style="padding: 8px 18px;">Aktualisieren</button>
                         </div>
                     </div>
                 </form>
@@ -170,6 +170,17 @@ const renderTable = () => {
     });
 };
 
+const formatDateForInput = (dateStr) => {
+    if (!dateStr || dateStr === '-' || dateStr.startsWith('0000')) return '';
+    if (dateStr.includes('.')) {
+        const parts = dateStr.split('.');
+        if (parts.length === 3) {
+            return `${parts[2].padStart(4, '20')}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        }
+    }
+    return dateStr;
+};
+
 const openEditModal = (idx = null) => {
     const modal = document.getElementById('team-modal');
     const title = document.getElementById('modal-team-title');
@@ -177,15 +188,15 @@ const openEditModal = (idx = null) => {
     
     if (idx !== null && teamsData[idx]) {
         const t = teamsData[idx];
-        title.innerText = 'Team bearbeiten';
+        title.innerText = 'Mannschaft bearbeiten';
         document.getElementById('edit-team-id').value = idx;
         document.getElementById('edit-team-name').value = t.Name || '';
-        document.getElementById('edit-team-aktiv-seit').value = t["Aktiv seit"] || '';
-        document.getElementById('edit-team-inaktiv-seit').value = t["Inaktiv seit"] || '';
+        document.getElementById('edit-team-aktiv-seit').value = formatDateForInput(t["Aktiv seit"]);
+        document.getElementById('edit-team-inaktiv-seit').value = formatDateForInput(t["Inaktiv seit"]);
         document.getElementById('edit-team-status').value = t.Status === 'Aktiv' ? 'Aktiv' : 'Inaktiv';
         deleteBtn.style.display = 'block';
     } else {
-        title.innerText = 'Neues Team anlegen';
+        title.innerText = 'Neue Mannschaft anlegen';
         document.getElementById('edit-team-id').value = 'new';
         document.getElementById('team-edit-form').reset();
         document.getElementById('edit-team-status').value = 'Aktiv';
