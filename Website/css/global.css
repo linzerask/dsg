@@ -609,7 +609,7 @@ main {
   }
   
   .liga-row, .liga-header {
-    grid-template-columns: 30px 1fr 50px !important;
+    grid-template-columns: 25px 1fr 65px 40px !important;
   }
 }
 
