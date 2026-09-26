@@ -41,7 +41,7 @@ export const viewLiga = () => {
     const teamMatches = matches.filter(m => (m.home.trim() === teamName.trim() || m.away.trim() === teamName.trim()) && (m.score !== '-:-' || m.status === 'Abgesagt 3:0' || m.status === 'Abgesagt 0:3'));
     const last5 = teamMatches.slice(-5);
     
-    let html = '<div class="form-guide hide-mobile">';
+    let html = '<div class="form-guide">';
     let dotCount = 0;
 
     last5.forEach(m => {
