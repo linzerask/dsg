@@ -1,0 +1,72 @@
+[
+  {
+    "id": 14,
+    "name": "Liga 26/27",
+    "year": 2026,
+    "status": "Aktiv",
+    "seasonKey": "2026/2027"
+  },
+  {
+    "id": 13,
+    "name": "Liga 25/26",
+    "year": 2026,
+    "status": "Aktiv",
+    "seasonKey": "2025/2026"
+  },
+  {
+    "id": 6,
+    "name": "Liga",
+    "year": 2025,
+    "status": "Inaktiv",
+    "seasonKey": "2024/2025"
+  },
+  {
+    "id": 11,
+    "name": "Oberes Playoff",
+    "year": 2025,
+    "status": "Inaktiv",
+    "seasonKey": "2024/2025_oberes"
+  },
+  {
+    "id": 12,
+    "name": "Unteres Playoff",
+    "year": 2025,
+    "status": "Inaktiv",
+    "seasonKey": "2024/2025_unteres"
+  },
+  {
+    "id": 5,
+    "name": "Liga",
+    "year": 2024,
+    "status": "Inaktiv",
+    "seasonKey": "2023/2024"
+  },
+  {
+    "id": 3,
+    "name": "Liga",
+    "year": 2023,
+    "status": "Inaktiv",
+    "seasonKey": "2022/2023"
+  },
+  {
+    "id": 4,
+    "name": "1. Klasse",
+    "year": 2023,
+    "status": "Inaktiv",
+    "seasonKey": "2022/2023_1klasse"
+  },
+  {
+    "id": 1,
+    "name": "Liga",
+    "year": 2022,
+    "status": "Inaktiv",
+    "seasonKey": "2021/2022"
+  },
+  {
+    "id": 2,
+    "name": "1. Klasse",
+    "year": 2022,
+    "status": "Inaktiv",
+    "seasonKey": "2021/2022_1klasse"
+  }
+]

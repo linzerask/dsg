@@ -1,7 +1,8 @@
 import { Store } from '../store.js';
 import { Router } from '../router.js';
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790455500000';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790455500000';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790456000000';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790456000000';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790456000000';
 
 
 
@@ -14,6 +15,7 @@ export const viewAdmin = () => {
           <button class="admin-nav-btn active" data-target="admin-scores" style="text-align: left; padding: var(--space-sm); color: var(--color-text-primary); font-weight: 700; background: rgba(0,0,0,0.05); border-radius: 4px;">Spielergebnisse</button>
           <button class="admin-nav-btn" data-target="admin-players" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Spieler verwalten</button>
           <button class="admin-nav-btn" data-target="admin-teams" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Teams verwalten</button>
+          <button class="admin-nav-btn" data-target="admin-leagues" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Ligen verwalten</button>
           <button class="admin-nav-btn" data-target="admin-news" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">News verwalten</button>
           <button class="admin-nav-btn" data-target="admin-gallery" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Galerie verwalten</button>
         </nav>
@@ -109,6 +111,9 @@ export const viewAdmin = () => {
         <div id="admin-teams" class="admin-section" style="display: none;">
           ${renderAdminTeams()}
         </div>
+        <div id="admin-leagues" class="admin-section" style="display: none;">
+          ${renderAdminLeagues()}
+        </div>
 <div id="admin-news" class="admin-section" style="display: none;">
           <h2>News verwalten</h2>
           <form id="news-form" style="margin-top: var(--space-md); max-width: 500px; display: flex; flex-direction: column; gap: var(--space-md);">
@@ -182,6 +187,7 @@ export const viewAdmin = () => {
 export const bindAdmin = () => {
   initAdminPlayers();
   initAdminTeams();
+  initAdminLeagues();
 
   // Navigation
   const btns = document.querySelectorAll('.admin-nav-btn');
@@ -200,6 +206,7 @@ export const bindAdmin = () => {
       const targetId = e.target.dataset.target;
       if (targetId === 'admin-players') initAdminPlayers();
       if (targetId === 'admin-teams') initAdminTeams();
+      if (targetId === 'admin-leagues') initAdminLeagues();
       const target = document.getElementById(targetId);
       target.style.display = 'block';
       anime({ targets: target, opacity: [0, 1], translateY: [10, 0], duration: 400 });

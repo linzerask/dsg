@@ -8595,6 +8595,41 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
         data: chunk 
       }).catch(e => console.error(`Firebase save error (players_part_${idx}):`, e));
     });
+  async getAdminLeagues() {
+    let local = loadLocal('dsg_admin_leagues', 1);
+    
+    // Check Firestore
+    try {
+      const leagueSnap = await getDoc(doc(db, 'system', 'leagues_data'));
+      if (leagueSnap.exists() && leagueSnap.data()?.data) {
+        const fbLeagues = leagueSnap.data().data;
+        trySetLocal('dsg_admin_leagues_v1', JSON.stringify(fbLeagues));
+        return fbLeagues;
+      }
+    } catch(e) {
+      console.warn("Could not fetch leagues from Firebase:", e);
+    }
+
+    if (local) return local;
+
+    try {
+      const res = await fetch('data/leagues.json');
+      const data = await res.json();
+      trySetLocal('dsg_admin_leagues_v1', JSON.stringify(data));
+      
+      // Upload initial leagues to Firestore
+      setDoc(doc(db, 'system', 'leagues_data'), { data: data, lastUpdated: Date.now() })
+        .catch(e => console.error("Firebase save error (leagues):", e));
+        
+      return data;
+    } catch(e) { return []; }
+  },
+
+  saveAdminLeagues(leagues) {
+    trySetLocal('dsg_admin_leagues_v1', JSON.stringify(leagues));
+    setDoc(doc(db, 'system', 'leagues_data'), { data: leagues, lastUpdated: Date.now() })
+      .catch(e => console.error("Firebase save error (leagues):", e));
+    window.dispatchEvent(new CustomEvent('leagues-updated'));
   },
 
   getGallery() {
