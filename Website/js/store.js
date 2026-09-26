@@ -11853,6 +11853,43 @@ export const Store = {
     window.dispatchEvent(new CustomEvent('leagues-updated'));
   },
 
+  async getAdminRounds() {
+    let local = loadLocal('dsg_admin_rounds', 1);
+    
+    // Check Firestore
+    try {
+      const roundsSnap = await getDoc(doc(db, 'system', 'rounds_data'));
+      if (roundsSnap.exists() && roundsSnap.data()?.data) {
+        let fbRounds = roundsSnap.data().data;
+        trySetLocal('dsg_admin_rounds_v1', JSON.stringify(fbRounds));
+        return fbRounds;
+      }
+    } catch(e) {
+      console.warn("Could not fetch rounds from Firebase:", e);
+    }
+
+    if (local) return local;
+
+    try {
+      const res = await fetch('data/rounds.json');
+      let data = await res.json();
+      trySetLocal('dsg_admin_rounds_v1', JSON.stringify(data));
+      
+      // Upload initial rounds to Firestore
+      setDoc(doc(db, 'system', 'rounds_data'), { data: data, lastUpdated: Date.now() })
+        .catch(e => console.error("Firebase save error (rounds):", e));
+        
+      return data;
+    } catch(e) { return []; }
+  },
+
+  saveAdminRounds(rounds) {
+    trySetLocal('dsg_admin_rounds_v1', JSON.stringify(rounds));
+    setDoc(doc(db, 'system', 'rounds_data'), { data: rounds, lastUpdated: Date.now() })
+      .catch(e => console.error("Firebase save error (rounds):", e));
+    window.dispatchEvent(new CustomEvent('rounds-updated'));
+  },
+
   getGallery() {
     return memoryGallery;
   },
