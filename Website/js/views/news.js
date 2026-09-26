@@ -11,7 +11,7 @@ const renderCard = (n) => `
       <div style="color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md); flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
         ${n.content ? n.content.substring(0, 150) + '...' : n.excerpt || ''}
       </div>
-      <a href="#/article/${n.id}" class="text-btn" style="margin-top: auto; display: inline-block;">Read More</a>
+      <a href="#/article/${n.id}" class="text-btn" style="margin-top: auto; display: inline-block;">Weiterlesen &rarr;</a>
     </div>
 `;
 

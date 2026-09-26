@@ -65,7 +65,8 @@ export const Router = {
 
     if (rawPath.startsWith('/article/')) {
       path = '/article';
-      params = rawPath.split('/')[2];
+      const rawArticleId = rawPath.replace(/^\/article\//, '').split('?')[0];
+      params = decodeURIComponent(rawArticleId);
       route = { render: () => viewArticle(params), bind: bindArticle };
     } else {
       route = routes[path] || routes['/'];

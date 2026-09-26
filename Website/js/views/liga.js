@@ -210,10 +210,15 @@ export function viewLiga() {
     rounds[m.round].push(m);
   });
   
+  const parseRoundNumber = (str) => {
+    if (!str) return 0;
+    const m = str.match(/^\d+/) || str.match(/(\d+)\.\s*Runde/i) || str.match(/Runde\s*(\d+)/i);
+    if (m) return parseInt(m[1] || m[0]) || 0;
+    return parseInt(str) || 0;
+  };
+
   const roundKeys = Object.keys(rounds).sort((a, b) => {
-    const numA = parseInt(a.replace(/\D/g, '')) || 0;
-    const numB = parseInt(b.replace(/\D/g, '')) || 0;
-    return numA - numB;
+    return parseRoundNumber(a) - parseRoundNumber(b);
   });
   const maxRoundIdx = roundKeys.length - 1;
   
@@ -230,7 +235,7 @@ export function viewLiga() {
       const isAbgesagtStatus = m.status === 'Abgesagt 3:0' || m.status === 'Abgesagt 0:3';
       const isAbgesagt = isAbgesagtStatus || (m.score && m.score.includes('Abgesagt'));
       const isUpcoming = m.status === 'Upcoming';
-      const hasEvents = m.events && m.events.length > 0;
+      const hasEvents = (m.events && m.events.length > 0) || (m.scorers && m.scorers.length > 0) || (m.cards && m.cards.length > 0);
 
       let displayScore = m.score || "- : -";
       if (m.status === 'Abgesagt 3:0') displayScore = "Abges. 3:0";
@@ -254,8 +259,27 @@ export function viewLiga() {
 
       let eventsHtml = '';
       if (hasEvents) {
-        const homeEvents = m.events.filter(e => String(e.team) === String(m.home) || String(e.team) === String(Store.getData().seasons[currentSeason].teams.find(t=>t.name===m.home)?.id));
-        const awayEvents = m.events.filter(e => String(e.team) === String(m.away) || String(e.team) === String(Store.getData().seasons[currentSeason].teams.find(t=>t.name===m.away)?.id));
+        const norm = (s) => (s || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').replace(/\s+/g, '').trim();
+        const homeNorm = norm(m.home);
+        const awayNorm = norm(m.away);
+
+        let combinedEvents = (m.events && m.events.length > 0) ? [...m.events] : [];
+        if (combinedEvents.length === 0) {
+          (m.scorers || []).forEach(s => combinedEvents.push({ type: 'goal', player: s.name || s.player, team: s.team, count: 1 }));
+          (m.cards || []).forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1 }));
+        }
+
+        const isHomeEvent = (e) => {
+          const t = String(e.team || '');
+          return t === String(m.home) || (homeNorm && norm(t) === homeNorm);
+        };
+        const isAwayEvent = (e) => {
+          const t = String(e.team || '');
+          return t === String(m.away) || (awayNorm && norm(t) === awayNorm);
+        };
+
+        const homeEvents = combinedEvents.filter(isHomeEvent);
+        const awayEvents = combinedEvents.filter(isAwayEvent);
 
         const renderEventIcon = (type) => {
           if (type === 'goal') return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-primary); margin: 0 4px; opacity: 0.8; vertical-align: middle;"><circle cx="12" cy="12" r="10"></circle><path d="M12 12l4-2.5v-5"></path><path d="M12 12l-4-2.5v-5"></path><path d="M12 12v5.5l-4 2"></path><path d="M12 17.5l4 2"></path><path d="M4.5 9.5l3.5 2.5"></path><path d="M19.5 9.5l-3.5 2.5"></path></svg>`;
@@ -283,7 +307,7 @@ export function viewLiga() {
                 ${awayEvents.map(e => `
                   <div style="margin-bottom: 3px;">
                     ${Array(parseInt(e.count)||1).fill(renderEventIcon(e.type)).join('')}
-                    <span style="font-weight: 500;">${e.player}</span>
+                    <span style="font-weight: 500;">${e.player || e.name || ""}</span>
                   </div>
                 `).join('')}
               </div>
@@ -312,10 +336,17 @@ export function viewLiga() {
 
     return `
       <div class="round-slide" data-index="${idx}" style="display: ${idx === initialRoundIdx ? 'block' : 'none'}; width: 100%;">
-        <div class="round-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
-           <button class="slider-btn prev-round glass-btn">◀</button>
-           <div class="round-pill" style="background: rgba(142, 198, 63, 0.2); border: 1px solid var(--color-accent); padding: var(--space-xs) var(--space-md); border-radius: 50px; font-weight: bold; color: var(--color-text-primary); text-align:center;">${round}</div>
-           <button class="slider-btn next-round glass-btn">▶</button>
+        <div class="round-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg); gap: 10px;">
+           <button class="slider-btn prev-round glass-btn" style="cursor: pointer; padding: 6px 14px; font-size: 1.1rem; border-radius: 50px; background: var(--color-surface); border: var(--glass-border); color: var(--color-text-primary); transition: all 0.2s;" title="Vorherige Runde">◀</button>
+           
+           <div class="round-select-wrapper" style="position: relative; display: inline-block;">
+             <select class="round-select-dropdown" data-current-idx="${idx}" style="background: rgba(142, 198, 63, 0.15); border: 1px solid var(--color-accent); padding: var(--space-xs) var(--space-lg); border-radius: 50px; font-weight: bold; color: var(--color-text-primary); text-align: center; cursor: pointer; font-size: 0.95rem; outline: none; appearance: none; -webkit-appearance: none; padding-right: 32px;">
+               ${roundKeys.map((rk, rIdx) => `<option value="${rIdx}" ${rIdx === idx ? 'selected' : ''}>${rk}</option>`).join('')}
+             </select>
+             <span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--color-accent); font-size: 0.8rem;">▼</span>
+           </div>
+           
+           <button class="slider-btn next-round glass-btn" style="cursor: pointer; padding: 6px 14px; font-size: 1.1rem; border-radius: 50px; background: var(--color-surface); border: var(--glass-border); color: var(--color-text-primary); transition: all 0.2s;" title="Nächste Runde">▶</button>
         </div>
         <div class="round-matches stagger-item">
           ${roundMatches}
@@ -453,48 +484,68 @@ export function bindLigaTabs() {
     });
   });
 
-  // Slider Logic
+  // Slider Logic with Dropdown & Arrow synchronization
   const slides = document.querySelectorAll('.round-slide');
   const maxRound = slides.length - 1;
-  let currentRound = parseInt(document.querySelector('.round-slide[style*="display: block"]')?.dataset?.index) || 0;
-  // Let's recalculate initialRoundIdx for the UI buttons
-  let startRound = 0;
-  for(let i=0; i<slides.length; i++) {
-     if(slides[i].style.display === 'block') startRound = i;
+  let currentRound = 0;
+  for (let i = 0; i < slides.length; i++) {
+    if (slides[i].style.display === 'block') currentRound = i;
   }
-  currentRound = startRound;
+
+  const updateSliderState = (newIdx, direction = 0) => {
+    if (newIdx < 0 || newIdx > maxRound) return;
+    
+    const oldIdx = currentRound;
+    slides[oldIdx].style.display = 'none';
+    currentRound = newIdx;
+    slides[currentRound].style.display = 'block';
+
+    // Synchronize all round dropdowns
+    document.querySelectorAll('.round-select-dropdown').forEach(sel => {
+      sel.value = currentRound;
+    });
+
+    // Update opacity/pointer-events on navigation buttons
+    document.querySelectorAll('.prev-round').forEach(btn => {
+      btn.style.opacity = currentRound === 0 ? '0.35' : '1';
+      btn.style.pointerEvents = currentRound === 0 ? 'none' : 'auto';
+    });
+    document.querySelectorAll('.next-round').forEach(btn => {
+      btn.style.opacity = currentRound === maxRound ? '0.35' : '1';
+      btn.style.pointerEvents = currentRound === maxRound ? 'none' : 'auto';
+    });
+
+    const travelX = direction > 0 ? 20 : (direction < 0 ? -20 : 0);
+    if (travelX !== 0) {
+      anime({
+        targets: slides[currentRound],
+        opacity: [0, 1],
+        translateX: [travelX, 0],
+        duration: 300,
+        easing: 'easeOutSine'
+      });
+    }
+  };
+
+  updateSliderState(currentRound, 0);
 
   document.querySelectorAll('.prev-round').forEach(btn => {
     btn.addEventListener('click', () => {
-      if(currentRound > 0) {
-        slides[currentRound].style.display = 'none';
-        currentRound--;
-        slides[currentRound].style.display = 'block';
-        anime({
-          targets: slides[currentRound],
-          opacity: [0, 1],
-          translateX: [-20, 0],
-          duration: 300,
-          easing: 'easeOutSine'
-        });
-      }
+      if (currentRound > 0) updateSliderState(currentRound - 1, -1);
     });
   });
 
   document.querySelectorAll('.next-round').forEach(btn => {
     btn.addEventListener('click', () => {
-      if(currentRound < maxRound) {
-        slides[currentRound].style.display = 'none';
-        currentRound++;
-        slides[currentRound].style.display = 'block';
-        anime({
-          targets: slides[currentRound],
-          opacity: [0, 1],
-          translateX: [20, 0],
-          duration: 300,
-          easing: 'easeOutSine'
-        });
-      }
+      if (currentRound < maxRound) updateSliderState(currentRound + 1, 1);
+    });
+  });
+
+  document.querySelectorAll('.round-select-dropdown').forEach(sel => {
+    sel.addEventListener('change', (e) => {
+      const targetIdx = parseInt(e.target.value);
+      const dir = targetIdx > currentRound ? 1 : -1;
+      updateSliderState(targetIdx, dir);
     });
   });
 

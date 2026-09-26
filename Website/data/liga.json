@@ -2167,6 +2167,11 @@
             "name": "Lukas Wahl",
             "team": "DSG Union Traun",
             "goals": 1
+          },
+          {
+            "name": "Maximilian Huber",
+            "team": "DSG Union Traun",
+            "goals": 1
           }
         ],
         "cards": [
@@ -2377,6 +2382,14 @@
             "yellow": 1,
             "yellowRed": 0,
             "red": 0
+          },
+          {
+            "name": "Maximilian Huber",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "suspension": ""
           }
         ]
       },
@@ -3809,6 +3822,90 @@
           "events": [],
           "scorers": [],
           "cards": []
+        },
+        {
+          "id": "2026_2027_28",
+          "round": "10. Runde",
+          "date": "06.11.26",
+          "time": "18:00",
+          "venue": "DSG-Platz",
+          "location": "DSG-Platz",
+          "home": "DSG Union Traun",
+          "away": "SV Croatia Linz",
+          "score": "2:1",
+          "ht": "1:0",
+          "status": "Played",
+          "note": "",
+          "scorers": [
+            {
+              "name": "Maximilian Huber",
+              "player": "Maximilian Huber",
+              "team": "DSG Union Traun",
+              "type": "goal"
+            },
+            {
+              "name": "Dominik Penninger",
+              "player": "Dominik Penninger",
+              "team": "DSG Union Traun",
+              "type": "goal"
+            },
+            {
+              "name": "Mario Juric",
+              "player": "Mario Juric",
+              "team": "SV Croatia Linz",
+              "type": "goal"
+            }
+          ],
+          "cards": [
+            {
+              "name": "Maximilian Huber",
+              "player": "Maximilian Huber",
+              "team": "DSG Union Traun",
+              "type": "yellow",
+              "reason": "Kritik"
+            },
+            {
+              "name": "Mario Juric",
+              "player": "Mario Juric",
+              "team": "SV Croatia Linz",
+              "type": "yellow",
+              "reason": "Foulspiel"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Maximilian Huber",
+              "name": "Maximilian Huber",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Dominik Penninger",
+              "name": "Dominik Penninger",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "yellow",
+              "player": "Maximilian Huber",
+              "name": "Maximilian Huber",
+              "team": "DSG Union Traun",
+              "reason": "Kritik"
+            },
+            {
+              "type": "goal",
+              "player": "Mario Juric",
+              "name": "Mario Juric",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "yellow",
+              "player": "Mario Juric",
+              "name": "Mario Juric",
+              "team": "SV Croatia Linz",
+              "reason": "Foulspiel"
+            }
+          ]
         }
       ],
       "schedule": [

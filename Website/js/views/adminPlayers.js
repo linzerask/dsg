@@ -319,7 +319,9 @@ const applyFilters = () => {
     const status = statusSelect ? statusSelect.value : 'all';
 
     filteredData = playersData.filter(p => {
+        const fullName = `${p.Vorname || ''} ${p.Nachname || ''}`.toLowerCase();
         const matchesSearch = !query || 
+            fullName.includes(query) ||
             (p.Vorname && p.Vorname.toLowerCase().includes(query)) ||
             (p.Nachname && p.Nachname.toLowerCase().includes(query)) ||
             (p.Team && p.Team.toLowerCase().includes(query)) ||
@@ -425,8 +427,11 @@ const bindEvents = () => {
             };
 
             if (idVal === 'new') {
-                // Generate new numeric ID
-                const maxId = playersData.reduce((max, p) => Math.max(max, parseInt(p['#']) || 0), 0);
+                // Generate next sequential numeric ID
+                const validIds = playersData
+                    .map(p => parseInt(p['#']) || 0)
+                    .filter(n => n > 0 && n < 100000);
+                const maxId = validIds.length > 0 ? Math.max(...validIds) : 5260;
                 updatedPlayer['#'] = (maxId + 1).toString();
                 playersData.unshift(updatedPlayer);
             } else {

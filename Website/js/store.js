@@ -11259,6 +11259,90 @@ const INITIAL_DATA = {
             "events": [],
             "scorers": [],
             "cards": []
+        },
+        {
+            "id": "2026_2027_28",
+            "round": "10. Runde",
+            "date": "2026-11-06",
+            "time": "19:00",
+            "location": "Sportplatz Traun",
+            "home": "DSG Union Traun",
+            "away": "SV Croatia Linz",
+            "score": "2:1",
+            "ht": "1:0",
+            "status": "Played",
+            "note": "",
+            "events": [
+                {
+                    "type": "goal",
+                    "player": "Maximilian Huber",
+                    "name": "Maximilian Huber",
+                    "team": "DSG Union Traun",
+                    "minute": "23"
+                },
+                {
+                    "type": "goal",
+                    "player": "Dominik Penninger",
+                    "name": "Dominik Penninger",
+                    "team": "DSG Union Traun",
+                    "minute": "58"
+                },
+                {
+                    "type": "goal",
+                    "player": "Mario Juric",
+                    "name": "Mario Juric",
+                    "team": "SV Croatia Linz",
+                    "minute": "77"
+                },
+                {
+                    "type": "yellow",
+                    "player": "Maximilian Huber",
+                    "name": "Maximilian Huber",
+                    "team": "DSG Union Traun",
+                    "minute": "41"
+                },
+                {
+                    "type": "yellow",
+                    "player": "Mario Juric",
+                    "name": "Mario Juric",
+                    "team": "SV Croatia Linz",
+                    "minute": "82"
+                }
+            ],
+            "scorers": [
+                {
+                    "type": "goal",
+                    "name": "Maximilian Huber",
+                    "player": "Maximilian Huber",
+                    "team": "DSG Union Traun"
+                },
+                {
+                    "type": "goal",
+                    "name": "Dominik Penninger",
+                    "player": "Dominik Penninger",
+                    "team": "DSG Union Traun"
+                },
+                {
+                    "type": "goal",
+                    "name": "Mario Juric",
+                    "player": "Mario Juric",
+                    "team": "SV Croatia Linz"
+                }
+            ],
+            "cards": [
+                {
+                    "type": "yellow",
+                    "name": "Maximilian Huber",
+                    "player": "Maximilian Huber",
+                    "team": "DSG Union Traun"
+                },
+                {
+                    "type": "yellow",
+                    "name": "Mario Juric",
+                    "player": "Mario Juric",
+                    "team": "SV Croatia Linz"
+                }
+            ]
         }
     ]
 }
@@ -11315,9 +11399,9 @@ const loadLocal = (prefix, maxVer) => {
 export const Store = {
   init() {
     // Eagerly load local memory so the app doesn't block on network
-    memoryData = loadLocal('dsg_data', 40) || INITIAL_DATA;
-    memoryNews = loadLocal('dsg_articles', 18) || INITIAL_DATA.news || [];
-    memoryGallery = loadLocal('dsg_gallery', 18) || INITIAL_DATA.gallery || [];
+    memoryData = loadLocal('dsg_data', 42) || INITIAL_DATA;
+    memoryNews = loadLocal('dsg_articles', 19) || INITIAL_DATA.news || [];
+    memoryGallery = loadLocal('dsg_gallery', 19) || INITIAL_DATA.gallery || [];
 
     // Trigger Firebase sync in the background
     this.syncFirebase();
@@ -11339,7 +11423,7 @@ export const Store = {
       // Sync Data
       if (dataSnap.exists() && dataSnap.data().data) {
         const fbData = dataSnap.data().data;
-        const localData = loadLocal('dsg_data', 40);
+        const localData = loadLocal('dsg_data', 42);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
           memoryData = localData;
           needsMigration = true;
@@ -11348,7 +11432,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 40);
+        let legacyData = loadLocal('dsg_data', 42);
         if (!legacyData) legacyData = INITIAL_DATA;
         memoryData = legacyData;
         needsMigration = true;
@@ -11357,7 +11441,7 @@ export const Store = {
       // Sync News
       if (newsSnap.exists() && newsSnap.data().data) {
         const fbNews = newsSnap.data().data;
-        const localNews = loadLocal('dsg_articles', 17) || INITIAL_DATA.news || [];
+        const localNews = loadLocal('dsg_articles', 19) || INITIAL_DATA.news || [];
         if (localNews.length > fbNews.length) {
           memoryNews = localNews;
           needsMigration = true;
@@ -11366,14 +11450,14 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        memoryNews = loadLocal('dsg_articles', 17) || INITIAL_DATA.news || [];
+        memoryNews = loadLocal('dsg_articles', 19) || INITIAL_DATA.news || [];
         needsMigration = true;
       }
 
       // Sync Gallery
       if (gallerySnap.exists() && gallerySnap.data().data) {
         const fbGallery = gallerySnap.data().data;
-        const localGallery = loadLocal('dsg_gallery', 17) || INITIAL_DATA.gallery || [];
+        const localGallery = loadLocal('dsg_gallery', 19) || INITIAL_DATA.gallery || [];
         const memTime = fbGallery[0]?.lastUpdated || 0;
         const locTime = localGallery[0]?.lastUpdated || 0;
         if (localGallery.length > fbGallery.length || locTime > memTime) {
@@ -11384,7 +11468,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        memoryGallery = loadLocal('dsg_gallery', 17) || INITIAL_DATA.gallery || [];
+        memoryGallery = loadLocal('dsg_gallery', 19) || INITIAL_DATA.gallery || [];
         needsMigration = true;
       }
 
@@ -11397,9 +11481,18 @@ export const Store = {
       }
 
       // Ensure 2026/2027 current season is loaded
-      if (!memoryData.seasons["2026/2027"] || !memoryData.seasons["2026/2027"].matches || memoryData.seasons["2026/2027"].matches.length < 27) {
+      if (!memoryData.seasons["2026/2027"] || !memoryData.seasons["2026/2027"].matches) {
         memoryData.seasons["2026/2027"] = INITIAL_DATA.seasons["2026/2027"];
         needsMigration = true;
+      } else {
+        const hasRound10Match = memoryData.seasons["2026/2027"].matches.some(m => m.id === "2026_2027_28" || (m.round === "10. Runde" && m.score === "2:1"));
+        if (!hasRound10Match) {
+          const m28 = INITIAL_DATA.seasons["2026/2027"].matches.find(m => m.id === "2026_2027_28");
+          if (m28) {
+            memoryData.seasons["2026/2027"].matches.push(m28);
+            needsMigration = true;
+          }
+        }
       }
 
       for (let s in INITIAL_DATA.seasons) {
@@ -11434,9 +11527,9 @@ export const Store = {
         await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v40', JSON.stringify(memoryData));
-      trySetLocal('dsg_articles_v18', JSON.stringify(memoryNews));
-      trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
+      trySetLocal('dsg_data_v42', JSON.stringify(memoryData));
+      trySetLocal('dsg_articles_v19', JSON.stringify(memoryNews));
+      trySetLocal('dsg_gallery_v19', JSON.stringify(memoryGallery));
       console.log("Migrated local data to Firebase.");
 
       if (hasUpdates) {
@@ -11454,7 +11547,7 @@ export const Store = {
   saveData(data) {
     data.lastUpdated = Date.now();
     memoryData = data;
-    trySetLocal('dsg_data_v40', JSON.stringify(data));
+    trySetLocal('dsg_data_v42', JSON.stringify(data));
     
     const fbSaveData = JSON.parse(JSON.stringify(data));
     if (fbSaveData.seasons && fbSaveData.seasons["2025/2026"]) {
@@ -11469,18 +11562,42 @@ export const Store = {
   },
   
   getArticle(id) {
-    return this.getNews().find(a => String(a.id) === String(id));
+    if (!id) return null;
+    const cleanId = decodeURIComponent(String(id)).trim().toLowerCase();
+    return this.getNews().find(a => {
+      if (!a) return false;
+      const aId = decodeURIComponent(String(a.id || '')).trim().toLowerCase();
+      if (aId === cleanId || String(a.id) === String(id)) return true;
+      const aTitleSlug = (a.title || '').toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      return aTitleSlug === cleanId;
+    });
   },
 
   deleteArticle(id) {
-    memoryNews = memoryNews.filter(a => String(a.id) !== String(id));
-    trySetLocal('dsg_articles_v18', JSON.stringify(memoryNews));
+    const cleanId = decodeURIComponent(String(id)).trim().toLowerCase();
+    memoryNews = memoryNews.filter(a => {
+      if (!a) return false;
+      const aId = decodeURIComponent(String(a.id || '')).trim().toLowerCase();
+      const aTitleSlug = (a.title || '').toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      return aId !== cleanId && String(a.id) !== String(id) && aTitleSlug !== cleanId;
+    });
+    trySetLocal('dsg_articles_v19', JSON.stringify(memoryNews));
     setDoc(doc(db, 'system', 'news_data'), { data: memoryNews }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
   
   addNews(title, excerpt, content, image, gallery) {
-    const newId = title.toLowerCase().replace(/\s+/g, '-');
+    const slug = title.toLowerCase()
+      .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    const newId = slug || Date.now().toString();
     memoryNews.unshift({
       id: newId,
       title,
@@ -11491,8 +11608,9 @@ export const Store = {
       gallery: gallery || [],
       date: new Date().toISOString().split('T')[0]
     });
-    trySetLocal('dsg_articles_v18', JSON.stringify(memoryNews));
+    trySetLocal('dsg_articles_v19', JSON.stringify(memoryNews));
     setDoc(doc(db, 'system', 'news_data'), { data: memoryNews }).catch(e => console.error("Firebase save error:", e));
+    window.dispatchEvent(new CustomEvent('data-updated'));
   },
 
   getLiga(seasonId) {
@@ -11703,14 +11821,14 @@ export const Store = {
 
 
   async getAdminTeams() {
-    let local = loadLocal('dsg_admin_teams', 3);
+    let local = loadLocal('dsg_admin_teams', 4);
     
     // Check Firestore
     try {
       const teamSnap = await getDoc(doc(db, 'system', 'teams_data'));
       if (teamSnap.exists() && teamSnap.data()?.data) {
         const fbTeams = teamSnap.data().data;
-        trySetLocal('dsg_admin_teams_v3', JSON.stringify(fbTeams));
+        trySetLocal('dsg_admin_teams_v4', JSON.stringify(fbTeams));
         return fbTeams;
       }
     } catch(e) {
@@ -11726,7 +11844,7 @@ export const Store = {
         ...t,
         Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv'
       }));
-      trySetLocal('dsg_admin_teams_v3', JSON.stringify(normalized));
+      trySetLocal('dsg_admin_teams_v4', JSON.stringify(normalized));
       
       // Upload initial teams to Firestore
       setDoc(doc(db, 'system', 'teams_data'), { data: normalized, lastUpdated: Date.now() })
@@ -11737,14 +11855,21 @@ export const Store = {
   },
 
   saveAdminTeams(teams) {
-    trySetLocal('dsg_admin_teams_v3', JSON.stringify(teams));
+    trySetLocal('dsg_admin_teams_v4', JSON.stringify(teams));
     setDoc(doc(db, 'system', 'teams_data'), { data: teams, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (teams):", e));
     window.dispatchEvent(new CustomEvent('teams-updated'));
   },
 
   async getAdminPlayers() {
-    let local = loadLocal('dsg_admin_players', 2);
+    let local = loadLocal('dsg_admin_players', 6);
+    if (local && local.length > 0) return local;
+
+    let baseline = [];
+    try {
+      const res = await fetch('data/players.json');
+      baseline = (await res.json()).filter(p => (parseInt(p['#']) || 0) < 100000000);
+    } catch(e) {}
 
     // Try reading from Firebase Firestore
     try {
@@ -11763,7 +11888,14 @@ export const Store = {
           }
         }
         if (fbPlayers.length > 0) {
-          trySetLocal('dsg_admin_players_v2', JSON.stringify(fbPlayers));
+          fbPlayers = fbPlayers.filter(p => (parseInt(p['#']) || 0) < 100000000);
+          const fbIdSet = new Set(fbPlayers.map(p => String(p['#'] || p.id || '')));
+          const missingInFb = baseline.filter(p => !fbIdSet.has(String(p['#'] || p.id || '')));
+          if (missingInFb.length > 0) {
+            fbPlayers = missingInFb.concat(fbPlayers);
+            this._savePlayersToFirebase(fbPlayers);
+          }
+          trySetLocal('dsg_admin_players_v6', JSON.stringify(fbPlayers));
           return fbPlayers;
         }
       }
@@ -11771,22 +11903,17 @@ export const Store = {
       console.warn("Could not fetch players from Firebase:", e);
     }
 
-    if (local) return local;
+    if (baseline && baseline.length > 0) {
+      trySetLocal('dsg_admin_players_v6', JSON.stringify(baseline));
+      this._savePlayersToFirebase(baseline);
+      return baseline;
+    }
 
-    try {
-      const res = await fetch('data/players.json');
-      const data = await res.json();
-      trySetLocal('dsg_admin_players_v2', JSON.stringify(data));
-
-      // Upload initial players to Firebase in chunks of 1500
-      this._savePlayersToFirebase(data);
-
-      return data;
-    } catch(e) { return []; }
+    return [];
   },
 
   saveAdminPlayers(players) {
-    trySetLocal('dsg_admin_players_v2', JSON.stringify(players));
+    trySetLocal('dsg_admin_players_v6', JSON.stringify(players));
     this._savePlayersToFirebase(players);
     window.dispatchEvent(new CustomEvent('players-updated'));
   },
@@ -11856,7 +11983,7 @@ export const Store = {
   },
 
   async getAdminRounds() {
-    let local = loadLocal('dsg_admin_rounds', 2);
+    let local = loadLocal('dsg_admin_rounds', 3);
     
     // Check Firestore
     try {
@@ -11870,7 +11997,7 @@ export const Store = {
           seen.add(key);
           return true;
         });
-        trySetLocal('dsg_admin_rounds_v2', JSON.stringify(fbRounds));
+        trySetLocal('dsg_admin_rounds_v3', JSON.stringify(fbRounds));
         return fbRounds;
       }
     } catch(e) {
@@ -11882,7 +12009,7 @@ export const Store = {
     try {
       const res = await fetch('data/rounds.json');
       let data = await res.json();
-      trySetLocal('dsg_admin_rounds_v2', JSON.stringify(data));
+      trySetLocal('dsg_admin_rounds_v3', JSON.stringify(data));
       
       // Upload initial rounds to Firestore
       setDoc(doc(db, 'system', 'rounds_data'), { data: data, lastUpdated: Date.now() })
@@ -11900,7 +12027,7 @@ export const Store = {
       seen.add(key);
       return true;
     });
-    trySetLocal('dsg_admin_rounds_v2', JSON.stringify(cleanRounds));
+    trySetLocal('dsg_admin_rounds_v3', JSON.stringify(cleanRounds));
     setDoc(doc(db, 'system', 'rounds_data'), { data: cleanRounds, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (rounds):", e));
     window.dispatchEvent(new CustomEvent('rounds-updated'));
@@ -11916,7 +12043,7 @@ export const Store = {
 
   deleteAlbum(id) {
     memoryGallery = memoryGallery.filter(a => String(a.id) !== String(id));
-    trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
+    trySetLocal('dsg_gallery_v19', JSON.stringify(memoryGallery));
     setDoc(doc(db, 'system', 'gallery_data'), { data: memoryGallery }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
@@ -11924,7 +12051,7 @@ export const Store = {
   addAlbum(title, date, excerpt, coverImage, imagesArray) {
     const newId = title.toLowerCase().replace(/\s+/g, '-');
     memoryGallery.unshift({ id: newId, title, date, excerpt, image: coverImage, images: imagesArray });
-    trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
+    trySetLocal('dsg_gallery_v19', JSON.stringify(memoryGallery));
     setDoc(doc(db, 'system', 'gallery_data'), { data: memoryGallery }).catch(e => console.error("Firebase save error:", e));
   },
 
@@ -11932,7 +12059,7 @@ export const Store = {
     const index = memoryGallery.findIndex(a => String(a.id) === String(id));
     if (index !== -1) {
       memoryGallery[index] = { id, title, date, excerpt, image: coverImage, images: imagesArray };
-      trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
+      trySetLocal('dsg_gallery_v19', JSON.stringify(memoryGallery));
       setDoc(doc(db, 'system', 'gallery_data'), { data: memoryGallery }).catch(e => console.error("Firebase save error:", e));
     }
   }

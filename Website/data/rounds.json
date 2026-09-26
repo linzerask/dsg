@@ -1,5 +1,15 @@
 [
   {
+    "id": 99,
+    "saison": "Herbst",
+    "jahr": 2026,
+    "runde": 10,
+    "datumVon": "2026-11-06",
+    "datumBis": "2026-11-07",
+    "liga": "Liga 26/27 2026",
+    "seasonKey": "2026/2027"
+  },
+  {
     "id": 98,
     "saison": "Herbst",
     "jahr": 2026,

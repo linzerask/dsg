@@ -43,17 +43,21 @@ export const viewGalerie = () => {
     `;
   } else {
     // ---------------- PICTURES VIEW ----------------
-    const album = Store.getGallery().find(a => a.id === currentEvent);
+    const album = Store.getGallery().find(a => String(a.id) === String(currentEvent));
     if (!album) {
       return `<div class="container" style="padding-top: var(--space-xl);"><h1 style="text-align: center;">Album nicht gefunden</h1><button id="back-to-albums" class="primary-btn" style="display:block; margin: var(--space-md) auto;">&larr; Zurück</button></div>`;
     }
     currentImages = album.images || [];
 
-    const masonryHtml = currentImages.map((img, i) => `
+    const masonryHtml = currentImages.map((img, i) => {
+      const src = typeof img === 'string' ? img : (img?.url || '');
+      const alt = (typeof img === 'object' && img?.title) ? img.title : `${album.title || 'Galerie'} ${i + 1}`;
+      return `
       <div class="masonry-item stagger-item glass-card gallery-img-card" data-index="${i}">
-        <img src="${img.url}" alt="${img.title} ${i+1}" style="width: 100%; border-radius: var(--border-radius-sm); display: block;" loading="lazy">
+        <img src="${src}" alt="${alt}" style="width: 100%; border-radius: var(--border-radius-sm); display: block;" loading="lazy">
       </div>
-    `).join('');
+      `;
+    }).join('');
 
     return `
       <div class="container" style="padding-top: var(--space-xl);">
@@ -136,8 +140,9 @@ export const bindGalerie = () => {
     const nextBtn = document.getElementById('lightbox-next');
 
     const updateLightboxImage = () => {
-      if (currentImages[currentLightboxIndex]) {
-        lightboxImg.src = currentImages[currentLightboxIndex].url;
+      const item = currentImages[currentLightboxIndex];
+      if (item) {
+        lightboxImg.src = typeof item === 'string' ? item : (item.url || '');
       }
     };
 
