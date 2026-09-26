@@ -11,14 +11,13 @@ export const renderAdminTeams = () => {
     <div class="datagrid-container stagger-item">
         <div class="datagrid-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: var(--space-sm);">
             <h2>Teams verwalten</h2>
-            <div style="display: flex; gap: var(--space-sm);">
-                <input type="text" id="team-search" class="admin-input" placeholder="Team suchen..." style="width: 250px;">
-                <select id="team-status-filter" class="admin-input" style="width: 150px;">
+            <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+                <input type="text" id="team-search" class="admin-input" placeholder="Team suchen..." style="width: 220px;">
+                <select id="team-status-filter" class="admin-input" style="width: 140px;">
                     <option value="all">Alle Status</option>
                     <option value="Aktiv">Aktiv</option>
                     <option value="Inaktiv">Inaktiv</option>
                 </select>
-                <button class="btn btn-primary" id="btn-add-team">+ Team anlegen</button>
             </div>
         </div>
         
@@ -32,11 +31,10 @@ export const renderAdminTeams = () => {
                         <th data-sort="Aktiv seit" class="sortable">Aktiv seit ↕</th>
                         <th data-sort="Inaktiv seit" class="sortable">Inaktiv seit ↕</th>
                         <th data-sort="Status" class="sortable">Status ↕</th>
-                        <th>Aktion</th>
                     </tr>
                 </thead>
                 <tbody id="teams-table-body">
-                    <tr><td colspan="7" style="text-align: center; padding: 2rem;">Lade Teams...</td></tr>
+                    <tr><td colspan="6" style="text-align: center; padding: 2rem;">Lade Teams...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -56,10 +54,12 @@ export const initAdminTeams = async () => {
     const tbody = document.getElementById('teams-table-body');
     if (!tbody) return;
 
-    teamsData = await Store.getAdminTeams();
-    filteredData = [...teamsData];
+    if (teamsData.length === 0) {
+        teamsData = await Store.getAdminTeams();
+        filteredData = [...teamsData];
+        sortData('Name', true);
+    }
     
-    sortData('Name', true);
     bindEvents();
     renderTable();
 };
@@ -78,13 +78,17 @@ const renderTable = () => {
     const endIdx = Math.min(startIdx + rowsPerPage, totalRows);
     const pageRows = filteredData.slice(startIdx, endIdx);
 
-    info.innerText = \`Zeige \${totalRows > 0 ? startIdx + 1 : 0} bis \${endIdx} von \${totalRows} Teams\`;
+    if (info) {
+        info.innerText = `Zeige ${totalRows > 0 ? startIdx + 1 : 0} bis ${endIdx} von ${totalRows} Teams`;
+    }
 
-    document.getElementById('btn-prev-page-t').disabled = currentPage === 1;
-    document.getElementById('btn-next-page-t').disabled = currentPage === totalPages;
+    const prevBtn = document.getElementById('btn-prev-page-t');
+    const nextBtn = document.getElementById('btn-next-page-t');
+    if (prevBtn) prevBtn.disabled = currentPage === 1;
+    if (nextBtn) nextBtn.disabled = currentPage === totalPages;
 
     if (pageRows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">Keine Teams gefunden.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">Keine Teams gefunden.</td></tr>';
         return;
     }
 
@@ -93,28 +97,24 @@ const renderTable = () => {
         if (t.Status === 'Aktiv') badgeClass = 'badge-success';
         if (t.Status === 'Inaktiv') badgeClass = 'badge-danger';
 
-        return \`
+        return `
             <tr>
-                <td style="color: var(--color-text-secondary);">#\${t.ID || '-'}</td>
-                <td><strong style="color: var(--color-text-primary);">\${t.Name || '-'}</strong></td>
-                <td>\${t["Aktive Spieler"] || '-'}</td>
-                <td>\${t["Aktiv seit"] || '-'}</td>
-                <td>\${t["Inaktiv seit"] || '-'}</td>
-                <td><span class="badge \${badgeClass}">\${t.Status || '-'}</span></td>
-                <td>
-                    <div style="display: flex; gap: 5px;">
-                        <button class="btn btn-primary" style="padding: 4px 8px; font-size: 0.8rem;" onclick="alert('Edit nicht implementiert')">Editieren</button>
-                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="alert('Löschen nicht implementiert')">Löschen</button>
-                    </div>
-                </td>
+                <td style="color: var(--color-text-secondary);">#${t.ID || '-'}</td>
+                <td><strong style="color: var(--color-text-primary);">${t.Name || '-'}</strong></td>
+                <td>${t["Aktive Spieler"] || '-'}</td>
+                <td>${t["Aktiv seit"] || '-'}</td>
+                <td>${t["Inaktiv seit"] || '-'}</td>
+                <td><span class="badge ${badgeClass}">${t.Status || '-'}</span></td>
             </tr>
-        \`;
+        `;
     }).join('');
 };
 
 const applyFilters = () => {
-    const query = document.getElementById('team-search').value.toLowerCase();
-    const status = document.getElementById('team-status-filter').value;
+    const searchInput = document.getElementById('team-search');
+    const statusSelect = document.getElementById('team-status-filter');
+    const query = searchInput ? searchInput.value.toLowerCase() : '';
+    const status = statusSelect ? statusSelect.value : 'all';
 
     filteredData = teamsData.filter(t => {
         const matchesSearch = (t.Name && t.Name.toLowerCase().includes(query)) ||
@@ -135,7 +135,6 @@ const sortData = (column, asc) => {
         const valA = (a[column] || '').toString().toLowerCase();
         const valB = (b[column] || '').toString().toLowerCase();
         
-        // Handle numeric sorting for ID or Aktive Spieler
         if (column === 'ID' || column === 'Aktive Spieler') {
             const numA = parseInt(valA) || 0;
             const numB = parseInt(valB) || 0;
@@ -150,29 +149,34 @@ const sortData = (column, asc) => {
 };
 
 const bindEvents = () => {
-    document.getElementById('team-search').addEventListener('input', applyFilters);
-    document.getElementById('team-status-filter').addEventListener('change', applyFilters);
+    const search = document.getElementById('team-search');
+    const status = document.getElementById('team-status-filter');
+    const prevBtn = document.getElementById('btn-prev-page-t');
+    const nextBtn = document.getElementById('btn-next-page-t');
 
-    document.getElementById('btn-prev-page-t').addEventListener('click', () => {
-        if (currentPage > 1) { currentPage--; renderTable(); }
-    });
+    if (search) search.oninput = applyFilters;
+    if (status) status.onchange = applyFilters;
 
-    document.getElementById('btn-next-page-t').addEventListener('click', () => {
-        currentPage++; renderTable();
-    });
+    if (prevBtn) {
+        prevBtn.onclick = () => {
+            if (currentPage > 1) { currentPage--; renderTable(); }
+        };
+    }
 
-    document.querySelectorAll('#teams-table-body').forEach(tbody => {
-        // Event delegation
-    });
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            currentPage++; renderTable();
+        };
+    }
 
-    document.querySelectorAll('.sortable').forEach(th => {
-        th.addEventListener('click', (e) => {
+    document.querySelectorAll('#admin-teams .sortable').forEach(th => {
+        th.onclick = (e) => {
             const col = e.target.getAttribute('data-sort');
             if (currentSort.column === col) {
                 sortData(col, !currentSort.asc);
             } else {
                 sortData(col, true);
             }
-        });
+        };
     });
 };

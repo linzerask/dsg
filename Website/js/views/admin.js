@@ -2,8 +2,8 @@ import { Store } from '../store.js';
 import { Router } from '../router.js';
 import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js';
 import { renderAdminTeams, initAdminTeams } from './adminTeams.js';
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js';
+
+
 
 export const viewAdmin = () => {
   return `

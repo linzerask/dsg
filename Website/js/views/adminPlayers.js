@@ -11,15 +11,14 @@ export const renderAdminPlayers = () => {
     <div class="datagrid-container stagger-item">
         <div class="datagrid-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: var(--space-sm);">
             <h2>Spieler verwalten</h2>
-            <div style="display: flex; gap: var(--space-sm);">
-                <input type="text" id="player-search" class="admin-input" placeholder="Suchen (Name, Team)..." style="width: 250px;">
-                <select id="player-status-filter" class="admin-input" style="width: 150px;">
+            <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+                <input type="text" id="player-search" class="admin-input" placeholder="Suchen (Name, Team)..." style="width: 220px;">
+                <select id="player-status-filter" class="admin-input" style="width: 140px;">
                     <option value="all">Alle Status</option>
                     <option value="Aktiv">Aktiv</option>
                     <option value="Inaktiv">Inaktiv</option>
                     <option value="Archiviert">Archiviert</option>
                 </select>
-                <button class="btn btn-primary" id="btn-add-player">+ Spieler anlegen</button>
             </div>
         </div>
         
@@ -33,11 +32,10 @@ export const renderAdminPlayers = () => {
                         <th data-sort="Team" class="sortable">Team ↕</th>
                         <th data-sort="seit" class="sortable">Seit ↕</th>
                         <th data-sort="Status" class="sortable">Status ↕</th>
-                        <th>Aktion</th>
                     </tr>
                 </thead>
                 <tbody id="players-table-body">
-                    <tr><td colspan="7" style="text-align: center; padding: 2rem;">Lade Spieler...</td></tr>
+                    <tr><td colspan="6" style="text-align: center; padding: 2rem;">Lade Spieler...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -55,13 +53,13 @@ export const renderAdminPlayers = () => {
 
 export const initAdminPlayers = async () => {
     const tbody = document.getElementById('players-table-body');
-    if (!tbody) return; // Not on the page
+    if (!tbody) return;
 
-    playersData = await Store.getAdminPlayers();
-    filteredData = [...playersData];
-    
-    // Initial Sort by added date (newest first)
-    sortData('seit', false);
+    if (playersData.length === 0) {
+        playersData = await Store.getAdminPlayers();
+        filteredData = [...playersData];
+        sortData('seit', false);
+    }
     
     bindEvents();
     renderTable();
@@ -81,13 +79,17 @@ const renderTable = () => {
     const endIdx = Math.min(startIdx + rowsPerPage, totalRows);
     const pageRows = filteredData.slice(startIdx, endIdx);
 
-    info.innerText = \`Zeige \${totalRows > 0 ? startIdx + 1 : 0} bis \${endIdx} von \${totalRows} Spielern\`;
+    if (info) {
+        info.innerText = `Zeige ${totalRows > 0 ? startIdx + 1 : 0} bis ${endIdx} von ${totalRows} Spielern`;
+    }
 
-    document.getElementById('btn-prev-page').disabled = currentPage === 1;
-    document.getElementById('btn-next-page').disabled = currentPage === totalPages;
+    const prevBtn = document.getElementById('btn-prev-page');
+    const nextBtn = document.getElementById('btn-next-page');
+    if (prevBtn) prevBtn.disabled = currentPage === 1;
+    if (nextBtn) nextBtn.disabled = currentPage === totalPages;
 
     if (pageRows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">Keine Spieler gefunden.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">Keine Spieler gefunden.</td></tr>';
         return;
     }
 
@@ -96,28 +98,24 @@ const renderTable = () => {
         if (p.Status === 'Aktiv') badgeClass = 'badge-success';
         if (p.Status === 'Inaktiv') badgeClass = 'badge-danger';
 
-        return \`
+        return `
             <tr>
-                <td>\${p.Vorname || '-'}</td>
-                <td><strong style="color: var(--color-text-primary);">\${p.Nachname || '-'}</strong></td>
-                <td>\${p.Geburtsdatum || '-'}</td>
-                <td>\${p.Team || '-'}</td>
-                <td>\${p.seit || '-'}</td>
-                <td><span class="badge \${badgeClass}">\${p.Status || '-'}</span></td>
-                <td>
-                    <div style="display: flex; gap: 5px;">
-                        <button class="btn btn-primary" style="padding: 4px 8px; font-size: 0.8rem;" onclick="alert('Edit nicht implementiert')">Editieren</button>
-                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem;" onclick="alert('Löschen nicht implementiert')">Löschen</button>
-                    </div>
-                </td>
+                <td>${p.Vorname || '-'}</td>
+                <td><strong style="color: var(--color-text-primary);">${p.Nachname || '-'}</strong></td>
+                <td>${p.Geburtsdatum || '-'}</td>
+                <td>${p.Team || '-'}</td>
+                <td>${p.seit || '-'}</td>
+                <td><span class="badge ${badgeClass}">${p.Status || '-'}</span></td>
             </tr>
-        \`;
+        `;
     }).join('');
 };
 
 const applyFilters = () => {
-    const query = document.getElementById('player-search').value.toLowerCase();
-    const status = document.getElementById('player-status-filter').value;
+    const searchInput = document.getElementById('player-search');
+    const statusSelect = document.getElementById('player-status-filter');
+    const query = searchInput ? searchInput.value.toLowerCase() : '';
+    const status = statusSelect ? statusSelect.value : 'all';
 
     filteredData = playersData.filter(p => {
         const matchesSearch = (p.Vorname && p.Vorname.toLowerCase().includes(query)) ||
@@ -146,29 +144,34 @@ const sortData = (column, asc) => {
 };
 
 const bindEvents = () => {
-    document.getElementById('player-search').addEventListener('input', applyFilters);
-    document.getElementById('player-status-filter').addEventListener('change', applyFilters);
+    const search = document.getElementById('player-search');
+    const status = document.getElementById('player-status-filter');
+    const prevBtn = document.getElementById('btn-prev-page');
+    const nextBtn = document.getElementById('btn-next-page');
 
-    document.getElementById('btn-prev-page').addEventListener('click', () => {
-        if (currentPage > 1) { currentPage--; renderTable(); }
-    });
+    if (search) search.oninput = applyFilters;
+    if (status) status.onchange = applyFilters;
 
-    document.getElementById('btn-next-page').addEventListener('click', () => {
-        currentPage++; renderTable();
-    });
+    if (prevBtn) {
+        prevBtn.onclick = () => {
+            if (currentPage > 1) { currentPage--; renderTable(); }
+        };
+    }
 
-    document.querySelectorAll('#players-table-body').forEach(tbody => {
-        // Event delegation logic could go here if needed
-    });
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            currentPage++; renderTable();
+        };
+    }
 
-    document.querySelectorAll('.sortable').forEach(th => {
-        th.addEventListener('click', (e) => {
+    document.querySelectorAll('#admin-players .sortable').forEach(th => {
+        th.onclick = (e) => {
             const col = e.target.getAttribute('data-sort');
             if (currentSort.column === col) {
                 sortData(col, !currentSort.asc);
             } else {
                 sortData(col, true);
             }
-        });
+        };
     });
 };
