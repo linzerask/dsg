@@ -1056,6 +1056,36 @@ main {
     color: #95a5a6;
 }
 
+.btn-dsg {
+    background: var(--color-accent);
+    color: #ffffff !important;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px var(--color-accent-glow);
+    text-decoration: none;
+}
+
+.btn-dsg:hover:not(:disabled) {
+    background: #009938;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px var(--color-accent-glow);
+}
+
+.btn-dsg:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 @media (max-width: 768px) {
     .admin-layout {
         grid-template-columns: 1fr !important;

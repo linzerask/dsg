@@ -9,9 +9,17 @@ let currentSort = { column: 'Name', asc: true };
 export const renderAdminTeams = () => {
     return `
     <div class="datagrid-container stagger-item">
-        <div class="datagrid-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: var(--space-sm);">
-            <h2>Teams verwalten</h2>
-            <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+        <div>
+            <h2 style="margin: 0;">Teams verwalten</h2>
+            <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin-top: 4px;">Übersicht aller aktiven und inaktiven Mannschaften</p>
+        </div>
+
+        <!-- Controls Toolbar immediately above table -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-xs); margin-bottom: var(--space-xs);">
+            <button class="btn-dsg" id="btn-add-team">
+                <span style="font-size: 1.1rem; line-height: 1;">+</span> Team anlegen
+            </button>
+            <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;">
                 <input type="text" id="team-search" class="admin-input" placeholder="Team suchen..." style="width: 220px;">
                 <select id="team-status-filter" class="admin-input" style="width: 140px;">
                     <option value="all">Alle Status</option>
@@ -42,8 +50,8 @@ export const renderAdminTeams = () => {
         <div class="datagrid-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md);">
             <span id="teams-page-info" style="color: var(--color-text-secondary); font-size: 0.9rem;">Zeige 0 bis 0 von 0</span>
             <div style="display: flex; gap: var(--space-xs);">
-                <button id="btn-prev-page-t" class="btn btn-outline" style="padding: 5px 10px;">&laquo; Zurück</button>
-                <button id="btn-next-page-t" class="btn btn-outline" style="padding: 5px 10px;">Vor &raquo;</button>
+                <button id="btn-prev-page-t" class="btn-dsg" style="padding: 6px 14px; font-size: 0.85rem;">&laquo; Zurück</button>
+                <button id="btn-next-page-t" class="btn-dsg" style="padding: 6px 14px; font-size: 0.85rem;">Vor &raquo;</button>
             </div>
         </div>
     </div>

@@ -10,26 +10,24 @@ let currentSort = { column: 'seit', asc: false };
 export const renderAdminPlayers = () => {
     return `
     <div class="datagrid-container stagger-item">
-        <div style="display: flex; flex-direction: column; gap: var(--space-md); margin-bottom: var(--space-md);">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm);">
-                <div>
-                    <h2 style="margin: 0;">Spieler verwalten</h2>
-                    <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin-top: 4px;">Übersicht und Verwaltung aller aktiven und archivierten Spieler</p>
-                </div>
-                <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;">
-                    <input type="text" id="player-search" class="admin-input" placeholder="Suchen (Name, Team)..." style="width: 220px;">
-                    <select id="player-status-filter" class="admin-input" style="width: 140px;">
-                        <option value="all">Alle Status</option>
-                        <option value="Aktiv">Aktiv</option>
-                        <option value="Inaktiv">Inaktiv</option>
-                        <option value="Archiviert">Archiviert</option>
-                    </select>
-                </div>
-            </div>
-            <div>
-                <button class="btn btn-primary" id="btn-add-player" style="padding: 8px 18px; font-weight: 700; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(46, 204, 113, 0.25);">
-                    <span style="font-size: 1.1rem; line-height: 1;">+</span> Spieler anlegen
-                </button>
+        <div>
+            <h2 style="margin: 0;">Spieler verwalten</h2>
+            <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin-top: 4px;">Übersicht und Verwaltung aller aktiven und archivierten Spieler</p>
+        </div>
+
+        <!-- Controls Toolbar immediately above table -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-xs); margin-bottom: var(--space-xs);">
+            <button class="btn-dsg" id="btn-add-player">
+                <span style="font-size: 1.1rem; line-height: 1;">+</span> Spieler anlegen
+            </button>
+            <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;">
+                <input type="text" id="player-search" class="admin-input" placeholder="Suchen (Name, Team)..." style="width: 220px;">
+                <select id="player-status-filter" class="admin-input" style="width: 140px;">
+                    <option value="all">Alle Status</option>
+                    <option value="Aktiv">Aktiv</option>
+                    <option value="Inaktiv">Inaktiv</option>
+                    <option value="Archiviert">Archiviert</option>
+                </select>
             </div>
         </div>
         
@@ -55,8 +53,8 @@ export const renderAdminPlayers = () => {
         <div class="datagrid-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md);">
             <span id="players-page-info" style="color: var(--color-text-secondary); font-size: 0.9rem;">Zeige 0 bis 0 von 0</span>
             <div style="display: flex; gap: var(--space-xs);">
-                <button id="btn-prev-page" class="btn btn-outline" style="padding: 5px 12px;">&laquo; Zurück</button>
-                <button id="btn-next-page" class="btn btn-outline" style="padding: 5px 12px;">Vor &raquo;</button>
+                <button id="btn-prev-page" class="btn-dsg" style="padding: 6px 14px; font-size: 0.85rem;">&laquo; Zurück</button>
+                <button id="btn-next-page" class="btn-dsg" style="padding: 6px 14px; font-size: 0.85rem;">Vor &raquo;</button>
             </div>
         </div>
 
@@ -100,7 +98,7 @@ export const renderAdminPlayers = () => {
                         <button type="button" id="btn-delete-player" class="btn" style="background: #e74c3c; color: white; padding: 8px 16px;">Löschen</button>
                         <div style="display: flex; gap: var(--space-sm); margin-left: auto;">
                             <button type="button" id="btn-close-modal" class="btn btn-outline" style="padding: 8px 16px;">Abbrechen</button>
-                            <button type="submit" class="btn btn-primary" style="padding: 8px 16px; font-weight: 700;">Speichern</button>
+                            <button type="submit" class="btn-dsg" style="padding: 8px 18px;">Speichern</button>
                         </div>
                     </div>
                 </form>
@@ -132,13 +130,11 @@ const populateTeamDropdown = (currentTeam = '') => {
     const teamSelect = document.getElementById('edit-team');
     if (!teamSelect) return;
 
-    // Get active teams and sort alphabetically
     const activeTeams = teamsData
         .filter(t => t.Status === 'Aktiv')
         .map(t => t.Name)
         .sort((a, b) => a.localeCompare(b));
 
-    // If currentTeam is not in activeTeams (e.g. historical team), add it so existing assignment isn't lost
     const options = [...activeTeams];
     if (currentTeam && !options.includes(currentTeam)) {
         options.unshift(currentTeam);
