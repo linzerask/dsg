@@ -1,7 +1,7 @@
 import { Store } from '../store.js';
 import { Router } from '../router.js';
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790454200000';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790454200000';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790455500000';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790455500000';
 
 
 
