@@ -435,6 +435,8 @@ const deleteRound = (idx) => {
     }
 };
 
+let isEventsBound = false;
+
 export const initAdminRounds = async () => {
     // Load data from Store
     try {
@@ -443,6 +445,15 @@ export const initAdminRounds = async () => {
             Store.getAdminLeagues(),
             Store.getAdminTeams()
         ]);
+
+        // Clean up any duplicate rounds that might exist
+        const seen = new Set();
+        roundsData = (roundsData || []).filter(r => {
+            const key = `${r.seasonKey || ''}_${r.saison || ''}_${r.jahr || ''}_${r.runde || ''}_${r.liga || ''}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
     } catch(e) {
         console.error("Error loading admin rounds data:", e);
     }
@@ -450,28 +461,32 @@ export const initAdminRounds = async () => {
     populateLeaguesDropdowns();
     renderTable();
 
+    if (isEventsBound) return;
+    isEventsBound = true;
+
     // Event listeners
-    document.getElementById('btn-add-round')?.addEventListener('click', () => {
-        openEditRoundModal(null);
-    });
+    const addRoundBtn = document.getElementById('btn-add-round');
+    if (addRoundBtn) addRoundBtn.onclick = () => openEditRoundModal(null);
 
     document.querySelectorAll('.btn-close-round-modal').forEach(btn => {
-        btn.addEventListener('click', closeRoundModal);
+        btn.onclick = closeRoundModal;
     });
 
     document.querySelectorAll('.btn-close-game-modal').forEach(btn => {
-        btn.addEventListener('click', closeAddGameModal);
+        btn.onclick = closeAddGameModal;
     });
 
-    document.getElementById('round-search')?.addEventListener('input', () => {
+    const searchInput = document.getElementById('round-search');
+    if (searchInput) searchInput.oninput = () => {
         currentPage = 1;
         renderTable();
-    });
+    };
 
-    document.getElementById('round-league-filter')?.addEventListener('change', () => {
+    const filterLeague = document.getElementById('round-league-filter');
+    if (filterLeague) filterLeague.onchange = () => {
         currentPage = 1;
         renderTable();
-    });
+    };
 
     // Sorting headers
     document.querySelectorAll('.datagrid-container table.admin-table th.sortable').forEach(th => {
@@ -489,40 +504,64 @@ export const initAdminRounds = async () => {
     });
 
     // Pagination
-    document.getElementById('btn-prev-page-r')?.addEventListener('click', () => {
+    const prevBtn = document.getElementById('btn-prev-page-r');
+    if (prevBtn) prevBtn.onclick = () => {
         if (currentPage > 1) {
             currentPage--;
             renderTable();
         }
-    });
+    };
 
-    document.getElementById('btn-next-page-r')?.addEventListener('click', () => {
+    const nextBtn = document.getElementById('btn-next-page-r');
+    if (nextBtn) nextBtn.onclick = () => {
         const totalPages = Math.ceil(filteredData.length / rowsPerPage) || 1;
         if (currentPage < totalPages) {
             currentPage++;
             renderTable();
         }
-    });
+    };
 
     // Round Form Submit
-    document.getElementById('round-form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
+    const roundForm = document.getElementById('round-form');
+    if (roundForm) {
+        roundForm.onsubmit = (e) => {
+            e.preventDefault();
 
-        const saison = document.getElementById('modal-round-saison').value;
-        const jahr = parseInt(document.getElementById('modal-round-jahr').value) || 2026;
-        const runde = parseInt(document.getElementById('modal-round-nr').value) || 1;
-        const datumVon = document.getElementById('modal-round-date-from').value;
-        const datumBis = document.getElementById('modal-round-date-to').value;
-        const liga = document.getElementById('modal-round-liga').value;
+            const saison = document.getElementById('modal-round-saison').value;
+            const jahr = parseInt(document.getElementById('modal-round-jahr').value) || 2026;
+            const runde = parseInt(document.getElementById('modal-round-nr').value) || 1;
+            const datumVon = document.getElementById('modal-round-date-from').value;
+            const datumBis = document.getElementById('modal-round-date-to').value;
+            const liga = document.getElementById('modal-round-liga').value;
 
-        const activeLeague = leaguesData.find(l => l.name === liga || l.name === liga.split(' ')[0]);
-        const seasonKey = activeLeague ? (activeLeague.seasonKey || '2026/2027') : '2026/2027';
+            const activeLeague = leaguesData.find(l => l.name === liga || l.name === (liga && liga.split(' ')[0]));
+            const seasonKey = activeLeague ? (activeLeague.seasonKey || '2026/2027') : '2026/2027';
 
-        if (editingRoundId !== null) {
-            const index = roundsData.findIndex(r => r.id === editingRoundId);
-            if (index !== -1) {
-                roundsData[index] = {
-                    ...roundsData[index],
+            if (editingRoundId !== null) {
+                const index = roundsData.findIndex(r => r.id === editingRoundId);
+                if (index !== -1) {
+                    roundsData[index] = {
+                        ...roundsData[index],
+                        saison,
+                        jahr,
+                        runde,
+                        datumVon,
+                        datumBis,
+                        liga,
+                        seasonKey
+                    };
+                }
+            } else {
+                // Check if this round already exists
+                const existing = roundsData.find(r => r.runde === runde && r.seasonKey === seasonKey && r.saison === saison);
+                if (existing) {
+                    alert(`Runde ${runde} (${saison} ${jahr}) existiert bereits!`);
+                    return;
+                }
+
+                const newId = Date.now();
+                roundsData.unshift({
+                    id: newId,
                     saison,
                     jahr,
                     runde,
@@ -530,70 +569,61 @@ export const initAdminRounds = async () => {
                     datumBis,
                     liga,
                     seasonKey
-                };
+                });
             }
-        } else {
-            const newId = Date.now();
-            roundsData.unshift({
-                id: newId,
-                saison,
-                jahr,
-                runde,
-                datumVon,
-                datumBis,
-                liga,
-                seasonKey
-            });
-        }
 
-        Store.saveAdminRounds(roundsData);
-        closeRoundModal();
-        renderTable();
-    });
+            Store.saveAdminRounds(roundsData);
+            closeRoundModal();
+            renderTable();
+        };
+    }
 
     // Add Game Form Submit
-    document.getElementById('game-form')?.addEventListener('submit', (e) => {
-        e.preventDefault();
+    const gameForm = document.getElementById('game-form');
+    if (gameForm) {
+        gameForm.onsubmit = (e) => {
+            e.preventDefault();
 
-        const date = document.getElementById('modal-game-date').value;
-        const time = document.getElementById('modal-game-time').value;
-        const location = document.getElementById('modal-game-location').value;
-        const round = document.getElementById('modal-game-round').value;
-        const home = document.getElementById('modal-game-home').value;
-        const away = document.getElementById('modal-game-away').value;
-        const note = document.getElementById('modal-game-note').value;
+            const date = document.getElementById('modal-game-date').value;
+            const time = document.getElementById('modal-game-time').value;
+            const location = document.getElementById('modal-game-location').value;
+            const round = document.getElementById('modal-game-round').value;
+            const home = document.getElementById('modal-game-home').value;
+            const away = document.getElementById('modal-game-away').value;
+            const note = document.getElementById('modal-game-note').value;
 
-        if (!home || !away) {
-            alert('Bitte wählen Sie sowohl ein Heim- als auch ein Auswärtsteam aus.');
-            return;
-        }
+            if (!home || !away) {
+                alert('Bitte wählen Sie sowohl ein Heim- als auch ein Auswärtsteam aus.');
+                return;
+            }
 
-        if (home === away) {
-            alert('Heim- und Auswärtsteam dürfen nicht identisch sein.');
-            return;
-        }
+            if (home === away) {
+                alert('Heim- und Auswärtsteam dürfen nicht identisch sein.');
+                return;
+            }
 
-        const newMatch = {
-            id: `game_${Date.now()}`,
-            round: round,
-            date: date,
-            time: time,
-            location: location,
-            home: home,
-            away: away,
-            score: "-:-",
-            ht: "",
-            status: "Upcoming",
-            note: note || '',
-            events: [],
-            scorers: [],
-            cards: []
+            const newMatch = {
+                id: `game_${Date.now()}`,
+                round: round,
+                date: date,
+                time: time,
+                location: location,
+                home: home,
+                away: away,
+                score: "-:-",
+                ht: "",
+                status: "Upcoming",
+                note: note || '',
+                events: [],
+                scorers: [],
+                cards: []
+            };
+
+            const activeSeasonKey = '2026/2027';
+            Store.saveMatch(activeSeasonKey, newMatch);
+
+            alert(`Spiel erfolgreich angelegt:\n${home} vs. ${away} (${round})`);
+            closeAddGameModal();
         };
-
-        const activeSeasonKey = '2026/2027';
-        Store.saveMatch(activeSeasonKey, newMatch);
-
-        alert(`Spiel erfolgreich angelegt:\n${home} vs. ${away} (${round})`);
-        closeAddGameModal();
-    });
+    }
 };

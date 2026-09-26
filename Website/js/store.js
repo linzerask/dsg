@@ -11854,14 +11854,21 @@ export const Store = {
   },
 
   async getAdminRounds() {
-    let local = loadLocal('dsg_admin_rounds', 1);
+    let local = loadLocal('dsg_admin_rounds', 2);
     
     // Check Firestore
     try {
       const roundsSnap = await getDoc(doc(db, 'system', 'rounds_data'));
       if (roundsSnap.exists() && roundsSnap.data()?.data) {
         let fbRounds = roundsSnap.data().data;
-        trySetLocal('dsg_admin_rounds_v1', JSON.stringify(fbRounds));
+        const seen = new Set();
+        fbRounds = fbRounds.filter(r => {
+          const key = `${r.seasonKey || ''}_${r.saison || ''}_${r.jahr || ''}_${r.runde || ''}_${r.liga || ''}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+        trySetLocal('dsg_admin_rounds_v2', JSON.stringify(fbRounds));
         return fbRounds;
       }
     } catch(e) {
@@ -11873,7 +11880,7 @@ export const Store = {
     try {
       const res = await fetch('data/rounds.json');
       let data = await res.json();
-      trySetLocal('dsg_admin_rounds_v1', JSON.stringify(data));
+      trySetLocal('dsg_admin_rounds_v2', JSON.stringify(data));
       
       // Upload initial rounds to Firestore
       setDoc(doc(db, 'system', 'rounds_data'), { data: data, lastUpdated: Date.now() })
@@ -11884,8 +11891,15 @@ export const Store = {
   },
 
   saveAdminRounds(rounds) {
-    trySetLocal('dsg_admin_rounds_v1', JSON.stringify(rounds));
-    setDoc(doc(db, 'system', 'rounds_data'), { data: rounds, lastUpdated: Date.now() })
+    const seen = new Set();
+    const cleanRounds = rounds.filter(r => {
+      const key = `${r.seasonKey || ''}_${r.saison || ''}_${r.jahr || ''}_${r.runde || ''}_${r.liga || ''}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    trySetLocal('dsg_admin_rounds_v2', JSON.stringify(cleanRounds));
+    setDoc(doc(db, 'system', 'rounds_data'), { data: cleanRounds, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (rounds):", e));
     window.dispatchEvent(new CustomEvent('rounds-updated'));
   },
