@@ -37,19 +37,35 @@ export const viewLiga = () => {
   };
 
   const generateForm = (teamName) => {
-    const teamMatches = matches.filter(m => (m.home.trim() === teamName.trim() || m.away.trim() === teamName.trim()) && (m.status === 'Played' || m.status === 'Abgesagt 3:0' || m.status === 'Abgesagt 0:3'));
+    // Find all matches for this team that have a valid score or are Abgesagt
+    const teamMatches = matches.filter(m => (m.home.trim() === teamName.trim() || m.away.trim() === teamName.trim()) && (m.score !== '-:-' || m.status === 'Abgesagt 3:0' || m.status === 'Abgesagt 0:3'));
     const last5 = teamMatches.slice(-5);
     
     let html = '<div class="form-guide hide-mobile">';
+    let dotCount = 0;
+
     last5.forEach(m => {
       const res = getMatchResult(teamName, m);
       if (res) {
-        html += `<span class="form-dot form-${res}"></span>`;
+        html += `<span class="form-dot form-${res}" title="${m.home} vs ${m.away}"></span>`;
+        dotCount++;
+      } else {
+        // Fallback if getMatchResult returns null but it's a played match!
+        let sHome = 0, sAway = 0;
+        if (m.score && m.score.includes(':')) {
+           let pts = m.score.split(':');
+           sHome = parseInt(pts[0].trim()) || 0;
+           sAway = parseInt(pts[1].trim()) || 0;
+           let isHome = m.home.trim() === teamName.trim();
+           let fallbackRes = (sHome === sAway) ? 'D' : (isHome ? (sHome > sAway ? 'W' : 'L') : (sAway > sHome ? 'W' : 'L'));
+           html += `<span class="form-dot form-${fallbackRes}" title="Fallback: ${m.home} vs ${m.away}"></span>`;
+           dotCount++;
+        }
       }
     });
-    // Pad with empty if less than 5
-    for(let i = last5.length; i < 5; i++) {
-        html += `<span class="form-dot" style="background: var(--color-border);"></span>`;
+
+    for(let i = dotCount; i < 5; i++) {
+        html += `<span class="form-dot" style="background: var(--color-border);" title="No match"></span>`;
     }
     html += '</div>';
     return html;
