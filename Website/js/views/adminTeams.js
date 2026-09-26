@@ -101,15 +101,14 @@ export const initAdminTeams = async () => {
 
     if (teamsData.length === 0) {
         const teams = await Store.getAdminTeams();
-        // Normalize status
         teamsData = teams.map(t => ({
             ...t,
             Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv'
         }));
-        filteredData = [...teamsData];
-        sortData('Status', true);
     }
     
+    filteredData = [...teamsData];
+    sortData('Status', true);
     bindEvents();
     renderTable();
 };

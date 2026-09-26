@@ -112,16 +112,17 @@ export const initAdminPlayers = async () => {
     const tbody = document.getElementById('players-table-body');
     if (!tbody) return;
 
-    const [players, teams] = await Promise.all([
-        Store.getAdminPlayers(),
-        Store.getAdminTeams()
-    ]);
+    if (playersData.length === 0) {
+        const [players, teams] = await Promise.all([
+            Store.getAdminPlayers(),
+            Store.getAdminTeams()
+        ]);
+        playersData = players;
+        teamsData = teams;
+    }
     
-    playersData = players;
-    teamsData = teams;
     filteredData = [...playersData];
-    
-    sortData('seit', false);
+    sortData('Status', true);
     bindEvents();
     renderTable();
 };
