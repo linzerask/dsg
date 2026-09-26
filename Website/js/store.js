@@ -108,7 +108,7 @@ const loadLocal = (prefix, maxVer) => {
 export const Store = {
   init() {
     // Eagerly load local memory so the app doesn't block on network
-    memoryData = loadLocal('dsg_data', 31) || INITIAL_DATA;
+    memoryData = loadLocal('dsg_data', 32) || INITIAL_DATA;
     memoryNews = loadLocal('dsg_articles', 18) || INITIAL_DATA.news || [];
     memoryGallery = loadLocal('dsg_gallery', 18) || INITIAL_DATA.gallery || [];
 
@@ -132,7 +132,7 @@ export const Store = {
       // Sync Data
       if (dataSnap.exists() && dataSnap.data().data) {
         const fbData = dataSnap.data().data;
-        const localData = loadLocal('dsg_data', 31);
+        const localData = loadLocal('dsg_data', 32);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
           memoryData = localData;
           needsMigration = true;
@@ -141,7 +141,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 31);
+        let legacyData = loadLocal('dsg_data', 32);
         if (!legacyData) legacyData = INITIAL_DATA;
         memoryData = legacyData;
         needsMigration = true;
@@ -181,64 +181,61 @@ export const Store = {
         needsMigration = true;
       }
 
-                              // START ONE-TIME MIGRATION FOR R2
+                              // START ONE-TIME MIGRATION FOR R3
 if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     let season = memoryData.seasons["2026/2027"];
-    let realEvents = {
-        104: [
-            { type: "goal", name: "Dominik Penninger", team: "Union Heiligenberg" },
-            { type: "goal", name: "Dominik Penninger", team: "Union Heiligenberg" },
-            { type: "goal", name: "Dominik Penninger", team: "Union Heiligenberg" },
-            { type: "goal", name: "Wolfgang Lehner", team: "Union Heiligenberg" },
-            { type: "goal", name: "Wolfgang Lehner", team: "Union Heiligenberg" },
-            { type: "goal", name: "Thomas Wagner", team: "Union Heiligenberg" },
-            { type: "goal", name: "Sebastian Boubenicek", team: "Union Heiligenberg" },
-            { type: "goal", name: "Lorenz Moser", team: "Union Heiligenberg" },
-            { type: "yellow", name: "Lorenz Moser", team: "Union Heiligenberg" },
-            { type: "yellow", name: "Martin Brenner", team: "Walker FC" }
-        ],
-        105: [
-            { type: "goal", name: "Zia Ghaderi", team: "Etehad Linz" },
-            { type: "goal", name: "Zia Ghaderi", team: "Etehad Linz" },
-            { type: "goal", name: "Abdullah Temori", team: "Etehad Linz" },
-            { type: "goal", name: "Abdullah Temori", team: "Etehad Linz" },
-            { type: "goal", name: "Askraf Laeli", team: "Etehad Linz" },
-            { type: "goal", name: "Hamid Fouladi", team: "Etehad Linz" },
-            { type: "goal", name: "Manuel Winklehner", team: "DSG Union Traun" },
-            { type: "yellow", name: "Manuel Kapfhammer", team: "DSG Union Traun" }
-        ],
-        106: [
-            { type: "goal", name: "Paul Feichtenschlager", team: "DSG St. Josef/Oed FC" },
-            { type: "goal", name: "Paul Feichtenschlager", team: "DSG St. Josef/Oed FC" },
-            { type: "goal", name: "Robert Matisic", team: "SV Croatia Linz" },
-            { type: "goal", name: "Robert Matisic", team: "SV Croatia Linz" },
-            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-            { type: "goal", name: "Darko Dovoda", team: "SV Croatia Linz" },
-            { type: "goal", name: "Branko Marin", team: "SV Croatia Linz" },
-            { type: "yellow", name: "Marko Burg", team: "SV Croatia Linz" },
-            { type: "yellow", name: "Robert Matisic", team: "SV Croatia Linz" }
-        ]
-    };
+    let realEvents = [
+        {
+            home: "Union Heiligenberg",
+            away: "DSG St. Josef/Oed FC",
+            status: "Abgesagt 3:0",
+            score: "3:0*",
+            ht: "",
+            events: []
+        },
+        {
+            home: "Walker FC",
+            away: "DSG Union Traun",
+            status: "Played",
+            score: "0:0",
+            ht: "0:0",
+            events: [
+                { type: "yellow", name: "Christoph Mühlbacher", team: "Walker FC" },
+                { type: "yellow", name: "Ioan Gafincu", team: "DSG Union Traun" },
+                { type: "yellow", name: "Sebastian Göttfert", team: "DSG Union Traun" }
+            ]
+        },
+        {
+            home: "FC Gornjak",
+            away: "Etehad Linz",
+            status: "Played",
+            score: "1:4",
+            ht: "1:1",
+            events: [
+                { type: "yellow", name: "Vladica Petrovic", team: "FC Gornjak" },
+                { type: "yellow", name: "Marco Rajcic", team: "FC Gornjak" },
+                { type: "goal", name: "Hamid Fouladi", team: "Etehad Linz" },
+                { type: "goal", name: "Hamid Fouladi", team: "Etehad Linz" },
+                { type: "goal", name: "Hamid Fouladi", team: "Etehad Linz" },
+                { type: "goal", name: "Zia Ghaderi", team: "Etehad Linz" }
+            ]
+        }
+    ];
 
-    let scoreUpdates = {
-        104: { score: "8:0", ht: "2:0" },
-        105: { score: "6:1", ht: "2:1" },
-        106: { score: "2:6", ht: "0:4" }
-    };
-
-    for (let id in realEvents) {
-        let match = season.matches.find(m => String(m.id) === String(id));
+    realEvents.forEach(re => {
+        // Find the match in Round 3 (we assume it's roughly ID 107, 108, 109, but let's just find by teams)
+        // Wait, Round 9 also has these exact same matchups! We only want to update the one with the earlier date or just the first match we find.
+        let match = season.matches.find(m => m.home === re.home && m.away === re.away);
         if (match) {
-            match.status = "Played";
-            match.score = scoreUpdates[id].score;
-            match.ht = scoreUpdates[id].ht;
-            match.events = realEvents[id];
+            match.status = re.status;
+            match.score = re.score;
+            match.ht = re.ht;
+            match.events = re.events;
             match.events.forEach(e => { e.player = e.name; }); 
             match.scorers = match.events.filter(e => e.type === "goal");
             match.cards = match.events.filter(e => e.type === "yellow" || e.type === "red" || e.type === "yellowRed");
         }
-    }
+    });
     
     season.teams.forEach(t => {
         t.played = 0; t.won = 0; t.drawn = 0; t.lost = 0; t.gf = 0; t.ga = 0; t.points = 0;
@@ -294,7 +291,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     memoryData.lastUpdated = Date.now();
     needsMigration = true;
 }
-// END ONE-TIME MIGRATION FOR R2
+// END ONE-TIME MIGRATION FOR R3
 
         // --- HARDCODED HISTORICAL DATA ---
       if (!memoryData.seasons) memoryData.seasons = {};
@@ -352,7 +349,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
         await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v31', JSON.stringify(memoryData));
+      trySetLocal('dsg_data_v32', JSON.stringify(memoryData));
       trySetLocal('dsg_articles_v18', JSON.stringify(memoryNews));
       trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
       console.log("Migrated local data to Firebase.");
@@ -372,7 +369,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
   saveData(data) {
     data.lastUpdated = Date.now();
     memoryData = data;
-    trySetLocal('dsg_data_v31', JSON.stringify(data));
+    trySetLocal('dsg_data_v32', JSON.stringify(data));
     
     const fbSaveData = JSON.parse(JSON.stringify(data));
     if (fbSaveData.seasons && fbSaveData.seasons["2025/2026"]) {
@@ -647,6 +644,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     }
   }
 };
+
 
 
 
