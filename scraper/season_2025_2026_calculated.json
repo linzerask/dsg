@@ -1,0 +1,4610 @@
+{
+  "season": "2025/2026",
+  "teams": [
+    {
+      "id": 1,
+      "name": "SV Croatia Linz",
+      "played": 14,
+      "won": 12,
+      "drawn": 2,
+      "lost": 0,
+      "gf": 63,
+      "ga": 19,
+      "diff": 44,
+      "points": 38
+    },
+    {
+      "id": 2,
+      "name": "DSG St. Josef/Oed FC",
+      "played": 14,
+      "won": 10,
+      "drawn": 3,
+      "lost": 1,
+      "gf": 49,
+      "ga": 18,
+      "diff": 31,
+      "points": 33
+    },
+    {
+      "id": 3,
+      "name": "Union Heiligenberg",
+      "played": 14,
+      "won": 7,
+      "drawn": 3,
+      "lost": 4,
+      "gf": 50,
+      "ga": 32,
+      "diff": 18,
+      "points": 24
+    },
+    {
+      "id": 4,
+      "name": "FC Hinzenbach",
+      "played": 14,
+      "won": 7,
+      "drawn": 2,
+      "lost": 5,
+      "gf": 44,
+      "ga": 35,
+      "diff": 9,
+      "points": 23
+    },
+    {
+      "id": 5,
+      "name": "Walker FC",
+      "played": 14,
+      "won": 4,
+      "drawn": 3,
+      "lost": 7,
+      "gf": 33,
+      "ga": 44,
+      "diff": -11,
+      "points": 15
+    },
+    {
+      "id": 6,
+      "name": "FC Gornjak",
+      "played": 14,
+      "won": 4,
+      "drawn": 0,
+      "lost": 10,
+      "gf": 29,
+      "ga": 51,
+      "diff": -22,
+      "points": 12
+    },
+    {
+      "id": 7,
+      "name": "DSG Union Traun",
+      "played": 14,
+      "won": 2,
+      "drawn": 2,
+      "lost": 10,
+      "gf": 23,
+      "ga": 62,
+      "diff": -39,
+      "points": 8
+    },
+    {
+      "id": 8,
+      "name": "Union Eschenau",
+      "played": 14,
+      "won": 2,
+      "drawn": 1,
+      "lost": 11,
+      "gf": 29,
+      "ga": 59,
+      "diff": -30,
+      "points": 7
+    }
+  ],
+  "matches": [
+    {
+      "round": 1,
+      "roundName": "1. Runde (29.08. -24.10.2025)",
+      "date": "2025-08-29",
+      "rawDate": "Fr, 29.08.25",
+      "time": "18:00",
+      "location": "DSG-Platz",
+      "homeTeam": "DSG St. Josef/Oed FC",
+      "awayTeam": "Walker FC",
+      "scoreHome": 4,
+      "scoreAway": 1,
+      "htHome": 2,
+      "htAway": 0,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Jonas Binder",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Kevin Schneider",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Tenzin Jayangtsang",
+          "team": "Walker FC"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Raphael Deutschmann",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Stefan Woschitz",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": []
+    },
+    {
+      "round": 1,
+      "roundName": "1. Runde (29.08. -24.10.2025)",
+      "date": "2025-08-29",
+      "rawDate": "Fr, 29.08.25",
+      "time": "19:00",
+      "location": "Sportplatz Traun",
+      "homeTeam": "DSG Union Traun",
+      "awayTeam": "FC Hinzenbach",
+      "scoreHome": 3,
+      "scoreAway": 5,
+      "htHome": 1,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Taher Akbar",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Luca Vogl",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Philipp Habring",
+          "team": "DSG Union Traun"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Michael Ahammer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Philipp Guggenberger",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Philipp Habring",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Matthias Kneidinger",
+          "team": "FC Hinzenbach",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "roundName": "1. Runde (29.08. -24.10.2025)",
+      "date": "2025-08-30",
+      "rawDate": "Sa, 30.08.25",
+      "time": "18:00",
+      "location": "DSG-Platz",
+      "homeTeam": "SV Croatia Linz",
+      "awayTeam": "FC Gornjak",
+      "scoreHome": 3,
+      "scoreAway": 0,
+      "htHome": null,
+      "htAway": null,
+      "status": "Abgesagt 3:0",
+      "note": "Gornjak abgesagt",
+      "homeGoals": [],
+      "awayGoals": [],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 1,
+      "roundName": "1. Runde (29.08. -24.10.2025)",
+      "date": "2025-10-24",
+      "rawDate": "Fr, 24.10.25",
+      "time": "19:00",
+      "location": "Sportplatz Eschenau",
+      "homeTeam": "Union Eschenau",
+      "awayTeam": "Union Heiligenberg",
+      "scoreHome": 4,
+      "scoreAway": 6,
+      "htHome": 2,
+      "htAway": 3,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Michael Dornetshuber",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Michael Dornetshuber",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Marco Braumann",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Dominik Scheuringer",
+          "team": "Union Eschenau"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Dominik Penninger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Dominik Penninger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Ernst Zahrer",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Ernst Zahrer",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Paul Steininger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Daniel Auer",
+          "team": "Union Eschenau",
+          "type": "yellowRed"
+        },
+        {
+          "player": "Rudolf Rossgatterer",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Benedict Humer",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Andreas Lederer",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Johannes Steinbock",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "roundName": "2. Runde (05.09. -18.10.2025)",
+      "date": "2025-09-05",
+      "rawDate": "Fr, 05.09.25",
+      "time": "18:00",
+      "location": "DSG-Platz",
+      "homeTeam": "DSG St. Josef/Oed FC",
+      "awayTeam": "FC Hinzenbach",
+      "scoreHome": 2,
+      "scoreAway": 2,
+      "htHome": 1,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Paul Feichtenschlager",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Raphael Deutschmann",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Paul Feichtenschlager",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Michael Kaimberger",
+          "team": "FC Hinzenbach",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "roundName": "2. Runde (05.09. -18.10.2025)",
+      "date": "2025-09-05",
+      "rawDate": "Fr, 05.09.25",
+      "time": "19:00",
+      "location": "Sportplatz Eschenau",
+      "homeTeam": "Union Eschenau",
+      "awayTeam": "Walker FC",
+      "scoreHome": 6,
+      "scoreAway": 2,
+      "htHome": 3,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Manuel Pühringer",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Manuel Pühringer",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Christopher Ratzenböck",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Farid Alem",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Simon Wenzl",
+          "team": "Union Eschenau"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Maxwell Agbemor",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Max Grund",
+          "team": "Walker FC"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Andreas Humer",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        },
+        {
+          "player": "Manuel Pühringer",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Maxwell Agbemor",
+          "team": "Walker FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Christoph Mühlbacher",
+          "team": "Walker FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Martin Brenner",
+          "team": "Walker FC",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "roundName": "2. Runde (05.09. -18.10.2025)",
+      "date": "2025-09-06",
+      "rawDate": "Sa, 06.09.25",
+      "time": "15:00",
+      "location": "Westbahn Linz",
+      "homeTeam": "SV Croatia Linz",
+      "awayTeam": "DSG Union Traun",
+      "scoreHome": 5,
+      "scoreAway": 2,
+      "htHome": 2,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Anto Marcinkovic",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Stefan Wiener",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Fabian Walter",
+          "team": "DSG Union Traun"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 2,
+      "roundName": "2. Runde (05.09. -18.10.2025)",
+      "date": "2025-10-18",
+      "rawDate": "Sa, 18.10.25",
+      "time": "16:00",
+      "location": "DSG-Platz",
+      "homeTeam": "FC Gornjak",
+      "awayTeam": "Union Heiligenberg",
+      "scoreHome": 0,
+      "scoreAway": 4,
+      "htHome": 0,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [],
+      "awayGoals": [
+        {
+          "player": "Paul Steininger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Johannes Steinbock",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Dominik Penninger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Ernst Zahrer",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Djordje Malesevic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        },
+        {
+          "player": "Vladica Petrovic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Andreas Lederer",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "roundName": "3. Runde (12.09. -13.09.2025)",
+      "date": "2025-09-12",
+      "rawDate": "Fr, 12.09.25",
+      "time": "17:45",
+      "location": "Sportplatz Wörth",
+      "homeTeam": "FC Hinzenbach",
+      "awayTeam": "Walker FC",
+      "scoreHome": 3,
+      "scoreAway": 3,
+      "htHome": 1,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Jan Lettner",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Jan Lettner",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Max Grund",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Marco Schmidt",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Florian Rebhandl",
+          "team": "Walker FC"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": [
+        {
+          "player": "Christoph Mühlbacher",
+          "team": "Walker FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Dominik Pfannhauser",
+          "team": "Walker FC",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "roundName": "3. Runde (12.09. -13.09.2025)",
+      "date": "2025-09-12",
+      "rawDate": "Fr, 12.09.25",
+      "time": "19:00",
+      "location": "Sportplatz Traun",
+      "homeTeam": "DSG Union Traun",
+      "awayTeam": "Union Eschenau",
+      "scoreHome": 2,
+      "scoreAway": 2,
+      "htHome": 1,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Manuel Kapfhammer",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Manuel Kapfhammer",
+          "team": "DSG Union Traun"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Farid Alem",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Michael Dornetshuber",
+          "team": "Union Eschenau"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Gerhard Busch",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        },
+        {
+          "player": "Philipp Habring",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        },
+        {
+          "player": "Ninoslav Matanovic",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Daniel Auer",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        },
+        {
+          "player": "Alexander Gfellner",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        },
+        {
+          "player": "Simon Rittberger",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        },
+        {
+          "player": "Simon Wenzl",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "roundName": "3. Runde (12.09. -13.09.2025)",
+      "date": "2025-09-12",
+      "rawDate": "Fr, 12.09.25",
+      "time": "19:00",
+      "location": "Sportplatz Heiligenberg",
+      "homeTeam": "Union Heiligenberg",
+      "awayTeam": "SV Croatia Linz",
+      "scoreHome": 2,
+      "scoreAway": 2,
+      "htHome": 1,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Josip Peric",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Edi Klaric-Jozic",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Paul Steininger",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Ernst Zahrer",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Simon Penninger",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Alex Steiner",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Edi Klaric-Jozic",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        },
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        },
+        {
+          "player": "Igor Vidovic",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        },
+        {
+          "player": "Anto Marcinkovic",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        },
+        {
+          "player": "Berislav Zuljevic",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "roundName": "3. Runde (12.09. -13.09.2025)",
+      "date": "2025-09-13",
+      "rawDate": "Sa, 13.09.25",
+      "time": "15:00",
+      "location": "DSG-Platz",
+      "homeTeam": "FC Gornjak",
+      "awayTeam": "DSG St. Josef/Oed FC",
+      "scoreHome": 0,
+      "scoreAway": 7,
+      "htHome": 0,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [],
+      "awayGoals": [
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Raphael Deutschmann",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Raphael Deutschmann",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Clemens Rössler",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Stefan Freudenthaler",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Danijel Majer",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        },
+        {
+          "player": "Vladica Petrovic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": []
+    },
+    {
+      "round": 4,
+      "roundName": "4. Runde (19.09. -20.09.2025)",
+      "date": "2025-09-19",
+      "rawDate": "Fr, 19.09.25",
+      "time": "19:00",
+      "location": "Sportplatz Traun",
+      "homeTeam": "DSG Union Traun",
+      "awayTeam": "FC Gornjak",
+      "scoreHome": 2,
+      "scoreAway": 7,
+      "htHome": 1,
+      "htAway": 3,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Philipp Habring",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Michael Mayr",
+          "team": "DSG Union Traun"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Sergey Stepanov",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Sergey Stepanov",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Sergey Stepanov",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Marco Rajcic",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Marco Rajcic",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Ilija Stojchovski",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Marko Aleksic",
+          "team": "FC Gornjak"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": [
+        {
+          "player": "Nemanja Ilic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        },
+        {
+          "player": "Vladica Petrovic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "roundName": "4. Runde (19.09. -20.09.2025)",
+      "date": "2025-09-20",
+      "rawDate": "Sa, 20.09.25",
+      "time": "15:00",
+      "location": "DSG-Platz",
+      "homeTeam": "Walker FC",
+      "awayTeam": "SV Croatia Linz",
+      "scoreHome": 1,
+      "scoreAway": 5,
+      "htHome": 1,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Shankar Poudel",
+          "team": "Walker FC"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Slaven Steko",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Josip Peric",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 4,
+      "roundName": "4. Runde (19.09. -20.09.2025)",
+      "date": "2025-09-20",
+      "rawDate": "Sa, 20.09.25",
+      "time": "17:00",
+      "location": "Sportplatz Wörth",
+      "homeTeam": "FC Hinzenbach",
+      "awayTeam": "Union Eschenau",
+      "scoreHome": 3,
+      "scoreAway": 0,
+      "htHome": 1,
+      "htAway": 0,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Manuel Winklehner",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Felix Übleis",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Niko Reinthaler",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "awayGoals": [],
+      "homeCards": [],
+      "awayCards": [
+        {
+          "player": "Marco Braumann",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        },
+        {
+          "player": "Mario Wolfschluckner",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "roundName": "4. Runde (19.09. -20.09.2025)",
+      "date": "2025-09-20",
+      "rawDate": "Sa, 20.09.25",
+      "time": "19:00",
+      "location": "Sportplatz Heiligenberg",
+      "homeTeam": "Union Heiligenberg",
+      "awayTeam": "DSG St. Josef/Oed FC",
+      "scoreHome": 3,
+      "scoreAway": 3,
+      "htHome": 2,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Johannes Steinbock",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Dominik Penninger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Jürgen Hutsteiner",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Ramadan Karakaya",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Jonas Binder",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Clemens Rössler",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Johannes Steinbock",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Jan Schützeneder",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Simon Dornetshumer",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Ramadan Karakaya",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Kevin Tiepelt",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Clemens Rössler",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Nicolaus Steurer",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Fabio Froschauer",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Jonas Binder",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellowRed"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "roundName": "5. Runde (02.09. -25.10.2025)",
+      "date": "2025-09-02",
+      "rawDate": "Di, 02.09.25",
+      "time": "17:45",
+      "location": "DSG-Platz",
+      "homeTeam": "Walker FC",
+      "awayTeam": "FC Gornjak",
+      "scoreHome": 4,
+      "scoreAway": 2,
+      "htHome": 3,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Tenzin Jayangtsang",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Tenzin Jayangtsang",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Marco Schmidt",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Florian Rebhandl",
+          "team": "Walker FC"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Marco Rajcic",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Marco Rajcic",
+          "team": "FC Gornjak"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": [
+        {
+          "player": "Marco Rajcic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "roundName": "5. Runde (02.09. -25.10.2025)",
+      "date": "2025-09-27",
+      "rawDate": "Sa, 27.09.25",
+      "time": "19:00",
+      "location": "Sportplatz Heiligenberg",
+      "homeTeam": "Union Heiligenberg",
+      "awayTeam": "DSG Union Traun",
+      "scoreHome": 8,
+      "scoreAway": 0,
+      "htHome": 4,
+      "htAway": 0,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Dominik Penninger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Dominik Penninger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Dominik Penninger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Sebastian Grabner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Sebastian Grabner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Simon Penninger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Felix Trinkfass",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Andreas Lederer",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "awayGoals": [],
+      "homeCards": [
+        {
+          "player": "Benedict Humer",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Manuel Kapfhammer",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        },
+        {
+          "player": "Ninoslav Matanovic",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "roundName": "5. Runde (02.09. -25.10.2025)",
+      "date": "2025-10-17",
+      "rawDate": "Fr, 17.10.25",
+      "time": "19:00",
+      "location": "Sportplatz Eschenau",
+      "homeTeam": "Union Eschenau",
+      "awayTeam": "DSG St. Josef/Oed FC",
+      "scoreHome": 0,
+      "scoreAway": 2,
+      "htHome": 0,
+      "htAway": 0,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [],
+      "awayGoals": [
+        {
+          "player": "Stefan Woschitz",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Stefan Woschitz",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Simon Wenzl",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Ramadan Karakaya",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Kevin Tiepelt",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 5,
+      "roundName": "5. Runde (02.09. -25.10.2025)",
+      "date": "2025-10-25",
+      "rawDate": "Sa, 25.10.25",
+      "time": "16:00",
+      "location": "Westbahn Linz",
+      "homeTeam": "SV Croatia Linz",
+      "awayTeam": "FC Hinzenbach",
+      "scoreHome": 7,
+      "scoreAway": 4,
+      "htHome": 3,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Robert Matisic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Robert Matisic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Branko Marin",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Manuel Milic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Filip Skoro",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Tobias Pointner",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Rainer Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Markus Jungreithmayr",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Robert Matisic",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Florian Berger",
+          "team": "FC Hinzenbach",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "roundName": "6. Runde (03.10. -04.10.2025)",
+      "date": "2025-10-03",
+      "rawDate": "Fr, 03.10.25",
+      "time": "19:00",
+      "location": "Sportplatz Heiligenberg",
+      "homeTeam": "Union Heiligenberg",
+      "awayTeam": "FC Hinzenbach",
+      "scoreHome": 3,
+      "scoreAway": 6,
+      "htHome": 1,
+      "htAway": 4,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Dominik Penninger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Ernst Zahrer",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Simon Penninger",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Jan Lettner",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Jan Lettner",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Fabian Michael Ott",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": [
+        {
+          "player": "Rene Rechtlehner",
+          "team": "FC Hinzenbach",
+          "type": "yellow"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach",
+          "type": "yellow"
+        },
+        {
+          "player": "Matthias Kneidinger",
+          "team": "FC Hinzenbach",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "roundName": "6. Runde (03.10. -04.10.2025)",
+      "date": "2025-10-03",
+      "rawDate": "Fr, 03.10.25",
+      "time": "19:00",
+      "location": "Sportplatz Traun",
+      "homeTeam": "DSG Union Traun",
+      "awayTeam": "Walker FC",
+      "scoreHome": 0,
+      "scoreAway": 4,
+      "htHome": 0,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [],
+      "awayGoals": [
+        {
+          "player": "Manuel Wozabal",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Max Grund",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Tenzin Jayangtsang",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Florian Rebhandl",
+          "team": "Walker FC"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 6,
+      "roundName": "6. Runde (03.10. -04.10.2025)",
+      "date": "2025-10-04",
+      "rawDate": "Sa, 04.10.25",
+      "time": "14:00",
+      "location": "Westbahn Linz",
+      "homeTeam": "SV Croatia Linz",
+      "awayTeam": "DSG St. Josef/Oed FC",
+      "scoreHome": 2,
+      "scoreAway": 2,
+      "htHome": 2,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Branko Marin",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Ivan Peric",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Michael Pehamberger",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Josip Peric",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        },
+        {
+          "player": "Branko Marin",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        },
+        {
+          "player": "Marko Burg",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        },
+        {
+          "player": "Ivan Peric",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Ramadan Karakaya",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "roundName": "6. Runde (03.10. -04.10.2025)",
+      "date": "2025-10-04",
+      "rawDate": "Sa, 04.10.25",
+      "time": "16:30",
+      "location": "DSG-Platz",
+      "homeTeam": "FC Gornjak",
+      "awayTeam": "Union Eschenau",
+      "scoreHome": 4,
+      "scoreAway": 3,
+      "htHome": 1,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Sergey Stepanov",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Sergey Stepanov",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Sergey Stepanov",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Ilija Stojchovski",
+          "team": "FC Gornjak"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Farid Alem",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Farid Alem",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Simon Rittberger",
+          "team": "Union Eschenau"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Nebojsa Krstic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        },
+        {
+          "player": "Sasa Nedic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        },
+        {
+          "player": "Ivan Nikolov",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Dominik Scheuringer",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        },
+        {
+          "player": "Daniel Auer",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "roundName": "7. Runde (10.10. -11.10.2025)",
+      "date": "2025-10-10",
+      "rawDate": "Fr, 10.10.25",
+      "time": "19:00",
+      "location": "Sportplatz Eschenau",
+      "homeTeam": "Union Eschenau",
+      "awayTeam": "SV Croatia Linz",
+      "scoreHome": 2,
+      "scoreAway": 4,
+      "htHome": 1,
+      "htAway": 3,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Marco Braumann",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Simon Wenzl",
+          "team": "Union Eschenau"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Manuel Milic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Manuel Milic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Luka Budes",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Filip Skoro",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": [
+        {
+          "player": "Luka Budes",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "roundName": "7. Runde (10.10. -11.10.2025)",
+      "date": "2025-10-11",
+      "rawDate": "Sa, 11.10.25",
+      "time": "14:00",
+      "location": "DSG-Platz",
+      "homeTeam": "DSG St. Josef/Oed FC",
+      "awayTeam": "DSG Union Traun",
+      "scoreHome": 2,
+      "scoreAway": 1,
+      "htHome": 0,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Stefan Freudenthaler",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Manuel Stadler",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Andreas Walter-Raab",
+          "team": "DSG Union Traun"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Stefan Freudenthaler",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Stefan Woschitz",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Raphael Deutschmann",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Manuel Märzinger",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Gerhard Luger",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "roundName": "7. Runde (10.10. -11.10.2025)",
+      "date": "2025-10-11",
+      "rawDate": "Sa, 11.10.25",
+      "time": "16:00",
+      "location": "DSG-Platz",
+      "homeTeam": "Walker FC",
+      "awayTeam": "Union Heiligenberg",
+      "scoreHome": 1,
+      "scoreAway": 3,
+      "htHome": 1,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Benjamin Stenhaug",
+          "team": "Walker FC"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Dominik Penninger",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Ernst Zahrer",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Manuel Zauner-Wagner",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Martin Brenner",
+          "team": "Walker FC",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Johannes Steinbock",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 7,
+      "roundName": "7. Runde (10.10. -11.10.2025)",
+      "date": "2025-10-11",
+      "rawDate": "Sa, 11.10.25",
+      "time": "16:00",
+      "location": "Sportplatz Wörth",
+      "homeTeam": "FC Hinzenbach",
+      "awayTeam": "FC Gornjak",
+      "scoreHome": 3,
+      "scoreAway": 1,
+      "htHome": 1,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Fabian Michael Ott",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Fabian Michael Ott",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Jan Lettner",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Mladen Nikolic",
+          "team": "FC Gornjak"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Matteo Deisenhammer",
+          "team": "FC Hinzenbach",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Stanislav Korovljevic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        },
+        {
+          "player": "Sani Stancic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        },
+        {
+          "player": "Sasa Nedic",
+          "team": "FC Gornjak",
+          "type": "yellowRed"
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "roundName": "8. Runde (10.04. -11.04.2026)",
+      "date": "2026-04-10",
+      "rawDate": "Fr, 10.04.26",
+      "time": "19:00",
+      "location": "Sportplatz Eschenau",
+      "homeTeam": "Union Eschenau",
+      "awayTeam": "DSG Union Traun",
+      "scoreHome": 5,
+      "scoreAway": 3,
+      "htHome": 0,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Farid Alem",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Farid Alem",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Michael Dornetshuber",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Christopher Ratzenböck",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Simon Wenzl",
+          "team": "Union Eschenau"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Janik Machowetz",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Michael Mayr",
+          "team": "DSG Union Traun"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 8,
+      "roundName": "8. Runde (10.04. -11.04.2026)",
+      "date": "2026-04-11",
+      "rawDate": "Sa, 11.04.26",
+      "time": "18:00",
+      "location": "DSG-Platz",
+      "homeTeam": "DSG St. Josef/Oed FC",
+      "awayTeam": "FC Gornjak",
+      "scoreHome": 3,
+      "scoreAway": 0,
+      "htHome": null,
+      "htAway": null,
+      "status": "Abgesagt 3:0",
+      "note": "",
+      "homeGoals": [],
+      "awayGoals": [],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 8,
+      "roundName": "8. Runde (10.04. -11.04.2026)",
+      "date": "2026-04-11",
+      "rawDate": "Sa, 11.04.26",
+      "time": "16:00",
+      "location": "DSG-Platz",
+      "homeTeam": "Walker FC",
+      "awayTeam": "FC Hinzenbach",
+      "scoreHome": 2,
+      "scoreAway": 4,
+      "htHome": 1,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Max Grund",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Florian Rebhandl",
+          "team": "Walker FC"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Jan Lettner",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Jan Lettner",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 8,
+      "roundName": "8. Runde (10.04. -11.04.2026)",
+      "date": "2026-04-11",
+      "rawDate": "Sa, 11.04.26",
+      "time": "17:00",
+      "location": "Westbahn Linz",
+      "homeTeam": "SV Croatia Linz",
+      "awayTeam": "Union Heiligenberg",
+      "scoreHome": 5,
+      "scoreAway": 2,
+      "htHome": 1,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Branko Marin",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Valentin Vejic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Robert Matisic",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Slaven Steko",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Florian Lehner",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Ernst Zahrer",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Thomas Wagner",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Simon Penninger",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Simon Dornetshumer",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "roundName": "9. Runde (17.04. -18.04.2026)",
+      "date": "2026-04-17",
+      "rawDate": "Fr, 17.04.26",
+      "time": "19:00",
+      "location": "Sportplatz Traun",
+      "homeTeam": "DSG Union Traun",
+      "awayTeam": "SV Croatia Linz",
+      "scoreHome": 0,
+      "scoreAway": 9,
+      "htHome": 0,
+      "htAway": 4,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [],
+      "awayGoals": [
+        {
+          "player": "Josip Peric",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Josip Peric",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Branko Marin",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Branko Marin",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Slaven Steko",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Slaven Steko",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Boris Bagaric",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Mario Peric",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Valentin Vejic",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 9,
+      "roundName": "9. Runde (17.04. -18.04.2026)",
+      "date": "2026-04-18",
+      "rawDate": "Sa, 18.04.26",
+      "time": "16:00",
+      "location": "Sportplatz Wörth",
+      "homeTeam": "FC Hinzenbach",
+      "awayTeam": "DSG St. Josef/Oed FC",
+      "scoreHome": 1,
+      "scoreAway": 3,
+      "htHome": 1,
+      "htAway": 3,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Rene Rechtlehner",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Raphael Deutschmann",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Paul Feichtenschlager",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": [
+        {
+          "player": "Ramadan Karakaya",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "roundName": "9. Runde (17.04. -18.04.2026)",
+      "date": "2026-04-18",
+      "rawDate": "Sa, 18.04.26",
+      "time": "17:00",
+      "location": "DSG-Platz",
+      "homeTeam": "Walker FC",
+      "awayTeam": "Union Eschenau",
+      "scoreHome": 4,
+      "scoreAway": 3,
+      "htHome": 2,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Florian Rebhandl",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Florian Rebhandl",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Bernhard Glatz",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Benjamin Stenhaug",
+          "team": "Walker FC"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Dominik Scheuringer",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Dominik Scheuringer",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Daniel Dornetshuber",
+          "team": "Union Eschenau"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Martin Brenner",
+          "team": "Walker FC",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Bernhard Altendorfer",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        },
+        {
+          "player": "Simon Wenzl",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 9,
+      "roundName": "9. Runde (17.04. -18.04.2026)",
+      "date": "2026-04-18",
+      "rawDate": "Sa, 18.04.26",
+      "time": "18:00",
+      "location": "Sportplatz Heiligenberg",
+      "homeTeam": "Union Heiligenberg",
+      "awayTeam": "FC Gornjak",
+      "scoreHome": 5,
+      "scoreAway": 1,
+      "htHome": 2,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Johannes Steinbock",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Benedict Humer",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Simon Dornetshumer",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Markus Kalakovic",
+          "team": "FC Gornjak"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Simon Dornetshumer",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Ivan Radisavljevic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        },
+        {
+          "player": "Dalibor Tatic",
+          "team": "FC Gornjak",
+          "type": "yellowRed"
+        }
+      ]
+    },
+    {
+      "round": 10,
+      "roundName": "10. Runde (24.04. -25.04.2026)",
+      "date": "2026-04-24",
+      "rawDate": "Fr, 24.04.26",
+      "time": "18:00",
+      "location": "DSG-Platz",
+      "homeTeam": "SV Croatia Linz",
+      "awayTeam": "Walker FC",
+      "scoreHome": 3,
+      "scoreAway": 0,
+      "htHome": null,
+      "htAway": null,
+      "status": "Abgesagt 3:0",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Maxwell Agbemor",
+          "team": "Walker FC"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": [
+        {
+          "player": "Max Grund",
+          "team": "Walker FC",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 10,
+      "roundName": "10. Runde (24.04. -25.04.2026)",
+      "date": "2026-04-24",
+      "rawDate": "Fr, 24.04.26",
+      "time": "19:00",
+      "location": "Sportplatz Eschenau",
+      "homeTeam": "Union Eschenau",
+      "awayTeam": "FC Hinzenbach",
+      "scoreHome": 1,
+      "scoreAway": 6,
+      "htHome": 1,
+      "htAway": 4,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Michael Dornetshuber",
+          "team": "Union Eschenau"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Jan Lettner",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Jan Lettner",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Mario Wolfschluckner",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Michael Ahammer",
+          "team": "FC Hinzenbach",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 10,
+      "roundName": "10. Runde (24.04. -25.04.2026)",
+      "date": "2026-04-25",
+      "rawDate": "Sa, 25.04.26",
+      "time": "15:00",
+      "location": "DSG-Platz",
+      "homeTeam": "FC Gornjak",
+      "awayTeam": "DSG Union Traun",
+      "scoreHome": 1,
+      "scoreAway": 4,
+      "htHome": 0,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Ilija Stojchovski",
+          "team": "FC Gornjak"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Moritz Radschiener",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Lukas Wahl",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Markus Asanger",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Fabian Wild",
+          "team": "DSG Union Traun"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Marco Rajcic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Taher Akbar",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        },
+        {
+          "player": "Manuel Kapfhammer",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 10,
+      "roundName": "10. Runde (24.04. -25.04.2026)",
+      "date": "2026-04-25",
+      "rawDate": "Sa, 25.04.26",
+      "time": "17:00",
+      "location": "DSG-Platz",
+      "homeTeam": "DSG St. Josef/Oed FC",
+      "awayTeam": "Union Heiligenberg",
+      "scoreHome": 4,
+      "scoreAway": 0,
+      "htHome": 4,
+      "htAway": 0,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Julian Fischer",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Paul Feichtenschlager",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "awayGoals": [],
+      "homeCards": [],
+      "awayCards": [
+        {
+          "player": "Johannes Steinbock",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 11,
+      "roundName": "11. Runde (01.05. -14.05.2026)",
+      "date": "2026-05-01",
+      "rawDate": "Fr, 01.05.26",
+      "time": "18:00",
+      "location": "DSG-Platz",
+      "homeTeam": "DSG Union Traun",
+      "awayTeam": "DSG St. Josef/Oed FC",
+      "scoreHome": 0,
+      "scoreAway": 3,
+      "htHome": null,
+      "htAway": null,
+      "status": "Abgesagt 0:3",
+      "note": "",
+      "homeGoals": [],
+      "awayGoals": [],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 11,
+      "roundName": "11. Runde (01.05. -14.05.2026)",
+      "date": "2026-05-02",
+      "rawDate": "Sa, 02.05.26",
+      "time": "15:00",
+      "location": "DSG-Platz",
+      "homeTeam": "FC Gornjak",
+      "awayTeam": "FC Hinzenbach",
+      "scoreHome": 3,
+      "scoreAway": 2,
+      "htHome": 1,
+      "htAway": 0,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Markus Kalakovic",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Markus Kalakovic",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Sanel Memic",
+          "team": "FC Gornjak"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Philipp Guggenberger",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Vladica Petrovic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Stefan Amering",
+          "team": "FC Hinzenbach",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 11,
+      "roundName": "11. Runde (01.05. -14.05.2026)",
+      "date": "2026-05-02",
+      "rawDate": "Sa, 02.05.26",
+      "time": "18:00",
+      "location": "DSG-Platz",
+      "homeTeam": "SV Croatia Linz",
+      "awayTeam": "Union Eschenau",
+      "scoreHome": 3,
+      "scoreAway": 0,
+      "htHome": null,
+      "htAway": null,
+      "status": "Abgesagt 3:0",
+      "note": "",
+      "homeGoals": [],
+      "awayGoals": [],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 11,
+      "roundName": "11. Runde (01.05. -14.05.2026)",
+      "date": "2026-05-13",
+      "rawDate": "Mi, 13.05.26",
+      "time": "19:00",
+      "location": "Sportplatz Heiligenberg",
+      "homeTeam": "Union Heiligenberg",
+      "awayTeam": "Walker FC",
+      "scoreHome": 2,
+      "scoreAway": 2,
+      "htHome": 1,
+      "htAway": 0,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Dominik Penninger",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Max Grund",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Marco Schmidt",
+          "team": "Walker FC"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Gregor Mair",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": []
+    },
+    {
+      "round": 12,
+      "roundName": "12. Runde (08.05. -09.05.2026)",
+      "date": "2026-05-08",
+      "rawDate": "Fr, 08.05.26",
+      "time": "19:00",
+      "location": "Sportplatz Traun",
+      "homeTeam": "DSG Union Traun",
+      "awayTeam": "Union Heiligenberg",
+      "scoreHome": 0,
+      "scoreAway": 6,
+      "htHome": 0,
+      "htAway": 1,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [],
+      "awayGoals": [
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Manuel Zauner-Wagner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Ernst Zahrer",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Benedict Humer",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 12,
+      "roundName": "12. Runde (08.05. -09.05.2026)",
+      "date": "2026-05-09",
+      "rawDate": "Sa, 09.05.26",
+      "time": "15:00",
+      "location": "DSG-Platz",
+      "homeTeam": "FC Gornjak",
+      "awayTeam": "Walker FC",
+      "scoreHome": 1,
+      "scoreAway": 5,
+      "htHome": 1,
+      "htAway": 3,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Aleksandar Kostic",
+          "team": "FC Gornjak"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Max Grund",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Max Grund",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Shankar Poudel",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Maxwell Agbemor",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Benjamin Stenhaug",
+          "team": "Walker FC"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Vladica Petrovic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Shankar Poudel",
+          "team": "Walker FC",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 12,
+      "roundName": "12. Runde (08.05. -09.05.2026)",
+      "date": "2026-05-09",
+      "rawDate": "Sa, 09.05.26",
+      "time": "17:00",
+      "location": "DSG-Platz",
+      "homeTeam": "DSG St. Josef/Oed FC",
+      "awayTeam": "Union Eschenau",
+      "scoreHome": 7,
+      "scoreAway": 0,
+      "htHome": 2,
+      "htAway": 0,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Julian Fischer",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Julian Fischer",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Paul Feichtenschlager",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Paul Feichtenschlager",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Stefan Woschitz",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "awayGoals": [],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 12,
+      "roundName": "12. Runde (08.05. -09.05.2026)",
+      "date": "2026-05-15",
+      "rawDate": "Fr, 15.05.26",
+      "time": "18:30",
+      "location": "Sportplatz Wörth",
+      "homeTeam": "FC Hinzenbach",
+      "awayTeam": "SV Croatia Linz",
+      "scoreHome": 1,
+      "scoreAway": 3,
+      "htHome": 1,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Valentin Vejic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Slaven Steko",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Branko Marin",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": [
+        {
+          "player": "Dejan Jurleta",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        },
+        {
+          "player": "Darko Dovoda",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        },
+        {
+          "player": "Mateo Simunovic",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 13,
+      "roundName": "13. Runde (22.05. -23.05.2026)",
+      "date": "2026-05-22",
+      "rawDate": "Fr, 22.05.26",
+      "time": "18:00",
+      "location": "DSG-Platz",
+      "homeTeam": "Walker FC",
+      "awayTeam": "DSG Union Traun",
+      "scoreHome": 3,
+      "scoreAway": 3,
+      "htHome": 1,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Florian Rebhandl",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Florian Rebhandl",
+          "team": "Walker FC"
+        },
+        {
+          "player": "Max Grund",
+          "team": "Walker FC"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Michael Mayr",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Michael Mayr",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Manuel Kapfhammer",
+          "team": "DSG Union Traun"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Anmol Rai",
+          "team": "Walker FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Florian Rebhandl",
+          "team": "Walker FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Benjamin Stenhaug",
+          "team": "Walker FC",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Manuel Kapfhammer",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        },
+        {
+          "player": "Michael Mayr",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        },
+        {
+          "player": "Gerhard Luger",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        },
+        {
+          "player": "Moritz Radschiener",
+          "team": "DSG Union Traun",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 13,
+      "roundName": "13. Runde (22.05. -23.05.2026)",
+      "date": "2026-05-22",
+      "rawDate": "Fr, 22.05.26",
+      "time": "18:30",
+      "location": "Sportplatz Wörth",
+      "homeTeam": "FC Hinzenbach",
+      "awayTeam": "Union Heiligenberg",
+      "scoreHome": 2,
+      "scoreAway": 1,
+      "htHome": 0,
+      "htAway": 0,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Michael Dullinger",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Johannes Steinbock",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Rene Rechtlehner",
+          "team": "FC Hinzenbach",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Jakob Wagner",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 13,
+      "roundName": "13. Runde (22.05. -23.05.2026)",
+      "date": "2026-05-22",
+      "rawDate": "Fr, 22.05.26",
+      "time": "19:00",
+      "location": "Sportplatz Eschenau",
+      "homeTeam": "Union Eschenau",
+      "awayTeam": "FC Gornjak",
+      "scoreHome": 1,
+      "scoreAway": 8,
+      "htHome": 1,
+      "htAway": 6,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Michael Dornetshuber",
+          "team": "Union Eschenau"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Sani Stancic",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Sani Stancic",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Ilija Stojchovski",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Ilija Stojchovski",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Markus Kalakovic",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Dalibor Tatic",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Sanel Memic",
+          "team": "FC Gornjak"
+        },
+        {
+          "player": "Darko Maletic",
+          "team": "FC Gornjak"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Farid Alem",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        },
+        {
+          "player": "Mario Wolfschluckner",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        },
+        {
+          "player": "Simon Wenzl",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        },
+        {
+          "player": "Michael Dornetshuber",
+          "team": "Union Eschenau",
+          "type": "yellowRed"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Sani Stancic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        },
+        {
+          "player": "Stanislav Korovljevic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        },
+        {
+          "player": "Marko Ljubisavljevic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 13,
+      "roundName": "13. Runde (22.05. -23.05.2026)",
+      "date": "2026-06-12",
+      "rawDate": "Fr, 12.06.26",
+      "time": "18:30",
+      "location": "DSG-Platz",
+      "homeTeam": "DSG St. Josef/Oed FC",
+      "awayTeam": "SV Croatia Linz",
+      "scoreHome": 2,
+      "scoreAway": 7,
+      "htHome": 1,
+      "htAway": 0,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Nicolaus Steurer",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Valentin Vejic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Valentin Vejic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Valentin Vejic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Valentin Vejic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Valentin Vejic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Manuel Milic",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Slaven Steko",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Stefan Woschitz",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Nicolaus Steurer",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        },
+        {
+          "player": "Julian Fischer",
+          "team": "DSG St. Josef/Oed FC",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Valentin Vejic",
+          "team": "SV Croatia Linz",
+          "type": "yellow"
+        }
+      ]
+    },
+    {
+      "round": 14,
+      "roundName": "14. Runde (29.05. -30.05.2026)",
+      "date": "2026-05-29",
+      "rawDate": "Fr, 29.05.26",
+      "time": "17:00",
+      "location": "Sportplatz Wörth",
+      "homeTeam": "FC Hinzenbach",
+      "awayTeam": "DSG Union Traun",
+      "scoreHome": 2,
+      "scoreAway": 3,
+      "htHome": 2,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Thomas Ferihumer",
+          "team": "FC Hinzenbach"
+        },
+        {
+          "player": "Roland Meindlhumer",
+          "team": "FC Hinzenbach"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Ninoslav Matanovic",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Denis Petak",
+          "team": "DSG Union Traun"
+        },
+        {
+          "player": "Luca Vogl",
+          "team": "DSG Union Traun"
+        }
+      ],
+      "homeCards": [],
+      "awayCards": []
+    },
+    {
+      "round": 14,
+      "roundName": "14. Runde (29.05. -30.05.2026)",
+      "date": "2026-05-30",
+      "rawDate": "Sa, 30.05.26",
+      "time": "15:00",
+      "location": "DSG-Platz",
+      "homeTeam": "Walker FC",
+      "awayTeam": "DSG St. Josef/Oed FC",
+      "scoreHome": 1,
+      "scoreAway": 5,
+      "htHome": 0,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Max Grund",
+          "team": "Walker FC"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Thomas Paulmair",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Clemens Rössler",
+          "team": "DSG St. Josef/Oed FC"
+        },
+        {
+          "player": "Paul Haindl",
+          "team": "DSG St. Josef/Oed FC"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Nik Franzmair",
+          "team": "Walker FC",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": []
+    },
+    {
+      "round": 14,
+      "roundName": "14. Runde (29.05. -30.05.2026)",
+      "date": "2026-05-30",
+      "rawDate": "Sa, 30.05.26",
+      "time": "17:00",
+      "location": "DSG-Platz",
+      "homeTeam": "FC Gornjak",
+      "awayTeam": "SV Croatia Linz",
+      "scoreHome": 1,
+      "scoreAway": 5,
+      "htHome": 0,
+      "htAway": 4,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Dejan Teodorovic",
+          "team": "FC Gornjak"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Branko Marin",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Branko Marin",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Leonardo Glavas",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Slaven Steko",
+          "team": "SV Croatia Linz"
+        },
+        {
+          "player": "Robert Matisic",
+          "team": "SV Croatia Linz"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Aleksandar Kostic",
+          "team": "FC Gornjak",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": []
+    },
+    {
+      "round": 14,
+      "roundName": "14. Runde (29.05. -30.05.2026)",
+      "date": "2026-06-03",
+      "rawDate": "Mi, 03.06.26",
+      "time": "20:00",
+      "location": "Sportplatz Heiligenberg",
+      "homeTeam": "Union Heiligenberg",
+      "awayTeam": "Union Eschenau",
+      "scoreHome": 5,
+      "scoreAway": 2,
+      "htHome": 3,
+      "htAway": 2,
+      "status": "Gespielt",
+      "note": "",
+      "homeGoals": [
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Manuel Zauner-Wagner",
+          "team": "Union Heiligenberg"
+        },
+        {
+          "player": "Gregor Mair",
+          "team": "Union Heiligenberg"
+        }
+      ],
+      "awayGoals": [
+        {
+          "player": "Simon Rittberger",
+          "team": "Union Eschenau"
+        },
+        {
+          "player": "Simon Wenzl",
+          "team": "Union Eschenau"
+        }
+      ],
+      "homeCards": [
+        {
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        },
+        {
+          "player": "Manuel Zauner-Wagner",
+          "team": "Union Heiligenberg",
+          "type": "yellow"
+        }
+      ],
+      "awayCards": [
+        {
+          "player": "Daniel Auer",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        },
+        {
+          "player": "Christopher Ratzenböck",
+          "team": "Union Eschenau",
+          "type": "yellow"
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "topScorers": [
+      {
+        "name": "Roland Meindlhumer",
+        "team": "FC Hinzenbach",
+        "goals": 20
+      },
+      {
+        "name": "Thomas Paulmair",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 14
+      },
+      {
+        "name": "Michael Haslehner",
+        "team": "Union Heiligenberg",
+        "goals": 13
+      },
+      {
+        "name": "Leonardo Glavas",
+        "team": "SV Croatia Linz",
+        "goals": 13
+      },
+      {
+        "name": "Dominik Penninger",
+        "team": "Union Heiligenberg",
+        "goals": 10
+      },
+      {
+        "name": "Max Grund",
+        "team": "Walker FC",
+        "goals": 9
+      },
+      {
+        "name": "Jan Lettner",
+        "team": "FC Hinzenbach",
+        "goals": 9
+      },
+      {
+        "name": "Florian Rebhandl",
+        "team": "Walker FC",
+        "goals": 8
+      },
+      {
+        "name": "Branko Marin",
+        "team": "SV Croatia Linz",
+        "goals": 8
+      },
+      {
+        "name": "Valentin Vejic",
+        "team": "SV Croatia Linz",
+        "goals": 8
+      },
+      {
+        "name": "Michael Dornetshuber",
+        "team": "Union Eschenau",
+        "goals": 6
+      },
+      {
+        "name": "Ernst Zahrer",
+        "team": "Union Heiligenberg",
+        "goals": 6
+      },
+      {
+        "name": "Farid Alem",
+        "team": "Union Eschenau",
+        "goals": 6
+      },
+      {
+        "name": "Sergey Stepanov",
+        "team": "FC Gornjak",
+        "goals": 6
+      },
+      {
+        "name": "Slaven Steko",
+        "team": "SV Croatia Linz",
+        "goals": 6
+      },
+      {
+        "name": "Paul Feichtenschlager",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 5
+      },
+      {
+        "name": "Ilija Stojchovski",
+        "team": "FC Gornjak",
+        "goals": 5
+      },
+      {
+        "name": "Tenzin Jayangtsang",
+        "team": "Walker FC",
+        "goals": 4
+      },
+      {
+        "name": "Raphael Deutschmann",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 4
+      },
+      {
+        "name": "Simon Wenzl",
+        "team": "Union Eschenau",
+        "goals": 4
+      },
+      {
+        "name": "Johannes Steinbock",
+        "team": "Union Heiligenberg",
+        "goals": 4
+      },
+      {
+        "name": "Josip Peric",
+        "team": "SV Croatia Linz",
+        "goals": 4
+      },
+      {
+        "name": "Michael Mayr",
+        "team": "DSG Union Traun",
+        "goals": 4
+      },
+      {
+        "name": "Marco Rajcic",
+        "team": "FC Gornjak",
+        "goals": 4
+      },
+      {
+        "name": "Robert Matisic",
+        "team": "SV Croatia Linz",
+        "goals": 4
+      },
+      {
+        "name": "Manuel Milic",
+        "team": "SV Croatia Linz",
+        "goals": 4
+      },
+      {
+        "name": "Markus Kalakovic",
+        "team": "FC Gornjak",
+        "goals": 4
+      },
+      {
+        "name": "Dominik Scheuringer",
+        "team": "Union Eschenau",
+        "goals": 3
+      },
+      {
+        "name": "Maxwell Agbemor",
+        "team": "Walker FC",
+        "goals": 3
+      },
+      {
+        "name": "Marco Schmidt",
+        "team": "Walker FC",
+        "goals": 3
+      },
+      {
+        "name": "Manuel Kapfhammer",
+        "team": "DSG Union Traun",
+        "goals": 3
+      },
+      {
+        "name": "Clemens Rössler",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 3
+      },
+      {
+        "name": "Stefan Woschitz",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 3
+      },
+      {
+        "name": "Fabian Michael Ott",
+        "team": "FC Hinzenbach",
+        "goals": 3
+      },
+      {
+        "name": "Benjamin Stenhaug",
+        "team": "Walker FC",
+        "goals": 3
+      },
+      {
+        "name": "Manuel Zauner-Wagner",
+        "team": "Union Heiligenberg",
+        "goals": 3
+      },
+      {
+        "name": "Julian Fischer",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 3
+      },
+      {
+        "name": "Jonas Binder",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 2
+      },
+      {
+        "name": "Luca Vogl",
+        "team": "DSG Union Traun",
+        "goals": 2
+      },
+      {
+        "name": "Philipp Habring",
+        "team": "DSG Union Traun",
+        "goals": 2
+      },
+      {
+        "name": "Philipp Guggenberger",
+        "team": "FC Hinzenbach",
+        "goals": 2
+      },
+      {
+        "name": "Marco Braumann",
+        "team": "Union Eschenau",
+        "goals": 2
+      },
+      {
+        "name": "Paul Steininger",
+        "team": "Union Heiligenberg",
+        "goals": 2
+      },
+      {
+        "name": "Manuel Pühringer",
+        "team": "Union Eschenau",
+        "goals": 2
+      },
+      {
+        "name": "Christopher Ratzenböck",
+        "team": "Union Eschenau",
+        "goals": 2
+      },
+      {
+        "name": "Stefan Freudenthaler",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 2
+      },
+      {
+        "name": "Shankar Poudel",
+        "team": "Walker FC",
+        "goals": 2
+      },
+      {
+        "name": "Sebastian Grabner",
+        "team": "Union Heiligenberg",
+        "goals": 2
+      },
+      {
+        "name": "Simon Penninger",
+        "team": "Union Heiligenberg",
+        "goals": 2
+      },
+      {
+        "name": "Filip Skoro",
+        "team": "SV Croatia Linz",
+        "goals": 2
+      },
+      {
+        "name": "Simon Rittberger",
+        "team": "Union Eschenau",
+        "goals": 2
+      },
+      {
+        "name": "Benedict Humer",
+        "team": "Union Heiligenberg",
+        "goals": 2
+      },
+      {
+        "name": "Sanel Memic",
+        "team": "FC Gornjak",
+        "goals": 2
+      },
+      {
+        "name": "Sani Stancic",
+        "team": "FC Gornjak",
+        "goals": 2
+      },
+      {
+        "name": "Kevin Schneider",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 1
+      },
+      {
+        "name": "Taher Akbar",
+        "team": "DSG Union Traun",
+        "goals": 1
+      },
+      {
+        "name": "Michael Ahammer",
+        "team": "FC Hinzenbach",
+        "goals": 1
+      },
+      {
+        "name": "Anto Marcinkovic",
+        "team": "SV Croatia Linz",
+        "goals": 1
+      },
+      {
+        "name": "Stefan Wiener",
+        "team": "DSG Union Traun",
+        "goals": 1
+      },
+      {
+        "name": "Fabian Walter",
+        "team": "DSG Union Traun",
+        "goals": 1
+      },
+      {
+        "name": "Edi Klaric-Jozic",
+        "team": "SV Croatia Linz",
+        "goals": 1
+      },
+      {
+        "name": "Marko Aleksic",
+        "team": "FC Gornjak",
+        "goals": 1
+      },
+      {
+        "name": "Manuel Winklehner",
+        "team": "FC Hinzenbach",
+        "goals": 1
+      },
+      {
+        "name": "Felix Übleis",
+        "team": "FC Hinzenbach",
+        "goals": 1
+      },
+      {
+        "name": "Niko Reinthaler",
+        "team": "FC Hinzenbach",
+        "goals": 1
+      },
+      {
+        "name": "Jürgen Hutsteiner",
+        "team": "Union Heiligenberg",
+        "goals": 1
+      },
+      {
+        "name": "Ramadan Karakaya",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 1
+      },
+      {
+        "name": "Felix Trinkfass",
+        "team": "Union Heiligenberg",
+        "goals": 1
+      },
+      {
+        "name": "Andreas Lederer",
+        "team": "Union Heiligenberg",
+        "goals": 1
+      },
+      {
+        "name": "Tobias Pointner",
+        "team": "FC Hinzenbach",
+        "goals": 1
+      },
+      {
+        "name": "Rainer Meindlhumer",
+        "team": "FC Hinzenbach",
+        "goals": 1
+      },
+      {
+        "name": "Markus Jungreithmayr",
+        "team": "FC Hinzenbach",
+        "goals": 1
+      },
+      {
+        "name": "Manuel Wozabal",
+        "team": "Walker FC",
+        "goals": 1
+      },
+      {
+        "name": "Ivan Peric",
+        "team": "SV Croatia Linz",
+        "goals": 1
+      },
+      {
+        "name": "Michael Pehamberger",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 1
+      },
+      {
+        "name": "Luka Budes",
+        "team": "SV Croatia Linz",
+        "goals": 1
+      },
+      {
+        "name": "Manuel Stadler",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 1
+      },
+      {
+        "name": "Andreas Walter-Raab",
+        "team": "DSG Union Traun",
+        "goals": 1
+      },
+      {
+        "name": "Mladen Nikolic",
+        "team": "FC Gornjak",
+        "goals": 1
+      },
+      {
+        "name": "Janik Machowetz",
+        "team": "DSG Union Traun",
+        "goals": 1
+      },
+      {
+        "name": "Boris Bagaric",
+        "team": "SV Croatia Linz",
+        "goals": 1
+      },
+      {
+        "name": "Mario Peric",
+        "team": "SV Croatia Linz",
+        "goals": 1
+      },
+      {
+        "name": "Rene Rechtlehner",
+        "team": "FC Hinzenbach",
+        "goals": 1
+      },
+      {
+        "name": "Bernhard Glatz",
+        "team": "Walker FC",
+        "goals": 1
+      },
+      {
+        "name": "Daniel Dornetshuber",
+        "team": "Union Eschenau",
+        "goals": 1
+      },
+      {
+        "name": "Simon Dornetshumer",
+        "team": "Union Heiligenberg",
+        "goals": 1
+      },
+      {
+        "name": "Moritz Radschiener",
+        "team": "DSG Union Traun",
+        "goals": 1
+      },
+      {
+        "name": "Lukas Wahl",
+        "team": "DSG Union Traun",
+        "goals": 1
+      },
+      {
+        "name": "Markus Asanger",
+        "team": "DSG Union Traun",
+        "goals": 1
+      },
+      {
+        "name": "Fabian Wild",
+        "team": "DSG Union Traun",
+        "goals": 1
+      },
+      {
+        "name": "Aleksandar Kostic",
+        "team": "FC Gornjak",
+        "goals": 1
+      },
+      {
+        "name": "Michael Dullinger",
+        "team": "FC Hinzenbach",
+        "goals": 1
+      },
+      {
+        "name": "Dalibor Tatic",
+        "team": "FC Gornjak",
+        "goals": 1
+      },
+      {
+        "name": "Darko Maletic",
+        "team": "FC Gornjak",
+        "goals": 1
+      },
+      {
+        "name": "Nicolaus Steurer",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 1
+      },
+      {
+        "name": "Thomas Ferihumer",
+        "team": "FC Hinzenbach",
+        "goals": 1
+      },
+      {
+        "name": "Ninoslav Matanovic",
+        "team": "DSG Union Traun",
+        "goals": 1
+      },
+      {
+        "name": "Denis Petak",
+        "team": "DSG Union Traun",
+        "goals": 1
+      },
+      {
+        "name": "Paul Haindl",
+        "team": "DSG St. Josef/Oed FC",
+        "goals": 1
+      },
+      {
+        "name": "Dejan Teodorovic",
+        "team": "FC Gornjak",
+        "goals": 1
+      },
+      {
+        "name": "Gregor Mair",
+        "team": "Union Heiligenberg",
+        "goals": 1
+      }
+    ],
+    "cards": [
+      {
+        "name": "Daniel Auer",
+        "team": "Union Eschenau",
+        "yellow": 3,
+        "yellowRed": 1,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Vladica Petrovic",
+        "team": "FC Gornjak",
+        "yellow": 5,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Johannes Steinbock",
+        "team": "Union Heiligenberg",
+        "yellow": 4,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Simon Wenzl",
+        "team": "Union Eschenau",
+        "yellow": 4,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Ramadan Karakaya",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 4,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Sasa Nedic",
+        "team": "FC Gornjak",
+        "yellow": 1,
+        "yellowRed": 1,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Stefan Woschitz",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 3,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Martin Brenner",
+        "team": "Walker FC",
+        "yellow": 3,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Mario Wolfschluckner",
+        "team": "Union Eschenau",
+        "yellow": 3,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Simon Dornetshumer",
+        "team": "Union Heiligenberg",
+        "yellow": 3,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Jonas Binder",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 0,
+        "yellowRed": 1,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Manuel Kapfhammer",
+        "team": "DSG Union Traun",
+        "yellow": 3,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Dalibor Tatic",
+        "team": "FC Gornjak",
+        "yellow": 0,
+        "yellowRed": 1,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Michael Dornetshuber",
+        "team": "Union Eschenau",
+        "yellow": 0,
+        "yellowRed": 1,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Raphael Deutschmann",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Philipp Habring",
+        "team": "DSG Union Traun",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Matthias Kneidinger",
+        "team": "FC Hinzenbach",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Benedict Humer",
+        "team": "Union Heiligenberg",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Andreas Lederer",
+        "team": "Union Heiligenberg",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Christoph Mühlbacher",
+        "team": "Walker FC",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Ninoslav Matanovic",
+        "team": "DSG Union Traun",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Ernst Zahrer",
+        "team": "Union Heiligenberg",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Simon Penninger",
+        "team": "Union Heiligenberg",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Kevin Tiepelt",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Nicolaus Steurer",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Marco Rajcic",
+        "team": "FC Gornjak",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Rene Rechtlehner",
+        "team": "FC Hinzenbach",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Thomas Paulmair",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Gerhard Luger",
+        "team": "DSG Union Traun",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Stanislav Korovljevic",
+        "team": "FC Gornjak",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Sani Stancic",
+        "team": "FC Gornjak",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Michael Haslehner",
+        "team": "Union Heiligenberg",
+        "yellow": 2,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Rudolf Rossgatterer",
+        "team": "Union Eschenau",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Paul Feichtenschlager",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Michael Kaimberger",
+        "team": "FC Hinzenbach",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Andreas Humer",
+        "team": "Union Eschenau",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Manuel Pühringer",
+        "team": "Union Eschenau",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Maxwell Agbemor",
+        "team": "Walker FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Djordje Malesevic",
+        "team": "FC Gornjak",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Dominik Pfannhauser",
+        "team": "Walker FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Gerhard Busch",
+        "team": "DSG Union Traun",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Alexander Gfellner",
+        "team": "Union Eschenau",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Simon Rittberger",
+        "team": "Union Eschenau",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Paul Steininger",
+        "team": "Union Heiligenberg",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Alex Steiner",
+        "team": "Union Heiligenberg",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Edi Klaric-Jozic",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Leonardo Glavas",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Igor Vidovic",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Anto Marcinkovic",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Berislav Zuljevic",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Danijel Majer",
+        "team": "FC Gornjak",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Nemanja Ilic",
+        "team": "FC Gornjak",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Marco Braumann",
+        "team": "Union Eschenau",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Jan Schützeneder",
+        "team": "Union Heiligenberg",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Clemens Rössler",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Fabio Froschauer",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Robert Matisic",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Florian Berger",
+        "team": "FC Hinzenbach",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Roland Meindlhumer",
+        "team": "FC Hinzenbach",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Josip Peric",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Branko Marin",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Marko Burg",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Ivan Peric",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Nebojsa Krstic",
+        "team": "FC Gornjak",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Ivan Nikolov",
+        "team": "FC Gornjak",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Dominik Scheuringer",
+        "team": "Union Eschenau",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Luka Budes",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Stefan Freudenthaler",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Manuel Märzinger",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Matteo Deisenhammer",
+        "team": "FC Hinzenbach",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Slaven Steko",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Florian Lehner",
+        "team": "Union Heiligenberg",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Thomas Wagner",
+        "team": "Union Heiligenberg",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Bernhard Altendorfer",
+        "team": "Union Eschenau",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Ivan Radisavljevic",
+        "team": "FC Gornjak",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Max Grund",
+        "team": "Walker FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Michael Ahammer",
+        "team": "FC Hinzenbach",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Taher Akbar",
+        "team": "DSG Union Traun",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Stefan Amering",
+        "team": "FC Hinzenbach",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Gregor Mair",
+        "team": "Union Heiligenberg",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Shankar Poudel",
+        "team": "Walker FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Dejan Jurleta",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Darko Dovoda",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Mateo Simunovic",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Anmol Rai",
+        "team": "Walker FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Florian Rebhandl",
+        "team": "Walker FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Benjamin Stenhaug",
+        "team": "Walker FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Michael Mayr",
+        "team": "DSG Union Traun",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Moritz Radschiener",
+        "team": "DSG Union Traun",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Jakob Wagner",
+        "team": "Union Heiligenberg",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Farid Alem",
+        "team": "Union Eschenau",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Marko Ljubisavljevic",
+        "team": "FC Gornjak",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Julian Fischer",
+        "team": "DSG St. Josef/Oed FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Valentin Vejic",
+        "team": "SV Croatia Linz",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Nik Franzmair",
+        "team": "Walker FC",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Aleksandar Kostic",
+        "team": "FC Gornjak",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Manuel Zauner-Wagner",
+        "team": "Union Heiligenberg",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      },
+      {
+        "name": "Christopher Ratzenböck",
+        "team": "Union Eschenau",
+        "yellow": 1,
+        "yellowRed": 0,
+        "red": 0,
+        "suspension": ""
+      }
+    ]
+  }
+}

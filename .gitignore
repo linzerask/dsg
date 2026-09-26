@@ -1,0 +1,9 @@
+node_modules/
+scraper/node_modules/
+.DS_Store
+*.log
+check_init.js
+clean_store_sync.js
+fix_store.js
+sync_liga.js
+validate_all.js
