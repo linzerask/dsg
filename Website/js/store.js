@@ -8595,6 +8595,8 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
         data: chunk 
       }).catch(e => console.error(`Firebase save error (players_part_${idx}):`, e));
     });
+  },
+
   async getAdminLeagues() {
     let local = loadLocal('dsg_admin_leagues', 1);
     
