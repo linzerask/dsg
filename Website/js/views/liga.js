@@ -223,7 +223,7 @@ export const viewLiga = () => {
       const dateParts = m.date ? m.date.split('.') : [];
       let weekdayStr = '';
       if (dateParts.length === 3) {
-        const d = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+        let year = parseInt(dateParts[2]); if (year < 100) year += 2000; const d = new Date(year, dateParts[1] - 1, dateParts[0]);
         const days = ['SO', 'MO', 'DI', 'MI', 'DO', 'FR', 'SA'];
         if (!isNaN(d.getDay())) {
           weekdayStr = `<span style="font-weight: bold; margin-right: 4px;">${days[d.getDay()]}</span>`;

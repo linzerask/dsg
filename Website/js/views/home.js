@@ -56,7 +56,7 @@ export const viewHome = () => {
     const dateParts = nextMatch.date ? nextMatch.date.split('.') : [];
     let dayName = '';
     if (dateParts.length === 3) {
-      const d = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+      let year = parseInt(dateParts[2]); if (year < 100) year += 2000; const d = new Date(year, dateParts[1] - 1, dateParts[0]);
       if (!isNaN(d.getDay())) dayName = days[d.getDay()] + ', ';
     }
     
@@ -147,3 +147,4 @@ export const viewHome = () => {
     </div>
   `;
 };
+
