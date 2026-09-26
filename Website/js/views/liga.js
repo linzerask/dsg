@@ -49,7 +49,7 @@ export const viewLiga = () => {
     });
     // Pad with empty if less than 5
     for(let i = last5.length; i < 5; i++) {
-        html += `<span class="form-dot" style="background: rgba(255,255,255,0.1);"></span>`;
+        html += `<span class="form-dot" style="background: var(--color-border);"></span>`;
     }
     html += '</div>';
     return html;
