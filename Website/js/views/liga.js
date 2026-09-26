@@ -1,4 +1,4 @@
-import { Store } from '../store.js';
+﻿import { Store } from '../store.js';
 import { Router } from '../router.js';
 
 let currentViewSeason = "2026/2027";
@@ -14,40 +14,47 @@ export const viewLiga = () => {
   const topScorers = stats.topScorers || [];
   const matches = Store.getMatches(currentSeason) || [];
 
-  const getMatchResult = (teamName, m) => {
-    if (!m.score) return null;
-    let mainScore = m.score.split(' ')[0].replace('*', '');
-    let parts = mainScore.split(':');
-    if (parts.length !== 2) return null;
-    let sHome = parseInt(parts[0]);
-    let sAway = parseInt(parts[1]);
-    if (isNaN(sHome) || isNaN(sAway)) return null;
-
-    let isHome = m.home.trim() === teamName.trim();
-    if (sHome === sAway) return 'D';
-    if (isHome) return sHome > sAway ? 'W' : 'L';
-    return sAway > sHome ? 'W' : 'L';
-  };
-
-  const generateForm = (teamName) => {
-    const teamMatches = matches.filter(m => m.home.trim() === teamName.trim() || m.away.trim() === teamName.trim());
-    // Assume matches are chronological, take last 5
-    const last5 = teamMatches.slice(-5).reverse();
-    
-    let html = '<div class="form-guide hide-mobile">';
-    last5.forEach(m => {
-      const res = getMatchResult(teamName, m);
-      if (res) {
-        html += `<span class="form-dot form-${res}"></span>`;
+      const getMatchResult = (teamName, m) => {
+      let sHome = 0;
+      let sAway = 0;
+      if (m.status === 'Abgesagt 3:0') { sHome = 3; sAway = 0; }
+      else if (m.status === 'Abgesagt 0:3') { sHome = 0; sAway = 3; }
+      else if (m.score && m.score !== '-:-' && m.score !== '- : -') {
+        let mainScore = m.score.split(' ')[0].replace('*', '');
+        let parts = mainScore.split(':');
+        if (parts.length !== 2) return null;
+        sHome = parseInt(parts[0]);
+        sAway = parseInt(parts[1]);
+        if (isNaN(sHome) || isNaN(sAway)) return null;
+      } else {
+        return null;
       }
-    });
-    // Pad with empty if less than 5
-    for(let i = last5.length; i < 5; i++) {
-        html += `<span class="form-dot" style="background: rgba(255,255,255,0.1);"></span>`;
-    }
-    html += '</div>';
-    return html;
-  };
+      
+      let isHome = m.home.trim() === teamName.trim();
+      if (sHome === sAway) return 'D';
+      if (isHome) {
+        return sHome > sAway ? 'W' : 'L';
+      }
+      return sAway > sHome ? 'W' : 'L';
+    };
+
+    const generateForm = (teamName) => {
+      const teamMatches = matches.filter(m => (m.home.trim() === teamName.trim() || m.away.trim() === teamName.trim()) && (m.status === 'Played' || m.status === 'Abgesagt 3:0' || m.status === 'Abgesagt 0:3'));
+      const last5 = teamMatches.slice(-5);
+      
+      let html = '<div class="form-guide hide-mobile">';
+      last5.forEach(m => {
+        const res = getMatchResult(teamName, m);
+        if (res) {
+          html += <span class="form-dot form- + res + "></span>;
+        }
+      });
+      for(let i = last5.length; i < 5; i++) {
+          html += <span class="form-dot" style="background: rgba(255,255,255,0.1);"></span>;
+      }
+      html += '</div>';
+      return html;
+    };
 
   const rows = teams.map((t, i) => {
     const diff = t.gf - t.ga;
@@ -291,9 +298,9 @@ export const viewLiga = () => {
     return `
       <div class="round-slide" data-index="${idx}" style="display: ${idx === initialRoundIdx ? 'block' : 'none'}; width: 100%;">
         <div class="round-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
-           <button class="slider-btn prev-round glass-btn">◀</button>
+           <button class="slider-btn prev-round glass-btn">â—€</button>
            <div class="round-pill" style="background: rgba(142, 198, 63, 0.2); border: 1px solid var(--color-accent); padding: var(--space-xs) var(--space-md); border-radius: 50px; font-weight: bold; color: var(--color-text-primary); text-align:center;">${round}</div>
-           <button class="slider-btn next-round glass-btn">▶</button>
+           <button class="slider-btn next-round glass-btn">â–¶</button>
         </div>
         <div class="round-matches stagger-item">
           ${roundMatches}
@@ -310,7 +317,7 @@ export const viewLiga = () => {
         <div class="season-select-wrapper">
           <div class="season-select-trigger" id="season-custom-trigger">
             <span>Saison ${currentSeason}</span>
-            <span style="font-size: 0.7rem; margin-left: 10px;">▼</span>
+            <span style="font-size: 0.7rem; margin-left: 10px;">â–¼</span>
           </div>
           <div class="season-select-options" id="season-custom-options">
             ${Object.keys(Store.getData().seasons || {}).reverse().map(s => `
@@ -350,7 +357,7 @@ export const viewLiga = () => {
 
       <div id="tab-stats" class="tab-content" style="display: none;">
         <div class="stats-toggle">
-            <button class="stats-toggle-btn active" data-stats="tore">Top Torjäger</button>
+            <button class="stats-toggle-btn active" data-stats="tore">Top TorjÃ¤ger</button>
             <button class="stats-toggle-btn" data-stats="karten">Karten</button>
         </div>
 
@@ -613,3 +620,4 @@ export const bindLigaTabs = () => {
     if (statsTabBtn) statsTabBtn.click();
   }
 };
+
