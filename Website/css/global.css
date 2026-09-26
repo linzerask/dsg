@@ -1005,33 +1005,33 @@ main {
 
 .admin-table th {
     padding: var(--space-md);
-    background: rgba(0,0,0,0.2);
+    background: rgba(0, 0, 0, 0.04);
     color: var(--color-text-secondary);
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.08);
 }
 
 .admin-table th.sortable {
     cursor: pointer;
-    transition: color 0.2s;
+    transition: all 0.2s;
 }
 
 .admin-table th.sortable:hover {
     color: var(--color-text-primary);
-    background: rgba(255,255,255,0.05);
+    background: rgba(0, 0, 0, 0.08);
 }
 
 .admin-table td {
     padding: var(--space-md);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: var(--color-text-secondary);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    color: var(--color-text-primary);
 }
 
 .admin-table tbody tr:hover {
-    background: rgba(255,255,255,0.02);
+    background: rgba(0, 0, 0, 0.02);
 }
 
 .badge {

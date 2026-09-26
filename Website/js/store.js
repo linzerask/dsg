@@ -631,6 +631,16 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     } catch(e) { return []; }
   },
 
+  saveAdminPlayers(players) {
+    trySetLocal('dsg_admin_players_v1', JSON.stringify(players));
+    window.dispatchEvent(new CustomEvent('players-updated'));
+  },
+
+  saveAdminTeams(teams) {
+    trySetLocal('dsg_admin_teams_v1', JSON.stringify(teams));
+    window.dispatchEvent(new CustomEvent('teams-updated'));
+  },
+
   getGallery() {
     return memoryGallery;
   },

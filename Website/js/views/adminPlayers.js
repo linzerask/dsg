@@ -19,6 +19,7 @@ export const renderAdminPlayers = () => {
                     <option value="Inaktiv">Inaktiv</option>
                     <option value="Archiviert">Archiviert</option>
                 </select>
+                <button class="btn btn-primary" id="btn-add-player" style="font-weight: 700;">+ Spieler anlegen</button>
             </div>
         </div>
         
@@ -32,10 +33,11 @@ export const renderAdminPlayers = () => {
                         <th data-sort="Team" class="sortable">Team ↕</th>
                         <th data-sort="seit" class="sortable">Seit ↕</th>
                         <th data-sort="Status" class="sortable">Status ↕</th>
+                        <th style="width: 100px; text-align: center;">Aktion</th>
                     </tr>
                 </thead>
                 <tbody id="players-table-body">
-                    <tr><td colspan="6" style="text-align: center; padding: 2rem;">Lade Spieler...</td></tr>
+                    <tr><td colspan="7" style="text-align: center; padding: 2rem;">Lade Spieler...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -45,6 +47,51 @@ export const renderAdminPlayers = () => {
             <div style="display: flex; gap: var(--space-xs);">
                 <button id="btn-prev-page" class="btn btn-outline" style="padding: 5px 10px;">&laquo; Zurück</button>
                 <button id="btn-next-page" class="btn btn-outline" style="padding: 5px 10px;">Vor &raquo;</button>
+            </div>
+        </div>
+
+        <!-- Edit / Create Modal -->
+        <div id="player-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
+            <div class="glass-card" style="background: var(--color-surface); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <h3 id="modal-player-title" style="margin-bottom: var(--space-md);">Spieler bearbeiten</h3>
+                <form id="player-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
+                    <input type="hidden" id="edit-player-id">
+                    <div>
+                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Vorname</label>
+                        <input type="text" id="edit-vorname" class="admin-input" style="width: 100%;" required>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Nachname</label>
+                        <input type="text" id="edit-nachname" class="admin-input" style="width: 100%;" required>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Geburtsdatum</label>
+                        <input type="text" id="edit-geburt" class="admin-input" placeholder="JJJJ-MM-TT" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Team</label>
+                        <input type="text" id="edit-team" class="admin-input" style="width: 100%;" required>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Seit (Registrierungsdatum)</label>
+                        <input type="text" id="edit-seit" class="admin-input" placeholder="JJJJ-MM-TT" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Status</label>
+                        <select id="edit-status" class="admin-input" style="width: 100%;">
+                            <option value="Aktiv">Aktiv</option>
+                            <option value="Inaktiv">Inaktiv</option>
+                            <option value="Archiviert">Archiviert</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); justify-content: space-between; align-items: center;">
+                        <button type="button" id="btn-delete-player" class="btn" style="background: #e74c3c; color: white; padding: 8px 16px;">Löschen</button>
+                        <div style="display: flex; gap: var(--space-sm); margin-left: auto;">
+                            <button type="button" id="btn-close-modal" class="btn btn-outline" style="padding: 8px 16px;">Abbrechen</button>
+                            <button type="submit" class="btn btn-primary" style="padding: 8px 16px; font-weight: 700;">Speichern</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -89,7 +136,7 @@ const renderTable = () => {
     if (nextBtn) nextBtn.disabled = currentPage === totalPages;
 
     if (pageRows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">Keine Spieler gefunden.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">Keine Spieler gefunden.</td></tr>';
         return;
     }
 
@@ -97,6 +144,8 @@ const renderTable = () => {
         let badgeClass = 'badge-secondary';
         if (p.Status === 'Aktiv') badgeClass = 'badge-success';
         if (p.Status === 'Inaktiv') badgeClass = 'badge-danger';
+
+        const rawIndex = playersData.indexOf(p);
 
         return `
             <tr>
@@ -106,9 +155,52 @@ const renderTable = () => {
                 <td>${p.Team || '-'}</td>
                 <td>${p.seit || '-'}</td>
                 <td><span class="badge ${badgeClass}">${p.Status || '-'}</span></td>
+                <td style="text-align: center;">
+                    <button class="btn btn-outline edit-single-player-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px;">Bearbeiten</button>
+                </td>
             </tr>
         `;
     }).join('');
+
+    // Bind edit buttons on newly rendered rows
+    tbody.querySelectorAll('.edit-single-player-btn').forEach(btn => {
+        btn.onclick = (e) => {
+            const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+            openEditModal(idx);
+        };
+    });
+};
+
+const openEditModal = (idx = null) => {
+    const modal = document.getElementById('player-modal');
+    const title = document.getElementById('modal-player-title');
+    const deleteBtn = document.getElementById('btn-delete-player');
+    
+    if (idx !== null && playersData[idx]) {
+        const p = playersData[idx];
+        title.innerText = 'Spieler bearbeiten';
+        document.getElementById('edit-player-id').value = idx;
+        document.getElementById('edit-vorname').value = p.Vorname || '';
+        document.getElementById('edit-nachname').value = p.Nachname || '';
+        document.getElementById('edit-geburt').value = p.Geburtsdatum || '';
+        document.getElementById('edit-team').value = p.Team || '';
+        document.getElementById('edit-seit').value = p.seit || '';
+        document.getElementById('edit-status').value = p.Status || 'Aktiv';
+        deleteBtn.style.display = 'block';
+    } else {
+        title.innerText = 'Neuen Spieler anlegen';
+        document.getElementById('edit-player-id').value = 'new';
+        document.getElementById('player-edit-form').reset();
+        document.getElementById('edit-status').value = 'Aktiv';
+        deleteBtn.style.display = 'none';
+    }
+
+    modal.style.display = 'flex';
+};
+
+const closeEditModal = () => {
+    const modal = document.getElementById('player-modal');
+    if (modal) modal.style.display = 'none';
 };
 
 const applyFilters = () => {
@@ -148,6 +240,10 @@ const bindEvents = () => {
     const status = document.getElementById('player-status-filter');
     const prevBtn = document.getElementById('btn-prev-page');
     const nextBtn = document.getElementById('btn-next-page');
+    const addBtn = document.getElementById('btn-add-player');
+    const closeBtn = document.getElementById('btn-close-modal');
+    const deleteBtn = document.getElementById('btn-delete-player');
+    const form = document.getElementById('player-edit-form');
 
     if (search) search.oninput = applyFilters;
     if (status) status.onchange = applyFilters;
@@ -161,6 +257,51 @@ const bindEvents = () => {
     if (nextBtn) {
         nextBtn.onclick = () => {
             currentPage++; renderTable();
+        };
+    }
+
+    if (addBtn) addBtn.onclick = () => openEditModal(null);
+    if (closeBtn) closeBtn.onclick = closeEditModal;
+
+    if (deleteBtn) {
+        deleteBtn.onclick = () => {
+            const idVal = document.getElementById('edit-player-id').value;
+            if (idVal !== 'new') {
+                const idx = parseInt(idVal);
+                const p = playersData[idx];
+                if (confirm(`Möchten Sie den Spieler "${p.Vorname} ${p.Nachname}" wirklich löschen?`)) {
+                    playersData.splice(idx, 1);
+                    Store.saveAdminPlayers(playersData);
+                    closeEditModal();
+                    applyFilters();
+                }
+            }
+        };
+    }
+
+    if (form) {
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            const idVal = document.getElementById('edit-player-id').value;
+            const updatedPlayer = {
+                Vorname: document.getElementById('edit-vorname').value.trim(),
+                Nachname: document.getElementById('edit-nachname').value.trim(),
+                Geburtsdatum: document.getElementById('edit-geburt').value.trim(),
+                Team: document.getElementById('edit-team').value.trim(),
+                seit: document.getElementById('edit-seit').value.trim() || new Date().toISOString().split('T')[0],
+                Status: document.getElementById('edit-status').value
+            };
+
+            if (idVal === 'new') {
+                playersData.unshift(updatedPlayer);
+            } else {
+                const idx = parseInt(idVal);
+                playersData[idx] = { ...playersData[idx], ...updatedPlayer };
+            }
+
+            Store.saveAdminPlayers(playersData);
+            closeEditModal();
+            applyFilters();
         };
     }
 
