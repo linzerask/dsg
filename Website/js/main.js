@@ -1,4 +1,4 @@
-import { Router } from './router.js';
+import { Router } from './router.js?v=1790463447397';
 import { Store } from './store.js';
 
 const initApp = () => {
