@@ -108,7 +108,7 @@ const loadLocal = (prefix, maxVer) => {
 export const Store = {
   init() {
     // Eagerly load local memory so the app doesn't block on network
-    memoryData = loadLocal('dsg_data', 28) || INITIAL_DATA;
+    memoryData = loadLocal('dsg_data', 29) || INITIAL_DATA;
     memoryNews = loadLocal('dsg_articles', 18) || INITIAL_DATA.news || [];
     memoryGallery = loadLocal('dsg_gallery', 18) || INITIAL_DATA.gallery || [];
 
@@ -132,7 +132,7 @@ export const Store = {
       // Sync Data
       if (dataSnap.exists() && dataSnap.data().data) {
         const fbData = dataSnap.data().data;
-        const localData = loadLocal('dsg_data', 28);
+        const localData = loadLocal('dsg_data', 29);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
           memoryData = localData;
           needsMigration = true;
@@ -141,7 +141,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 28);
+        let legacyData = loadLocal('dsg_data', 29);
         if (!legacyData) legacyData = INITIAL_DATA;
         memoryData = legacyData;
         needsMigration = true;
@@ -181,176 +181,33 @@ export const Store = {
         needsMigration = true;
       }
 
-                              // START ONE-TIME MIGRATION FOR REAL SCORERS
+                              // START ONE-TIME MIGRATION TO WIPE SCORES
 if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     let season = memoryData.seasons["2026/2027"];
-    let realEvents = {
-        // Round 1
-        101: [
-            { type: "yellow", name: "Georgia Adrian Melci", team: "DSG Union Traun" },
-            { type: "yellow", name: "Thomas Mathis", team: "DSG Union Traun" },
-            { type: "goal", name: "Johannes Steinbock", team: "Union Heiligenberg" },
-            { type: "goal", name: "Johannes Steinbock", team: "Union Heiligenberg" },
-            { type: "goal", name: "Manuel Zauner-Wagner", team: "Union Heiligenberg" },
-            { type: "goal", name: "Benedict Humer", team: "Union Heiligenberg" },
-            { type: "goal", name: "Ernst Zahrer", team: "Union Heiligenberg" },
-            { type: "goal", name: "Paul Steininger", team: "Union Heiligenberg" },
-            { type: "goal", name: "Dominik Penninger", team: "Union Heiligenberg" },
-            { type: "yellow", name: "Thomas Wagner", team: "Union Heiligenberg" }
-        ],
-        102: [
-            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-            { type: "goal", name: "Josip Peric", team: "SV Croatia Linz" },
-            { type: "goal", name: "Josip Peric", team: "SV Croatia Linz" },
-            { type: "goal", name: "Ante Zuljevic", team: "SV Croatia Linz" },
-            { type: "goal", name: "Mohammad Sharifi", team: "Etehad Linz" },
-            { type: "goal", name: "Zia Ghaderi", team: "Etehad Linz" }
-        ],
-        103: [
-            { type: "yellow", name: "Christoph Doleschal", team: "DSG St. Josef/Oed FC" },
-            { type: "yellow", name: "Nicolaus Steurer", team: "DSG St. Josef/Oed FC" },
-            { type: "yellow", name: "Kevin Tiepelt", team: "DSG St. Josef/Oed FC" },
-            { type: "yellow", name: "Manuel Stadler", team: "DSG St. Josef/Oed FC" },
-            { type: "yellow", name: "Paul Feichtenschlager", team: "DSG St. Josef/Oed FC" },
-            { type: "yellow", name: "Florian Trefflinger", team: "DSG St. Josef/Oed FC" },
-            { type: "goal", name: "Ilija Stojchovski", team: "FC Gornjak" },
-            { type: "yellow", name: "Tobias Loizenbauer", team: "FC Gornjak" },
-            { type: "yellow", name: "Sasa Nedic", team: "FC Gornjak" },
-            { type: "yellow", name: "Sani Stancic", team: "FC Gornjak" },
-            { type: "yellow", name: "Vladica Petrovic", team: "FC Gornjak" },
-            { type: "red", name: "Aleksandar Kostic", team: "FC Gornjak" }
-        ],
-        // Round 2
-        104: [
-            { type: "goal", name: "Dominik Penninger", team: "Union Heiligenberg" },
-            { type: "goal", name: "Dominik Penninger", team: "Union Heiligenberg" },
-            { type: "goal", name: "Dominik Penninger", team: "Union Heiligenberg" },
-            { type: "goal", name: "Wolfgang Lehner", team: "Union Heiligenberg" },
-            { type: "goal", name: "Wolfgang Lehner", team: "Union Heiligenberg" },
-            { type: "goal", name: "Thomas Wagner", team: "Union Heiligenberg" },
-            { type: "goal", name: "Sebastian Boubenicek", team: "Union Heiligenberg" },
-            { type: "goal", name: "Lorenz Moser", team: "Union Heiligenberg" },
-            { type: "yellow", name: "Lorenz Moser", team: "Union Heiligenberg" },
-            { type: "yellow", name: "Martin Brenner", team: "Walker FC" }
-        ],
-        105: [
-            { type: "goal", name: "Zia Ghaderi", team: "Etehad Linz" },
-            { type: "goal", name: "Zia Ghaderi", team: "Etehad Linz" },
-            { type: "goal", name: "Abdullah Temori", team: "Etehad Linz" },
-            { type: "goal", name: "Abdullah Temori", team: "Etehad Linz" },
-            { type: "goal", name: "Askraf Laeli", team: "Etehad Linz" },
-            { type: "goal", name: "Hamid Fouladi", team: "Etehad Linz" },
-            { type: "goal", name: "Manuel Winklehner", team: "DSG Union Traun" },
-            { type: "yellow", name: "Manuel Kapfhammer", team: "DSG Union Traun" }
-        ],
-        106: [
-            { type: "goal", name: "Paul Feichtenschlager", team: "DSG St. Josef/Oed FC" },
-            { type: "goal", name: "Paul Feichtenschlager", team: "DSG St. Josef/Oed FC" },
-            { type: "goal", name: "Robert Matisic", team: "SV Croatia Linz" },
-            { type: "goal", name: "Robert Matisic", team: "SV Croatia Linz" },
-            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-            { type: "goal", name: "Darko Dovoda", team: "SV Croatia Linz" },
-            { type: "goal", name: "Branko Marin", team: "SV Croatia Linz" },
-            { type: "yellow", name: "Marko Burg", team: "SV Croatia Linz" },
-            { type: "yellow", name: "Robert Matisic", team: "SV Croatia Linz" }
-        ],
-        // Round 4 Match 1
-        109: [
-            { type: "goal", name: "Dominik Prilmüller", team: "DSG Union Traun" },
-            { type: "goal", name: "Dominik Prilmüller", team: "DSG Union Traun" },
-            { type: "goal", name: "Dominik Prilmüller", team: "DSG Union Traun" },
-            { type: "goal", name: "Ioan Gafincu", team: "DSG Union Traun" },
-            { type: "goal", name: "Ioan Gafincu", team: "DSG Union Traun" },
-            { type: "goal", name: "Taher Akbar", team: "DSG Union Traun" },
-            { type: "goal", name: "Lukas Wahl", team: "DSG Union Traun" },
-            { type: "goal", name: "Michael Mayr", team: "DSG Union Traun" },
-            { type: "yellow", name: "Taher Akbar", team: "DSG Union Traun" },
-            { type: "yellow", name: "Ninoslav Matanovic", team: "DSG Union Traun" },
-            { type: "yellow", name: "Süleyman Targil", team: "DSG Union Traun" },
-            { type: "goal", name: "Ilija Stojchovski", team: "FC Gornjak" },
-            { type: "yellow", name: "Vladica Petrovic", team: "FC Gornjak" },
-            { type: "yellow", name: "Sani Stancic", team: "FC Gornjak" }
-        ]
-    };
-
-    for (let id in realEvents) {
-        let match = season.matches.find(m => String(m.id) === String(id));
-        if (match) {
-            match.events = realEvents[id];
-            // Also fix names to players to match legacy formatting or keep names and let liga.js handle it
-            match.events.forEach(e => { e.player = e.name; }); 
-            match.scorers = match.events.filter(e => e.type === "goal");
-            match.cards = match.events.filter(e => e.type === "yellow" || e.type === "red" || e.type === "yellowRed");
-        }
-    }
     
-    // For Match 109 specifically, set status and score based on the new screenshot
-    let m109 = season.matches.find(m => m.id === 109);
-    if (m109) {
-        m109.status = "Played";
-        m109.score = "8:2";
-        m109.ht = "4:1";
-        m109.date = "2026-09-25T19:00:00";
-    }
-
+    // Wipe all matches
+    season.matches.forEach(m => {
+        m.status = "Upcoming";
+        m.score = "-:-";
+        m.ht = "";
+        m.events = [];
+        m.scorers = [];
+        m.cards = [];
+    });
+    
+    // Wipe all team stats
     season.teams.forEach(t => {
         t.played = 0; t.won = 0; t.drawn = 0; t.lost = 0; t.gf = 0; t.ga = 0; t.points = 0;
     });
+    
+    // Wipe player stats
     season.stats.topScorers = [];
     season.stats.cards = [];
-    
-    season.matches.forEach(m => {
-        if (m.status !== "Played" && m.status !== "Abgesagt 3:0" && m.status !== "Abgesagt 0:3") return;
-        let homeTeam = season.teams.find(t => t.name === m.home);
-        let awayTeam = season.teams.find(t => t.name === m.away);
-        if (!homeTeam || !awayTeam) return;
-        
-        let hg = 0, ag = 0;
-        if (m.status === "Abgesagt 3:0") { hg = 3; ag = 0; }
-        else if (m.status === "Abgesagt 0:3") { hg = 0; ag = 3; }
-        else if (m.score) {
-            let pts = m.score.split(':');
-            if (pts.length === 2) {
-                hg = parseInt(pts[0].trim());
-                ag = parseInt(pts[1].trim());
-            }
-        }
-        
-        homeTeam.played++; awayTeam.played++;
-        homeTeam.gf += hg; homeTeam.ga += ag;
-        awayTeam.gf += ag; awayTeam.ga += hg;
-        
-        if (hg > ag) { homeTeam.won++; homeTeam.points += 3; awayTeam.lost++; }
-        else if (ag > hg) { awayTeam.won++; awayTeam.points += 3; homeTeam.lost++; }
-        else { homeTeam.drawn++; awayTeam.drawn++; homeTeam.points += 1; awayTeam.points += 1; }
-        
-        if (m.scorers) {
-            m.scorers.forEach(s => {
-                let obj = season.stats.topScorers.find(ts => ts.name === s.name && ts.team === s.team);
-                if (!obj) { obj = { name: s.name, team: s.team, goals: 0 }; season.stats.topScorers.push(obj); }
-                obj.goals++;
-            });
-        }
-        if (m.cards) {
-            m.cards.forEach(c => {
-                let obj = season.stats.cards.find(tc => tc.name === c.name && tc.team === c.team);
-                if (!obj) { obj = { name: c.name, team: c.team, yellow: 0, yellowRed: 0, red: 0 }; season.stats.cards.push(obj); }
-                if (c.type === "yellow") obj.yellow++;
-                if (c.type === "yellowRed") obj.yellowRed++;
-                if (c.type === "red") obj.red++;
-            });
-        }
-    });
-    
-    season.stats.topScorers.sort((a,b) => b.goals - a.goals);
     
     memoryData.lastUpdated = Date.now();
     needsMigration = true;
 }
-// END ONE-TIME MIGRATION FOR REAL SCORERS
+// END ONE-TIME MIGRATION TO WIPE SCORES
 
         // --- HARDCODED HISTORICAL DATA ---
       if (!memoryData.seasons) memoryData.seasons = {};
@@ -408,7 +265,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
         await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v28', JSON.stringify(memoryData));
+      trySetLocal('dsg_data_v29', JSON.stringify(memoryData));
       trySetLocal('dsg_articles_v18', JSON.stringify(memoryNews));
       trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
       console.log("Migrated local data to Firebase.");
@@ -428,7 +285,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
   saveData(data) {
     data.lastUpdated = Date.now();
     memoryData = data;
-    trySetLocal('dsg_data_v28', JSON.stringify(data));
+    trySetLocal('dsg_data_v29', JSON.stringify(data));
     
     const fbSaveData = JSON.parse(JSON.stringify(data));
     if (fbSaveData.seasons && fbSaveData.seasons["2025/2026"]) {
@@ -703,6 +560,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     }
   }
 };
+
 
 
 
