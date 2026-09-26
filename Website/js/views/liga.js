@@ -354,7 +354,7 @@ export const viewLiga = () => {
         <div class="liga-header" style="display: grid; grid-template-columns: 40px 1fr 100px 40px 35px 35px 35px 70px 50px 60px; padding: 0 var(--space-md) var(--space-sm); color: var(--color-text-secondary); font-size: 0.8rem; text-transform: uppercase;">
           <span>#</span>
           <span>Team</span>
-          <span class="hide-mobile">Form</span>
+          <span>Form</span>
           <span class="hide-mobile" style="text-align: center;">Sp</span>
           <span class="hide-mobile" style="text-align: center;">S</span>
           <span class="hide-mobile" style="text-align: center;">U</span>
