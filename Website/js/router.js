@@ -4,7 +4,7 @@ import { viewLiga, bindLigaTabs } from './views/liga.js';
 import { viewArchiv } from './views/simpleViews.js';
 import { viewOrganisation, bindOrganisation } from './views/organisation.js';
 import { viewGalerie, bindGalerie } from './views/galerie.js';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1790449900000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1790450600000';
 import { viewArticle, bindArticle } from './views/article.js';
 import { viewImpressum } from './views/impressum.js';
 import { viewDatenschutz } from './views/datenschutz.js';

@@ -1,6 +1,7 @@
 import { Store } from '../store.js';
 
 let playersData = [];
+let teamsData = [];
 let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 15;
@@ -9,17 +10,26 @@ let currentSort = { column: 'seit', asc: false };
 export const renderAdminPlayers = () => {
     return `
     <div class="datagrid-container stagger-item">
-        <div class="datagrid-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: var(--space-sm);">
-            <h2>Spieler verwalten</h2>
-            <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
-                <input type="text" id="player-search" class="admin-input" placeholder="Suchen (Name, Team)..." style="width: 220px;">
-                <select id="player-status-filter" class="admin-input" style="width: 140px;">
-                    <option value="all">Alle Status</option>
-                    <option value="Aktiv">Aktiv</option>
-                    <option value="Inaktiv">Inaktiv</option>
-                    <option value="Archiviert">Archiviert</option>
-                </select>
-                <button class="btn btn-primary" id="btn-add-player" style="font-weight: 700;">+ Spieler anlegen</button>
+        <div style="display: flex; flex-direction: column; gap: var(--space-md); margin-bottom: var(--space-md);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm);">
+                <div>
+                    <h2 style="margin: 0;">Spieler verwalten</h2>
+                    <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin-top: 4px;">Übersicht und Verwaltung aller aktiven und archivierten Spieler</p>
+                </div>
+                <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;">
+                    <input type="text" id="player-search" class="admin-input" placeholder="Suchen (Name, Team)..." style="width: 220px;">
+                    <select id="player-status-filter" class="admin-input" style="width: 140px;">
+                        <option value="all">Alle Status</option>
+                        <option value="Aktiv">Aktiv</option>
+                        <option value="Inaktiv">Inaktiv</option>
+                        <option value="Archiviert">Archiviert</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="btn-add-player" style="padding: 8px 18px; font-weight: 700; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(46, 204, 113, 0.25);">
+                    <span style="font-size: 1.1rem; line-height: 1;">+</span> Spieler anlegen
+                </button>
             </div>
         </div>
         
@@ -45,8 +55,8 @@ export const renderAdminPlayers = () => {
         <div class="datagrid-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md);">
             <span id="players-page-info" style="color: var(--color-text-secondary); font-size: 0.9rem;">Zeige 0 bis 0 von 0</span>
             <div style="display: flex; gap: var(--space-xs);">
-                <button id="btn-prev-page" class="btn btn-outline" style="padding: 5px 10px;">&laquo; Zurück</button>
-                <button id="btn-next-page" class="btn btn-outline" style="padding: 5px 10px;">Vor &raquo;</button>
+                <button id="btn-prev-page" class="btn btn-outline" style="padding: 5px 12px;">&laquo; Zurück</button>
+                <button id="btn-next-page" class="btn btn-outline" style="padding: 5px 12px;">Vor &raquo;</button>
             </div>
         </div>
 
@@ -66,15 +76,17 @@ export const renderAdminPlayers = () => {
                     </div>
                     <div>
                         <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Geburtsdatum</label>
-                        <input type="text" id="edit-geburt" class="admin-input" placeholder="JJJJ-MM-TT" style="width: 100%;">
+                        <input type="date" id="edit-geburt" class="admin-input" style="width: 100%;">
                     </div>
                     <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Team</label>
-                        <input type="text" id="edit-team" class="admin-input" style="width: 100%;" required>
+                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Team (Aktive Mannschaften)</label>
+                        <select id="edit-team" class="admin-input" style="width: 100%;" required>
+                            <option value="">-- Team auswählen --</option>
+                        </select>
                     </div>
                     <div>
                         <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Seit (Registrierungsdatum)</label>
-                        <input type="text" id="edit-seit" class="admin-input" placeholder="JJJJ-MM-TT" style="width: 100%;">
+                        <input type="date" id="edit-seit" class="admin-input" style="width: 100%;">
                     </div>
                     <div>
                         <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Status</label>
@@ -102,14 +114,38 @@ export const initAdminPlayers = async () => {
     const tbody = document.getElementById('players-table-body');
     if (!tbody) return;
 
-    if (playersData.length === 0) {
-        playersData = await Store.getAdminPlayers();
-        filteredData = [...playersData];
-        sortData('seit', false);
-    }
+    const [players, teams] = await Promise.all([
+        Store.getAdminPlayers(),
+        Store.getAdminTeams()
+    ]);
     
+    playersData = players;
+    teamsData = teams;
+    filteredData = [...playersData];
+    
+    sortData('seit', false);
     bindEvents();
     renderTable();
+};
+
+const populateTeamDropdown = (currentTeam = '') => {
+    const teamSelect = document.getElementById('edit-team');
+    if (!teamSelect) return;
+
+    // Get active teams and sort alphabetically
+    const activeTeams = teamsData
+        .filter(t => t.Status === 'Aktiv')
+        .map(t => t.Name)
+        .sort((a, b) => a.localeCompare(b));
+
+    // If currentTeam is not in activeTeams (e.g. historical team), add it so existing assignment isn't lost
+    const options = [...activeTeams];
+    if (currentTeam && !options.includes(currentTeam)) {
+        options.unshift(currentTeam);
+    }
+
+    teamSelect.innerHTML = '<option value="">-- Team auswählen --</option>' + 
+        options.map(name => `<option value="${name}" ${name === currentTeam ? 'selected' : ''}>${name}</option>`).join('');
 };
 
 const renderTable = () => {
@@ -162,7 +198,6 @@ const renderTable = () => {
         `;
     }).join('');
 
-    // Bind edit buttons on newly rendered rows
     tbody.querySelectorAll('.edit-single-player-btn').forEach(btn => {
         btn.onclick = (e) => {
             const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
@@ -176,14 +211,15 @@ const openEditModal = (idx = null) => {
     const title = document.getElementById('modal-player-title');
     const deleteBtn = document.getElementById('btn-delete-player');
     
+    let currentTeam = '';
     if (idx !== null && playersData[idx]) {
         const p = playersData[idx];
+        currentTeam = p.Team || '';
         title.innerText = 'Spieler bearbeiten';
         document.getElementById('edit-player-id').value = idx;
         document.getElementById('edit-vorname').value = p.Vorname || '';
         document.getElementById('edit-nachname').value = p.Nachname || '';
         document.getElementById('edit-geburt').value = p.Geburtsdatum || '';
-        document.getElementById('edit-team').value = p.Team || '';
         document.getElementById('edit-seit').value = p.seit || '';
         document.getElementById('edit-status').value = p.Status || 'Aktiv';
         deleteBtn.style.display = 'block';
@@ -192,9 +228,11 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-player-id').value = 'new';
         document.getElementById('player-edit-form').reset();
         document.getElementById('edit-status').value = 'Aktiv';
+        document.getElementById('edit-seit').value = new Date().toISOString().split('T')[0];
         deleteBtn.style.display = 'none';
     }
 
+    populateTeamDropdown(currentTeam);
     modal.style.display = 'flex';
 };
 
@@ -286,9 +324,9 @@ const bindEvents = () => {
             const updatedPlayer = {
                 Vorname: document.getElementById('edit-vorname').value.trim(),
                 Nachname: document.getElementById('edit-nachname').value.trim(),
-                Geburtsdatum: document.getElementById('edit-geburt').value.trim(),
-                Team: document.getElementById('edit-team').value.trim(),
-                seit: document.getElementById('edit-seit').value.trim() || new Date().toISOString().split('T')[0],
+                Geburtsdatum: document.getElementById('edit-geburt').value,
+                Team: document.getElementById('edit-team').value,
+                seit: document.getElementById('edit-seit').value || new Date().toISOString().split('T')[0],
                 Status: document.getElementById('edit-status').value
             };
 
