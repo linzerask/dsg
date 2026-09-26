@@ -108,7 +108,7 @@ const loadLocal = (prefix, maxVer) => {
 export const Store = {
   init() {
     // Eagerly load local memory so the app doesn't block on network
-    memoryData = loadLocal('dsg_data', 30) || INITIAL_DATA;
+    memoryData = loadLocal('dsg_data', 31) || INITIAL_DATA;
     memoryNews = loadLocal('dsg_articles', 18) || INITIAL_DATA.news || [];
     memoryGallery = loadLocal('dsg_gallery', 18) || INITIAL_DATA.gallery || [];
 
@@ -132,7 +132,7 @@ export const Store = {
       // Sync Data
       if (dataSnap.exists() && dataSnap.data().data) {
         const fbData = dataSnap.data().data;
-        const localData = loadLocal('dsg_data', 30);
+        const localData = loadLocal('dsg_data', 31);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
           memoryData = localData;
           needsMigration = true;
@@ -141,7 +141,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 30);
+        let legacyData = loadLocal('dsg_data', 31);
         if (!legacyData) legacyData = INITIAL_DATA;
         memoryData = legacyData;
         needsMigration = true;
@@ -181,52 +181,50 @@ export const Store = {
         needsMigration = true;
       }
 
-                              // START ONE-TIME MIGRATION FOR R1
+                              // START ONE-TIME MIGRATION FOR R2
 if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     let season = memoryData.seasons["2026/2027"];
     let realEvents = {
-        101: [
-            { type: "yellow", name: "Georgia Adrian Melci", team: "DSG Union Traun" },
-            { type: "yellow", name: "Thomas Mathis", team: "DSG Union Traun" },
-            { type: "goal", name: "Johannes Steinbock", team: "Union Heiligenberg" },
-            { type: "goal", name: "Johannes Steinbock", team: "Union Heiligenberg" },
-            { type: "goal", name: "Manuel Zauner-Wagner", team: "Union Heiligenberg" },
-            { type: "goal", name: "Benedict Humer", team: "Union Heiligenberg" },
-            { type: "goal", name: "Ernst Zahrer", team: "Union Heiligenberg" },
-            { type: "goal", name: "Paul Steininger", team: "Union Heiligenberg" },
+        104: [
             { type: "goal", name: "Dominik Penninger", team: "Union Heiligenberg" },
-            { type: "yellow", name: "Thomas Wagner", team: "Union Heiligenberg" }
+            { type: "goal", name: "Dominik Penninger", team: "Union Heiligenberg" },
+            { type: "goal", name: "Dominik Penninger", team: "Union Heiligenberg" },
+            { type: "goal", name: "Wolfgang Lehner", team: "Union Heiligenberg" },
+            { type: "goal", name: "Wolfgang Lehner", team: "Union Heiligenberg" },
+            { type: "goal", name: "Thomas Wagner", team: "Union Heiligenberg" },
+            { type: "goal", name: "Sebastian Boubenicek", team: "Union Heiligenberg" },
+            { type: "goal", name: "Lorenz Moser", team: "Union Heiligenberg" },
+            { type: "yellow", name: "Lorenz Moser", team: "Union Heiligenberg" },
+            { type: "yellow", name: "Martin Brenner", team: "Walker FC" }
         ],
-        102: [
-            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
-            { type: "goal", name: "Josip Peric", team: "SV Croatia Linz" },
-            { type: "goal", name: "Josip Peric", team: "SV Croatia Linz" },
-            { type: "goal", name: "Ante Zuljevic", team: "SV Croatia Linz" },
-            { type: "goal", name: "Mohammad Sharifi", team: "Etehad Linz" },
-            { type: "goal", name: "Zia Ghaderi", team: "Etehad Linz" }
+        105: [
+            { type: "goal", name: "Zia Ghaderi", team: "Etehad Linz" },
+            { type: "goal", name: "Zia Ghaderi", team: "Etehad Linz" },
+            { type: "goal", name: "Abdullah Temori", team: "Etehad Linz" },
+            { type: "goal", name: "Abdullah Temori", team: "Etehad Linz" },
+            { type: "goal", name: "Askraf Laeli", team: "Etehad Linz" },
+            { type: "goal", name: "Hamid Fouladi", team: "Etehad Linz" },
+            { type: "goal", name: "Manuel Winklehner", team: "DSG Union Traun" },
+            { type: "yellow", name: "Manuel Kapfhammer", team: "DSG Union Traun" }
         ],
-        103: [
-            { type: "yellow", name: "Christoph Doleschal", team: "DSG St. Josef/Oed FC" },
-            { type: "yellow", name: "Nicolaus Steurer", team: "DSG St. Josef/Oed FC" },
-            { type: "yellow", name: "Kevin Tiepelt", team: "DSG St. Josef/Oed FC" },
-            { type: "yellow", name: "Manuel Stadler", team: "DSG St. Josef/Oed FC" },
-            { type: "yellow", name: "Paul Feichtenschlager", team: "DSG St. Josef/Oed FC" },
-            { type: "yellow", name: "Florian Trefflinger", team: "DSG St. Josef/Oed FC" },
-            { type: "goal", name: "Ilija Stojchovski", team: "FC Gornjak" },
-            { type: "yellow", name: "Tobias Loizenbauer", team: "FC Gornjak" },
-            { type: "yellow", name: "Sasa Nedic", team: "FC Gornjak" },
-            { type: "yellow", name: "Sani Stancic", team: "FC Gornjak" },
-            { type: "yellow", name: "Vladica Petrovic", team: "FC Gornjak" },
-            { type: "red", name: "Aleksandar Kostic", team: "FC Gornjak" }
+        106: [
+            { type: "goal", name: "Paul Feichtenschlager", team: "DSG St. Josef/Oed FC" },
+            { type: "goal", name: "Paul Feichtenschlager", team: "DSG St. Josef/Oed FC" },
+            { type: "goal", name: "Robert Matisic", team: "SV Croatia Linz" },
+            { type: "goal", name: "Robert Matisic", team: "SV Croatia Linz" },
+            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
+            { type: "goal", name: "Leonardo Glavas", team: "SV Croatia Linz" },
+            { type: "goal", name: "Darko Dovoda", team: "SV Croatia Linz" },
+            { type: "goal", name: "Branko Marin", team: "SV Croatia Linz" },
+            { type: "yellow", name: "Marko Burg", team: "SV Croatia Linz" },
+            { type: "yellow", name: "Robert Matisic", team: "SV Croatia Linz" }
         ]
     };
 
     let scoreUpdates = {
-        101: { score: "0:7", ht: "0:4" },
-        102: { score: "6:2", ht: "2:0" },
-        103: { score: "0:1", ht: "0:1" }
+        104: { score: "8:0", ht: "2:0" },
+        105: { score: "6:1", ht: "2:1" },
+        106: { score: "2:6", ht: "0:4" }
     };
 
     for (let id in realEvents) {
@@ -296,7 +294,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     memoryData.lastUpdated = Date.now();
     needsMigration = true;
 }
-// END ONE-TIME MIGRATION FOR R1
+// END ONE-TIME MIGRATION FOR R2
 
         // --- HARDCODED HISTORICAL DATA ---
       if (!memoryData.seasons) memoryData.seasons = {};
@@ -354,7 +352,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
         await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v30', JSON.stringify(memoryData));
+      trySetLocal('dsg_data_v31', JSON.stringify(memoryData));
       trySetLocal('dsg_articles_v18', JSON.stringify(memoryNews));
       trySetLocal('dsg_gallery_v18', JSON.stringify(memoryGallery));
       console.log("Migrated local data to Firebase.");
@@ -374,7 +372,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
   saveData(data) {
     data.lastUpdated = Date.now();
     memoryData = data;
-    trySetLocal('dsg_data_v30', JSON.stringify(data));
+    trySetLocal('dsg_data_v31', JSON.stringify(data));
     
     const fbSaveData = JSON.parse(JSON.stringify(data));
     if (fbSaveData.seasons && fbSaveData.seasons["2025/2026"]) {
@@ -649,6 +647,7 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     }
   }
 };
+
 
 
 
