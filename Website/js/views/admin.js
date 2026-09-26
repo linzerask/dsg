@@ -1,5 +1,7 @@
 import { Store } from '../store.js';
 import { Router } from '../router.js';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js';
 
 export const viewAdmin = () => {
   return `
@@ -8,6 +10,7 @@ export const viewAdmin = () => {
         <h2 style="font-size: 1.5rem; color: var(--color-accent); margin-bottom: var(--space-lg);">Admin Panel</h2>
         <nav style="display: flex; flex-direction: column; gap: var(--space-sm);">
           <button class="admin-nav-btn active" data-target="admin-scores" style="text-align: left; padding: var(--space-sm); color: var(--color-text-primary); font-weight: 700; background: rgba(0,0,0,0.05); border-radius: 4px;">Spielergebnisse</button>
+          <button class="admin-nav-btn" data-target="admin-players" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Spieler verwalten</button>
           <button class="admin-nav-btn" data-target="admin-teams" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Teams verwalten</button>
           <button class="admin-nav-btn" data-target="admin-news" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">News verwalten</button>
           <button class="admin-nav-btn" data-target="admin-gallery" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Galerie verwalten</button>

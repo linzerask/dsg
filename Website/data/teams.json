@@ -1,0 +1,488 @@
+[
+  {
+    "ID": "11",
+    "Name": "DSG Auberg",
+    "Status": "Nein",
+    "Aktive Spieler": "13",
+    "Aktiv seit": "",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "20",
+    "Name": "DSG St. Josef/Oed FC",
+    "Status": "Aktiv",
+    "Aktive Spieler": "49",
+    "Aktiv seit": "",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "15",
+    "Name": "DSG Thalheim",
+    "Status": "Nein",
+    "Aktive Spieler": "50",
+    "Aktiv seit": "",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "4",
+    "Name": "DSG UKJ Froschberg",
+    "Status": "Nein",
+    "Aktive Spieler": "52",
+    "Aktiv seit": "2026-09-26",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "2",
+    "Name": "DSG Union Traun",
+    "Status": "Aktiv",
+    "Aktive Spieler": "53",
+    "Aktiv seit": "1979-08-15",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "54",
+    "Name": "Etehad Linz",
+    "Status": "Aktiv",
+    "Aktive Spieler": "27",
+    "Aktiv seit": "2026-08-01",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "49",
+    "Name": "FC Bruck",
+    "Status": "Nein",
+    "Aktive Spieler": "42",
+    "Aktiv seit": "2020-08-01",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "50",
+    "Name": "FC Gornjak",
+    "Status": "Aktiv",
+    "Aktive Spieler": "36",
+    "Aktiv seit": "2020-08-01",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "35",
+    "Name": "SV Croatia Linz",
+    "Status": "Aktiv",
+    "Aktive Spieler": "50",
+    "Aktiv seit": "2009-08-01",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "51",
+    "Name": "Union Geboltskirchen",
+    "Status": "Nein",
+    "Aktive Spieler": "53",
+    "Aktiv seit": "2021-08-01",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "40",
+    "Name": "Union Goldwörth",
+    "Status": "Nein",
+    "Aktive Spieler": "39",
+    "Aktiv seit": "2015-08-01",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "23",
+    "Name": "Union Heiligenberg",
+    "Status": "Aktiv",
+    "Aktive Spieler": "50",
+    "Aktiv seit": "1999-08-15",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "9",
+    "Name": "Walker FC",
+    "Status": "Aktiv",
+    "Aktive Spieler": "50",
+    "Aktiv seit": "1991-08-15",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "19",
+    "Name": "1. FC Grabnerhof Linz",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "0000-00-00",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "46",
+    "Name": "AC Wörth",
+    "Status": "Nein",
+    "Aktive Spieler": "30",
+    "Aktiv seit": "2016-08-01",
+    "Inaktiv seit": "2019-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "37",
+    "Name": "bet-at-home Allstars",
+    "Status": "Nein",
+    "Aktive Spieler": "2",
+    "Aktiv seit": "2013-08-01",
+    "Inaktiv seit": "2015-07-01",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "43",
+    "Name": "bpp Bautechnik Kickers Alkoven",
+    "Status": "Nein",
+    "Aktive Spieler": "48",
+    "Aktiv seit": "2015-08-01",
+    "Inaktiv seit": "2022-03-01",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "18",
+    "Name": "CBC-X.COM (wette.at; Wettbüro Linz)",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "0000-00-00",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "17",
+    "Name": "DSG CBW 76",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "0000-00-00",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "10",
+    "Name": "DSG GT Audorf",
+    "Status": "Nein",
+    "Aktive Spieler": "43",
+    "Aktiv seit": "1992-08-15",
+    "Inaktiv seit": "2021-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "27",
+    "Name": "DSG U. Bindermichl",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "2001-09-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "12",
+    "Name": "DSG U. FC Waldegg",
+    "Status": "Nein",
+    "Aktive Spieler": "47",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "2018-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "29",
+    "Name": "DSG U. Hargelsberg",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "2006-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "14",
+    "Name": "DSG U. SC Linzomatic",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "2002-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "1",
+    "Name": "DSG U. Traun I",
+    "Status": "Nein",
+    "Aktive Spieler": "27",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "2018-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "13",
+    "Name": "DSG Urfahr",
+    "Status": "Nein",
+    "Aktive Spieler": "47",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "2022-04-01",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "52",
+    "Name": "FC Anatolia",
+    "Status": "Nein",
+    "Aktive Spieler": "34",
+    "Aktiv seit": "2022-08-01",
+    "Inaktiv seit": "2022-10-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "6",
+    "Name": "FC Cafe Maxi",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "0000-00-00",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "42",
+    "Name": "FC Haizing",
+    "Status": "Nein",
+    "Aktive Spieler": "44",
+    "Aktiv seit": "2015-08-01",
+    "Inaktiv seit": "2018-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "41",
+    "Name": "FC Hinzenbach",
+    "Status": "Nein",
+    "Aktive Spieler": "49",
+    "Aktiv seit": "2015-08-01",
+    "Inaktiv seit": "2026-08-01",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "30",
+    "Name": "FC Linimayr",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "2005-05-10",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "45",
+    "Name": "FC Nibelungen",
+    "Status": "Nein",
+    "Aktive Spieler": "4",
+    "Aktiv seit": "2016-08-01",
+    "Inaktiv seit": "2020-08-01",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "22",
+    "Name": "FC Nibelungen",
+    "Status": "Nein",
+    "Aktive Spieler": "41",
+    "Aktiv seit": "1999-08-15",
+    "Inaktiv seit": "2000-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "33",
+    "Name": "FC Sherry 09",
+    "Status": "Nein",
+    "Aktive Spieler": "5",
+    "Aktiv seit": "2009-08-01",
+    "Inaktiv seit": "2015-09-01",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "31",
+    "Name": "FC U. Schleißheim",
+    "Status": "Nein",
+    "Aktive Spieler": "50",
+    "Aktiv seit": "2007-08-01",
+    "Inaktiv seit": "2040-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "7",
+    "Name": "FK Manjaca",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "1996-08-15",
+    "Inaktiv seit": "2003-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "39",
+    "Name": "FK Torcida",
+    "Status": "Nein",
+    "Aktive Spieler": "1",
+    "Aktiv seit": "2014-08-01",
+    "Inaktiv seit": "2015-11-01",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "26",
+    "Name": "HNK Lasva",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "2000-08-15",
+    "Inaktiv seit": "2010-04-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "53",
+    "Name": "Hrvatski centar Linz",
+    "Status": "Nein",
+    "Aktive Spieler": "44",
+    "Aktiv seit": "2024-08-01",
+    "Inaktiv seit": "2025-08-01",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "3",
+    "Name": "JKAJ Traun",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "1974-08-15",
+    "Inaktiv seit": "2005-10-25",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "48",
+    "Name": "Kicker der Kokusnuss",
+    "Status": "Nein",
+    "Aktive Spieler": "42",
+    "Aktiv seit": "2019-08-01",
+    "Inaktiv seit": "2021-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "16",
+    "Name": "KJ St. Antonius",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "2009-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "38",
+    "Name": "Lokomotive St. Florian",
+    "Status": "Nein",
+    "Aktive Spieler": "40",
+    "Aktiv seit": "2013-08-01",
+    "Inaktiv seit": "2018-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "25",
+    "Name": "Orky Team 2000",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "1999-08-15",
+    "Inaktiv seit": "2000-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "32",
+    "Name": "Pro Sport United",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "2007-08-01",
+    "Inaktiv seit": "2013-05-07",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "28",
+    "Name": "SC No Name",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "2002-08-15",
+    "Inaktiv seit": "2005-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "47",
+    "Name": "SC Rottenegg",
+    "Status": "Nein",
+    "Aktive Spieler": "32",
+    "Aktiv seit": "2019-08-01",
+    "Inaktiv seit": "2020-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "44",
+    "Name": "Schwarz-Weiß Linz",
+    "Status": "Nein",
+    "Aktive Spieler": "37",
+    "Aktiv seit": "2015-08-01",
+    "Inaktiv seit": "2022-07-01",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "36",
+    "Name": "SK Vöest Linz",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "2013-08-01",
+    "Inaktiv seit": "2014-06-30",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "8",
+    "Name": "SPG Linz/Urfahr (FC Bayern Stub'n)",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "2013-12-31",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "21",
+    "Name": "Strom United (FC Parkbad)",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "2002-04-22",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "34",
+    "Name": "U. Bachmanning",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "2009-08-01",
+    "Inaktiv seit": "2011-07-01",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "24",
+    "Name": "Union Eschenau",
+    "Status": "Nein",
+    "Aktive Spieler": "47",
+    "Aktiv seit": "1999-08-15",
+    "Inaktiv seit": "2026-08-01",
+    "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "5",
+    "Name": "Union Sportiv Linz",
+    "Status": "Nein",
+    "Aktive Spieler": "0",
+    "Aktiv seit": "0000-00-00",
+    "Inaktiv seit": "1997-06-30",
+    "Action": "Edit Delete Spieler"
+  }
+]

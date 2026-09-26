@@ -970,3 +970,88 @@ main {
   font-weight: 700;
   border-left: 3px solid var(--color-accent);
 }
+/* Datagrid Styles */
+.datagrid-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.admin-input {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    border: var(--glass-border);
+    padding: var(--space-sm);
+    border-radius: var(--border-radius-sm);
+    font-family: inherit;
+}
+
+.admin-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.table-responsive {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.admin-table th {
+    padding: var(--space-md);
+    background: rgba(0,0,0,0.2);
+    color: var(--color-text-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.admin-table th.sortable {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.admin-table th.sortable:hover {
+    color: var(--color-text-primary);
+    background: rgba(255,255,255,0.05);
+}
+
+.admin-table td {
+    padding: var(--space-md);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--color-text-secondary);
+}
+
+.admin-table tbody tr:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+.badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.badge-success {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+}
+
+.badge-danger {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+.badge-secondary {
+    background: rgba(149, 165, 166, 0.2);
+    color: #95a5a6;
+}

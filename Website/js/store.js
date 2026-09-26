@@ -608,6 +608,29 @@ if (memoryData.seasons && memoryData.seasons["2026/2027"]) {
     }
   },
 
+
+  async getAdminTeams() {
+    let local = loadLocal('dsg_admin_teams', 1);
+    if (local) return local;
+    try {
+      const res = await fetch('data/teams.json');
+      const data = await res.json();
+      trySetLocal('dsg_admin_teams_v1', JSON.stringify(data));
+      return data;
+    } catch(e) { return []; }
+  },
+
+  async getAdminPlayers() {
+    let local = loadLocal('dsg_admin_players', 1);
+    if (local) return local;
+    try {
+      const res = await fetch('data/players.json');
+      const data = await res.json();
+      trySetLocal('dsg_admin_players_v1', JSON.stringify(data));
+      return data;
+    } catch(e) { return []; }
+  },
+
   getGallery() {
     return memoryGallery;
   },
