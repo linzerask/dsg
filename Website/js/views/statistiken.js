@@ -1,9 +1,11 @@
-import { Store } from '../store.js?v=1790560000008';
-import { renderIcon } from '../icons.js?v=1790560000008';
+import { Store } from '../store.js?v=1790560000009';
+import { renderIcon } from '../icons.js?v=1790560000009';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
 let clubSearchQuery = '';
+let scorerPage = 1;
+const SCORERS_PER_PAGE = 20;
 
 // Helper: Compute aggregate statistics dynamically from Store data
 export const computeAllTimeStats = () => {
@@ -264,6 +266,59 @@ export const viewStatistiken = () => {
     ? clubs.filter(c => c.name.toLowerCase().includes(clubSearchQuery.toLowerCase()))
     : clubs;
 
+  // Pagination for Scorers
+  const totalScorers = filteredScorers.length;
+  const totalPages = Math.ceil(totalScorers / SCORERS_PER_PAGE) || 1;
+  if (scorerPage > totalPages) scorerPage = totalPages;
+  if (scorerPage < 1) scorerPage = 1;
+
+  const startIndex = (scorerPage - 1) * SCORERS_PER_PAGE;
+  const endIndex = Math.min(startIndex + SCORERS_PER_PAGE, totalScorers);
+  const pageScorers = filteredScorers.slice(startIndex, endIndex);
+
+  const renderScorerPagination = () => {
+    if (totalPages <= 1) return '';
+    let pages = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (scorerPage > 3) pages.push('...');
+      const start = Math.max(2, scorerPage - 1);
+      const end = Math.min(totalPages - 1, scorerPage + 1);
+      for (let i = start; i <= end; i++) {
+        if (!pages.includes(i)) pages.push(i);
+      }
+      if (scorerPage < totalPages - 2) pages.push('...');
+      if (!pages.includes(totalPages)) pages.push(totalPages);
+    }
+
+    return `
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--color-border);">
+        <div style="font-size: 0.88rem; color: var(--color-text-secondary);">
+          Zeige <strong style="color: var(--color-text-primary);">${totalScorers > 0 ? startIndex + 1 : 0}&ndash;${endIndex}</strong> von <strong style="color: var(--color-text-primary);">${totalScorers}</strong> Torschützen (Seite ${scorerPage} von ${totalPages})
+        </div>
+        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+          <button class="stats-page-btn stats-prev-page glass-btn" data-page="${scorerPage - 1}" ${scorerPage === 1 ? 'disabled style="opacity: 0.35; pointer-events: none; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;"' : 'style="padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;"'}>
+            &laquo; Zurück
+          </button>
+          ${pages.map(p => {
+            if (p === '...') return `<span style="padding: 6px 8px; color: var(--color-text-secondary); font-size: 0.85rem;">&hellip;</span>`;
+            const isActive = p === scorerPage;
+            return `
+              <button class="stats-page-btn" data-page="${p}" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid ${isActive ? 'var(--color-accent)' : 'var(--color-border)'}; background: ${isActive ? 'var(--color-accent)' : 'var(--color-surface)'}; color: ${isActive ? '#ffffff' : 'var(--color-text-primary)'}; cursor: pointer; font-size: 0.85rem; font-weight: ${isActive ? '800' : '600'}; transition: all 0.2s;">
+                ${p}
+              </button>
+            `;
+          }).join('')}
+          <button class="stats-page-btn stats-next-page glass-btn" data-page="${scorerPage + 1}" ${scorerPage === totalPages ? 'disabled style="opacity: 0.35; pointer-events: none; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;"' : 'style="padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;"'}>
+            Weiter &raquo;
+          </button>
+        </div>
+      </div>
+    `;
+  };
+
   // Top 3 Podium Cards for Hall of Fame
   const top1 = topScorers[0];
   const top2 = topScorers[1];
@@ -405,35 +460,36 @@ export const viewStatistiken = () => {
             <table class="league-table" style="width: 100%; border-collapse: collapse; text-align: left;">
               <thead>
                 <tr style="border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); font-size: 0.85rem;">
-                  <th style="padding: 10px; width: 50px;">Rang</th>
-                  <th style="padding: 10px;">Spieler</th>
-                  <th style="padding: 10px;">Verein(e)</th>
-                  <th style="padding: 10px; text-align: center;">Saisons</th>
-                  <th style="padding: 10px; text-align: right;">Tore gesamt</th>
+                  <th style="padding: 12px 10px; width: 65px;">Rang</th>
+                  <th style="padding: 12px 10px;">Spieler</th>
+                  <th style="padding: 12px 10px;">Verein(e)</th>
+                  <th style="padding: 12px 10px; text-align: center;">Saisons</th>
+                  <th style="padding: 12px 10px; text-align: right;">Tore gesamt</th>
                 </tr>
               </thead>
               <tbody>
-                ${filteredScorers.length > 0 ? filteredScorers.map((s, idx) => {
+                ${pageScorers.length > 0 ? pageScorers.map((s, idx) => {
+                  const globalRank = startIndex + idx + 1;
                   let badge = '';
-                  if (idx === 0 && !scorerSearchQuery) badge = `${renderIcon('crown', { size: 14, color: '#f59e0b', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
-                  else if (idx === 1 && !scorerSearchQuery) badge = `${renderIcon('medal', { size: 14, color: '#94a3b8', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
-                  else if (idx === 2 && !scorerSearchQuery) badge = `${renderIcon('medal', { size: 14, color: '#b45309', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
+                  if (globalRank === 1 && !scorerSearchQuery) badge = `${renderIcon('crown', { size: 14, color: '#f59e0b', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
+                  else if (globalRank === 2 && !scorerSearchQuery) badge = `${renderIcon('medal', { size: 14, color: '#94a3b8', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
+                  else if (globalRank === 3 && !scorerSearchQuery) badge = `${renderIcon('medal', { size: 14, color: '#b45309', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
 
                   return `
                     <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem;">
-                      <td style="padding: 10px; font-weight: 700; color: ${idx < 3 && !scorerSearchQuery ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">
-                        ${badge}${idx + 1}.
+                      <td style="padding: 12px 10px; font-weight: 700; color: ${globalRank <= 3 && !scorerSearchQuery ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">
+                        ${badge}${globalRank}.
                       </td>
-                      <td style="padding: 10px; font-weight: 600; color: var(--color-text-primary);">
+                      <td style="padding: 12px 10px; font-weight: 600; color: var(--color-text-primary);">
                         ${s.name}
                       </td>
-                      <td style="padding: 10px; color: var(--color-text-secondary); font-size: 0.88rem;">
+                      <td style="padding: 12px 10px; color: var(--color-text-secondary); font-size: 0.88rem;">
                         ${s.teams.join(', ') || '-'}
                       </td>
-                      <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">
+                      <td style="padding: 12px 10px; text-align: center; color: var(--color-text-secondary);">
                         ${s.seasonsCount}
                       </td>
-                      <td style="padding: 10px; text-align: right; font-weight: 800; font-size: 1.05rem; color: var(--color-accent);">
+                      <td style="padding: 12px 10px; text-align: right; font-weight: 800; font-size: 1.05rem; color: var(--color-accent);">
                         ${s.goals}
                       </td>
                     </tr>
@@ -446,6 +502,10 @@ export const viewStatistiken = () => {
               </tbody>
             </table>
           </div>
+
+          <!-- Pagination Controls -->
+          ${renderScorerPagination()}
+
         </div>
 
       </div>
@@ -510,37 +570,54 @@ export const viewStatistiken = () => {
 
       <!-- TAB 3: EHRENTAFEL DER MEISTER -->
       <div id="stats-section-champions" class="stats-section" style="display: ${activeStatsTab === 'champions' ? 'block' : 'none'};">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-lg);">
           ${stats.seasonHonors.map(h => `
-            <div class="glass-card" style="padding: var(--space-lg); border-top: 3px solid var(--color-accent); display: flex; flex-direction: column; gap: var(--space-sm);">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: 800; font-size: 1.15rem; color: var(--color-accent);">Saison ${h.season}</span>
-                <span>${renderIcon('trophy', { size: 24, color: '#f59e0b' })}</span>
-              </div>
-              
-              <div style="margin-top: 6px; padding: 12px; background: rgba(142, 198, 63, 0.08); border-radius: 6px; border: 1px solid rgba(142, 198, 63, 0.2);">
-                <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Meister</div>
-                <div style="font-size: 1.25rem; font-weight: 800; color: var(--color-text-primary); margin-top: 2px;">${h.champion}</div>
-                <div style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 2px;">${h.championPoints} Punkte &bull; ${h.championPlayed} Spiele</div>
+            <div class="glass-card" style="padding: var(--space-lg); border-top: 4px solid var(--color-accent); display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-md); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+                  <span style="font-weight: 800; font-size: 1.25rem; color: var(--color-accent); letter-spacing: 0.5px;">Saison ${h.season}</span>
+                  <div style="width: 38px; height: 38px; border-radius: 50%; background: rgba(245, 158, 11, 0.12); display: flex; align-items: center; justify-content: center;">
+                    ${renderIcon('trophy', { size: 22, color: '#f59e0b' })}
+                  </div>
+                </div>
+                
+                <!-- Meister Box -->
+                <div style="padding: 14px 16px; background: rgba(142, 198, 63, 0.09); border-radius: 8px; border: 1px solid rgba(142, 198, 63, 0.25);">
+                  <div style="font-size: 0.72rem; font-weight: 800; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.6px;">Meister</div>
+                  <div style="font-size: 1.3rem; font-weight: 800; color: var(--color-text-primary); margin: 3px 0 2px 0;">${h.champion}</div>
+                  <div style="font-size: 0.85rem; color: var(--color-text-secondary); font-weight: 500;">
+                    <strong style="color: var(--color-text-primary);">${h.championPoints} Punkte</strong> &bull; ${h.championPlayed} Spiele
+                  </div>
+                </div>
               </div>
 
-              ${h.runnerUp ? `
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                  <span style="color: var(--color-text-secondary); display: flex; align-items: center; gap: 4px;">
-                    ${renderIcon('medal', { size: 15, color: '#94a3b8' })} Vizemeister:
-                  </span>
-                  <span style="font-weight: 600; color: var(--color-text-primary);">${h.runnerUp} (${h.runnerUpPoints} Pkt)</span>
-                </div>
-              ` : ''}
+              <!-- Secondary Honors Info -->
+              <div style="display: flex; flex-direction: column; gap: 8px; background: rgba(0, 0, 0, 0.02); padding: 12px 14px; border-radius: 8px; border: 1px solid var(--color-border);">
+                ${h.runnerUp ? `
+                  <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; padding-bottom: 8px; border-bottom: 1px solid var(--color-border); gap: 10px;">
+                    <span style="color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap;">
+                      ${renderIcon('medal', { size: 15, color: '#94a3b8' })} Vizemeister:
+                    </span>
+                    <span style="font-weight: 700; color: var(--color-text-primary); text-align: right;">
+                      ${h.runnerUp} <span style="font-weight: 500; color: var(--color-text-secondary); font-size: 0.8rem;">(${h.runnerUpPoints} Pkt)</span>
+                    </span>
+                  </div>
+                ` : ''}
 
-              ${h.topScorer && h.topScorer !== 'N/A' ? `
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; padding: 6px 0;">
-                  <span style="color: var(--color-text-secondary); display: flex; align-items: center; gap: 4px;">
-                    ${renderIcon('ball', { size: 15, color: 'var(--color-accent)' })} Torschützenkönig:
-                  </span>
-                  <span style="font-weight: 600; color: var(--color-accent); text-align: right;">${h.topScorer} (${h.topScorerGoals} Tore)</span>
-                </div>
-              ` : ''}
+                ${h.topScorer && h.topScorer !== 'N/A' ? `
+                  <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; gap: 10px;">
+                    <span style="color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap;">
+                      ${renderIcon('ball', { size: 15, color: 'var(--color-accent)' })} Torschützenkönig:
+                    </span>
+                    <div style="text-align: right;">
+                      <div style="font-weight: 700; color: var(--color-accent);">
+                        ${h.topScorer} <span style="font-weight: 800; color: var(--color-accent); font-size: 0.82rem;">(${h.topScorerGoals} Tore)</span>
+                      </div>
+                      ${h.topScorerTeam ? `<div style="font-size: 0.75rem; font-weight: 500; color: var(--color-text-secondary);">${h.topScorerTeam}</div>` : ''}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
             </div>
           `).join('')}
         </div>
@@ -679,6 +756,7 @@ export const bindStatistiken = () => {
   const scorerSearch = document.getElementById('stats-scorer-search');
   scorerSearch?.addEventListener('input', (e) => {
     scorerSearchQuery = e.target.value;
+    scorerPage = 1;
     import('../router.js').then(module => module.Router.handleRoute());
   });
 
@@ -688,4 +766,25 @@ export const bindStatistiken = () => {
     clubSearchQuery = e.target.value;
     import('../router.js').then(module => module.Router.handleRoute());
   });
+
+  // Pagination click handlers
+  const pageBtns = document.querySelectorAll('.stats-page-btn');
+  pageBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const page = parseInt(btn.getAttribute('data-page'));
+      if (page && !isNaN(page)) {
+        scorerPage = page;
+        import('../router.js').then(module => {
+          module.Router.handleRoute();
+          // Smooth scroll to table start
+          const tableContainer = document.getElementById('stats-section-scorers');
+          if (tableContainer) {
+            tableContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+      }
+    });
+  });
 };
+
