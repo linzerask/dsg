@@ -12250,6 +12250,38 @@ export const Store = {
     setDoc(doc(db, 'system', 'leagues_data'), { data: cleanLeagues, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (leagues):", e));
     window.dispatchEvent(new CustomEvent('leagues-updated'));
+    window.dispatchEvent(new CustomEvent('data-updated'));
+  },
+
+  getVisibleSeasonKeys() {
+    const data = this.getData();
+    const allSeasonKeys = Object.keys(data.seasons || {}).filter(s => 
+      s !== '2026_sommer' && s !== 'DSG Sommercup 2026' && s !== 'Liga 26/27 2026'
+    );
+    
+    const localLeagues = loadLocal('dsg_admin_leagues', 4);
+    if (!localLeagues || !Array.isArray(localLeagues) || localLeagues.length === 0) {
+      return allSeasonKeys;
+    }
+
+    const visibilityMap = new Map();
+    localLeagues.forEach(l => {
+      let sKey = l.seasonKey;
+      if (!sKey) {
+        sKey = (l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name;
+      }
+      const isVisible = (l.showOnHomepage !== false);
+      if (sKey) visibilityMap.set(sKey, isVisible);
+      if (l.name) visibilityMap.set(l.name, isVisible);
+      if (l.name && l.year) visibilityMap.set(`${l.name} ${l.year}`, isVisible);
+    });
+
+    return allSeasonKeys.filter(sKey => {
+      if (visibilityMap.has(sKey)) {
+        return visibilityMap.get(sKey);
+      }
+      return true;
+    });
   },
 
   async getAdminRounds() {

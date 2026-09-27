@@ -40,6 +40,7 @@ export const renderAdminLeagues = () => {
                         <th data-sort="name" class="sortable">Name ↕</th>
                         <th data-sort="year" class="sortable">Jahr ↕</th>
                         <th data-sort="status" class="sortable">Aktiv ↕</th>
+                        <th data-sort="showOnHomepage" class="sortable" style="text-align: center;">Homepage ↕</th>
                         <th style="width: 100px; text-align: center;">Aktion</th>
                         <th style="text-align: center;">Tabelle</th>
                         <th style="text-align: center;">Spielberichte</th>
@@ -48,7 +49,7 @@ export const renderAdminLeagues = () => {
                     </tr>
                 </thead>
                 <tbody id="leagues-table-body">
-                    <tr><td colspan="9" style="text-align: center; padding: 2rem;">Lade Ligen...</td></tr>
+                    <tr><td colspan="10" style="text-align: center; padding: 2rem;">Lade Ligen...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -81,6 +82,14 @@ export const renderAdminLeagues = () => {
                             <option value="Aktiv">Aktiv</option>
                             <option value="Inaktiv">Inaktiv</option>
                         </select>
+                    </div>
+
+                    <!-- Show on Homepage Checkbox -->
+                    <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0 6px 0; background: rgba(0,0,0,0.02); padding: 8px 12px; border-radius: var(--border-radius-sm); border: 1px solid var(--color-border);">
+                        <input type="checkbox" id="edit-league-show-homepage" style="width: 18px; height: 18px; accent-color: var(--color-accent); cursor: pointer;" checked>
+                        <label for="edit-league-show-homepage" style="font-size: 0.88rem; font-weight: 600; cursor: pointer; color: var(--color-text-primary); margin: 0;">
+                            Auf Homepage anzeigen (Saison-Auswahl)
+                        </label>
                     </div>
 
                     <!-- Participating Teams Selector (Active leagues only) -->
@@ -190,13 +199,14 @@ const renderTable = () => {
     if (nextBtn) nextBtn.disabled = currentPage === totalPages;
 
     if (pageRows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 2rem;">Keine Ligen gefunden.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 2rem;">Keine Ligen gefunden.</td></tr>';
         return;
     }
 
     tbody.innerHTML = pageRows.map(l => {
         const status = (l.status === 'Nein' || l.status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv';
         let badgeClass = status === 'Aktiv' ? 'badge-success' : 'badge-secondary';
+        const isVisible = (l.showOnHomepage !== false);
         const rawIndex = leaguesData.indexOf(l);
 
         return `
@@ -205,6 +215,11 @@ const renderTable = () => {
                 <td><strong style="color: var(--color-text-primary);">${l.name || '-'}</strong></td>
                 <td>${l.year || '-'}</td>
                 <td><span class="badge ${badgeClass}">${status}</span></td>
+                <td style="text-align: center;">
+                    <span class="badge ${isVisible ? 'badge-success' : 'badge-secondary'}" style="font-size: 0.75rem;">
+                        ${isVisible ? '👁️ Ja' : '🚫 Nein'}
+                    </span>
+                </td>
                 <td style="text-align: center;">
                     <button class="btn btn-outline edit-single-league-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px;">Bearbeiten</button>
                 </td>
@@ -730,6 +745,7 @@ const openEditModal = async (idx = null) => {
         document.getElementById('edit-league-name').value = l.name || '';
         document.getElementById('edit-league-year').value = l.year || '';
         document.getElementById('edit-league-status').value = l.status === 'Aktiv' ? 'Aktiv' : 'Inaktiv';
+        document.getElementById('edit-league-show-homepage').checked = (l.showOnHomepage !== false);
         deleteBtn.style.display = 'block';
 
         const sKey = getSeasonKey(l);
@@ -746,6 +762,7 @@ const openEditModal = async (idx = null) => {
         document.getElementById('edit-league-id').value = 'new';
         document.getElementById('league-edit-form').reset();
         document.getElementById('edit-league-status').value = 'Aktiv';
+        document.getElementById('edit-league-show-homepage').checked = true;
         deleteBtn.style.display = 'none';
 
         cachedActiveTeams.forEach(t => assignedTeamNames.add((t.Name || t.name).trim().toLowerCase()));
@@ -799,6 +816,12 @@ const sortData = (column, asc) => {
             const pB = priority[b.status] || 99;
             if (pA !== pB) return asc ? pA - pB : pB - pA;
             return (b.year || 0) - (a.year || 0);
+        }
+
+        if (column === 'showOnHomepage') {
+            const visA = (a.showOnHomepage !== false) ? 1 : 0;
+            const visB = (b.showOnHomepage !== false) ? 1 : 0;
+            return asc ? visA - visB : visB - visA;
         }
 
         if (column === 'id' || column === 'year') {
@@ -921,7 +944,8 @@ const bindEvents = () => {
             const updatedLeague = {
                 name: document.getElementById('edit-league-name').value.trim(),
                 year: parseInt(document.getElementById('edit-league-year').value) || new Date().getFullYear(),
-                status: document.getElementById('edit-league-status').value
+                status: document.getElementById('edit-league-status').value,
+                showOnHomepage: document.getElementById('edit-league-show-homepage').checked
             };
 
             const sKey = getSeasonKey(updatedLeague);

@@ -5,8 +5,9 @@ let currentViewSeason = "2026/2027";
 
 export function viewLiga() {
   const data = Store.getData();
-  if (!data.seasons || !data.seasons[currentViewSeason]) {
-    currentViewSeason = Object.keys(data.seasons || {}).pop() || "2026/2027";
+  const visibleSeasonKeys = Store.getVisibleSeasonKeys ? Store.getVisibleSeasonKeys() : Object.keys(data.seasons || {});
+  if (!visibleSeasonKeys.includes(currentViewSeason)) {
+    currentViewSeason = visibleSeasonKeys.includes("2026/2027") ? "2026/2027" : (visibleSeasonKeys[0] || "2026/2027");
   }
   const currentSeason = currentViewSeason;
   const teams = Store.getLiga(currentSeason);
@@ -366,7 +367,7 @@ export function viewLiga() {
             <span style="font-size: 0.7rem; margin-left: 10px;">▼</span>
           </div>
           <div class="season-select-options" id="season-custom-options">
-            ${Object.keys(Store.getData().seasons || {}).filter(s => s !== '2026_sommer' && s !== 'DSG Sommercup 2026' && s !== 'Liga 26/27 2026').reverse().map(s => `
+            ${visibleSeasonKeys.slice().reverse().map(s => `
               <div class="season-option ${s === currentSeason ? 'selected' : ''}" data-value="${s}">
                 ${s.toLowerCase().includes('saison') || s.toLowerCase().startsWith('liga') ? s : 'Saison ' + s}
               </div>
