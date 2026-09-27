@@ -192,73 +192,49 @@ export const initAdminNews = () => {
     dateInput.value = new Date().toISOString().split('T')[0];
   }
 
-  // --- Selection Preservation Helpers ---
-  const saveSelection = () => {
-    const sel = window.getSelection();
-    if (sel.rangeCount > 0) {
-      const range = sel.getRangeAt(0);
-      // Only save if selection is inside editor
-      if (editor.contains(range.commonAncestorContainer)) {
-        savedSelectionRange = range.cloneRange();
-      }
-    }
-  };
-
-  const restoreSelection = () => {
-    if (savedSelectionRange) {
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(savedSelectionRange);
-    }
-  };
-
   // --- 1. Rich Text Editor Toolbar Actions ---
+  const executeCommand = (command, value = null) => {
+    if (!editor) return;
+    editor.focus();
+    document.execCommand(command, false, value);
+    updateToolbarActiveStates();
+  };
+
   toolbar?.querySelectorAll('.rte-btn[data-command]').forEach(btn => {
-    // Prevent focus loss from editor when button is pressed
+    const command = btn.getAttribute('data-command');
+    
+    // Execute on mousedown so selection is never lost
     btn.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      executeCommand(command);
     });
 
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      editor.focus();
-      restoreSelection();
-      const command = btn.getAttribute('data-command');
-      document.execCommand(command, false, null);
-      saveSelection();
-      updateToolbarActiveStates();
     });
   });
 
   const blockFormatSelect = document.getElementById('rte-block-format');
   blockFormatSelect?.addEventListener('change', (e) => {
-    editor.focus();
-    restoreSelection();
     const value = e.target.value;
     if (value === 'blockquote') {
-      document.execCommand('formatBlock', false, 'blockquote');
+      executeCommand('formatBlock', 'blockquote');
     } else {
-      document.execCommand('formatBlock', false, `<${value}>`);
+      executeCommand('formatBlock', `<${value}>`);
     }
-    saveSelection();
-    editor.focus();
   });
 
   const linkBtn = document.getElementById('rte-link-btn');
   linkBtn?.addEventListener('mousedown', (e) => {
     e.preventDefault();
+    const url = prompt('Webadresse (URL) eingeben:', 'https://');
+    if (url && url.trim() !== '' && url !== 'https://') {
+      executeCommand('createLink', url.trim());
+    }
   });
 
   linkBtn?.addEventListener('click', (e) => {
     e.preventDefault();
-    editor.focus();
-    restoreSelection();
-    const url = prompt('Webadresse (URL) eingeben:', 'https://');
-    if (url && url.trim() !== '' && url !== 'https://') {
-      document.execCommand('createLink', false, url.trim());
-      saveSelection();
-      editor.focus();
-    }
   });
 
   const updateToolbarActiveStates = () => {
@@ -274,11 +250,24 @@ export const initAdminNews = () => {
     });
   };
 
+  // Keyboard Shortcuts (Ctrl+B, Ctrl+I, Ctrl+U)
+  editor?.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      if (e.key === 'b' || e.key === 'B') {
+        e.preventDefault();
+        executeCommand('bold');
+      } else if (e.key === 'i' || e.key === 'I') {
+        e.preventDefault();
+        executeCommand('italic');
+      } else if (e.key === 'u' || e.key === 'U') {
+        e.preventDefault();
+        executeCommand('underline');
+      }
+    }
+  });
+
   ['keyup', 'mouseup', 'touchend', 'input'].forEach(evt => {
-    editor?.addEventListener(evt, () => {
-      saveSelection();
-      updateToolbarActiveStates();
-    });
+    editor?.addEventListener(evt, updateToolbarActiveStates);
   });
 
   // --- 2. Drag & Drop & Multi-Image Stage ---
