@@ -1,4 +1,5 @@
 import { Store } from '../store.js';
+import { renderIcon } from '../icons.js';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -268,35 +269,35 @@ export const viewStatistiken = () => {
       <div class="stats-counter-grid stagger-item" style="margin-bottom: var(--space-xl);">
         
         <div class="glass-card stat-counter-card" style="padding: var(--space-md); text-align: center; border-top: 3px solid var(--color-accent);">
-          <div style="font-size: 1.8rem; margin-bottom: 4px;">⚽</div>
+          <div style="margin-bottom: 6px; display: flex; justify-content: center;">${renderIcon('ball', { size: 30, color: 'var(--color-accent)' })}</div>
           <div class="stat-number count-up" data-target="${stats.totalGoals}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
           <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Tore gesamt</div>
           <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Ø ${stats.goalsPerMatch} pro Spiel</div>
         </div>
 
         <div class="glass-card stat-counter-card" style="padding: var(--space-md); text-align: center; border-top: 3px solid var(--color-accent);">
-          <div style="font-size: 1.8rem; margin-bottom: 4px;">🏟️</div>
+          <div style="margin-bottom: 6px; display: flex; justify-content: center;">${renderIcon('stadium', { size: 30, color: 'var(--color-accent)' })}</div>
           <div class="stat-number count-up" data-target="${stats.totalMatches}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
           <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Gespielte Partien</div>
           <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Seit 2021/2022</div>
         </div>
 
         <div class="glass-card stat-counter-card" style="padding: var(--space-md); text-align: center; border-top: 3px solid var(--color-accent);">
-          <div style="font-size: 1.8rem; margin-bottom: 4px;">🏃</div>
+          <div style="margin-bottom: 6px; display: flex; justify-content: center;">${renderIcon('run', { size: 30, color: 'var(--color-accent)' })}</div>
           <div class="stat-number count-up" data-target="${stats.uniquePlayersCount}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
           <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Torschützen</div>
           <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Eingetragene Torschützen</div>
         </div>
 
         <div class="glass-card stat-counter-card" style="padding: var(--space-md); text-align: center; border-top: 3px solid var(--color-accent);">
-          <div style="font-size: 1.8rem; margin-bottom: 4px;">🛡️</div>
+          <div style="margin-bottom: 6px; display: flex; justify-content: center;">${renderIcon('shield', { size: 30, color: 'var(--color-accent)' })}</div>
           <div class="stat-number count-up" data-target="${stats.uniqueClubsCount}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
           <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Vereine & Teams</div>
           <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Aktive & Ehemalige</div>
         </div>
 
         <div class="glass-card stat-counter-card" style="padding: var(--space-md); text-align: center; border-top: 3px solid var(--color-accent);">
-          <div style="font-size: 1.8rem; margin-bottom: 4px;">🏆</div>
+          <div style="margin-bottom: 6px; display: flex; justify-content: center;">${renderIcon('trophy', { size: 30, color: 'var(--color-accent)' })}</div>
           <div class="stat-number count-up" data-target="${stats.seasonsCount}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
           <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Saisons</div>
           <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Digital dokumentiert</div>
@@ -306,17 +307,17 @@ export const viewStatistiken = () => {
 
       <!-- Navigation Tabs for Statistics Sub-Pages -->
       <div class="stagger-item" style="display: flex; gap: var(--space-xs); flex-wrap: wrap; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm); margin-bottom: var(--space-xl);">
-        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'scorers' ? 'active' : ''}" data-tab="scorers" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'scorers' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'scorers' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 6px;">
-          <span>👑</span> Ewige Torjägerliste
+        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'scorers' ? 'active' : ''}" data-tab="scorers" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'scorers' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'scorers' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 8px;">
+          ${renderIcon('crown', { size: 18, color: activeStatsTab === 'scorers' ? 'var(--color-accent)' : 'currentColor' })} Ewige Torjägerliste
         </button>
-        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'clubs' ? 'active' : ''}" data-tab="clubs" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'clubs' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'clubs' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 6px;">
-          <span>🛡️</span> Ewige Vereinstabelle
+        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'clubs' ? 'active' : ''}" data-tab="clubs" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'clubs' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'clubs' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 8px;">
+          ${renderIcon('shield', { size: 18, color: activeStatsTab === 'clubs' ? 'var(--color-accent)' : 'currentColor' })} Ewige Vereinstabelle
         </button>
-        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'champions' ? 'active' : ''}" data-tab="champions" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'champions' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'champions' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 6px;">
-          <span>🏆</span> Ehrentafel der Meister
+        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'champions' ? 'active' : ''}" data-tab="champions" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'champions' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'champions' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 8px;">
+          ${renderIcon('trophy', { size: 18, color: activeStatsTab === 'champions' ? 'var(--color-accent)' : 'currentColor' })} Ehrentafel der Meister
         </button>
-        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'records' ? 'active' : ''}" data-tab="records" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'records' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'records' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 6px;">
-          <span>⭐</span> Rekorde & Meilensteine
+        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'records' ? 'active' : ''}" data-tab="records" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'records' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'records' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 8px;">
+          ${renderIcon('star', { size: 18, color: activeStatsTab === 'records' ? 'var(--color-accent)' : 'currentColor' })} Rekorde & Meilensteine
         </button>
       </div>
 
@@ -329,7 +330,7 @@ export const viewStatistiken = () => {
           <!-- Platz 2 (Silber) -->
           ${top2 ? `
             <div class="glass-card" style="padding: var(--space-lg); text-align: center; border: 1px solid rgba(192, 192, 192, 0.4); order: 1;">
-              <div style="font-size: 2.2rem; margin-bottom: 6px;">🥈</div>
+              <div style="margin-bottom: 8px; display: flex; justify-content: center;">${renderIcon('medal', { size: 36, color: '#94a3b8' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: #a0a0a0; text-transform: uppercase;">Platz 2 &bull; Hall of Fame</div>
               <h3 style="font-size: 1.3rem; margin: 6px 0 2px 0; color: var(--color-text-primary);">${top2.name}</h3>
               <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 12px;">${top2.teams.join(', ')}</div>
@@ -341,7 +342,7 @@ export const viewStatistiken = () => {
           <!-- Platz 1 (Gold / Ewiger Torschützenkönig) -->
           ${top1 ? `
             <div class="glass-card" style="padding: var(--space-lg); text-align: center; border: 2px solid var(--color-accent); box-shadow: 0 0 24px var(--color-accent-glow); transform: scale(1.03); order: 2; background: rgba(142, 198, 63, 0.05);">
-              <div style="font-size: 2.5rem; margin-bottom: 6px;">👑</div>
+              <div style="margin-bottom: 8px; display: flex; justify-content: center;">${renderIcon('crown', { size: 40, color: '#f59e0b' })}</div>
               <div style="font-size: 0.85rem; font-weight: 800; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px;">Ewiger Torschützenkönig</div>
               <h3 style="font-size: 1.5rem; font-weight: 800; margin: 6px 0 2px 0; color: var(--color-text-primary);">${top1.name}</h3>
               <div style="font-size: 0.9rem; font-weight: 600; color: var(--color-accent); margin-bottom: 12px;">${top1.teams.join(', ')}</div>
@@ -353,7 +354,7 @@ export const viewStatistiken = () => {
           <!-- Platz 3 (Bronze) -->
           ${top3 ? `
             <div class="glass-card" style="padding: var(--space-lg); text-align: center; border: 1px solid rgba(205, 127, 50, 0.4); order: 3;">
-              <div style="font-size: 2.2rem; margin-bottom: 6px;">🥉</div>
+              <div style="margin-bottom: 8px; display: flex; justify-content: center;">${renderIcon('medal', { size: 36, color: '#b45309' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: #cd7f32; text-transform: uppercase;">Platz 3 &bull; Hall of Fame</div>
               <h3 style="font-size: 1.3rem; margin: 6px 0 2px 0; color: var(--color-text-primary);">${top3.name}</h3>
               <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 12px;">${top3.teams.join(', ')}</div>
@@ -388,9 +389,9 @@ export const viewStatistiken = () => {
               <tbody>
                 ${filteredScorers.length > 0 ? filteredScorers.map((s, idx) => {
                   let badge = '';
-                  if (idx === 0 && !scorerSearchQuery) badge = '👑 ';
-                  else if (idx === 1 && !scorerSearchQuery) badge = '🥈 ';
-                  else if (idx === 2 && !scorerSearchQuery) badge = '🥉 ';
+                  if (idx === 0 && !scorerSearchQuery) badge = `${renderIcon('crown', { size: 14, color: '#f59e0b', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
+                  else if (idx === 1 && !scorerSearchQuery) badge = `${renderIcon('medal', { size: 14, color: '#94a3b8', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
+                  else if (idx === 2 && !scorerSearchQuery) badge = `${renderIcon('medal', { size: 14, color: '#b45309', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
 
                   return `
                     <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem;">
@@ -457,7 +458,7 @@ export const viewStatistiken = () => {
                       ${idx + 1}.
                     </td>
                     <td style="padding: 10px; font-weight: 700; color: var(--color-text-primary);">
-                      ${c.name} ${c.titles > 0 ? `<span title="${c.titles}x Meister" style="font-size: 0.85rem;">🏆 ${c.titles > 1 ? c.titles + 'x' : ''}</span>` : ''}
+                      ${c.name} ${c.titles > 0 ? `<span title="${c.titles}x Meister" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.85rem; color: #f59e0b; margin-left: 6px;">${renderIcon('trophy', { size: 15, color: '#f59e0b' })} ${c.titles > 1 ? c.titles + 'x' : ''}</span>` : ''}
                     </td>
                     <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.played}</td>
                     <td style="padding: 10px; text-align: center; font-weight: 600; color: var(--color-text-primary);">${c.won}</td>
@@ -488,7 +489,7 @@ export const viewStatistiken = () => {
             <div class="glass-card" style="padding: var(--space-lg); border-top: 3px solid var(--color-accent); display: flex; flex-direction: column; gap: var(--space-sm);">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-weight: 800; font-size: 1.15rem; color: var(--color-accent);">Saison ${h.season}</span>
-                <span style="font-size: 1.5rem;">🏆</span>
+                <span>${renderIcon('trophy', { size: 24, color: '#f59e0b' })}</span>
               </div>
               
               <div style="margin-top: 6px; padding: 12px; background: rgba(142, 198, 63, 0.08); border-radius: 6px; border: 1px solid rgba(142, 198, 63, 0.2);">
@@ -499,14 +500,18 @@ export const viewStatistiken = () => {
 
               ${h.runnerUp ? `
                 <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                  <span style="color: var(--color-text-secondary);">🥈 Vizemeister:</span>
+                  <span style="color: var(--color-text-secondary); display: flex; align-items: center; gap: 4px;">
+                    ${renderIcon('medal', { size: 15, color: '#94a3b8' })} Vizemeister:
+                  </span>
                   <span style="font-weight: 600; color: var(--color-text-primary);">${h.runnerUp} (${h.runnerUpPoints} Pkt)</span>
                 </div>
               ` : ''}
 
               ${h.topScorer && h.topScorer !== 'N/A' ? `
                 <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; padding: 6px 0;">
-                  <span style="color: var(--color-text-secondary);">⚽ Torschützenkönig:</span>
+                  <span style="color: var(--color-text-secondary); display: flex; align-items: center; gap: 4px;">
+                    ${renderIcon('ball', { size: 15, color: 'var(--color-accent)' })} Torschützenkönig:
+                  </span>
                   <span style="font-weight: 600; color: var(--color-accent); text-align: right;">${h.topScorer} (${h.topScorerGoals} Tore)</span>
                 </div>
               ` : ''}
@@ -521,7 +526,7 @@ export const viewStatistiken = () => {
           
           <!-- Meiste Tore in einer Einzelsaison -->
           <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
-            <div style="font-size: 1.8rem; margin-bottom: 4px;">🔥</div>
+            <div style="margin-bottom: 8px;">${renderIcon('flame', { size: 30, color: '#f97316' })}</div>
             <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Saison-Torrekord</div>
             <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.bestSingleSeasonScorer.name}</h3>
             <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
@@ -535,7 +540,7 @@ export const viewStatistiken = () => {
           <!-- Torreichstes Spiel -->
           ${stats.records.highestScoringMatch ? `
             <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
-              <div style="font-size: 1.8rem; margin-bottom: 4px;">⚡</div>
+              <div style="margin-bottom: 8px;">${renderIcon('zap', { size: 30, color: '#eab308' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Torreichstes Spiel</div>
               <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.highestScoringMatch.home} vs. ${stats.records.highestScoringMatch.away}</h3>
               <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
@@ -550,7 +555,7 @@ export const viewStatistiken = () => {
           <!-- Höchster Sieg -->
           ${stats.records.biggestWin ? `
             <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
-              <div style="font-size: 1.8rem; margin-bottom: 4px;">🎯</div>
+              <div style="margin-bottom: 8px;">${renderIcon('target', { size: 30, color: '#ef4444' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Höchster Sieg</div>
               <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.biggestWin.home} vs. ${stats.records.biggestWin.away}</h3>
               <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
@@ -564,7 +569,7 @@ export const viewStatistiken = () => {
 
           <!-- Rekordmeister der Neuzeit -->
           <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
-            <div style="font-size: 1.8rem; margin-bottom: 4px;">🏆</div>
+            <div style="margin-bottom: 8px;">${renderIcon('trophy', { size: 30, color: '#f59e0b' })}</div>
             <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Rekordmeister (seit 2021)</div>
             <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">SV Croatia Linz</h3>
             <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">

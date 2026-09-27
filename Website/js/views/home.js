@@ -1,5 +1,6 @@
 import { Store } from '../store.js';
 import { computeAllTimeStats } from './statistiken.js';
+import { renderIcon } from '../icons.js';
 
 const ICONS = {
   ball: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); vertical-align: middle;"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 9 17 15 17 16 12 12 8"></polygon></svg>`,
@@ -258,28 +259,28 @@ export const viewHome = () => {
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-md); text-align: center;">
           <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
-            <div style="font-size: 1.8rem; margin-bottom: 2px;">⚽</div>
+            <div style="margin-bottom: 6px; display: flex; justify-content: center;">${renderIcon('ball', { size: 28, color: 'var(--color-accent)' })}</div>
             <div class="home-stat-number" data-target="${allTimeStats.totalGoals}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
             <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Tore gesamt</div>
             <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Ø ${allTimeStats.goalsPerMatch} / Spiel</div>
           </div>
 
           <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
-            <div style="font-size: 1.8rem; margin-bottom: 2px;">🏟️</div>
+            <div style="margin-bottom: 6px; display: flex; justify-content: center;">${renderIcon('stadium', { size: 28, color: 'var(--color-accent)' })}</div>
             <div class="home-stat-number" data-target="${allTimeStats.totalMatches}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
             <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Gespielte Partien</div>
             <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Seit 2021/2022</div>
           </div>
 
           <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
-            <div style="font-size: 1.8rem; margin-bottom: 2px;">🏃</div>
+            <div style="margin-bottom: 6px; display: flex; justify-content: center;">${renderIcon('run', { size: 28, color: 'var(--color-accent)' })}</div>
             <div class="home-stat-number" data-target="${allTimeStats.uniquePlayersCount}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
             <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Torschützen</div>
             <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Eingetragene Torschützen</div>
           </div>
 
           <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
-            <div style="font-size: 1.8rem; margin-bottom: 2px;">🏆</div>
+            <div style="margin-bottom: 6px; display: flex; justify-content: center;">${renderIcon('trophy', { size: 28, color: 'var(--color-accent)' })}</div>
             <div class="home-stat-number" data-target="${allTimeStats.seasonsCount}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
             <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Saisons</div>
             <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Digital dokumentiert</div>
