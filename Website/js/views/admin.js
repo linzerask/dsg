@@ -1,11 +1,11 @@
 import { Store } from '../store.js';
 
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790515000000';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790515000000';
-import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790515000000';
-import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790515000000';
-import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790515000000';
-import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790550000000';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js';
+import { renderAdminRounds, initAdminRounds } from './adminRounds.js';
+import { renderAdminGames, initAdminGames } from './adminGames.js';
+import { renderAdminNews, initAdminNews } from './adminNews.js';
 
 
 

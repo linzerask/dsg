@@ -25845,9 +25845,20 @@ const INITIAL_DATA = {
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
-let memoryData = null;
-let memoryNews = [];
-let memoryGallery = [];
+const getState = () => {
+  if (typeof window !== 'undefined') {
+    if (!window.__DSG_STATE__) {
+      window.__DSG_STATE__ = {
+        memoryData: null,
+        memoryNews: null,
+        memoryGallery: null,
+        initialized: false
+      };
+    }
+    return window.__DSG_STATE__;
+  }
+  return { memoryData: null, memoryNews: null, memoryGallery: null, initialized: false };
+};
 
 // Lightweight IndexedDB helper for resilient offline storage beyond 5MB
 const openDB = () => {
@@ -25956,6 +25967,8 @@ const loadLocal = (prefix, exactVer) => {
 
 export const Store = {
   init() {
+    const state = getState();
+
     // Clear all obsolete cache versions
     try {
       for (let i = 1; i <= 60; i++) {
@@ -25969,8 +25982,8 @@ export const Store = {
       }
     } catch(e) {}
 
-    // Eagerly load synchronous local memory
-    memoryData = loadLocal('dsg_data', 50) || INITIAL_DATA;
+    // Eagerly load synchronous local memory into shared singleton
+    state.memoryData = loadLocal('dsg_data', 50) || INITIAL_DATA;
     
     const localArticles = loadLocal('dsg_articles', 36) || loadLocal('dsg_articles', 35) || [];
     const articleMapInit = new Map();
@@ -25982,20 +25995,20 @@ export const Store = {
     (INITIAL_DATA.news || []).forEach(a => {
       if (a && a.id && !articleMapInit.has(String(a.id))) articleMapInit.set(String(a.id), a);
     });
-    memoryNews = sortArticles(Array.from(articleMapInit.values()));
+    state.memoryNews = sortArticles(Array.from(articleMapInit.values()));
 
-    memoryGallery = loadLocal('dsg_gallery', 25) || INITIAL_DATA.gallery || [];
+    state.memoryGallery = loadLocal('dsg_gallery', 25) || INITIAL_DATA.gallery || [];
 
     // Ensure all leagues have an initialized season object in memoryData
-    if (!memoryData.seasons) memoryData.seasons = {};
+    if (!state.memoryData.seasons) state.memoryData.seasons = {};
     const initialLeagues = this.getAdminLeaguesSync();
     initialLeagues.forEach(l => {
       let sKey = l.seasonKey;
       if (!sKey) {
         sKey = (l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name;
       }
-      if (sKey && !memoryData.seasons[sKey]) {
-        memoryData.seasons[sKey] = {
+      if (sKey && !state.memoryData.seasons[sKey]) {
+        state.memoryData.seasons[sKey] = {
           teams: [],
           matches: [],
           stats: { topScorers: [], cards: [] }
@@ -26003,17 +26016,19 @@ export const Store = {
       }
     });
 
+    state.initialized = true;
+
     // Check IndexedDB asynchronously to restore rich article images
     idbGet('dsg_articles').then(idbArticles => {
       if (idbArticles && Array.isArray(idbArticles) && idbArticles.length > 0) {
         const idbMergeMap = new Map();
         idbArticles.forEach(a => { if (a && a.id) idbMergeMap.set(String(a.id), a); });
-        memoryNews.forEach(a => { if (a && a.id && !idbMergeMap.has(String(a.id))) idbMergeMap.set(String(a.id), a); });
+        state.memoryNews.forEach(a => { if (a && a.id && !idbMergeMap.has(String(a.id))) idbMergeMap.set(String(a.id), a); });
         (INITIAL_DATA.news || []).forEach(a => {
           if (a && a.id && !idbMergeMap.has(String(a.id))) idbMergeMap.set(String(a.id), a);
         });
-        memoryNews = sortArticles(Array.from(idbMergeMap.values()));
-        trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
+        state.memoryNews = sortArticles(Array.from(idbMergeMap.values()));
+        trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
         window.dispatchEvent(new CustomEvent('data-updated'));
       }
     });
@@ -26023,6 +26038,7 @@ export const Store = {
   },
 
   async syncFirebase() {
+    const state = getState();
     const dataRef = doc(db, 'system', 'liga_data');
     const newsRef = doc(db, 'system', 'news_data');
     const galleryRef = doc(db, 'system', 'gallery_data');
@@ -26041,16 +26057,16 @@ export const Store = {
         const fbData = dataSnap.data().data;
         const localData = loadLocal('dsg_data', 50);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
-          memoryData = localData;
+          state.memoryData = localData;
           needsMigration = true;
         } else {
-          memoryData = fbData;
+          state.memoryData = fbData;
           hasUpdates = true;
         }
       } else {
         let legacyData = loadLocal('dsg_data', 50);
         if (!legacyData) legacyData = INITIAL_DATA;
-        memoryData = legacyData;
+        state.memoryData = legacyData;
         needsMigration = true;
       }
 
@@ -26079,23 +26095,23 @@ export const Store = {
         if (a && a.id && !articleMergeMap.has(String(a.id))) articleMergeMap.set(String(a.id), a);
       });
 
-      memoryNews = sortArticles(Array.from(articleMergeMap.values()));
-      trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
-      await idbSet('dsg_articles', memoryNews);
+      state.memoryNews = sortArticles(Array.from(articleMergeMap.values()));
+      trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
+      await idbSet('dsg_articles', state.memoryNews);
       hasUpdates = true;
       needsMigration = true;
 
       // Auto-sync all leagues to seasons
       if (leagueSnap && leagueSnap.exists() && leagueSnap.data()?.data) {
         const leagues = leagueSnap.data().data;
-        if (!memoryData.seasons) memoryData.seasons = {};
+        if (!state.memoryData.seasons) state.memoryData.seasons = {};
         leagues.forEach(l => {
           let sKey = l.seasonKey;
           if (!sKey) {
             sKey = (l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name;
           }
-          if (sKey && !memoryData.seasons[sKey]) {
-            memoryData.seasons[sKey] = {
+          if (sKey && !state.memoryData.seasons[sKey]) {
+            state.memoryData.seasons[sKey] = {
               teams: [],
               matches: [],
               stats: { topScorers: [], cards: [] }
@@ -26112,20 +26128,20 @@ export const Store = {
         const memTime = fbGallery[0]?.lastUpdated || 0;
         const locTime = localGallery[0]?.lastUpdated || 0;
         if (localGallery.length > fbGallery.length || locTime > memTime) {
-          memoryGallery = localGallery;
+          state.memoryGallery = localGallery;
           needsMigration = true;
         } else {
-          memoryGallery = fbGallery;
+          state.memoryGallery = fbGallery;
           hasUpdates = true;
         }
       } else {
-        memoryGallery = loadLocal('dsg_gallery', 25) || INITIAL_DATA.gallery || [];
+        state.memoryGallery = loadLocal('dsg_gallery', 25) || INITIAL_DATA.gallery || [];
         needsMigration = true;
       }
 
       // Sanitize Gallery items (fix broken image paths)
-      if (memoryGallery && Array.isArray(memoryGallery)) {
-        memoryGallery.forEach(album => {
+      if (state.memoryGallery && Array.isArray(state.memoryGallery)) {
+        state.memoryGallery.forEach(album => {
           if (!album.image || album.image.includes('assets/hero') || album.image.includes('sample.jpg') || album.image.startsWith('undefined')) {
             album.image = 'stadion.png';
             needsMigration = true;
@@ -26149,36 +26165,36 @@ export const Store = {
       }
 
       // Initialize / ensure seasons are present
-      if (!memoryData.seasons) memoryData.seasons = {};
-      if (memoryData.seasons['2026_sommer']) {
-        delete memoryData.seasons['2026_sommer'];
+      if (!state.memoryData.seasons) state.memoryData.seasons = {};
+      if (state.memoryData.seasons['2026_sommer']) {
+        delete state.memoryData.seasons['2026_sommer'];
         needsMigration = true;
       }
-      if (memoryData.seasons['DSG Sommercup 2026']) {
-        delete memoryData.seasons['DSG Sommercup 2026'];
+      if (state.memoryData.seasons['DSG Sommercup 2026']) {
+        delete state.memoryData.seasons['DSG Sommercup 2026'];
         needsMigration = true;
       }
-      if (memoryData.seasons['Liga 26/27 2026']) {
-        delete memoryData.seasons['Liga 26/27 2026'];
+      if (state.memoryData.seasons['Liga 26/27 2026']) {
+        delete state.memoryData.seasons['Liga 26/27 2026'];
         needsMigration = true;
       }
       
       for (let s in INITIAL_DATA.seasons) {
-        if (!memoryData.seasons[s] || !memoryData.seasons[s].teams || memoryData.seasons[s].teams.length === 0) {
-          memoryData.seasons[s] = INITIAL_DATA.seasons[s];
+        if (!state.memoryData.seasons[s] || !state.memoryData.seasons[s].teams || state.memoryData.seasons[s].teams.length === 0) {
+          state.memoryData.seasons[s] = INITIAL_DATA.seasons[s];
           needsMigration = true;
         }
-        if (!memoryData.seasons[s].stats) {
-          memoryData.seasons[s].stats = { topScorers: [], cards: [] };
+        if (!state.memoryData.seasons[s].stats) {
+          state.memoryData.seasons[s].stats = { topScorers: [], cards: [] };
           needsMigration = true;
         }
       }
 
-      if (memoryData.teams) { delete memoryData.teams; needsMigration = true; }
-      if (memoryData.matches) { delete memoryData.matches; needsMigration = true; }
-      if (memoryData.stats) { delete memoryData.stats; needsMigration = true; }
+      if (state.memoryData.teams) { delete state.memoryData.teams; needsMigration = true; }
+      if (state.memoryData.matches) { delete state.memoryData.matches; needsMigration = true; }
+      if (state.memoryData.stats) { delete state.memoryData.stats; needsMigration = true; }
 
-      memoryNews.forEach(article => {
+      state.memoryNews.forEach(article => {
         if (!article.image) {
           article.image = 'dsg.avif';
           needsMigration = true;
@@ -26186,15 +26202,15 @@ export const Store = {
       });
 
       if (needsMigration) {
-        await setDoc(dataRef, { data: memoryData }).catch(e => console.error("Firebase save error (data):", e));
-        await setDoc(newsRef, { data: memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (news):", e));
-        await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
+        await setDoc(dataRef, { data: state.memoryData }).catch(e => console.error("Firebase save error (data):", e));
+        await setDoc(newsRef, { data: state.memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (news):", e));
+        await setDoc(galleryRef, { data: state.memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v50', JSON.stringify(memoryData));
-      trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
-      trySetLocal('dsg_gallery_v25', JSON.stringify(memoryGallery));
-      console.log("Synced local and Firebase data. Active articles:", memoryNews.length);
+      trySetLocal('dsg_data_v50', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
+      trySetLocal('dsg_gallery_v25', JSON.stringify(state.memoryGallery));
+      console.log("Synced local and Firebase data. Active articles:", state.memoryNews.length);
 
       if (hasUpdates) {
         window.dispatchEvent(new Event('data-updated'));
@@ -26205,19 +26221,22 @@ export const Store = {
   },
   
   getData() {
-    return memoryData || INITIAL_DATA;
+    const state = getState();
+    return state.memoryData || INITIAL_DATA;
   },
   
   saveData(data) {
+    const state = getState();
     data.lastUpdated = Date.now();
-    memoryData = data;
+    state.memoryData = data;
     trySetLocal('dsg_data_v50', JSON.stringify(data));
     setDoc(doc(db, 'system', 'liga_data'), { data }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
 
   getNews() {
-    return memoryNews && memoryNews.length > 0 ? memoryNews : INITIAL_DATA.news;
+    const state = getState();
+    return state.memoryNews && state.memoryNews.length > 0 ? state.memoryNews : INITIAL_DATA.news;
   },
   
   getArticle(id) {
@@ -26236,8 +26255,9 @@ export const Store = {
   },
 
   deleteArticle(id) {
+    const state = getState();
     const cleanId = decodeURIComponent(String(id)).trim().toLowerCase();
-    memoryNews = memoryNews.filter(a => {
+    state.memoryNews = (state.memoryNews || []).filter(a => {
       if (!a) return false;
       const aId = decodeURIComponent(String(a.id || '')).trim().toLowerCase();
       const aTitleSlug = (a.title || '').toLowerCase()
@@ -26246,14 +26266,15 @@ export const Store = {
         .replace(/^-+|-+$/g, '');
       return aId !== cleanId && String(a.id) !== String(id) && aTitleSlug !== cleanId;
     });
-    memoryNews = sortArticles(memoryNews);
-    trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
-    idbSet('dsg_articles', memoryNews);
-    setDoc(doc(db, 'system', 'news_data'), { data: memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
+    state.memoryNews = sortArticles(state.memoryNews);
+    trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
+    idbSet('dsg_articles', state.memoryNews);
+    setDoc(doc(db, 'system', 'news_data'), { data: state.memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
   
   addNews(title, excerpt, content, image, gallery, author, date, readTime) {
+    const state = getState();
     let formattedDate = date;
     if (formattedDate && formattedDate.includes('-')) {
       const p = formattedDate.split('-');
@@ -26282,28 +26303,29 @@ export const Store = {
       createdAt: Date.now(),
       lastUpdated: Date.now()
     };
-    if (!Array.isArray(memoryNews) || memoryNews.length === 0) {
-      memoryNews = [...(INITIAL_DATA.news || [])];
+    if (!Array.isArray(state.memoryNews) || state.memoryNews.length === 0) {
+      state.memoryNews = [...(INITIAL_DATA.news || [])];
     }
     
     const articleMap = new Map();
     articleMap.set(String(newArticle.id), newArticle);
-    memoryNews.forEach(a => {
+    state.memoryNews.forEach(a => {
       if (a && a.id && !articleMap.has(String(a.id))) articleMap.set(String(a.id), a);
     });
     (INITIAL_DATA.news || []).forEach(a => {
       if (a && a.id && !articleMap.has(String(a.id))) articleMap.set(String(a.id), a);
     });
     
-    memoryNews = sortArticles(Array.from(articleMap.values()));
-    trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
-    idbSet('dsg_articles', memoryNews);
-    setDoc(doc(db, 'system', 'news_data'), { data: memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
+    state.memoryNews = sortArticles(Array.from(articleMap.values()));
+    trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
+    idbSet('dsg_articles', state.memoryNews);
+    setDoc(doc(db, 'system', 'news_data'), { data: state.memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
     return newArticle;
   },
 
   updateNews(id, title, excerpt, content, image, gallery, author, date, readTime) {
+    const state = getState();
     let formattedDate = date;
     if (formattedDate && formattedDate.includes('-')) {
       const p = formattedDate.split('-');
@@ -26311,7 +26333,7 @@ export const Store = {
     }
 
     const cleanId = decodeURIComponent(String(id)).trim().toLowerCase();
-    const index = memoryNews.findIndex(a => {
+    const index = (state.memoryNews || []).findIndex(a => {
       if (!a) return false;
       const aId = decodeURIComponent(String(a.id || '')).trim().toLowerCase();
       const aTitleSlug = (a.title || '').toLowerCase()
@@ -26321,22 +26343,22 @@ export const Store = {
       return aId === cleanId || String(a.id) === String(id) || aTitleSlug === cleanId;
     });
     if (index !== -1) {
-      memoryNews[index] = {
-        ...memoryNews[index],
+      state.memoryNews[index] = {
+        ...state.memoryNews[index],
         title,
         excerpt: excerpt || '',
         content: content || `<p>${excerpt}</p>`,
-        image: image || memoryNews[index].image || 'dsg.avif',
-        gallery: gallery || memoryNews[index].gallery || [],
-        author: author || memoryNews[index].author || "DSG Redaktion",
-        date: formattedDate || memoryNews[index].date,
-        readTime: readTime || memoryNews[index].readTime || "2 min read",
+        image: image || state.memoryNews[index].image || 'dsg.avif',
+        gallery: gallery || state.memoryNews[index].gallery || [],
+        author: author || state.memoryNews[index].author || "DSG Redaktion",
+        date: formattedDate || state.memoryNews[index].date,
+        readTime: readTime || state.memoryNews[index].readTime || "2 min read",
         lastUpdated: Date.now()
       };
-      memoryNews = sortArticles(memoryNews);
-      trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
-      idbSet('dsg_articles', memoryNews);
-      setDoc(doc(db, 'system', 'news_data'), { data: memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
+      state.memoryNews = sortArticles(state.memoryNews);
+      trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
+      idbSet('dsg_articles', state.memoryNews);
+      setDoc(doc(db, 'system', 'news_data'), { data: state.memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
       window.dispatchEvent(new CustomEvent('data-updated'));
     }
   },
@@ -27020,7 +27042,8 @@ export const Store = {
   },
 
   getGallery() {
-    return memoryGallery && memoryGallery.length > 0 ? memoryGallery : INITIAL_DATA.gallery;
+    const state = getState();
+    return state.memoryGallery && state.memoryGallery.length > 0 ? state.memoryGallery : INITIAL_DATA.gallery;
   },
 
   getAlbum(id) {
@@ -27028,25 +27051,34 @@ export const Store = {
   },
 
   deleteAlbum(id) {
-    memoryGallery = memoryGallery.filter(a => String(a.id) !== String(id));
-    trySetLocal('dsg_gallery_v25', JSON.stringify(memoryGallery));
-    setDoc(doc(db, 'system', 'gallery_data'), { data: memoryGallery }).catch(e => console.error("Firebase save error:", e));
+    const state = getState();
+    state.memoryGallery = (state.memoryGallery || []).filter(a => String(a.id) !== String(id));
+    trySetLocal('dsg_gallery_v25', JSON.stringify(state.memoryGallery));
+    setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
 
   addAlbum(title, date, excerpt, coverImage, imagesArray) {
+    const state = getState();
     const newId = title.toLowerCase().replace(/\s+/g, '-');
-    memoryGallery.unshift({ id: newId, title, date, excerpt, image: coverImage, images: imagesArray });
-    trySetLocal('dsg_gallery_v25', JSON.stringify(memoryGallery));
-    setDoc(doc(db, 'system', 'gallery_data'), { data: memoryGallery }).catch(e => console.error("Firebase save error:", e));
+    if (!Array.isArray(state.memoryGallery)) state.memoryGallery = [];
+    state.memoryGallery.unshift({ id: newId, title, date, excerpt, image: coverImage, images: imagesArray });
+    trySetLocal('dsg_gallery_v25', JSON.stringify(state.memoryGallery));
+    setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery }).catch(e => console.error("Firebase save error:", e));
   },
 
   updateAlbum(id, title, date, excerpt, coverImage, imagesArray) {
-    const index = memoryGallery.findIndex(a => String(a.id) === String(id));
+    const state = getState();
+    const index = (state.memoryGallery || []).findIndex(a => String(a.id) === String(id));
     if (index !== -1) {
-      memoryGallery[index] = { id, title, date, excerpt, image: coverImage, images: imagesArray };
-      trySetLocal('dsg_gallery_v25', JSON.stringify(memoryGallery));
-      setDoc(doc(db, 'system', 'gallery_data'), { data: memoryGallery }).catch(e => console.error("Firebase save error:", e));
+      state.memoryGallery[index] = { id, title, date, excerpt, image: coverImage, images: imagesArray };
+      trySetLocal('dsg_gallery_v25', JSON.stringify(state.memoryGallery));
+      setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery }).catch(e => console.error("Firebase save error:", e));
     }
   }
 };
+
+// Auto-initialize store immediately on script import
+if (typeof window !== 'undefined') {
+  Store.init();
+}
