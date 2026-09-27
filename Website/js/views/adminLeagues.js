@@ -813,7 +813,10 @@ const bindEvents = () => {
             };
 
             if (idVal === 'new') {
-                const maxId = leaguesData.reduce((max, l) => Math.max(max, parseInt(l.id) || 0), 0);
+                const validIds = leaguesData
+                    .map(l => parseInt(l.id) || 0)
+                    .filter(n => n > 0 && n < 100000);
+                const maxId = validIds.length > 0 ? Math.max(...validIds) : 15;
                 updatedLeague.id = maxId + 1;
                 leaguesData.unshift(updatedLeague);
             } else {

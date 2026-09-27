@@ -559,7 +559,9 @@ export const initAdminRounds = async () => {
                     return;
                 }
 
-                const newId = Date.now();
+                const validRoundIds = roundsData.map(r => parseInt(r.id) || 0).filter(n => n > 0 && n < 100000);
+                const maxRoundId = validRoundIds.length > 0 ? Math.max(...validRoundIds) : 99;
+                const newId = maxRoundId + 1;
                 roundsData.unshift({
                     id: newId,
                     saison,

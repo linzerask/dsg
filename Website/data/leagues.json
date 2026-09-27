@@ -1,5 +1,12 @@
 [
   {
+    "id": 15,
+    "name": "DSG Sommercup 2026",
+    "year": 2026,
+    "status": "Aktiv",
+    "seasonKey": "2026/2027"
+  },
+  {
     "id": 14,
     "name": "Liga 26/27",
     "year": 2026,

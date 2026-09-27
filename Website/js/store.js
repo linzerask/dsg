@@ -11408,8 +11408,8 @@ export const Store = {
         if (i !== 20) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 8) localStorage.removeItem(`dsg_admin_players_v${i}`);
         if (i !== 6) localStorage.removeItem(`dsg_admin_teams_v${i}`);
-        if (i !== 4) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
-        if (i !== 3) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
+        if (i !== 5) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
+        if (i !== 4) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
       }
     } catch(e) {}
 
@@ -12041,50 +12041,100 @@ export const Store = {
   },
 
   async getAdminLeagues() {
-    let local = loadLocal('dsg_admin_leagues', 2);
-    
+    let local = loadLocal('dsg_admin_leagues', 4);
+    if (local && local.length > 0) return local;
+
+    let baseline = [];
+    try {
+      const res = await fetch('data/leagues.json');
+      baseline = await res.json();
+    } catch(e) {}
+
     // Check Firestore
     try {
       const leagueSnap = await getDoc(doc(db, 'system', 'leagues_data'));
       if (leagueSnap.exists() && leagueSnap.data()?.data) {
         let fbLeagues = leagueSnap.data().data;
-        fbLeagues = fbLeagues.map(l => (l.id === 13 || l.name === 'Liga 25/26' || l.seasonKey === '2025/2026') ? { ...l, status: 'Inaktiv' } : l);
-        trySetLocal('dsg_admin_leagues_v2', JSON.stringify(fbLeagues));
+        let maxSeqId = 14;
+        fbLeagues.forEach(l => {
+          const num = parseInt(l.id) || 0;
+          if (num > 0 && num < 100000 && num > maxSeqId) maxSeqId = num;
+        });
+
+        fbLeagues = fbLeagues.map(l => {
+          const num = parseInt(l.id) || 0;
+          let cleanId = num;
+          if (num >= 100000 || num <= 0) {
+            maxSeqId++;
+            cleanId = maxSeqId;
+          }
+          let item = { ...l, id: cleanId };
+          if (cleanId === 13 || item.name === 'Liga 25/26' || item.seasonKey === '2025/2026') {
+            item.status = 'Inaktiv';
+          }
+          return item;
+        });
+
+        const fbNames = new Set(fbLeagues.map(l => (l.name || '').toLowerCase().trim()));
+        baseline.forEach(b => {
+          if (!fbNames.has((b.name || '').toLowerCase().trim())) {
+            fbLeagues.push(b);
+          }
+        });
+
+        trySetLocal('dsg_admin_leagues_v4', JSON.stringify(fbLeagues));
+        setDoc(doc(db, 'system', 'leagues_data'), { data: fbLeagues, lastUpdated: Date.now() })
+          .catch(e => console.error("Firebase save error (leagues):", e));
         return fbLeagues;
       }
     } catch(e) {
       console.warn("Could not fetch leagues from Firebase:", e);
     }
 
-    if (local) {
-      local = local.map(l => (l.id === 13 || l.name === 'Liga 25/26' || l.seasonKey === '2025/2026') ? { ...l, status: 'Inaktiv' } : l);
-      return local;
+    if (baseline && baseline.length > 0) {
+      const normalized = baseline.map(l => (l.id === 13 || l.name === 'Liga 25/26' || l.seasonKey === '2025/2026') ? { ...l, status: 'Inaktiv' } : l);
+      trySetLocal('dsg_admin_leagues_v4', JSON.stringify(normalized));
+      setDoc(doc(db, 'system', 'leagues_data'), { data: normalized, lastUpdated: Date.now() })
+        .catch(e => console.error("Firebase save error (leagues):", e));
+      return normalized;
     }
 
-    try {
-      const res = await fetch('data/leagues.json');
-      let data = await res.json();
-      data = data.map(l => (l.id === 13 || l.name === 'Liga 25/26' || l.seasonKey === '2025/2026') ? { ...l, status: 'Inaktiv' } : l);
-      trySetLocal('dsg_admin_leagues_v2', JSON.stringify(data));
-      
-      // Upload initial leagues to Firestore
-      setDoc(doc(db, 'system', 'leagues_data'), { data: data, lastUpdated: Date.now() })
-        .catch(e => console.error("Firebase save error (leagues):", e));
-        
-      return data;
-    } catch(e) { return []; }
+    return [];
   },
 
   saveAdminLeagues(leagues) {
-    trySetLocal('dsg_admin_leagues_v2', JSON.stringify(leagues));
-    setDoc(doc(db, 'system', 'leagues_data'), { data: leagues, lastUpdated: Date.now() })
+    let maxSeqId = 14;
+    (leagues || []).forEach(l => {
+      const num = parseInt(l.id) || 0;
+      if (num > 0 && num < 100000 && num > maxSeqId) maxSeqId = num;
+    });
+
+    const cleanLeagues = (leagues || []).map(l => {
+      const num = parseInt(l.id) || 0;
+      let cleanId = num;
+      if (num >= 100000 || num <= 0) {
+        maxSeqId++;
+        cleanId = maxSeqId;
+      }
+      return { ...l, id: cleanId };
+    });
+
+    trySetLocal('dsg_admin_leagues_v4', JSON.stringify(cleanLeagues));
+    setDoc(doc(db, 'system', 'leagues_data'), { data: cleanLeagues, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (leagues):", e));
     window.dispatchEvent(new CustomEvent('leagues-updated'));
   },
 
   async getAdminRounds() {
-    let local = loadLocal('dsg_admin_rounds', 3);
-    
+    let local = loadLocal('dsg_admin_rounds', 5);
+    if (local && local.length > 0) return local;
+
+    let baseline = [];
+    try {
+      const res = await fetch('data/rounds.json');
+      baseline = await res.json();
+    } catch(e) {}
+
     // Check Firestore
     try {
       const roundsSnap = await getDoc(doc(db, 'system', 'rounds_data'));
@@ -12097,37 +12147,60 @@ export const Store = {
           seen.add(key);
           return true;
         });
-        trySetLocal('dsg_admin_rounds_v3', JSON.stringify(fbRounds));
+
+        let maxSeqId = 99;
+        fbRounds.forEach(r => {
+          const num = parseInt(r.id) || 0;
+          if (num > 0 && num < 100000 && num > maxSeqId) maxSeqId = num;
+        });
+
+        fbRounds = fbRounds.map(r => {
+          const num = parseInt(r.id) || 0;
+          let cleanId = num;
+          if (num >= 100000 || num <= 0) {
+            maxSeqId++;
+            cleanId = maxSeqId;
+          }
+          return { ...r, id: cleanId };
+        });
+
+        trySetLocal('dsg_admin_rounds_v5', JSON.stringify(fbRounds));
+        setDoc(doc(db, 'system', 'rounds_data'), { data: fbRounds, lastUpdated: Date.now() })
+          .catch(e => console.error("Firebase save error (rounds):", e));
         return fbRounds;
       }
     } catch(e) {
       console.warn("Could not fetch rounds from Firebase:", e);
     }
 
-    if (local) return local;
-
-    try {
-      const res = await fetch('data/rounds.json');
-      let data = await res.json();
-      trySetLocal('dsg_admin_rounds_v3', JSON.stringify(data));
-      
-      // Upload initial rounds to Firestore
-      setDoc(doc(db, 'system', 'rounds_data'), { data: data, lastUpdated: Date.now() })
+    if (baseline && baseline.length > 0) {
+      trySetLocal('dsg_admin_rounds_v5', JSON.stringify(baseline));
+      setDoc(doc(db, 'system', 'rounds_data'), { data: baseline, lastUpdated: Date.now() })
         .catch(e => console.error("Firebase save error (rounds):", e));
-        
-      return data;
-    } catch(e) { return []; }
+      return baseline;
+    }
+
+    return [];
   },
 
   saveAdminRounds(rounds) {
-    const seen = new Set();
-    const cleanRounds = rounds.filter(r => {
-      const key = `${r.seasonKey || ''}_${r.saison || ''}_${r.jahr || ''}_${r.runde || ''}_${r.liga || ''}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
+    let maxSeqId = 99;
+    (rounds || []).forEach(r => {
+      const num = parseInt(r.id) || 0;
+      if (num > 0 && num < 100000 && num > maxSeqId) maxSeqId = num;
     });
-    trySetLocal('dsg_admin_rounds_v3', JSON.stringify(cleanRounds));
+
+    const cleanRounds = (rounds || []).map(r => {
+      const num = parseInt(r.id) || 0;
+      let cleanId = num;
+      if (num >= 100000 || num <= 0) {
+        maxSeqId++;
+        cleanId = maxSeqId;
+      }
+      return { ...r, id: cleanId };
+    });
+
+    trySetLocal('dsg_admin_rounds_v5', JSON.stringify(cleanRounds));
     setDoc(doc(db, 'system', 'rounds_data'), { data: cleanRounds, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (rounds):", e));
     window.dispatchEvent(new CustomEvent('rounds-updated'));
