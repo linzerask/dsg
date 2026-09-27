@@ -26625,11 +26625,32 @@ export const Store = {
   getVisibleSeasonItems() {
     const leagues = this.getAdminLeaguesSync();
     if (leagues && leagues.length > 0) {
-      return leagues.map(l => ({ key: l.seasonKey || l.name, label: l.name || l.seasonKey }));
+      return leagues.map(l => {
+        const key = l.seasonKey || l.name;
+        let name = (l.name || key).trim();
+        let year = l.year ? String(l.year).trim() : '';
+        if (!year && key) {
+          const match = key.match(/\d{4}(\/\d{4})?/);
+          if (match) year = match[0];
+        }
+        if (/^\d{4}$/.test(year)) {
+          const nextY = parseInt(year) + 1;
+          year = `${year}/${nextY}`;
+        }
+        if (year && !name.includes(year)) {
+          name = `${name} ${year}`;
+        } else if (!year && /^\d{4}\/\d{4}$/.test(name)) {
+          name = `Saison ${name}`;
+        }
+        return { key, label: name };
+      });
     }
     const data = this.getData();
     if (data && data.seasons) {
-      return Object.keys(data.seasons).map(s => ({ key: s, label: s }));
+      return Object.keys(data.seasons).map(s => ({
+        key: s,
+        label: s.includes('2026/2027') ? 'Liga 2026/2027' : (s.startsWith('Saison') || s.startsWith('Liga') ? s : `Saison ${s}`)
+      }));
     }
     return [
       { key: '2026/2027', label: 'Liga 2026/2027' },

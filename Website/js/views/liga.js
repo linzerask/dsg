@@ -12,9 +12,30 @@ export function viewLiga() {
   let visibleItems = Store.getVisibleSeasonItems ? Store.getVisibleSeasonItems() : [];
   if (!visibleItems || visibleItems.length === 0) {
     if (leagues && leagues.length > 0) {
-      visibleItems = leagues.map(l => ({ key: l.seasonKey || l.name, label: l.name || l.seasonKey }));
+      visibleItems = leagues.map(l => {
+        const key = l.seasonKey || l.name;
+        let name = (l.name || key).trim();
+        let year = l.year ? String(l.year).trim() : '';
+        if (!year && key) {
+          const match = key.match(/\d{4}(\/\d{4})?/);
+          if (match) year = match[0];
+        }
+        if (/^\d{4}$/.test(year)) {
+          const nextY = parseInt(year) + 1;
+          year = `${year}/${nextY}`;
+        }
+        if (year && !name.includes(year)) {
+          name = `${name} ${year}`;
+        } else if (!year && /^\d{4}\/\d{4}$/.test(name)) {
+          name = `Saison ${name}`;
+        }
+        return { key, label: name };
+      });
     } else if (data && data.seasons) {
-      visibleItems = Object.keys(data.seasons).map(s => ({ key: s, label: s }));
+      visibleItems = Object.keys(data.seasons).map(s => ({
+        key: s,
+        label: s.includes('2026/2027') ? 'Liga 2026/2027' : (s.startsWith('Saison') || s.startsWith('Liga') ? s : `Saison ${s}`)
+      }));
     } else {
       visibleItems = [
         { key: "2026/2027", label: "Liga 2026/2027" },
@@ -31,7 +52,10 @@ export function viewLiga() {
     currentViewSeason = defaultSeason;
   }
   const currentSeason = currentViewSeason;
-  const currentItem = visibleItems.find(i => i.key === currentSeason) || { key: currentSeason, label: currentSeason };
+  const currentItem = visibleItems.find(i => i.key === currentSeason) || {
+    key: currentSeason,
+    label: currentSeason.startsWith('Saison') || currentSeason.startsWith('Liga') ? currentSeason : `Saison ${currentSeason}`
+  };
   
   const rawTeams = Store.getLiga(currentSeason) || [];
   const teams = [...rawTeams].sort((a, b) => {
