@@ -941,11 +941,13 @@ const bindEvents = () => {
         form.onsubmit = (e) => {
             e.preventDefault();
             const idVal = document.getElementById('edit-league-id').value;
+            const existingLeague = (idVal !== 'new' && leaguesData[parseInt(idVal)]) ? leaguesData[parseInt(idVal)] : null;
             const updatedLeague = {
                 name: document.getElementById('edit-league-name').value.trim(),
                 year: parseInt(document.getElementById('edit-league-year').value) || new Date().getFullYear(),
                 status: document.getElementById('edit-league-status').value,
-                showOnHomepage: document.getElementById('edit-league-show-homepage').checked
+                showOnHomepage: document.getElementById('edit-league-show-homepage').checked,
+                seasonKey: existingLeague?.seasonKey || undefined
             };
 
             const sKey = getSeasonKey(updatedLeague);

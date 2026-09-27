@@ -12312,6 +12312,17 @@ export const Store = {
     const leagues = this.getAdminLeaguesSync();
     const items = [];
     const seenKeys = new Set();
+    const hiddenKeys = new Set();
+
+    // Collect all explicitly hidden league keys and aliases
+    leagues.forEach(l => {
+      if (l.showOnHomepage === false) {
+        if (l.seasonKey) hiddenKeys.add(l.seasonKey);
+        if (l.name && l.year) hiddenKeys.add(`${l.name} ${l.year}`);
+        const sKey = (l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name;
+        hiddenKeys.add(sKey);
+      }
+    });
 
     // Sort descending: highest year first, then highest ID first
     const sorted = [...leagues].sort((a, b) => {
@@ -12326,13 +12337,14 @@ export const Store = {
 
       let sKey = l.seasonKey;
       if (!sKey) {
-        if (l.name && l.name.includes('26/27')) sKey = '2026/2027';
-        else if (l.name && l.name.includes('25/26')) sKey = '2025/2026';
+        if (l.name && (l.name.includes('26/27') || l.name.includes('2026/2027'))) sKey = '2026/2027';
+        else if (l.name && (l.name.includes('25/26') || l.name.includes('2025/2026'))) sKey = '2025/2026';
         else if (l.name && l.year && !l.name.includes(String(l.year))) sKey = `${l.name} ${l.year}`;
         else sKey = l.name;
       }
 
-      if (seenKeys.has(sKey)) return;
+      const compoundName = (l.name && l.year) ? `${l.name} ${l.year}` : '';
+      if (seenKeys.has(sKey) || hiddenKeys.has(sKey) || (compoundName && hiddenKeys.has(compoundName))) return;
       seenKeys.add(sKey);
 
       let label = l.name;
@@ -12351,22 +12363,6 @@ export const Store = {
         id: l.id
       });
     });
-
-    // Also include any custom seasons in data.seasons not covered by admin leagues
-    const data = this.getData();
-    if (data && data.seasons) {
-      Object.keys(data.seasons).forEach(s => {
-        if (s === '2026_sommer' || s === 'DSG Sommercup 2026' || s === 'Liga 26/27 2026') return;
-        if (seenKeys.has(s)) return;
-        seenKeys.add(s);
-        items.push({
-          key: s,
-          label: s.toLowerCase().includes('saison') || s.toLowerCase().startsWith('liga') ? s : 'Saison ' + s,
-          year: parseInt(s.split('/')[0]) || 2026,
-          id: 0
-        });
-      });
-    }
 
     return items;
   },
