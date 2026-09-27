@@ -11386,22 +11386,37 @@ function trySetLocal(key, dataStr) {
   }
 }
 
-const loadLocal = (prefix, maxVer) => {
-  for (let i = maxVer; i >= 1; i--) {
-    const data = JSON.parse(localStorage.getItem(`${prefix}_v${i}`));
+const loadLocal = (prefix, exactVer) => {
+  try {
+    const raw = localStorage.getItem(`${prefix}_v${exactVer}`);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
     if (data && (!Array.isArray(data) || data.length > 0)) {
       return data;
     }
-  }
+  } catch (e) {}
   return null;
 };
 
 export const Store = {
   init() {
+    // Clear all obsolete cache versions to prevent old corrupt/timestamp data
+    try {
+      for (let i = 1; i <= 60; i++) {
+        if (i !== 43) localStorage.removeItem(`dsg_data_v${i}`);
+        if (i !== 20) localStorage.removeItem(`dsg_articles_v${i}`);
+        if (i !== 20) localStorage.removeItem(`dsg_gallery_v${i}`);
+        if (i !== 8) localStorage.removeItem(`dsg_admin_players_v${i}`);
+        if (i !== 5) localStorage.removeItem(`dsg_admin_teams_v${i}`);
+        if (i !== 4) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
+        if (i !== 3) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
+      }
+    } catch(e) {}
+
     // Eagerly load local memory so the app doesn't block on network
-    memoryData = loadLocal('dsg_data', 42) || INITIAL_DATA;
-    memoryNews = loadLocal('dsg_articles', 19) || INITIAL_DATA.news || [];
-    memoryGallery = loadLocal('dsg_gallery', 19) || INITIAL_DATA.gallery || [];
+    memoryData = loadLocal('dsg_data', 43) || INITIAL_DATA;
+    memoryNews = loadLocal('dsg_articles', 20) || INITIAL_DATA.news || [];
+    memoryGallery = loadLocal('dsg_gallery', 20) || INITIAL_DATA.gallery || [];
 
     // Trigger Firebase sync in the background
     this.syncFirebase();
@@ -11423,7 +11438,7 @@ export const Store = {
       // Sync Data
       if (dataSnap.exists() && dataSnap.data().data) {
         const fbData = dataSnap.data().data;
-        const localData = loadLocal('dsg_data', 42);
+        const localData = loadLocal('dsg_data', 43);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
           memoryData = localData;
           needsMigration = true;
@@ -11432,7 +11447,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 42);
+        let legacyData = loadLocal('dsg_data', 43);
         if (!legacyData) legacyData = INITIAL_DATA;
         memoryData = legacyData;
         needsMigration = true;
@@ -11441,7 +11456,7 @@ export const Store = {
       // Sync News
       if (newsSnap.exists() && newsSnap.data().data) {
         const fbNews = newsSnap.data().data;
-        const localNews = loadLocal('dsg_articles', 19) || INITIAL_DATA.news || [];
+        const localNews = loadLocal('dsg_articles', 20) || INITIAL_DATA.news || [];
         if (localNews.length > fbNews.length) {
           memoryNews = localNews;
           needsMigration = true;
@@ -11450,14 +11465,14 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        memoryNews = loadLocal('dsg_articles', 19) || INITIAL_DATA.news || [];
+        memoryNews = loadLocal('dsg_articles', 20) || INITIAL_DATA.news || [];
         needsMigration = true;
       }
 
       // Sync Gallery
       if (gallerySnap.exists() && gallerySnap.data().data) {
         const fbGallery = gallerySnap.data().data;
-        const localGallery = loadLocal('dsg_gallery', 19) || INITIAL_DATA.gallery || [];
+        const localGallery = loadLocal('dsg_gallery', 20) || INITIAL_DATA.gallery || [];
         const memTime = fbGallery[0]?.lastUpdated || 0;
         const locTime = localGallery[0]?.lastUpdated || 0;
         if (localGallery.length > fbGallery.length || locTime > memTime) {
@@ -11468,8 +11483,33 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        memoryGallery = loadLocal('dsg_gallery', 19) || INITIAL_DATA.gallery || [];
+        memoryGallery = loadLocal('dsg_gallery', 20) || INITIAL_DATA.gallery || [];
         needsMigration = true;
+      }
+
+      // Sanitize Gallery items (fix broken image paths)
+      if (memoryGallery && Array.isArray(memoryGallery)) {
+        memoryGallery.forEach(album => {
+          if (!album.image || album.image.includes('assets/hero') || album.image.includes('sample.jpg') || album.image.startsWith('undefined')) {
+            album.image = 'stadion.png';
+            needsMigration = true;
+          }
+          if (album.images && Array.isArray(album.images)) {
+            album.images = album.images.map((img, idx) => {
+              const url = typeof img === 'string' ? img : (img?.url || '');
+              const title = typeof img === 'object' ? img.title : `${album.title || 'Foto'} ${idx + 1}`;
+              let cleanUrl = url;
+              if (!cleanUrl || cleanUrl.includes('assets/hero') || cleanUrl.includes('sample.jpg') || cleanUrl.startsWith('undefined')) {
+                cleanUrl = 'stadion.png';
+                needsMigration = true;
+              }
+              return { url: cleanUrl, title: title || `${album.title} ${idx + 1}` };
+            });
+          } else {
+            album.images = [{ url: 'stadion.png', title: album.title || 'Foto 1' }];
+            needsMigration = true;
+          }
+        });
       }
 
                               // Initialize / ensure seasons are present
@@ -11527,9 +11567,9 @@ export const Store = {
         await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v42', JSON.stringify(memoryData));
-      trySetLocal('dsg_articles_v19', JSON.stringify(memoryNews));
-      trySetLocal('dsg_gallery_v19', JSON.stringify(memoryGallery));
+      trySetLocal('dsg_data_v43', JSON.stringify(memoryData));
+      trySetLocal('dsg_articles_v20', JSON.stringify(memoryNews));
+      trySetLocal('dsg_gallery_v20', JSON.stringify(memoryGallery));
       console.log("Migrated local data to Firebase.");
 
       if (hasUpdates) {
@@ -11862,13 +11902,16 @@ export const Store = {
   },
 
   async getAdminPlayers() {
-    let local = loadLocal('dsg_admin_players', 6);
+    let local = loadLocal('dsg_admin_players', 8);
     if (local && local.length > 0) return local;
 
     let baseline = [];
     try {
       const res = await fetch('data/players.json');
-      baseline = (await res.json()).filter(p => (parseInt(p['#']) || 0) < 100000000);
+      baseline = (await res.json()).filter(p => {
+        const n = parseInt(p['#'] || p.id) || 0;
+        return n > 0 && n < 100000;
+      });
     } catch(e) {}
 
     // Try reading from Firebase Firestore
@@ -11888,14 +11931,17 @@ export const Store = {
           }
         }
         if (fbPlayers.length > 0) {
-          fbPlayers = fbPlayers.filter(p => (parseInt(p['#']) || 0) < 100000000);
+          fbPlayers = fbPlayers.filter(p => {
+            const n = parseInt(p['#'] || p.id) || 0;
+            return n > 0 && n < 100000;
+          });
           const fbIdSet = new Set(fbPlayers.map(p => String(p['#'] || p.id || '')));
           const missingInFb = baseline.filter(p => !fbIdSet.has(String(p['#'] || p.id || '')));
           if (missingInFb.length > 0) {
             fbPlayers = missingInFb.concat(fbPlayers);
-            this._savePlayersToFirebase(fbPlayers);
           }
-          trySetLocal('dsg_admin_players_v6', JSON.stringify(fbPlayers));
+          this._savePlayersToFirebase(fbPlayers);
+          trySetLocal('dsg_admin_players_v8', JSON.stringify(fbPlayers));
           return fbPlayers;
         }
       }
@@ -11904,7 +11950,7 @@ export const Store = {
     }
 
     if (baseline && baseline.length > 0) {
-      trySetLocal('dsg_admin_players_v6', JSON.stringify(baseline));
+      trySetLocal('dsg_admin_players_v8', JSON.stringify(baseline));
       this._savePlayersToFirebase(baseline);
       return baseline;
     }
@@ -11913,8 +11959,12 @@ export const Store = {
   },
 
   saveAdminPlayers(players) {
-    trySetLocal('dsg_admin_players_v6', JSON.stringify(players));
-    this._savePlayersToFirebase(players);
+    const cleanPlayers = (players || []).filter(p => {
+      const n = parseInt(p['#'] || p.id) || 0;
+      return n > 0 && n < 100000;
+    });
+    trySetLocal('dsg_admin_players_v8', JSON.stringify(cleanPlayers));
+    this._savePlayersToFirebase(cleanPlayers);
     window.dispatchEvent(new CustomEvent('players-updated'));
   },
 

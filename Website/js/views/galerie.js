@@ -11,7 +11,7 @@ export const viewGalerie = () => {
     const albumsHTML = albums.map(a => `
       <div class="masonry-item glass-card stagger-item album-card" data-id="${a.id}">
         <div style="position: relative; overflow: hidden; border-radius: 4px; margin-bottom: 10px;">
-          <img src="${a.image}" alt="${a.title}" style="width: 100%; height: 200px; object-fit: cover; display: block; transition: transform var(--transition-smooth);">
+          <img src="${a.image || 'stadion.png'}" alt="${a.title || 'Galerie'}" onerror="this.onerror=null; this.src='stadion.png';" style="width: 100%; height: 200px; object-fit: cover; display: block; transition: transform var(--transition-smooth);">
           <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent); pointer-events: none;"></div>
         </div>
         <div style="font-size: 0.8rem; color: var(--color-accent); font-weight: 700; margin-bottom: var(--space-xs); text-transform: uppercase;">${a.date}</div>
@@ -54,7 +54,7 @@ export const viewGalerie = () => {
       const alt = (typeof img === 'object' && img?.title) ? img.title : `${album.title || 'Galerie'} ${i + 1}`;
       return `
       <div class="masonry-item stagger-item glass-card gallery-img-card" data-index="${i}">
-        <img src="${src}" alt="${alt}" style="width: 100%; border-radius: var(--border-radius-sm); display: block;" loading="lazy">
+        <img src="${src || 'stadion.png'}" alt="${alt}" onerror="this.onerror=null; this.src='stadion.png';" style="width: 100%; border-radius: var(--border-radius-sm); display: block;" loading="lazy">
       </div>
       `;
     }).join('');
