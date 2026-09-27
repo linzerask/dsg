@@ -1,6 +1,8 @@
 import { Store } from '../store.js';
+import { storage } from '../firebase.js';
+import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-storage.js";
 
-let stagedImages = []; // Array of { id, url, isCover }
+let stagedImages = []; // Array of { id, url, isCover, loading, fileName }
 let editingArticleId = null;
 let searchQuery = '';
 
@@ -38,6 +40,24 @@ const compressImage = (file) => {
     reader.onerror = () => resolve(null);
     reader.readAsDataURL(file);
   });
+};
+
+const uploadToFirebaseStorage = async (file) => {
+  if (!file) return null;
+  try {
+    const cleanName = (file.name || 'image')
+      .replace(/[^a-zA-Z0-9.-]/g, '_')
+      .toLowerCase();
+    const storagePath = `news/${Date.now()}_${Math.random().toString(36).substring(2, 7)}_${cleanName}`;
+    const storageRef = ref(storage, storagePath);
+
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadUrl = await getDownloadURL(snapshot.ref);
+    return downloadUrl;
+  } catch (err) {
+    console.warn("Firebase storage upload error, falling back to local compression:", err);
+    return null;
+  }
 };
 
 export const renderAdminNews = () => {
@@ -122,16 +142,16 @@ export const renderAdminNews = () => {
           <!-- Drag & Drop Media Section -->
           <div style="display: flex; flex-direction: column; gap: 4px; margin-top: var(--space-xs);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <label style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary);">Bilder & Titelbild (Drag & Drop)</label>
+              <label style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary);">Bilder & Titelbild (Cloud Upload)</label>
               <button type="button" id="btn-add-image-url" style="background: none; border: none; color: var(--color-accent); font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: underline;">+ Bild-URL hinzufügen</button>
             </div>
 
             <!-- Drop Zone -->
             <div class="dropzone-container" id="news-dropzone">
               <input type="file" id="news-file-input" accept="image/*" multiple style="display: none;">
-              <div class="dropzone-icon">📁</div>
+              <div class="dropzone-icon">☁️</div>
               <div class="dropzone-text">Bilder hierher ziehen oder <span style="color: var(--color-accent); text-decoration: underline; font-weight: 700;">durchsuchen</span></div>
-              <div class="dropzone-hint">Unterstützt JPG, PNG, WEBP, AVIF. Mehrere Bilder gleichzeitig auswählen oder ablegen.</div>
+              <div class="dropzone-hint">Bilder werden automatisch in Firebase Cloud Storage gespeichert und optimiert.</div>
             </div>
 
             <!-- Staged Images Grid (With Cover Selector) -->
@@ -162,6 +182,7 @@ export const renderAdminNews = () => {
     </div>
 
     <style>
+      @keyframes dsg-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
       @media (max-width: 768px) {
         #news-form > div[style*="grid-template-columns"] {
           grid-template-columns: 1fr !important;
@@ -352,12 +373,19 @@ export const initAdminNews = () => {
 
     stageGrid.style.display = 'grid';
     stageGrid.innerHTML = stagedImages.map((img, idx) => `
-      <div class="media-stage-card ${img.isCover ? 'is-cover' : ''}" data-idx="${idx}">
-        <img src="${img.url}" alt="Vorschau">
-        <div class="cover-badge select-cover-btn" data-idx="${idx}" title="Klicken, um als Titelbild festzulegen">
-          ${img.isCover ? '★ Titelbild' : '☆ Als Titelbild'}
-        </div>
-        <button type="button" class="media-remove-btn remove-image-btn" data-idx="${idx}" title="Bild entfernen">✕</button>
+      <div class="media-stage-card ${img.isCover ? 'is-cover' : ''} ${img.loading ? 'is-loading' : ''}" data-idx="${idx}">
+        ${img.loading ? `
+          <div style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.06); color: var(--color-text-secondary); font-size: 0.8rem; gap: 8px; padding: 10px; text-align: center; border-radius: 6px;">
+            <div style="width: 22px; height: 22px; border: 2px solid var(--color-accent); border-top-color: transparent; border-radius: 50%; animation: dsg-spin 0.8s linear infinite;"></div>
+            <span style="font-weight: 600;">Wird hochgeladen...</span>
+          </div>
+        ` : `
+          <img src="${img.url}" alt="Vorschau">
+          <div class="cover-badge select-cover-btn" data-idx="${idx}" title="Klicken, um als Titelbild festzulegen">
+            ${img.isCover ? '★ Titelbild' : '☆ Als Titelbild'}
+          </div>
+          <button type="button" class="media-remove-btn remove-image-btn" data-idx="${idx}" title="Bild entfernen">✕</button>
+        `}
       </div>
     `).join('');
 
@@ -392,21 +420,41 @@ export const initAdminNews = () => {
     if (!fileList || fileList.length === 0) return;
     const files = Array.from(fileList);
     
-    // Process all files in parallel
-    const processed = await Promise.all(files.map(async (file) => {
-      return await compressImage(file);
+    // Add placeholder cards with loading spinners
+    const uploadTasks = files.map((file, i) => {
+      const id = 'img_' + Date.now() + '_' + i + '_' + Math.random().toString(36).substring(2, 5);
+      const isFirst = stagedImages.length === 0 && i === 0;
+      stagedImages.push({
+        id,
+        url: '',
+        isCover: isFirst,
+        loading: true,
+        fileName: file.name
+      });
+      return { id, file };
+    });
+    renderMediaStage();
+
+    // Upload files to Firebase Storage (with compression fallback)
+    await Promise.all(uploadTasks.map(async ({ id, file }) => {
+      let finalUrl = await uploadToFirebaseStorage(file);
+      if (!finalUrl) {
+        finalUrl = await compressImage(file);
+      }
+      
+      const item = stagedImages.find(img => img.id === id);
+      if (item && finalUrl) {
+        item.url = finalUrl;
+        item.loading = false;
+      } else if (item && !finalUrl) {
+        const idx = stagedImages.indexOf(item);
+        if (idx !== -1) stagedImages.splice(idx, 1);
+      }
     }));
 
-    processed.forEach(compressed => {
-      if (compressed) {
-        const isFirst = stagedImages.length === 0;
-        stagedImages.push({
-          id: 'img_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
-          url: compressed,
-          isCover: isFirst
-        });
-      }
-    });
+    if (stagedImages.length > 0 && !stagedImages.some(img => img.isCover)) {
+      stagedImages[0].isCover = true;
+    }
 
     renderMediaStage();
   };
@@ -453,7 +501,8 @@ export const initAdminNews = () => {
       stagedImages.push({
         id: 'img_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
         url: url.trim(),
-        isCover: isFirst
+        isCover: isFirst,
+        loading: false
       });
       renderMediaStage();
     }
@@ -465,6 +514,12 @@ export const initAdminNews = () => {
   form.onsubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
+
+    // Check if any images are still loading
+    if (stagedImages.some(img => img.loading)) {
+      showToast('Bilder werden noch hochgeladen. Bitte kurz warten...', true);
+      return;
+    }
 
     const id = document.getElementById('news-id').value;
     const title = document.getElementById('news-title').value.trim();
@@ -624,7 +679,8 @@ export const initAdminNews = () => {
           stagedImages.push({
             id: 'cover_' + article.id,
             url: article.image,
-            isCover: true
+            isCover: true,
+            loading: false
           });
         }
         if (article.gallery && Array.isArray(article.gallery)) {
@@ -634,7 +690,8 @@ export const initAdminNews = () => {
               stagedImages.push({
                 id: 'gal_' + i + '_' + Date.now(),
                 url: imgUrl,
-                isCover: false
+                isCover: false,
+                loading: false
               });
             }
           });
