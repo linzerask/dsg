@@ -299,14 +299,14 @@ export const bindAdmin = () => {
         </div>
         <div>
           <button class="btn btn-outline edit-match-btn" data-id="${m.id}" data-season="${season}" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;">Bearbeiten</button>
-          <button class="btn delete-match-btn" data-id="${m.id}" data-season="${season}" style="padding: 5px 10px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">LÃ¶schen</button>
+          <button class="btn delete-match-btn" data-id="${m.id}" data-season="${season}" style="padding: 5px 10px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">Löschen</button>
         </div>
       </div>
     `).join('');
 
     document.querySelectorAll('.delete-match-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        if(confirm('MÃ¶chten Sie dieses Spiel wirklich lÃ¶schen? Dadurch werden alle Tabellen und Statistiken neu berechnet!')) {
+        if(confirm('Möchten Sie dieses Spiel wirklich löschen? Dadurch werden alle Tabellen und Statistiken neu berechnet!')) {
           Store.deleteMatch(e.target.dataset.season, e.target.dataset.id);
           renderAdminMatchesList();
         }
@@ -492,14 +492,14 @@ export const bindAdmin = () => {
         </div>
         <div>
           <button class="btn btn-outline edit-news-btn" data-id="${a.id}" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;">Bearbeiten</button>
-          <button class="btn delete-news-btn" data-id="${a.id}" style="padding: 5px 10px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">LÃ¶schen</button>
+          <button class="btn delete-news-btn" data-id="${a.id}" style="padding: 5px 10px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">Löschen</button>
         </div>
       </div>
     `).join('');
 
     document.querySelectorAll('.delete-news-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        if(confirm('Diesen Artikel lÃ¶schen?')) {
+        if(confirm('Diesen Artikel löschen?')) {
           Store.deleteArticle(e.target.dataset.id);
           renderAdminNewsList();
         }
@@ -527,7 +527,7 @@ export const bindAdmin = () => {
   document.getElementById('news-cancel-btn')?.addEventListener('click', (e) => {
     document.getElementById('news-form').reset();
     document.getElementById('news-id').value = '';
-    document.getElementById('news-submit-btn').textContent = 'News verÃ¶ffentlichen';
+    document.getElementById('news-submit-btn').textContent = 'News veröffentlichen';
     e.target.style.display = 'none';
   });
 
@@ -542,7 +542,7 @@ export const bindAdmin = () => {
     let galleryArray = [];
     const imgType = document.querySelector('input[name="news-img-type"]:checked').value;
     if (imgType === 'url') {
-      const urls = document.getElementById('news-image').value.split('\\n').map(u => u.trim()).filter(u => u.length > 0);
+      const urls = document.getElementById('news-image').value.split('\n').map(u => u.trim()).filter(u => u.length > 0);
       if (urls.length > 0) image = urls[0];
       if (urls.length > 1) galleryArray = urls.slice(1).map(url => ({ url }));
     } else {
@@ -562,7 +562,7 @@ export const bindAdmin = () => {
     Store.addNews(title, "", content, image, galleryArray);
     e.target.reset();
     document.getElementById('news-id').value = '';
-    document.getElementById('news-submit-btn').textContent = 'News verÃ¶ffentlichen';
+    document.getElementById('news-submit-btn').textContent = 'News veröffentlichen';
     document.getElementById('news-cancel-btn').style.display = 'none';
     document.getElementById('news-image').style.display = 'block';
     document.getElementById('news-image-file').style.display = 'none';
@@ -582,14 +582,14 @@ export const bindAdmin = () => {
         </div>
         <div>
           <button class="btn btn-outline edit-gal-btn" data-id="${a.id}" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;">Bearbeiten</button>
-          <button class="btn delete-gal-btn" data-id="${a.id}" style="padding: 5px 10px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">LÃ¶schen</button>
+          <button class="btn delete-gal-btn" data-id="${a.id}" style="padding: 5px 10px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">Löschen</button>
         </div>
       </div>
     `).join('');
 
     document.querySelectorAll('.delete-gal-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        if(confirm('Dieses Album lÃ¶schen?')) {
+        if(confirm('Dieses Album löschen?')) {
           Store.deleteAlbum(e.target.dataset.id);
           renderAdminAlbumsList();
         }
@@ -710,7 +710,7 @@ export const bindAdmin = () => {
     const teams = Store.getData().seasons[season]?.teams || [];
     
     if (teams.length === 0) {
-      list.innerHTML = '<p style="color: var(--color-text-secondary); font-size: 0.9rem;">Keine Teams fÃ¼r diese Saison vorhanden.</p>';
+      list.innerHTML = '<p style="color: var(--color-text-secondary); font-size: 0.9rem;">Keine Teams für diese Saison vorhanden.</p>';
       return;
     }
 
@@ -719,14 +719,14 @@ export const bindAdmin = () => {
         <span style="font-weight: 700;">${t.name}</span>
         <div>
           <button class="btn btn-outline edit-team-btn" data-id="${t.id}" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;">Bearbeiten</button>
-          <button class="btn delete-team-btn" data-id="${t.id}" style="padding: 5px 10px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">LÃ¶schen</button>
+          <button class="btn delete-team-btn" data-id="${t.id}" style="padding: 5px 10px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">Löschen</button>
         </div>
       </div>
     `).join('');
 
     document.querySelectorAll('.delete-team-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        if(confirm('Team wirklich lÃ¶schen? ACHTUNG: Das lÃ¶scht das Team nur aus der Dropdown-Liste, Matches bleiben bestehen!')) {
+        if(confirm('Team wirklich löschen? ACHTUNG: Das löscht das Team nur aus der Dropdown-Liste, Matches bleiben bestehen!')) {
           const id = parseInt(e.target.dataset.id);
           const data = Store.getData();
           const seasonData = data.seasons[teamSeasonSelect.value];
@@ -745,7 +745,7 @@ export const bindAdmin = () => {
         const seasonData = data.seasons[teamSeasonSelect.value];
         const team = seasonData.teams.find(t => t.id === id);
         if (team) {
-          const newName = prompt('Neuer Name fÃ¼r das Team:', team.name);
+          const newName = prompt('Neuer Name für das Team:', team.name);
           if (newName && newName.trim() !== '') {
             team.name = newName.trim();
             Store.saveData(data);
