@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560000009';
-import { renderIcon } from '../icons.js?v=1790560000009';
+import { Store } from '../store.js?v=1790560000010';
+import { renderIcon } from '../icons.js?v=1790560000010';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -179,7 +179,7 @@ export const computeAllTimeStats = () => {
     }
   });
 
-  // Sort Scorers
+  // Sort Scorers and assign real all-time rank
   const allTimeScorers = Object.values(playerMap).map(p => ({
     name: p.name,
     goals: p.goals,
@@ -188,7 +188,11 @@ export const computeAllTimeStats = () => {
     seasons: Array.from(p.seasons)
   })).sort((a, b) => b.goals - a.goals);
 
-  // Sort Clubs
+  allTimeScorers.forEach((s, idx) => {
+    s.rank = idx + 1;
+  });
+
+  // Sort Clubs and assign real all-time rank
   const allTimeClubs = Object.values(clubMap).map(c => {
     const diff = c.gf - c.ga;
     const winRate = c.played > 0 ? Math.round((c.won / c.played) * 100) : 0;
@@ -199,6 +203,10 @@ export const computeAllTimeStats = () => {
       seasonsList: Array.from(c.seasonsList)
     };
   }).sort((a, b) => b.points - a.points || b.won - a.won || b.diff - a.diff);
+
+  allTimeClubs.forEach((c, idx) => {
+    c.rank = idx + 1;
+  });
 
   // Records
   matchScores.sort((a, b) => b.totalGoals - a.totalGoals);
@@ -252,18 +260,145 @@ export const computeAllTimeStats = () => {
   };
 };
 
+export const renderScorersTableRows = (pageScorers) => {
+  if (!pageScorers || pageScorers.length === 0) {
+    return `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 24px; color: var(--color-text-secondary);">Keine Torschützen gefunden.</td>
+      </tr>
+    `;
+  }
+
+  return pageScorers.map((s) => {
+    let badge = '';
+    if (s.rank === 1) badge = `${renderIcon('crown', { size: 14, color: '#f59e0b', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
+    else if (s.rank === 2) badge = `${renderIcon('medal', { size: 14, color: '#94a3b8', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
+    else if (s.rank === 3) badge = `${renderIcon('medal', { size: 14, color: '#b45309', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
+
+    return `
+      <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem;">
+        <td style="padding: 12px 10px; font-weight: 700; color: ${s.rank <= 3 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">
+          ${badge}${s.rank}.
+        </td>
+        <td style="padding: 12px 10px; font-weight: 600; color: var(--color-text-primary);">
+          ${s.name}
+        </td>
+        <td style="padding: 12px 10px; color: var(--color-text-secondary); font-size: 0.88rem;">
+          ${s.teams.join(', ') || '-'}
+        </td>
+        <td style="padding: 12px 10px; text-align: center; color: var(--color-text-secondary);">
+          ${s.seasonsCount}
+        </td>
+        <td style="padding: 12px 10px; text-align: right; font-weight: 800; font-size: 1.05rem; color: var(--color-accent);">
+          ${s.goals}
+        </td>
+      </tr>
+    `;
+  }).join('');
+};
+
+export const renderScorerPagination = (totalScorers, currentPage, perPage = SCORERS_PER_PAGE) => {
+  const totalPages = Math.ceil(totalScorers / perPage) || 1;
+  if (totalScorers === 0) return '';
+  if (totalPages <= 1) {
+    return `
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--color-border);">
+        <div style="font-size: 0.88rem; color: var(--color-text-secondary);">
+          Zeige <strong style="color: var(--color-text-primary);">1&ndash;${totalScorers}</strong> von <strong style="color: var(--color-text-primary);">${totalScorers}</strong> Torschützen
+        </div>
+      </div>
+    `;
+  }
+
+  const startIndex = (currentPage - 1) * perPage;
+  const endIndex = Math.min(startIndex + perPage, totalScorers);
+
+  let pages = [];
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    pages.push(1);
+    if (currentPage > 3) pages.push('...');
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+    for (let i = start; i <= end; i++) {
+      if (!pages.includes(i)) pages.push(i);
+    }
+    if (currentPage < totalPages - 2) pages.push('...');
+    if (!pages.includes(totalPages)) pages.push(totalPages);
+  }
+
+  return `
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--color-border);">
+      <div style="font-size: 0.88rem; color: var(--color-text-secondary);">
+        Zeige <strong style="color: var(--color-text-primary);">${totalScorers > 0 ? startIndex + 1 : 0}&ndash;${endIndex}</strong> von <strong style="color: var(--color-text-primary);">${totalScorers}</strong> Torschützen (Seite ${currentPage} von ${totalPages})
+      </div>
+      <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+        <button class="stats-page-btn stats-prev-page glass-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled style="opacity: 0.35; pointer-events: none; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;"' : 'style="padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;"'}>
+          &laquo; Zurück
+        </button>
+        ${pages.map(p => {
+          if (p === '...') return `<span style="padding: 6px 8px; color: var(--color-text-secondary); font-size: 0.85rem;">&hellip;</span>`;
+          const isActive = p === currentPage;
+          return `
+            <button class="stats-page-btn" data-page="${p}" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid ${isActive ? 'var(--color-accent)' : 'var(--color-border)'}; background: ${isActive ? 'var(--color-accent)' : 'var(--color-surface)'}; color: ${isActive ? '#ffffff' : 'var(--color-text-primary)'}; cursor: pointer; font-size: 0.85rem; font-weight: ${isActive ? '800' : '600'}; transition: all 0.2s;">
+              ${p}
+            </button>
+          `;
+        }).join('')}
+        <button class="stats-page-btn stats-next-page glass-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled style="opacity: 0.35; pointer-events: none; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;"' : 'style="padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;"'}>
+          Weiter &raquo;
+        </button>
+      </div>
+    </div>
+  `;
+};
+
+export const renderClubsTableRows = (filteredClubs) => {
+  if (!filteredClubs || filteredClubs.length === 0) {
+    return `
+      <tr>
+        <td colspan="10" style="text-align: center; padding: 24px; color: var(--color-text-secondary);">Keine Vereine gefunden.</td>
+      </tr>
+    `;
+  }
+
+  return filteredClubs.map((c) => `
+    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem;">
+      <td style="padding: 10px; font-weight: 700; color: ${c.rank <= 3 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">
+        ${c.rank}.
+      </td>
+      <td style="padding: 10px; font-weight: 700; color: var(--color-text-primary);">
+        ${c.name} ${c.titles > 0 ? `<span title="${c.titles}x Meister" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.85rem; color: #f59e0b; margin-left: 6px;">${renderIcon('trophy', { size: 15, color: '#f59e0b' })} ${c.titles > 1 ? c.titles + 'x' : ''}</span>` : ''}
+      </td>
+      <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.played}</td>
+      <td style="padding: 10px; text-align: center; font-weight: 600; color: var(--color-text-primary);">${c.won}</td>
+      <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.drawn}</td>
+      <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.lost}</td>
+      <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.gf}:${c.ga}</td>
+      <td style="padding: 10px; text-align: center; color: ${c.diff > 0 ? 'var(--color-accent)' : (c.diff < 0 ? '#e74c3c' : 'var(--color-text-secondary)')}; font-weight: 600;">
+        ${c.diff > 0 ? '+' + c.diff : c.diff}
+      </td>
+      <td style="padding: 10px; text-align: center; color: var(--color-accent); font-weight: 600;">${c.winRate}%</td>
+      <td style="padding: 10px; text-align: right; font-weight: 800; font-size: 1.05rem; color: var(--color-accent);">${c.points}</td>
+    </tr>
+  `).join('');
+};
+
 export const viewStatistiken = () => {
   const stats = computeAllTimeStats();
   const topScorers = stats.allTimeScorers;
   const clubs = stats.allTimeClubs;
 
   // Filtered lists based on search
-  const filteredScorers = scorerSearchQuery
-    ? topScorers.filter(s => s.name.toLowerCase().includes(scorerSearchQuery.toLowerCase()) || s.teams.some(t => t.toLowerCase().includes(scorerSearchQuery.toLowerCase())))
+  const query = scorerSearchQuery.trim().toLowerCase();
+  const filteredScorers = query
+    ? topScorers.filter(s => s.name.toLowerCase().includes(query) || s.teams.some(t => t.toLowerCase().includes(query)))
     : topScorers;
 
-  const filteredClubs = clubSearchQuery
-    ? clubs.filter(c => c.name.toLowerCase().includes(clubSearchQuery.toLowerCase()))
+  const clubQuery = clubSearchQuery.trim().toLowerCase();
+  const filteredClubs = clubQuery
+    ? clubs.filter(c => c.name.toLowerCase().includes(clubQuery))
     : clubs;
 
   // Pagination for Scorers
@@ -275,49 +410,6 @@ export const viewStatistiken = () => {
   const startIndex = (scorerPage - 1) * SCORERS_PER_PAGE;
   const endIndex = Math.min(startIndex + SCORERS_PER_PAGE, totalScorers);
   const pageScorers = filteredScorers.slice(startIndex, endIndex);
-
-  const renderScorerPagination = () => {
-    if (totalPages <= 1) return '';
-    let pages = [];
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) pages.push(i);
-    } else {
-      pages.push(1);
-      if (scorerPage > 3) pages.push('...');
-      const start = Math.max(2, scorerPage - 1);
-      const end = Math.min(totalPages - 1, scorerPage + 1);
-      for (let i = start; i <= end; i++) {
-        if (!pages.includes(i)) pages.push(i);
-      }
-      if (scorerPage < totalPages - 2) pages.push('...');
-      if (!pages.includes(totalPages)) pages.push(totalPages);
-    }
-
-    return `
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--color-border);">
-        <div style="font-size: 0.88rem; color: var(--color-text-secondary);">
-          Zeige <strong style="color: var(--color-text-primary);">${totalScorers > 0 ? startIndex + 1 : 0}&ndash;${endIndex}</strong> von <strong style="color: var(--color-text-primary);">${totalScorers}</strong> Torschützen (Seite ${scorerPage} von ${totalPages})
-        </div>
-        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-          <button class="stats-page-btn stats-prev-page glass-btn" data-page="${scorerPage - 1}" ${scorerPage === 1 ? 'disabled style="opacity: 0.35; pointer-events: none; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;"' : 'style="padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;"'}>
-            &laquo; Zurück
-          </button>
-          ${pages.map(p => {
-            if (p === '...') return `<span style="padding: 6px 8px; color: var(--color-text-secondary); font-size: 0.85rem;">&hellip;</span>`;
-            const isActive = p === scorerPage;
-            return `
-              <button class="stats-page-btn" data-page="${p}" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid ${isActive ? 'var(--color-accent)' : 'var(--color-border)'}; background: ${isActive ? 'var(--color-accent)' : 'var(--color-surface)'}; color: ${isActive ? '#ffffff' : 'var(--color-text-primary)'}; cursor: pointer; font-size: 0.85rem; font-weight: ${isActive ? '800' : '600'}; transition: all 0.2s;">
-                ${p}
-              </button>
-            `;
-          }).join('')}
-          <button class="stats-page-btn stats-next-page glass-btn" data-page="${scorerPage + 1}" ${scorerPage === totalPages ? 'disabled style="opacity: 0.35; pointer-events: none; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;"' : 'style="padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;"'}>
-            Weiter &raquo;
-          </button>
-        </div>
-      </div>
-    `;
-  };
 
   // Top 3 Podium Cards for Hall of Fame
   const top1 = topScorers[0];
@@ -467,44 +559,16 @@ export const viewStatistiken = () => {
                   <th style="padding: 12px 10px; text-align: right;">Tore gesamt</th>
                 </tr>
               </thead>
-              <tbody>
-                ${pageScorers.length > 0 ? pageScorers.map((s, idx) => {
-                  const globalRank = startIndex + idx + 1;
-                  let badge = '';
-                  if (globalRank === 1 && !scorerSearchQuery) badge = `${renderIcon('crown', { size: 14, color: '#f59e0b', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
-                  else if (globalRank === 2 && !scorerSearchQuery) badge = `${renderIcon('medal', { size: 14, color: '#94a3b8', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
-                  else if (globalRank === 3 && !scorerSearchQuery) badge = `${renderIcon('medal', { size: 14, color: '#b45309', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
-
-                  return `
-                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem;">
-                      <td style="padding: 12px 10px; font-weight: 700; color: ${globalRank <= 3 && !scorerSearchQuery ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">
-                        ${badge}${globalRank}.
-                      </td>
-                      <td style="padding: 12px 10px; font-weight: 600; color: var(--color-text-primary);">
-                        ${s.name}
-                      </td>
-                      <td style="padding: 12px 10px; color: var(--color-text-secondary); font-size: 0.88rem;">
-                        ${s.teams.join(', ') || '-'}
-                      </td>
-                      <td style="padding: 12px 10px; text-align: center; color: var(--color-text-secondary);">
-                        ${s.seasonsCount}
-                      </td>
-                      <td style="padding: 12px 10px; text-align: right; font-weight: 800; font-size: 1.05rem; color: var(--color-accent);">
-                        ${s.goals}
-                      </td>
-                    </tr>
-                  `;
-                }).join('') : `
-                  <tr>
-                    <td colspan="5" style="text-align: center; padding: 24px; color: var(--color-text-secondary);">Keine Torschützen gefunden.</td>
-                  </tr>
-                `}
+              <tbody id="stats-scorers-tbody">
+                ${renderScorersTableRows(pageScorers)}
               </tbody>
             </table>
           </div>
 
-          <!-- Pagination Controls -->
-          ${renderScorerPagination()}
+          <!-- Pagination Controls Container -->
+          <div id="stats-scorers-pagination">
+            ${renderScorerPagination(filteredScorers.length, scorerPage, SCORERS_PER_PAGE)}
+          </div>
 
         </div>
 
@@ -537,31 +601,8 @@ export const viewStatistiken = () => {
                   <th style="padding: 10px; text-align: right;">Punkte</th>
                 </tr>
               </thead>
-              <tbody>
-                ${filteredClubs.length > 0 ? filteredClubs.map((c, idx) => `
-                  <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem;">
-                    <td style="padding: 10px; font-weight: 700; color: ${idx < 3 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">
-                      ${idx + 1}.
-                    </td>
-                    <td style="padding: 10px; font-weight: 700; color: var(--color-text-primary);">
-                      ${c.name} ${c.titles > 0 ? `<span title="${c.titles}x Meister" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.85rem; color: #f59e0b; margin-left: 6px;">${renderIcon('trophy', { size: 15, color: '#f59e0b' })} ${c.titles > 1 ? c.titles + 'x' : ''}</span>` : ''}
-                    </td>
-                    <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.played}</td>
-                    <td style="padding: 10px; text-align: center; font-weight: 600; color: var(--color-text-primary);">${c.won}</td>
-                    <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.drawn}</td>
-                    <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.lost}</td>
-                    <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.gf}:${c.ga}</td>
-                    <td style="padding: 10px; text-align: center; color: ${c.diff > 0 ? 'var(--color-accent)' : (c.diff < 0 ? '#e74c3c' : 'var(--color-text-secondary)')}; font-weight: 600;">
-                      ${c.diff > 0 ? '+' + c.diff : c.diff}
-                    </td>
-                    <td style="padding: 10px; text-align: center; color: var(--color-accent); font-weight: 600;">${c.winRate}%</td>
-                    <td style="padding: 10px; text-align: right; font-weight: 800; font-size: 1.05rem; color: var(--color-accent);">${c.points}</td>
-                  </tr>
-                `).join('') : `
-                  <tr>
-                    <td colspan="10" style="text-align: center; padding: 24px; color: var(--color-text-secondary);">Keine Vereine gefunden.</td>
-                  </tr>
-                `}
+              <tbody id="stats-clubs-tbody">
+                ${renderClubsTableRows(filteredClubs)}
               </tbody>
             </table>
           </div>
@@ -752,39 +793,68 @@ export const bindStatistiken = () => {
     });
   });
 
-  // Scorer Search
-  const scorerSearch = document.getElementById('stats-scorer-search');
-  scorerSearch?.addEventListener('input', (e) => {
-    scorerSearchQuery = e.target.value;
-    scorerPage = 1;
-    import('../router.js').then(module => module.Router.handleRoute());
-  });
+  const updateScorersView = () => {
+    const stats = computeAllTimeStats();
+    const query = scorerSearchQuery.trim().toLowerCase();
+    const filtered = query
+      ? stats.allTimeScorers.filter(s => s.name.toLowerCase().includes(query) || s.teams.some(t => t.toLowerCase().includes(query)))
+      : stats.allTimeScorers;
 
-  // Club Search
-  const clubSearch = document.getElementById('stats-club-search');
-  clubSearch?.addEventListener('input', (e) => {
-    clubSearchQuery = e.target.value;
-    import('../router.js').then(module => module.Router.handleRoute());
-  });
+    const totalPages = Math.ceil(filtered.length / SCORERS_PER_PAGE) || 1;
+    if (scorerPage > totalPages) scorerPage = totalPages;
+    if (scorerPage < 1) scorerPage = 1;
 
-  // Pagination click handlers
-  const pageBtns = document.querySelectorAll('.stats-page-btn');
-  pageBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const page = parseInt(btn.getAttribute('data-page'));
-      if (page && !isNaN(page)) {
-        scorerPage = page;
-        import('../router.js').then(module => {
-          module.Router.handleRoute();
-          // Smooth scroll to table start
+    const startIndex = (scorerPage - 1) * SCORERS_PER_PAGE;
+    const endIndex = Math.min(startIndex + SCORERS_PER_PAGE, filtered.length);
+    const pageScorers = filtered.slice(startIndex, endIndex);
+
+    const tbody = document.getElementById('stats-scorers-tbody');
+    const pagContainer = document.getElementById('stats-scorers-pagination');
+    if (tbody) tbody.innerHTML = renderScorersTableRows(pageScorers);
+    if (pagContainer) {
+      pagContainer.innerHTML = renderScorerPagination(filtered.length, scorerPage, SCORERS_PER_PAGE);
+      bindPaginationButtons();
+    }
+  };
+
+  const bindPaginationButtons = () => {
+    const pageBtns = document.querySelectorAll('.stats-page-btn');
+    pageBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = parseInt(btn.getAttribute('data-page'));
+        if (page && !isNaN(page)) {
+          scorerPage = page;
+          updateScorersView();
           const tableContainer = document.getElementById('stats-section-scorers');
           if (tableContainer) {
             tableContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           }
-        });
-      }
+        }
+      });
     });
-  });
-};
+  };
 
+  // Scorer Search (in-place DOM update so input doesn't lose focus or reset cursor)
+  const scorerSearch = document.getElementById('stats-scorer-search');
+  scorerSearch?.addEventListener('input', (e) => {
+    scorerSearchQuery = e.target.value;
+    scorerPage = 1;
+    updateScorersView();
+  });
+
+  // Club Search (in-place DOM update)
+  const clubSearch = document.getElementById('stats-club-search');
+  clubSearch?.addEventListener('input', (e) => {
+    clubSearchQuery = e.target.value;
+    const stats = computeAllTimeStats();
+    const query = clubSearchQuery.trim().toLowerCase();
+    const filteredClubs = query
+      ? stats.allTimeClubs.filter(c => c.name.toLowerCase().includes(query))
+      : stats.allTimeClubs;
+    const clubsTbody = document.getElementById('stats-clubs-tbody');
+    if (clubsTbody) clubsTbody.innerHTML = renderClubsTableRows(filteredClubs);
+  });
+
+  bindPaginationButtons();
+};
