@@ -1,18 +1,20 @@
-import { viewHome } from './views/home.js';
+import { viewHome, bindHome } from './views/home.js';
 import { viewNews, bindNews } from './views/news.js';
 import { viewLiga, bindLigaTabs } from './views/liga.js';
 import { viewArchiv } from './views/simpleViews.js';
 import { viewOrganisation, bindOrganisation } from './views/organisation.js';
 import { viewGalerie, bindGalerie } from './views/galerie.js';
+import { viewStatistiken, bindStatistiken } from './views/statistiken.js';
 import { viewAdmin, bindAdmin } from './views/admin.js';
 import { viewArticle, bindArticle } from './views/article.js';
 import { viewImpressum } from './views/impressum.js';
 import { viewDatenschutz } from './views/datenschutz.js';
 
 const routes = {
-  '/': { render: () => viewHome() },
+  '/': { render: () => viewHome(), bind: () => bindHome() },
   '/liga': { render: () => viewLiga(), bind: () => bindLigaTabs() },
   '/news': { render: () => viewNews(), bind: () => bindNews() },
+  '/statistiken': { render: () => viewStatistiken(), bind: () => bindStatistiken() },
   '/organisation': { render: () => viewOrganisation(), bind: () => bindOrganisation() },
   '/galerie': { render: () => viewGalerie(), bind: () => bindGalerie() },
   '/archiv': { render: () => viewArchiv() },
