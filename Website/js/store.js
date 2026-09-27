@@ -12136,14 +12136,14 @@ export const Store = {
     return [];
   },
 
-    ensureLeagueSeason(league) {
+  ensureLeagueSeason(league) {
     if (!league) return;
     const data = this.getData();
     if (!data.seasons) data.seasons = {};
 
-    let sKey = league.seasonKey || league.name;
-    if (league.name && league.year && !league.name.includes(String(league.year))) {
-      sKey = `${league.name} ${league.year}`;
+    let sKey = league.seasonKey;
+    if (!sKey) {
+      sKey = (league.name && league.year && !league.name.includes(String(league.year))) ? `${league.name} ${league.year}` : league.name;
     }
 
     if (sKey && !data.seasons[sKey]) {
@@ -12154,6 +12154,43 @@ export const Store = {
       };
       this.saveData(data);
     }
+  },
+
+  setLeagueSeasonTeams(seasonKey, selectedTeamNames) {
+    if (!seasonKey) return;
+    const data = this.getData();
+    if (!data.seasons) data.seasons = {};
+    if (!data.seasons[seasonKey]) {
+      data.seasons[seasonKey] = {
+        teams: [],
+        matches: [],
+        stats: { topScorers: [], cards: [] }
+      };
+    }
+
+    const currentTeams = data.seasons[seasonKey].teams || [];
+    const currentMap = new Map();
+    currentTeams.forEach(t => currentMap.set(t.name.trim().toLowerCase(), t));
+
+    const updatedTeams = (selectedTeamNames || []).map(name => {
+      const existing = currentMap.get(name.trim().toLowerCase());
+      if (existing) {
+        return existing;
+      }
+      return {
+        name: name.trim(),
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        gf: 0,
+        ga: 0,
+        points: 0
+      };
+    });
+
+    data.seasons[seasonKey].teams = updatedTeams;
+    this.saveData(data);
   },
 
   deleteLeagueSeason(deletedLeague) {

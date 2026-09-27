@@ -63,7 +63,7 @@ export const renderAdminLeagues = () => {
 
         <!-- Edit / Create League Modal -->
         <div id="league-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
-            <div style="background: var(--color-surface); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: var(--glass-border);">
+            <div style="background: var(--color-surface); max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: var(--glass-border);">
                 <h3 id="modal-league-title" style="margin-bottom: var(--space-md);">Liga bearbeiten</h3>
                 <form id="league-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-league-id">
@@ -82,6 +82,23 @@ export const renderAdminLeagues = () => {
                             <option value="Inaktiv">Inaktiv</option>
                         </select>
                     </div>
+
+                    <!-- Participating Teams Selector -->
+                    <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-sm); margin-top: var(--space-xs);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-text-primary);">⚽ Teilnehmende Teams</label>
+                            <div style="display: flex; gap: 6px;">
+                                <button type="button" id="btn-select-all-league-teams" class="btn" style="padding: 3px 8px; font-size: 0.75rem; background: var(--color-surface); border: 1px solid var(--color-border); cursor: pointer; border-radius: 4px; color: var(--color-text-primary);">Alle auswählen</button>
+                                <button type="button" id="btn-deselect-all-league-teams" class="btn" style="padding: 3px 8px; font-size: 0.75rem; background: var(--color-surface); border: 1px solid var(--color-border); cursor: pointer; border-radius: 4px; color: var(--color-text-primary);">Keine</button>
+                            </div>
+                        </div>
+                        <input type="text" id="league-team-search" class="admin-input" placeholder="Teams filtern..." style="width: 100%; margin-bottom: 8px; font-size: 0.85rem; padding: 6px 10px;">
+                        
+                        <div id="league-teams-checkbox-container" style="max-height: 180px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 8px 12px; background: rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 6px;">
+                            <span style="color: var(--color-text-secondary); font-size: 0.85rem;">Lade Teams...</span>
+                        </div>
+                    </div>
+
                     <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); justify-content: space-between; align-items: center;">
                         <button type="button" id="btn-delete-league" class="btn" style="background: #e74c3c; color: white; padding: 8px 16px;">Löschen</button>
                         <div style="display: flex; gap: var(--space-sm); margin-left: auto;">
@@ -654,13 +671,56 @@ const closeLeagueDataModal = () => {
     if (modal) modal.style.display = 'none';
 };
 
-const openEditModal = (idx = null) => {
+let assignedTeamNames = new Set();
+let cachedActiveTeams = [];
+
+const renderLeagueTeamsCheckboxes = (filterText = '') => {
+    const container = document.getElementById('league-teams-checkbox-container');
+    if (!container) return;
+    const q = (filterText || '').toLowerCase().trim();
+    const visibleTeams = cachedActiveTeams.filter(t => {
+        const name = (t.Name || t.name || '').toLowerCase();
+        return !q || name.includes(q);
+    });
+
+    if (visibleTeams.length === 0) {
+        container.innerHTML = '<span style="color: var(--color-text-secondary); font-size: 0.85rem; padding: 4px;">Keine aktiven Teams gefunden.</span>';
+        return;
+    }
+
+    container.innerHTML = visibleTeams.map(t => {
+        const teamName = t.Name || t.name;
+        const isChecked = assignedTeamNames.has(teamName.trim().toLowerCase());
+        return `
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; cursor: pointer; padding: 2px 0;">
+                <input type="checkbox" class="league-team-cb" value="${teamName}" ${isChecked ? 'checked' : ''} style="cursor: pointer; accent-color: var(--color-accent); width: 16px; height: 16px;">
+                <span style="color: var(--color-text-primary); font-weight: ${isChecked ? '600' : '400'};">${teamName}</span>
+            </label>
+        `;
+    }).join('');
+
+    container.querySelectorAll('.league-team-cb').forEach(cb => {
+        cb.onchange = (e) => {
+            const val = e.target.value.trim().toLowerCase();
+            if (e.target.checked) assignedTeamNames.add(val);
+            else assignedTeamNames.delete(val);
+        };
+    });
+};
+
+const openEditModal = async (idx = null) => {
     const modal = document.getElementById('league-modal');
     const title = document.getElementById('modal-league-title');
     const nameLabel = document.getElementById('lbl-league-name');
     const submitBtn = document.getElementById('btn-submit-league');
     const deleteBtn = document.getElementById('btn-delete-league');
     
+    assignedTeamNames.clear();
+
+    const allTeams = await Store.getAdminTeams();
+    cachedActiveTeams = (allTeams || []).filter(t => t.Status === 'Aktiv' || t.status === 'Aktiv');
+    cachedActiveTeams.sort((a, b) => (a.Name || a.name || '').localeCompare(b.Name || b.name || ''));
+
     if (idx !== null && leaguesData[idx]) {
         const l = leaguesData[idx];
         title.innerText = 'Liga bearbeiten';
@@ -671,6 +731,14 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-league-year').value = l.year || '';
         document.getElementById('edit-league-status').value = l.status === 'Aktiv' ? 'Aktiv' : 'Inaktiv';
         deleteBtn.style.display = 'block';
+
+        const sKey = getSeasonKey(l);
+        const season = Store.getData().seasons ? Store.getData().seasons[sKey] : null;
+        if (season && season.teams && Array.isArray(season.teams)) {
+            season.teams.forEach(t => {
+                if (t && t.name) assignedTeamNames.add(t.name.trim().toLowerCase());
+            });
+        }
     } else {
         title.innerText = 'Liga hinzufügen';
         if (nameLabel) nameLabel.innerText = 'Name';
@@ -679,7 +747,13 @@ const openEditModal = (idx = null) => {
         document.getElementById('league-edit-form').reset();
         document.getElementById('edit-league-status').value = 'Aktiv';
         deleteBtn.style.display = 'none';
+
+        cachedActiveTeams.forEach(t => assignedTeamNames.add((t.Name || t.name).trim().toLowerCase()));
     }
+
+    renderLeagueTeamsCheckboxes('');
+    const teamSearch = document.getElementById('league-team-search');
+    if (teamSearch) teamSearch.value = '';
 
     modal.style.display = 'flex';
 };
@@ -782,6 +856,29 @@ const bindEvents = () => {
         };
     }
 
+    const selectAllBtn = document.getElementById('btn-select-all-league-teams');
+    if (selectAllBtn) {
+        selectAllBtn.onclick = () => {
+            cachedActiveTeams.forEach(t => assignedTeamNames.add((t.Name || t.name).trim().toLowerCase()));
+            renderLeagueTeamsCheckboxes(document.getElementById('league-team-search')?.value || '');
+        };
+    }
+
+    const deselectAllBtn = document.getElementById('btn-deselect-all-league-teams');
+    if (deselectAllBtn) {
+        deselectAllBtn.onclick = () => {
+            assignedTeamNames.clear();
+            renderLeagueTeamsCheckboxes(document.getElementById('league-team-search')?.value || '');
+        };
+    }
+
+    const leagueTeamSearch = document.getElementById('league-team-search');
+    if (leagueTeamSearch) {
+        leagueTeamSearch.oninput = (e) => {
+            renderLeagueTeamsCheckboxes(e.target.value);
+        };
+    }
+
     if (addBtn) addBtn.onclick = () => openEditModal(null);
     if (closeBtn) closeBtn.onclick = closeEditModal;
 
@@ -827,8 +924,14 @@ const bindEvents = () => {
                 leaguesData[idx] = { ...leaguesData[idx], ...updatedLeague };
             }
 
+            const selectedTeamNames = cachedActiveTeams
+                .map(t => t.Name || t.name)
+                .filter(name => assignedTeamNames.has(name.trim().toLowerCase()));
+
             Store.saveAdminLeagues(leaguesData);
             Store.ensureLeagueSeason(updatedLeague);
+            Store.setLeagueSeasonTeams(sKey, selectedTeamNames);
+
             closeEditModal();
             applyFilters();
         };
