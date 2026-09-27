@@ -5,6 +5,7 @@ import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=179051500000
 import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790515000000';
 import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790515000000';
 import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790515000000';
+import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790520000000';
 
 
 
@@ -53,29 +54,7 @@ export const viewAdmin = () => {
           ${renderAdminLeagues()}
         </div>
         <div id="admin-news" class="admin-section ${isTabActive('admin-news') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-news') ? 'block' : 'none'};">
-          <h2>News verwalten</h2>
-          <form id="news-form" style="margin-top: var(--space-md); max-width: 500px; display: flex; flex-direction: column; gap: var(--space-md);">
-            <input type="hidden" id="news-id">
-            <input type="text" id="news-title" placeholder="Titel" required style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">
-            <textarea id="news-excerpt" placeholder="Inhalt/Auszug..." required rows="4" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;"></textarea>
-            
-            <label style="margin-top: 10px; font-weight: 600;">Bildquelle:</label>
-            <div style="display: flex; gap: var(--space-sm);">
-              <label><input type="radio" name="news-img-type" value="url" checked> URL</label>
-              <label><input type="radio" name="news-img-type" value="file"> Datei hochladen</label>
-            </div>
-            <input type="text" id="news-image" placeholder="Image URL (optional)" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">
-            <input type="file" id="news-image-file" accept="image/*" multiple style="display: none; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">
-            
-            <div style="display: flex; gap: 10px;">
-              <button type="submit" id="news-submit-btn" style="flex: 1; background: var(--color-accent); color: #fff; font-weight: 700; padding: var(--space-sm); border-radius: 4px;">News veröffentlichen</button>
-              <button type="button" id="news-cancel-btn" style="display:none; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">Bearbeiten abbrechen</button>
-            </div>
-          </form>
-          <div style="margin-top: var(--space-xl);">
-            <h3>Vorhandene Artikel</h3>
-            <div id="admin-news-list" style="margin-top: var(--space-md); display: flex; flex-direction: column; gap: var(--space-sm);"></div>
-          </div>
+          ${renderAdminNews()}
         </div>
         <div id="admin-gallery" class="admin-section" style="display: none;">
           <h2>Galerie verwalten</h2>
@@ -129,6 +108,7 @@ export const bindAdmin = () => {
   else if (activeTab === 'admin-players') initAdminPlayers();
   else if (activeTab === 'admin-teams') initAdminTeams();
   else if (activeTab === 'admin-leagues') initAdminLeagues();
+  else if (activeTab === 'admin-news') initAdminNews();
 
   // Also initialize background modules
   initAdminRounds();
@@ -136,6 +116,7 @@ export const bindAdmin = () => {
   initAdminPlayers();
   initAdminTeams();
   initAdminLeagues();
+  initAdminNews();
 
   // Navigation
   const btns = document.querySelectorAll('.admin-nav-btn');
@@ -161,6 +142,7 @@ export const bindAdmin = () => {
       if (targetId === 'admin-players') initAdminPlayers();
       if (targetId === 'admin-teams') initAdminTeams();
       if (targetId === 'admin-leagues') initAdminLeagues();
+      if (targetId === 'admin-news') initAdminNews();
       const target = document.getElementById(targetId);
       if (target) {
         target.style.display = 'block';
@@ -478,96 +460,6 @@ export const bindAdmin = () => {
     renderAdminMatchesList();
     
     alert('Spiel gespeichert!');
-  });
-
-  const renderAdminNewsList = () => {
-    const list = document.getElementById('admin-news-list');
-    if (!list) return;
-    const articles = Store.getNews();
-    list.innerHTML = articles.map(a => `
-      <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm);">
-        <div>
-          <strong>${a.title}</strong><br>
-          <span style="font-size: 0.8rem; color: var(--color-text-secondary);">${a.date}</span>
-        </div>
-        <div>
-          <button class="btn btn-outline edit-news-btn" data-id="${a.id}" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;">Bearbeiten</button>
-          <button class="btn delete-news-btn" data-id="${a.id}" style="padding: 5px 10px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">Löschen</button>
-        </div>
-      </div>
-    `).join('');
-
-    document.querySelectorAll('.delete-news-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        if(confirm('Diesen Artikel löschen?')) {
-          Store.deleteArticle(e.target.dataset.id);
-          renderAdminNewsList();
-        }
-      });
-    });
-
-    document.querySelectorAll('.edit-news-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const article = Store.getArticle(e.target.dataset.id);
-        if (article) {
-          document.getElementById('news-id').value = article.id;
-          document.getElementById('news-title').value = article.title;
-          document.getElementById('news-excerpt').value = article.content.replace(/<[^>]+>/g, '');
-          document.getElementById('news-image').value = article.image || '';
-          document.getElementById('news-submit-btn').textContent = 'News aktualisieren';
-          document.getElementById('news-cancel-btn').style.display = 'block';
-          window.scrollTo(0,0);
-        }
-      });
-    });
-  };
-
-  renderAdminNewsList();
-
-  document.getElementById('news-cancel-btn')?.addEventListener('click', (e) => {
-    document.getElementById('news-form').reset();
-    document.getElementById('news-id').value = '';
-    document.getElementById('news-submit-btn').textContent = 'News veröffentlichen';
-    e.target.style.display = 'none';
-  });
-
-  document.getElementById('news-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    document.getElementById('news-submit-btn').textContent = 'Speichert...';
-    const id = document.getElementById('news-id').value;
-    const title = document.getElementById('news-title').value;
-    const content = document.getElementById('news-excerpt').value;
-    
-    let image = '';
-    let galleryArray = [];
-    const imgType = document.querySelector('input[name="news-img-type"]:checked').value;
-    if (imgType === 'url') {
-      const urls = document.getElementById('news-image').value.split('\n').map(u => u.trim()).filter(u => u.length > 0);
-      if (urls.length > 0) image = urls[0];
-      if (urls.length > 1) galleryArray = urls.slice(1).map(url => ({ url }));
-    } else {
-      const fileInput = document.getElementById('news-image-file');
-      if (fileInput.files.length > 0) {
-        image = await compressImage(fileInput.files[0]);
-        for (let i = 1; i < fileInput.files.length; i++) {
-          const compressed = await compressImage(fileInput.files[i]);
-          if (compressed) galleryArray.push({ url: compressed });
-        }
-      }
-    }
-    
-    if (id) {
-      Store.deleteArticle(id); // delete old to replace
-    }
-    Store.addNews(title, "", content, image, galleryArray);
-    e.target.reset();
-    document.getElementById('news-id').value = '';
-    document.getElementById('news-submit-btn').textContent = 'News veröffentlichen';
-    document.getElementById('news-cancel-btn').style.display = 'none';
-    document.getElementById('news-image').style.display = 'block';
-    document.getElementById('news-image-file').style.display = 'none';
-    renderAdminNewsList();
-    alert('News gespeichert!');
   });
 
   const renderAdminAlbumsList = () => {

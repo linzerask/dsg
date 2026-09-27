@@ -26134,7 +26134,7 @@ export const Store = {
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
   
-  addNews(title, excerpt, content, image, gallery) {
+  addNews(title, excerpt, content, image, gallery, author, date, readTime) {
     const slug = title.toLowerCase()
       .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
       .replace(/[^a-z0-9]+/g, '-')
@@ -26143,19 +26143,20 @@ export const Store = {
     memoryNews.unshift({
       id: newId,
       title,
+      excerpt: excerpt || '',
       content: content || `<p>${excerpt}</p>`,
-      author: "Admin",
-      readTime: "2 min read",
+      author: author || "DSG Redaktion",
+      readTime: readTime || "2 min read",
       image: image || 'dsg.avif',
       gallery: gallery || [],
-      date: new Date().toISOString().split('T')[0]
+      date: date || new Date().toISOString().split('T')[0]
     });
     trySetLocal('dsg_articles_v25', JSON.stringify(memoryNews));
     setDoc(doc(db, 'system', 'news_data'), { data: memoryNews }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
 
-  updateNews(id, title, excerpt, content, image, gallery) {
+  updateNews(id, title, excerpt, content, image, gallery, author, date, readTime) {
     const cleanId = decodeURIComponent(String(id)).trim().toLowerCase();
     const index = memoryNews.findIndex(a => {
       if (!a) return false;
@@ -26170,10 +26171,13 @@ export const Store = {
       memoryNews[index] = {
         ...memoryNews[index],
         title,
-        excerpt,
+        excerpt: excerpt || '',
         content: content || `<p>${excerpt}</p>`,
         image: image || memoryNews[index].image || 'dsg.avif',
-        gallery: gallery || memoryNews[index].gallery || []
+        gallery: gallery || memoryNews[index].gallery || [],
+        author: author || memoryNews[index].author || "DSG Redaktion",
+        date: date || memoryNews[index].date || new Date().toISOString().split('T')[0],
+        readTime: readTime || memoryNews[index].readTime || "2 min read"
       };
       trySetLocal('dsg_articles_v25', JSON.stringify(memoryNews));
       setDoc(doc(db, 'system', 'news_data'), { data: memoryNews }).catch(e => console.error("Firebase save error:", e));

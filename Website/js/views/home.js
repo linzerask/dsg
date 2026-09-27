@@ -105,8 +105,7 @@ export const viewHome = () => {
   const newsCards = news.map(n => `
     <a href="#/article/${n.id}" class="glass-card news-card stagger-item" style="display: flex; flex-direction: column;">
       <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: var(--space-xs); color: var(--color-text-primary);">${n.title}</h3>
-      <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin-bottom: var(--space-sm);">${n.date} | ${n.author}</p>
-      ${n.excerpt ? `<p style="color: var(--color-text-secondary); font-size: 0.95rem; margin-bottom: var(--space-md); flex-grow: 1;">${n.excerpt}</p>` : '<div style="flex-grow: 1;"></div>'}
+      ${(n.excerpt || (n.content ? n.content.replace(/<[^>]+>/g, ' ').substring(0, 120) + '...' : '')) ? `<p style="color: var(--color-text-secondary); font-size: 0.95rem; margin-bottom: var(--space-md); flex-grow: 1;">${n.excerpt || n.content.replace(/<[^>]+>/g, ' ').substring(0, 120) + '...'}</p>` : '<div style="flex-grow: 1;"></div>'}
       <span class="text-btn" style="align-self: flex-start; margin-top: auto; color: var(--color-accent); font-weight: 600;">Mehr lesen &rarr;</span>
     </a>
   `).join('');

@@ -9,7 +9,7 @@ const renderCard = (n) => `
       <div style="font-size: 0.8rem; color: var(--color-accent); font-weight: 700; margin-bottom: var(--space-xs); text-transform: uppercase;">${n.date} &bull; ${n.readTime || ''}</div>
       <h3 style="margin-bottom: var(--space-sm); font-size: 1.2rem; line-height: 1.3;">${n.title}</h3>
       <div style="color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md); flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-        ${n.content ? n.content.substring(0, 150) + '...' : n.excerpt || ''}
+        ${(n.content ? n.content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : (n.excerpt || '')).substring(0, 150)}...
       </div>
       <a href="#/article/${n.id}" class="text-btn" style="margin-top: auto; display: inline-block;">Weiterlesen &rarr;</a>
     </div>
