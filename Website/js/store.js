@@ -25900,6 +25900,40 @@ const idbSet = async (key, val) => {
   }
 };
 
+const parseArticleDate = (a) => {
+  if (!a) return 0;
+  if (a.createdAt && typeof a.createdAt === 'number') return a.createdAt;
+  const d = a.date || '';
+  if (d.includes('-')) {
+    const p = d.split('-');
+    if (p.length === 3) {
+      const dt = new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2])).getTime();
+      if (!isNaN(dt) && dt > 0) return dt;
+    }
+  }
+  if (d.includes('.')) {
+    const p = d.split('.');
+    if (p.length === 3) {
+      let yr = parseInt(p[2]);
+      if (yr < 100) yr += 2000;
+      const dt = new Date(yr, parseInt(p[1]) - 1, parseInt(p[0])).getTime();
+      if (!isNaN(dt) && dt > 0) return dt;
+    }
+  }
+  if (a.lastUpdated && typeof a.lastUpdated === 'number') return a.lastUpdated;
+  return 0;
+};
+
+const sortArticles = (articles) => {
+  if (!Array.isArray(articles)) return [];
+  return [...articles].sort((a, b) => {
+    const timeA = parseArticleDate(a);
+    const timeB = parseArticleDate(b);
+    if (timeB !== timeA) return timeB - timeA;
+    return (parseInt(b.id) || 0) - (parseInt(a.id) || 0);
+  });
+};
+
 function trySetLocal(key, dataStr) {
   try {
     localStorage.setItem(key, dataStr);
@@ -25926,7 +25960,7 @@ export const Store = {
     try {
       for (let i = 1; i <= 60; i++) {
         if (i !== 50) localStorage.removeItem(`dsg_data_v${i}`);
-        if (i !== 35) localStorage.removeItem(`dsg_articles_v${i}`);
+        if (i !== 36) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 25) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 10) localStorage.removeItem(`dsg_admin_players_v${i}`);
         if (i !== 10) localStorage.removeItem(`dsg_admin_teams_v${i}`);
@@ -25938,13 +25972,17 @@ export const Store = {
     // Eagerly load synchronous local memory
     memoryData = loadLocal('dsg_data', 50) || INITIAL_DATA;
     
-    const localArticles = loadLocal('dsg_articles', 35) || [];
+    const localArticles = loadLocal('dsg_articles', 36) || loadLocal('dsg_articles', 35) || [];
     const articleMapInit = new Map();
-    (INITIAL_DATA.news || []).forEach(a => articleMapInit.set(String(a.id), a));
+    // Prioritize user's local articles first
     localArticles.forEach(a => {
       if (a && a.id) articleMapInit.set(String(a.id), a);
     });
-    memoryNews = Array.from(articleMapInit.values());
+    // Add missing baseline articles
+    (INITIAL_DATA.news || []).forEach(a => {
+      if (a && a.id && !articleMapInit.has(String(a.id))) articleMapInit.set(String(a.id), a);
+    });
+    memoryNews = sortArticles(Array.from(articleMapInit.values()));
 
     memoryGallery = loadLocal('dsg_gallery', 25) || INITIAL_DATA.gallery || [];
 
@@ -25965,15 +26003,17 @@ export const Store = {
       }
     });
 
-    // Check IndexedDB asynchronously to restore rich article images if localStorage was constrained
+    // Check IndexedDB asynchronously to restore rich article images
     idbGet('dsg_articles').then(idbArticles => {
       if (idbArticles && Array.isArray(idbArticles) && idbArticles.length > 0) {
         const idbMergeMap = new Map();
-        (INITIAL_DATA.news || []).forEach(a => idbMergeMap.set(String(a.id), a));
-        memoryNews.forEach(a => { if (a && a.id) idbMergeMap.set(String(a.id), a); });
         idbArticles.forEach(a => { if (a && a.id) idbMergeMap.set(String(a.id), a); });
-        memoryNews = Array.from(idbMergeMap.values());
-        trySetLocal('dsg_articles_v35', JSON.stringify(memoryNews));
+        memoryNews.forEach(a => { if (a && a.id && !idbMergeMap.has(String(a.id))) idbMergeMap.set(String(a.id), a); });
+        (INITIAL_DATA.news || []).forEach(a => {
+          if (a && a.id && !idbMergeMap.has(String(a.id))) idbMergeMap.set(String(a.id), a);
+        });
+        memoryNews = sortArticles(Array.from(idbMergeMap.values()));
+        trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
         window.dispatchEvent(new CustomEvent('data-updated'));
       }
     });
@@ -26014,24 +26054,33 @@ export const Store = {
         needsMigration = true;
       }
 
-      // Sync News
-      const localArticlesSync = loadLocal('dsg_articles', 35) || [];
+      // Sync News - preserve all existing local, IDB and Firestore items
+      const localArticlesSync = loadLocal('dsg_articles', 36) || loadLocal('dsg_articles', 35) || [];
       const idbArticlesSync = await idbGet('dsg_articles') || [];
       const articleMergeMap = new Map();
-      (INITIAL_DATA.news || []).forEach(a => articleMergeMap.set(String(a.id), a));
+
+      // Remote Firestore
       if (newsSnap.exists() && newsSnap.data().data && Array.isArray(newsSnap.data().data)) {
         newsSnap.data().data.forEach(a => {
           if (a && a.id) articleMergeMap.set(String(a.id), a);
         });
       }
+
+      // Merge local and IDB items (user articles take precedence)
       localArticlesSync.forEach(a => {
         if (a && a.id) articleMergeMap.set(String(a.id), a);
       });
       idbArticlesSync.forEach(a => {
         if (a && a.id) articleMergeMap.set(String(a.id), a);
       });
-      memoryNews = Array.from(articleMergeMap.values());
-      trySetLocal('dsg_articles_v35', JSON.stringify(memoryNews));
+
+      // Ensure seed baseline articles exist
+      (INITIAL_DATA.news || []).forEach(a => {
+        if (a && a.id && !articleMergeMap.has(String(a.id))) articleMergeMap.set(String(a.id), a);
+      });
+
+      memoryNews = sortArticles(Array.from(articleMergeMap.values()));
+      trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
       await idbSet('dsg_articles', memoryNews);
       hasUpdates = true;
       needsMigration = true;
@@ -26143,9 +26192,9 @@ export const Store = {
       }
         
       trySetLocal('dsg_data_v50', JSON.stringify(memoryData));
-      trySetLocal('dsg_articles_v35', JSON.stringify(memoryNews));
+      trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
       trySetLocal('dsg_gallery_v25', JSON.stringify(memoryGallery));
-      console.log("Synced local and Firebase data.");
+      console.log("Synced local and Firebase data. Active articles:", memoryNews.length);
 
       if (hasUpdates) {
         window.dispatchEvent(new Event('data-updated'));
@@ -26197,13 +26246,24 @@ export const Store = {
         .replace(/^-+|-+$/g, '');
       return aId !== cleanId && String(a.id) !== String(id) && aTitleSlug !== cleanId;
     });
-    trySetLocal('dsg_articles_v35', JSON.stringify(memoryNews));
+    memoryNews = sortArticles(memoryNews);
+    trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
     idbSet('dsg_articles', memoryNews);
     setDoc(doc(db, 'system', 'news_data'), { data: memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
   
   addNews(title, excerpt, content, image, gallery, author, date, readTime) {
+    let formattedDate = date;
+    if (formattedDate && formattedDate.includes('-')) {
+      const p = formattedDate.split('-');
+      if (p.length === 3) formattedDate = `${p[2]}.${p[1]}.${p[0]}`;
+    }
+    if (!formattedDate) {
+      const now = new Date();
+      formattedDate = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()}`;
+    }
+
     const slug = (title || 'artikel').toLowerCase()
       .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
       .replace(/[^a-z0-9]+/g, '-')
@@ -26218,14 +26278,25 @@ export const Store = {
       readTime: readTime || "2 min read",
       image: image || 'dsg.avif',
       gallery: gallery || [],
-      date: date || new Date().toISOString().split('T')[0],
-      createdAt: Date.now()
+      date: formattedDate,
+      createdAt: Date.now(),
+      lastUpdated: Date.now()
     };
     if (!Array.isArray(memoryNews) || memoryNews.length === 0) {
       memoryNews = [...(INITIAL_DATA.news || [])];
     }
-    memoryNews.unshift(newArticle);
-    trySetLocal('dsg_articles_v35', JSON.stringify(memoryNews));
+    
+    const articleMap = new Map();
+    articleMap.set(String(newArticle.id), newArticle);
+    memoryNews.forEach(a => {
+      if (a && a.id && !articleMap.has(String(a.id))) articleMap.set(String(a.id), a);
+    });
+    (INITIAL_DATA.news || []).forEach(a => {
+      if (a && a.id && !articleMap.has(String(a.id))) articleMap.set(String(a.id), a);
+    });
+    
+    memoryNews = sortArticles(Array.from(articleMap.values()));
+    trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
     idbSet('dsg_articles', memoryNews);
     setDoc(doc(db, 'system', 'news_data'), { data: memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
@@ -26233,6 +26304,12 @@ export const Store = {
   },
 
   updateNews(id, title, excerpt, content, image, gallery, author, date, readTime) {
+    let formattedDate = date;
+    if (formattedDate && formattedDate.includes('-')) {
+      const p = formattedDate.split('-');
+      if (p.length === 3) formattedDate = `${p[2]}.${p[1]}.${p[0]}`;
+    }
+
     const cleanId = decodeURIComponent(String(id)).trim().toLowerCase();
     const index = memoryNews.findIndex(a => {
       if (!a) return false;
@@ -26252,11 +26329,12 @@ export const Store = {
         image: image || memoryNews[index].image || 'dsg.avif',
         gallery: gallery || memoryNews[index].gallery || [],
         author: author || memoryNews[index].author || "DSG Redaktion",
-        date: date || memoryNews[index].date || new Date().toISOString().split('T')[0],
+        date: formattedDate || memoryNews[index].date,
         readTime: readTime || memoryNews[index].readTime || "2 min read",
         lastUpdated: Date.now()
       };
-      trySetLocal('dsg_articles_v35', JSON.stringify(memoryNews));
+      memoryNews = sortArticles(memoryNews);
+      trySetLocal('dsg_articles_v36', JSON.stringify(memoryNews));
       idbSet('dsg_articles', memoryNews);
       setDoc(doc(db, 'system', 'news_data'), { data: memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
       window.dispatchEvent(new CustomEvent('data-updated'));

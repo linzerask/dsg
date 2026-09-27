@@ -668,7 +668,14 @@ export const initAdminNews = () => {
         document.getElementById('news-id').value = article.id;
         document.getElementById('news-title').value = article.title || '';
         if (document.getElementById('news-author')) document.getElementById('news-author').value = article.author || 'DSG Redaktion';
-        if (dateInput) dateInput.value = article.date || '';
+        if (dateInput) {
+          let dVal = article.date || '';
+          if (dVal.includes('.')) {
+            const p = dVal.split('.');
+            if (p.length === 3) dVal = `${p[2]}-${p[1].padStart(2, '0')}-${p[0].padStart(2, '0')}`;
+          }
+          dateInput.value = dVal;
+        }
 
         // Load rich text
         editor.innerHTML = article.content || `<p>${article.excerpt || ''}</p>`;

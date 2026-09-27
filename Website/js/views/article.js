@@ -64,7 +64,7 @@ export const viewArticle = (id) => {
         <div class="related-news stagger-item">
           <h3>Ähnliche Artikel</h3>
           <div class="related-grid">
-            ${Store.getNews().filter(a => a.id !== id).slice(0, 3).map(a => `
+            ${Store.getNews().filter(a => String(a.id) !== String(id)).slice(0, 3).map(a => `
               <a href="#/article/${a.id}" class="related-card glass-card">
                 <img src="${a.image}" alt="${a.title}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">
                 <h4>${a.title}</h4>
