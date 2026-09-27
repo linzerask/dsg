@@ -1,0 +1,1412 @@
+{
+  "season": "2025/2026",
+  "leagueId": 13,
+  "name": "Liga 2025/26",
+  "standings": [
+    {
+      "rank": "1",
+      "team": "SV Croatia Linz",
+      "played": "14",
+      "won": "12",
+      "drawn": "2",
+      "lost": "0",
+      "goals": "63",
+      "diff": ":",
+      "points": "19"
+    },
+    {
+      "rank": "2",
+      "team": "DSG St. Josef/Oed FC",
+      "played": "14",
+      "won": "10",
+      "drawn": "3",
+      "lost": "1",
+      "goals": "49",
+      "diff": ":",
+      "points": "18"
+    },
+    {
+      "rank": "3",
+      "team": "Union Heiligenberg",
+      "played": "14",
+      "won": "7",
+      "drawn": "3",
+      "lost": "4",
+      "goals": "50",
+      "diff": ":",
+      "points": "32"
+    },
+    {
+      "rank": "4",
+      "team": "Walker FC",
+      "played": "14",
+      "won": "4",
+      "drawn": "3",
+      "lost": "7",
+      "goals": "33",
+      "diff": ":",
+      "points": "44"
+    },
+    {
+      "rank": "5",
+      "team": "FC Gornjak",
+      "played": "14",
+      "won": "4",
+      "drawn": "0",
+      "lost": "10",
+      "goals": "29",
+      "diff": ":",
+      "points": "51"
+    },
+    {
+      "rank": "6",
+      "team": "DSG Union Traun",
+      "played": "14",
+      "won": "2",
+      "drawn": "2",
+      "lost": "10",
+      "goals": "23",
+      "diff": ":",
+      "points": "62"
+    }
+  ],
+  "matches": [
+    [
+      "Fr, 29.08.25",
+      "DSG St. Josef/Oed FC",
+      "-",
+      "Walker FC",
+      "4:1 (2:0)"
+    ],
+    [
+      "DSG-Platz 18:00",
+      "Thomas Paulmair\n          Kevin Schneider\n          Jonas Binder\n              \n        Raphael Deutschmann\n            \n        Stefan Woschitz",
+      "Tenzin Jayangtsang",
+      ""
+    ],
+    [
+      "Fr, 29.08.25",
+      "DSG Union Traun",
+      "-",
+      "FC Hinzenbach",
+      "3:5 (1:2)"
+    ],
+    [
+      "Sportplatz Traun 19:00",
+      "Luca Vogl\n          Philipp Habring\n          Taher Akbar\n              \n        Philipp Habring",
+      "Roland Meindlhumer\n          Michael Ahammer\n          Philipp Guggenberger\n              \n        Matthias Kneidinger",
+      ""
+    ],
+    [
+      "Sa, 30.08.25",
+      "SV Croatia Linz",
+      "-",
+      "FC Gornjak",
+      "3:0* Abgesagt"
+    ],
+    [
+      "Gornjak abgesagt",
+      "",
+      "",
+      ""
+    ],
+    [
+      "Fr, 24.10.25",
+      "Union Eschenau",
+      "-",
+      "Union Heiligenberg",
+      "4:6 (2:3)"
+    ],
+    [
+      "Sportplatz Eschenau 19:00",
+      "Michael Dornetshuber\n          Dominik Scheuringer\n          Marco Braumann\n              \n        Daniel Auer\n            \n        Rudolf Rossgatterer",
+      "Ernst Zahrer\n          Dominik Penninger\n          Paul Steininger\n          Michael Haslehner\n              \n        Benedict Humer\n            \n        Andreas Lederer\n            \n        Johannes Steinbock",
+      ""
+    ],
+    [
+      "Fr, 05.09.25",
+      "DSG St. Josef/Oed FC",
+      "-",
+      "FC Hinzenbach",
+      "2:2 (1:2)"
+    ],
+    [
+      "DSG-Platz 18:00",
+      "Raphael Deutschmann\n          Paul Feichtenschlager\n              \n        Paul Feichtenschlager",
+      "Roland Meindlhumer\n              \n        Michael Kaimberger",
+      ""
+    ],
+    [
+      "Fr, 05.09.25",
+      "Union Eschenau",
+      "-",
+      "Walker FC",
+      "6:2 (3:1)"
+    ],
+    [
+      "Sportplatz Eschenau 19:00",
+      "Manuel Pühringer\n          Farid Alem\n          Simon Wenzl\n          Christopher Ratzenböck\n              \n        Andreas Humer\n            \n        Manuel Pühringer",
+      "Max Grund\n          Maxwell Agbemor\n              \n        Maxwell Agbemor\n            \n        Christoph Mühlbacher\n            \n        Martin Brenner",
+      ""
+    ],
+    [
+      "Sa, 06.09.25",
+      "SV Croatia Linz",
+      "-",
+      "DSG Union Traun",
+      "5:2 (2:2)"
+    ],
+    [
+      "Westbahn Linz 15:00",
+      "Leonardo Glavas\n          Anto Marcinkovic",
+      "Fabian Walter\n          Stefan Wiener",
+      ""
+    ],
+    [
+      "Sa, 18.10.25",
+      "FC Gornjak",
+      "-",
+      "Union Heiligenberg",
+      "0:4 (0:1)"
+    ],
+    [
+      "DSG-Platz 16:00",
+      "Djordje Malesevic\n            \n        Vladica Petrovic",
+      "Johannes Steinbock\n          Dominik Penninger\n          Ernst Zahrer\n          Paul Steininger\n              \n        Andreas Lederer",
+      ""
+    ],
+    [
+      "Fr, 12.09.25",
+      "FC Hinzenbach",
+      "-",
+      "Walker FC",
+      "3:3 (1:2)"
+    ],
+    [
+      "Sportplatz Wörth 17:45",
+      "Jan Lettner\n          Roland Meindlhumer",
+      "Marco Schmidt\n          Florian Rebhandl\n          Max Grund\n              \n        Christoph Mühlbacher\n            \n        Dominik Pfannhauser",
+      ""
+    ],
+    [
+      "Fr, 12.09.25",
+      "DSG Union Traun",
+      "-",
+      "Union Eschenau",
+      "2:2 (1:2)"
+    ],
+    [
+      "Sportplatz Traun 19:00",
+      "Manuel Kapfhammer\n              \n        Gerhard Busch\n            \n        Philipp Habring\n            \n        Ninoslav Matanovic",
+      "Michael Dornetshuber\n          Farid Alem\n              \n        Daniel Auer\n            \n        Alexander Gfellner\n            \n        Simon Rittberger\n            \n        Simon Wenzl",
+      ""
+    ],
+    [
+      "Fr, 12.09.25",
+      "Union Heiligenberg",
+      "-",
+      "SV Croatia Linz",
+      "2:2 (1:1)"
+    ],
+    [
+      "Sportplatz Heiligenberg 19:00",
+      "Michael Haslehner\n              \n        Paul Steininger\n            \n        Ernst Zahrer\n            \n        Simon Penninger\n            \n        Alex Steiner",
+      "Edi Klaric-Jozic\n          Josip Peric\n              \n        Edi Klaric-Jozic\n            \n        Leonardo Glavas\n            \n        Igor Vidovic\n            \n        Anto Marcinkovic\n            \n        Berislav Zuljevic",
+      ""
+    ],
+    [
+      "Sa, 13.09.25",
+      "FC Gornjak",
+      "-",
+      "DSG St. Josef/Oed FC",
+      "0:7 (0:2)"
+    ],
+    [
+      "DSG-Platz 15:00",
+      "Danijel Majer\n            \n        Vladica Petrovic",
+      "Thomas Paulmair\n          Raphael Deutschmann\n          Clemens Rössler\n          Stefan Freudenthaler",
+      ""
+    ],
+    [
+      "Fr, 19.09.25",
+      "DSG Union Traun",
+      "-",
+      "FC Gornjak",
+      "2:7 (1:3)"
+    ],
+    [
+      "Sportplatz Traun 19:00",
+      "Michael Mayr\n          Philipp Habring",
+      "Sergey Stepanov\n          Marco Rajcic\n          Ilija Stojchovski\n          Marko Aleksic\n              \n        Nemanja Ilic\n            \n        Vladica Petrovic",
+      ""
+    ],
+    [
+      "Sa, 20.09.25",
+      "Walker FC",
+      "-",
+      "SV Croatia Linz",
+      "1:5 (1:2)"
+    ],
+    [
+      "DSG-Platz 15:00",
+      "Shankar Poudel",
+      "Leonardo Glavas\n          Slaven Steko\n          Josip Peric",
+      ""
+    ],
+    [
+      "Sa, 20.09.25",
+      "FC Hinzenbach",
+      "-",
+      "Union Eschenau",
+      "3:0 (1:0)"
+    ],
+    [
+      "Sportplatz Wörth 17:00",
+      "Felix Übleis\n          Niko Reinthaler\n          Manuel Winklehner",
+      "Marco Braumann\n            \n        Mario Wolfschluckner",
+      ""
+    ],
+    [
+      "Sa, 20.09.25",
+      "Union Heiligenberg",
+      "-",
+      "DSG St. Josef/Oed FC",
+      "3:3 (2:1)"
+    ],
+    [
+      "Sportplatz Heiligenberg 19:00",
+      "Dominik Penninger\n          Jürgen Hutsteiner\n          Johannes Steinbock\n              \n        Johannes Steinbock\n            \n        Jan Schützeneder\n            \n        Simon Dornetshumer",
+      "Jonas Binder\n          Clemens Rössler\n          Ramadan Karakaya\n              \n        Ramadan Karakaya\n            \n        Kevin Tiepelt\n            \n        Clemens Rössler\n            \n        Nicolaus Steurer\n            \n        Fabio Froschauer\n            \n        Jonas Binder",
+      ""
+    ],
+    [
+      "Di, 02.09.25",
+      "Walker FC",
+      "-",
+      "FC Gornjak",
+      "4:2 (3:1)"
+    ],
+    [
+      "DSG-Platz 17:45",
+      "Tenzin Jayangtsang\n          Marco Schmidt\n          Florian Rebhandl",
+      "Marco Rajcic\n              \n        Marco Rajcic",
+      ""
+    ],
+    [
+      "Sa, 27.09.25",
+      "Union Heiligenberg",
+      "-",
+      "DSG Union Traun",
+      "8:0 (4:0)"
+    ],
+    [
+      "Sportplatz Heiligenberg 19:00",
+      "Dominik Penninger\n          Sebastian Grabner\n          Simon Penninger\n          Felix Trinkfass\n          Andreas Lederer\n              \n        Benedict Humer",
+      "Manuel Kapfhammer\n            \n        Ninoslav Matanovic",
+      ""
+    ],
+    [
+      "Fr, 17.10.25",
+      "Union Eschenau",
+      "-",
+      "DSG St. Josef/Oed FC",
+      "0:2 (0:0)"
+    ],
+    [
+      "Sportplatz Eschenau 19:00",
+      "Simon Wenzl",
+      "Stefan Woschitz\n              \n        Ramadan Karakaya\n            \n        Kevin Tiepelt",
+      ""
+    ],
+    [
+      "Sa, 25.10.25",
+      "SV Croatia Linz",
+      "-",
+      "FC Hinzenbach",
+      "7:4 (3:1)"
+    ],
+    [
+      "Westbahn Linz 16:00",
+      "Robert Matisic\n          Leonardo Glavas\n          Branko Marin\n          Manuel Milic\n          Filip Skoro\n              \n        Robert Matisic",
+      "Rainer Meindlhumer\n          Markus Jungreithmayr\n          Roland Meindlhumer\n          Tobias Pointner\n              \n        Florian Berger",
+      ""
+    ],
+    [
+      "Fr, 03.10.25",
+      "Union Heiligenberg",
+      "-",
+      "FC Hinzenbach",
+      "3:6 (1:4)"
+    ],
+    [
+      "Sportplatz Heiligenberg 19:00",
+      "Ernst Zahrer\n          Simon Penninger\n          Dominik Penninger",
+      "Roland Meindlhumer\n          Jan Lettner\n          Fabian Michael Ott\n              \n        Rene Rechtlehner\n            \n        Roland Meindlhumer\n            \n        Matthias Kneidinger",
+      ""
+    ],
+    [
+      "Fr, 03.10.25",
+      "DSG Union Traun",
+      "-",
+      "Walker FC",
+      "0:4 (0:2)"
+    ],
+    [
+      "Sportplatz Traun 19:00",
+      "",
+      "Max Grund\n          Tenzin Jayangtsang\n          Florian Rebhandl\n          Manuel Wozabal",
+      ""
+    ],
+    [
+      "Sa, 04.10.25",
+      "SV Croatia Linz",
+      "-",
+      "DSG St. Josef/Oed FC",
+      "2:2 (2:1)"
+    ],
+    [
+      "Westbahn Linz 14:00",
+      "Ivan Peric\n          Branko Marin\n              \n        Josip Peric\n            \n        Branko Marin\n            \n        Marko Burg\n            \n        Ivan Peric",
+      "Thomas Paulmair\n          Michael Pehamberger\n              \n        Ramadan Karakaya",
+      ""
+    ],
+    [
+      "Sa, 04.10.25",
+      "FC Gornjak",
+      "-",
+      "Union Eschenau",
+      "4:3 (1:1)"
+    ],
+    [
+      "DSG-Platz 16:30",
+      "Sergey Stepanov\n          Ilija Stojchovski\n              \n        Nebojsa Krstic\n            \n        Sasa Nedic\n            \n        Ivan Nikolov",
+      "Farid Alem\n          Simon Rittberger\n              \n        Dominik Scheuringer\n            \n        Daniel Auer",
+      ""
+    ],
+    [
+      "Fr, 10.10.25",
+      "Union Eschenau",
+      "-",
+      "SV Croatia Linz",
+      "2:4 (1:3)"
+    ],
+    [
+      "Sportplatz Eschenau 19:00",
+      "Simon Wenzl\n          Marco Braumann",
+      "Manuel Milic\n          Luka Budes\n          Filip Skoro\n              \n        Luka Budes",
+      ""
+    ],
+    [
+      "Sa, 11.10.25",
+      "DSG St. Josef/Oed FC",
+      "-",
+      "DSG Union Traun",
+      "2:1 (0:1)"
+    ],
+    [
+      "DSG-Platz 14:00",
+      "Manuel Stadler\n          Stefan Freudenthaler\n              \n        Stefan Freudenthaler\n            \n        Stefan Woschitz\n            \n        Thomas Paulmair\n            \n        Raphael Deutschmann\n            \n        Manuel Märzinger",
+      "Andreas Walter-Raab\n              \n        Gerhard Luger",
+      ""
+    ],
+    [
+      "Sa, 11.10.25",
+      "Walker FC",
+      "-",
+      "Union Heiligenberg",
+      "1:3 (1:1)"
+    ],
+    [
+      "DSG-Platz 16:00",
+      "Benjamin Stenhaug\n              \n        Martin Brenner",
+      "Ernst Zahrer\n          Manuel Zauner-Wagner\n          Dominik Penninger\n              \n        Johannes Steinbock",
+      ""
+    ],
+    [
+      "Sa, 11.10.25",
+      "FC Hinzenbach",
+      "-",
+      "FC Gornjak",
+      "3:1 (1:1)"
+    ],
+    [
+      "Sportplatz Wörth 16:00",
+      "Fabian Michael Ott\n          Jan Lettner\n              \n        Matteo Deisenhammer",
+      "Mladen Nikolic\n              \n        Stanislav Korovljevic\n            \n        Sani Stancic\n            \n        Sasa Nedic",
+      ""
+    ],
+    [
+      "Fr, 10.04.26",
+      "Union Eschenau",
+      "-",
+      "DSG Union Traun",
+      "5:3 (0:2)"
+    ],
+    [
+      "Sportplatz Eschenau 19:00",
+      "Farid Alem\n          Christopher Ratzenböck\n          Simon Wenzl\n          Michael Dornetshuber",
+      "Michael Mayr\n          Janik Machowetz",
+      ""
+    ],
+    [
+      "Sa, 11.04.26",
+      "DSG St. Josef/Oed FC",
+      "-",
+      "FC Gornjak",
+      "3:0* Abgesagt"
+    ],
+    [
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      "Sa, 11.04.26",
+      "Walker FC",
+      "-",
+      "FC Hinzenbach",
+      "2:4 (1:2)"
+    ],
+    [
+      "DSG-Platz 16:00",
+      "Florian Rebhandl\n          Max Grund",
+      "Roland Meindlhumer\n          Jan Lettner",
+      ""
+    ],
+    [
+      "Sa, 11.04.26",
+      "SV Croatia Linz",
+      "-",
+      "Union Heiligenberg",
+      "5:2 (1:1)"
+    ],
+    [
+      "Westbahn Linz 17:00",
+      "Leonardo Glavas\n          Branko Marin\n          Valentin Vejic\n          Robert Matisic\n              \n        Slaven Steko",
+      "Michael Haslehner\n              \n        Florian Lehner\n            \n        Ernst Zahrer\n            \n        Thomas Wagner\n            \n        Simon Penninger\n            \n        Simon Dornetshumer",
+      ""
+    ],
+    [
+      "Fr, 17.04.26",
+      "DSG Union Traun",
+      "-",
+      "SV Croatia Linz",
+      "0:9 (0:4)"
+    ],
+    [
+      "Sportplatz Traun 19:00",
+      "",
+      "Branko Marin\n          Slaven Steko\n          Josip Peric\n          Boris Bagaric\n          Mario Peric\n          Valentin Vejic",
+      ""
+    ],
+    [
+      "Sa, 18.04.26",
+      "FC Hinzenbach",
+      "-",
+      "DSG St. Josef/Oed FC",
+      "1:3 (1:3)"
+    ],
+    [
+      "Sportplatz Wörth 16:00",
+      "Rene Rechtlehner",
+      "Thomas Paulmair\n          Paul Feichtenschlager\n          Raphael Deutschmann\n              \n        Ramadan Karakaya",
+      ""
+    ],
+    [
+      "Sa, 18.04.26",
+      "Walker FC",
+      "-",
+      "Union Eschenau",
+      "4:3 (2:1)"
+    ],
+    [
+      "DSG-Platz 17:00",
+      "Florian Rebhandl\n          Bernhard Glatz\n          Benjamin Stenhaug\n              \n        Martin Brenner",
+      "Dominik Scheuringer\n          Daniel Dornetshuber\n              \n        Bernhard Altendorfer\n            \n        Simon Wenzl",
+      ""
+    ],
+    [
+      "Sa, 18.04.26",
+      "Union Heiligenberg",
+      "-",
+      "FC Gornjak",
+      "5:1 (2:1)"
+    ],
+    [
+      "Sportplatz Heiligenberg 18:00",
+      "Michael Haslehner\n          Johannes Steinbock\n          Benedict Humer\n          Simon Dornetshumer\n              \n        Simon Dornetshumer",
+      "Markus Kalakovic\n              \n        Ivan Radisavljevic\n            \n        Dalibor Tatic",
+      ""
+    ],
+    [
+      "Fr, 24.04.26",
+      "SV Croatia Linz",
+      "-",
+      "Walker FC",
+      "3:0* Abgesagt"
+    ],
+    [
+      "",
+      "Leonardo Glavas",
+      "Maxwell Agbemor\n              \n        Max Grund",
+      ""
+    ],
+    [
+      "Fr, 24.04.26",
+      "Union Eschenau",
+      "-",
+      "FC Hinzenbach",
+      "1:6 (1:4)"
+    ],
+    [
+      "Sportplatz Eschenau 19:00",
+      "Michael Dornetshuber\n              \n        Mario Wolfschluckner",
+      "Roland Meindlhumer\n          Jan Lettner\n              \n        Michael Ahammer",
+      ""
+    ],
+    [
+      "Sa, 25.04.26",
+      "FC Gornjak",
+      "-",
+      "DSG Union Traun",
+      "1:4 (0:1)"
+    ],
+    [
+      "DSG-Platz 15:00",
+      "Ilija Stojchovski\n              \n        Marco Rajcic",
+      "Lukas Wahl\n          Markus Asanger\n          Fabian Wild\n          Moritz Radschiener\n              \n        Taher Akbar\n            \n        Manuel Kapfhammer",
+      ""
+    ],
+    [
+      "Sa, 25.04.26",
+      "DSG St. Josef/Oed FC",
+      "-",
+      "Union Heiligenberg",
+      "4:0 (4:0)"
+    ],
+    [
+      "DSG-Platz 17:00",
+      "Thomas Paulmair\n          Julian Fischer\n          Paul Feichtenschlager",
+      "Johannes Steinbock",
+      ""
+    ],
+    [
+      "Fr, 01.05.26",
+      "DSG Union Traun",
+      "-",
+      "DSG St. Josef/Oed FC",
+      "0:3* Abgesagt"
+    ],
+    [
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      "Sa, 02.05.26",
+      "FC Gornjak",
+      "-",
+      "FC Hinzenbach",
+      "3:2 (1:0)"
+    ],
+    [
+      "DSG-Platz 15:00",
+      "Markus Kalakovic\n          Sanel Memic\n              \n        Vladica Petrovic",
+      "Roland Meindlhumer\n          Philipp Guggenberger\n              \n        Stefan Amering",
+      ""
+    ],
+    [
+      "Sa, 02.05.26",
+      "SV Croatia Linz",
+      "-",
+      "Union Eschenau",
+      "3:0* Abgesagt"
+    ],
+    [
+      "",
+      "",
+      "",
+      ""
+    ],
+    [
+      "Mi, 13.05.26",
+      "Union Heiligenberg",
+      "-",
+      "Walker FC",
+      "2:2 (1:0)"
+    ],
+    [
+      "Sportplatz Heiligenberg 19:00",
+      "Dominik Penninger\n          Michael Haslehner\n              \n        Gregor Mair",
+      "Marco Schmidt\n          Max Grund",
+      ""
+    ],
+    [
+      "Fr, 08.05.26",
+      "DSG Union Traun",
+      "-",
+      "Union Heiligenberg",
+      "0:6 (0:1)"
+    ],
+    [
+      "Sportplatz Traun 19:00",
+      "",
+      "Michael Haslehner\n          Manuel Zauner-Wagner\n          Ernst Zahrer\n          Benedict Humer",
+      ""
+    ],
+    [
+      "Sa, 09.05.26",
+      "FC Gornjak",
+      "-",
+      "Walker FC",
+      "1:5 (1:3)"
+    ],
+    [
+      "DSG-Platz 15:00",
+      "Aleksandar Kostic\n              \n        Vladica Petrovic",
+      "Max Grund\n          Shankar Poudel\n          Maxwell Agbemor\n          Benjamin Stenhaug\n              \n        Shankar Poudel",
+      ""
+    ],
+    [
+      "Sa, 09.05.26",
+      "DSG St. Josef/Oed FC",
+      "-",
+      "Union Eschenau",
+      "7:0 (2:0)"
+    ],
+    [
+      "DSG-Platz 17:00",
+      "Thomas Paulmair\n          Paul Feichtenschlager\n          Julian Fischer\n          Stefan Woschitz",
+      "",
+      ""
+    ],
+    [
+      "Fr, 15.05.26",
+      "FC Hinzenbach",
+      "-",
+      "SV Croatia Linz",
+      "1:3 (1:2)"
+    ],
+    [
+      "Sportplatz Wörth 18:30",
+      "Roland Meindlhumer",
+      "Slaven Steko\n          Branko Marin\n          Valentin Vejic\n              \n        Dejan Jurleta\n            \n        Darko Dovoda\n            \n        Mateo Simunovic",
+      ""
+    ],
+    [
+      "Fr, 22.05.26",
+      "Walker FC",
+      "-",
+      "DSG Union Traun",
+      "3:3 (1:2)"
+    ],
+    [
+      "DSG-Platz 18:00",
+      "Florian Rebhandl\n          Max Grund\n              \n        Anmol Rai\n            \n        Florian Rebhandl\n            \n        Benjamin Stenhaug",
+      "Michael Mayr\n          Manuel Kapfhammer\n              \n        Manuel Kapfhammer\n            \n        Michael Mayr\n            \n        Gerhard Luger\n            \n        Moritz Radschiener",
+      ""
+    ],
+    [
+      "Fr, 22.05.26",
+      "FC Hinzenbach",
+      "-",
+      "Union Heiligenberg",
+      "2:1 (0:0)"
+    ],
+    [
+      "Sportplatz Wörth 18:30",
+      "Roland Meindlhumer\n          Michael Dullinger\n              \n        Rene Rechtlehner",
+      "Johannes Steinbock\n              \n        Michael Haslehner\n            \n        Jakob Wagner",
+      ""
+    ],
+    [
+      "Fr, 22.05.26",
+      "Union Eschenau",
+      "-",
+      "FC Gornjak",
+      "1:8 (1:6)"
+    ],
+    [
+      "Sportplatz Eschenau 19:00",
+      "Michael Dornetshuber\n              \n        Farid Alem\n            \n        Mario Wolfschluckner\n            \n        Simon Wenzl\n            \n        Michael Dornetshuber",
+      "Ilija Stojchovski\n          Sani Stancic\n          Markus Kalakovic\n          Dalibor Tatic\n          Sanel Memic\n          Darko Maletic\n              \n        Sani Stancic\n            \n        Stanislav Korovljevic\n            \n        Marko Ljubisavljevic",
+      ""
+    ],
+    [
+      "Fr, 12.06.26",
+      "DSG St. Josef/Oed FC",
+      "-",
+      "SV Croatia Linz",
+      "2:7 (1:0)"
+    ],
+    [
+      "DSG-Platz 18:30",
+      "Thomas Paulmair\n          Nicolaus Steurer\n              \n        Stefan Woschitz\n            \n        Thomas Paulmair\n            \n        Nicolaus Steurer\n            \n        Julian Fischer",
+      "Valentin Vejic\n          Manuel Milic\n          Slaven Steko\n              \n        Valentin Vejic",
+      ""
+    ],
+    [
+      "Fr, 29.05.26",
+      "FC Hinzenbach",
+      "-",
+      "DSG Union Traun",
+      "2:3 (2:2)"
+    ],
+    [
+      "Sportplatz Wörth 17:00",
+      "Roland Meindlhumer\n          Thomas Ferihumer",
+      "Denis Petak\n          Luca Vogl\n          Ninoslav Matanovic",
+      ""
+    ],
+    [
+      "Sa, 30.05.26",
+      "Walker FC",
+      "-",
+      "DSG St. Josef/Oed FC",
+      "1:5 (0:2)"
+    ],
+    [
+      "DSG-Platz 15:00",
+      "Max Grund\n              \n        Nik Franzmair",
+      "Thomas Paulmair\n          Paul Haindl\n          Clemens Rössler",
+      ""
+    ],
+    [
+      "Sa, 30.05.26",
+      "FC Gornjak",
+      "-",
+      "SV Croatia Linz",
+      "1:5 (0:4)"
+    ],
+    [
+      "DSG-Platz 17:00",
+      "Dejan Teodorovic\n              \n        Aleksandar Kostic",
+      "Branko Marin\n          Leonardo Glavas\n          Slaven Steko\n          Robert Matisic",
+      ""
+    ],
+    [
+      "Mi, 03.06.26",
+      "Union Heiligenberg",
+      "-",
+      "Union Eschenau",
+      "5:2 (3:2)"
+    ],
+    [
+      "Sportplatz Heiligenberg 20:00",
+      "Michael Haslehner\n          Manuel Zauner-Wagner\n          Gregor Mair\n              \n        Michael Haslehner\n            \n        Manuel Zauner-Wagner",
+      "Simon Wenzl\n          Simon Rittberger\n              \n        Daniel Auer\n            \n        Christopher Ratzenböck",
+      ""
+    ]
+  ],
+  "cards": [],
+  "scorers": [
+    {
+      "rank": "1.",
+      "player": "Roland Meindlhumer",
+      "team": "FC Hinzenbach",
+      "goals": "20"
+    },
+    {
+      "rank": "2.",
+      "player": "Thomas Paulmair",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "14"
+    },
+    {
+      "rank": "3.",
+      "player": "Leonardo Glavas",
+      "team": "SV Croatia Linz",
+      "goals": "13"
+    },
+    {
+      "rank": "",
+      "player": "Michael Haslehner",
+      "team": "Union Heiligenberg",
+      "goals": "13"
+    },
+    {
+      "rank": "5.",
+      "player": "Dominik Penninger",
+      "team": "Union Heiligenberg",
+      "goals": "10"
+    },
+    {
+      "rank": "6.",
+      "player": "Max Grund",
+      "team": "Walker FC",
+      "goals": "9"
+    },
+    {
+      "rank": "",
+      "player": "Jan Lettner",
+      "team": "FC Hinzenbach",
+      "goals": "9"
+    },
+    {
+      "rank": "8.",
+      "player": "Branko Marin",
+      "team": "SV Croatia Linz",
+      "goals": "8"
+    },
+    {
+      "rank": "",
+      "player": "Florian Rebhandl",
+      "team": "Walker FC",
+      "goals": "8"
+    },
+    {
+      "rank": "",
+      "player": "Valentin Vejic",
+      "team": "SV Croatia Linz",
+      "goals": "8"
+    },
+    {
+      "rank": "11.",
+      "player": "Farid Alem",
+      "team": "Union Eschenau",
+      "goals": "6"
+    },
+    {
+      "rank": "",
+      "player": "Michael Dornetshuber",
+      "team": "Union Eschenau",
+      "goals": "6"
+    },
+    {
+      "rank": "",
+      "player": "Slaven Steko",
+      "team": "SV Croatia Linz",
+      "goals": "6"
+    },
+    {
+      "rank": "",
+      "player": "Sergey Stepanov",
+      "team": "FC Gornjak",
+      "goals": "6"
+    },
+    {
+      "rank": "",
+      "player": "Ernst Zahrer",
+      "team": "Union Heiligenberg",
+      "goals": "6"
+    },
+    {
+      "rank": "16.",
+      "player": "Paul Feichtenschlager",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "5"
+    },
+    {
+      "rank": "",
+      "player": "Ilija Stojchovski",
+      "team": "FC Gornjak",
+      "goals": "5"
+    },
+    {
+      "rank": "18.",
+      "player": "Raphael Deutschmann",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "4"
+    },
+    {
+      "rank": "",
+      "player": "Tenzin Jayangtsang",
+      "team": "Walker FC",
+      "goals": "4"
+    },
+    {
+      "rank": "",
+      "player": "Markus Kalakovic",
+      "team": "FC Gornjak",
+      "goals": "4"
+    },
+    {
+      "rank": "",
+      "player": "Robert Matisic",
+      "team": "SV Croatia Linz",
+      "goals": "4"
+    },
+    {
+      "rank": "",
+      "player": "Michael Mayr",
+      "team": "DSG Union Traun",
+      "goals": "4"
+    },
+    {
+      "rank": "",
+      "player": "Manuel Milic",
+      "team": "SV Croatia Linz",
+      "goals": "4"
+    },
+    {
+      "rank": "",
+      "player": "Josip Peric",
+      "team": "SV Croatia Linz",
+      "goals": "4"
+    },
+    {
+      "rank": "",
+      "player": "Marco Rajcic",
+      "team": "FC Gornjak",
+      "goals": "4"
+    },
+    {
+      "rank": "",
+      "player": "Johannes Steinbock",
+      "team": "Union Heiligenberg",
+      "goals": "4"
+    },
+    {
+      "rank": "",
+      "player": "Simon Wenzl",
+      "team": "Union Eschenau",
+      "goals": "4"
+    },
+    {
+      "rank": "28.",
+      "player": "Maxwell Agbemor",
+      "team": "Walker FC",
+      "goals": "3"
+    },
+    {
+      "rank": "",
+      "player": "Julian Fischer",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "3"
+    },
+    {
+      "rank": "",
+      "player": "Manuel Kapfhammer",
+      "team": "DSG Union Traun",
+      "goals": "3"
+    },
+    {
+      "rank": "",
+      "player": "Fabian Michael Ott",
+      "team": "FC Hinzenbach",
+      "goals": "3"
+    },
+    {
+      "rank": "",
+      "player": "Clemens Rössler",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "3"
+    },
+    {
+      "rank": "",
+      "player": "Dominik Scheuringer",
+      "team": "Union Eschenau",
+      "goals": "3"
+    },
+    {
+      "rank": "",
+      "player": "Marco Schmidt",
+      "team": "Walker FC",
+      "goals": "3"
+    },
+    {
+      "rank": "",
+      "player": "Benjamin Stenhaug",
+      "team": "Walker FC",
+      "goals": "3"
+    },
+    {
+      "rank": "",
+      "player": "Stefan Woschitz",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "3"
+    },
+    {
+      "rank": "",
+      "player": "Manuel Zauner-Wagner",
+      "team": "Union Heiligenberg",
+      "goals": "3"
+    },
+    {
+      "rank": "38.",
+      "player": "Jonas Binder",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Marco Braumann",
+      "team": "Union Eschenau",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Stefan Freudenthaler",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Sebastian Grabner",
+      "team": "Union Heiligenberg",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Philipp Guggenberger",
+      "team": "FC Hinzenbach",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Philipp Habring",
+      "team": "DSG Union Traun",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Benedict Humer",
+      "team": "Union Heiligenberg",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Sanel Memic",
+      "team": "FC Gornjak",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Simon Penninger",
+      "team": "Union Heiligenberg",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Shankar Poudel",
+      "team": "Walker FC",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Manuel Pühringer",
+      "team": "Union Eschenau",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Christopher Ratzenböck",
+      "team": "Union Eschenau",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Simon Rittberger",
+      "team": "Union Eschenau",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Filip Skoro",
+      "team": "SV Croatia Linz",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Sani Stancic",
+      "team": "FC Gornjak",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Paul Steininger",
+      "team": "Union Heiligenberg",
+      "goals": "2"
+    },
+    {
+      "rank": "",
+      "player": "Luca Vogl",
+      "team": "DSG Union Traun",
+      "goals": "2"
+    },
+    {
+      "rank": "55.",
+      "player": "Michael Ahammer",
+      "team": "FC Hinzenbach",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Taher Akbar",
+      "team": "DSG Union Traun",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Marko Aleksic",
+      "team": "FC Gornjak",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Markus Asanger",
+      "team": "DSG Union Traun",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Boris Bagaric",
+      "team": "SV Croatia Linz",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Luka Budes",
+      "team": "SV Croatia Linz",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Daniel Dornetshuber",
+      "team": "Union Eschenau",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Simon Dornetshumer",
+      "team": "Union Heiligenberg",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Michael Dullinger",
+      "team": "FC Hinzenbach",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Thomas Ferihumer",
+      "team": "FC Hinzenbach",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Bernhard Glatz",
+      "team": "Walker FC",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Paul Haindl",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Jürgen Hutsteiner",
+      "team": "Union Heiligenberg",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Markus Jungreithmayr",
+      "team": "FC Hinzenbach",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Ramadan Karakaya",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Edi Klaric-Jozic",
+      "team": "SV Croatia Linz",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Aleksandar Kostic",
+      "team": "FC Gornjak",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Andreas Lederer",
+      "team": "Union Heiligenberg",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Janik Machowetz",
+      "team": "DSG Union Traun",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Gregor Mair",
+      "team": "Union Heiligenberg",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Darko Maletic",
+      "team": "FC Gornjak",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Anto Marcinkovic",
+      "team": "SV Croatia Linz",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Ninoslav Matanovic",
+      "team": "DSG Union Traun",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Rainer Meindlhumer",
+      "team": "FC Hinzenbach",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Mladen Nikolic",
+      "team": "FC Gornjak",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Michael Pehamberger",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Mario Peric",
+      "team": "SV Croatia Linz",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Ivan Peric",
+      "team": "SV Croatia Linz",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Denis Petak",
+      "team": "DSG Union Traun",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Tobias Pointner",
+      "team": "FC Hinzenbach",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Moritz Radschiener",
+      "team": "DSG Union Traun",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Rene Rechtlehner",
+      "team": "FC Hinzenbach",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Niko Reinthaler",
+      "team": "FC Hinzenbach",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Kevin Schneider",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Manuel Stadler",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Nicolaus Steurer",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Dalibor Tatic",
+      "team": "FC Gornjak",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Dejan Teodorovic",
+      "team": "FC Gornjak",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Felix Trinkfass",
+      "team": "Union Heiligenberg",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Felix Übleis",
+      "team": "FC Hinzenbach",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Lukas Wahl",
+      "team": "DSG Union Traun",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Fabian Walter",
+      "team": "DSG Union Traun",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Andreas Walter-Raab",
+      "team": "DSG Union Traun",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Stefan Wiener",
+      "team": "DSG Union Traun",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Fabian Wild",
+      "team": "DSG Union Traun",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Manuel Winklehner",
+      "team": "FC Hinzenbach",
+      "goals": "1"
+    },
+    {
+      "rank": "",
+      "player": "Manuel Wozabal",
+      "team": "Walker FC",
+      "goals": "1"
+    }
+  ]
+}

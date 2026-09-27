@@ -1,0 +1,435 @@
+{
+  "overview": {
+    "totalSeasonsScraped": 10,
+    "totalTeamsAcrossHistory": 18,
+    "totalGamesScheduled": 377,
+    "totalGamesPlayed": 340,
+    "totalGoalsScored": 1821,
+    "averageGoalsPerGame": "5.36",
+    "totalYellowCards": 817,
+    "totalYellowRedCards": 29,
+    "totalRedCards": 11,
+    "totalCards": 857
+  },
+  "allTimeTopScorers": [
+    {
+      "rank": 1,
+      "name": "Roland Meindlhumer",
+      "goals": 85
+    },
+    {
+      "rank": 2,
+      "name": "Thomas Paulmair",
+      "goals": 51
+    },
+    {
+      "rank": 3,
+      "name": "Michael Haslehner",
+      "goals": 47
+    },
+    {
+      "rank": 4,
+      "name": "Leonardo Glavas",
+      "goals": 40
+    },
+    {
+      "rank": 5,
+      "name": "Florian Rebhandl",
+      "goals": 37
+    },
+    {
+      "rank": 6,
+      "name": "Dominik Penninger",
+      "goals": 33
+    },
+    {
+      "rank": 7,
+      "name": "Michael Dornetshuber",
+      "goals": 32
+    },
+    {
+      "rank": 8,
+      "name": "Slaven Steko",
+      "goals": 28
+    },
+    {
+      "rank": 9,
+      "name": "Markus Jungreithmayr",
+      "goals": 27
+    },
+    {
+      "rank": 10,
+      "name": "Ernst Zahrer",
+      "goals": 26
+    }
+  ],
+  "seasons": [
+    {
+      "id": 1,
+      "name": "Liga 2021/2022",
+      "totalGames": 29,
+      "playedGames": 28,
+      "totalGoals": 159,
+      "goalsPerGame": "5.68",
+      "yellowCards": 73,
+      "yellowRedCards": 1,
+      "redCards": 2,
+      "teamsCount": 8,
+      "teams": [
+        "FC Hinzenbach",
+        "FC U. Schleißheim",
+        "DSG St. Josef/Oed FC",
+        "DSG UKJ Froschberg",
+        "Union Geboltskirchen",
+        "Union Heiligenberg",
+        "SV Croatia Linz",
+        "Union Goldwörth"
+      ],
+      "topScorers": [
+        {
+          "name": "Roland Meindlhumer",
+          "goals": 13
+        },
+        {
+          "name": "Michael Haslehner",
+          "goals": 12
+        },
+        {
+          "name": "Thomas Paulmair",
+          "goals": 12
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "1. Klasse 2021/2022",
+      "totalGames": 28,
+      "playedGames": 21,
+      "totalGoals": 111,
+      "goalsPerGame": "5.29",
+      "yellowCards": 65,
+      "yellowRedCards": 4,
+      "redCards": 1,
+      "teamsCount": 8,
+      "teams": [
+        "DSG Union Traun",
+        "DSG Thalheim",
+        "DSG Auberg",
+        "FC Bruck",
+        "FC Gornjak",
+        "FC Anatolia",
+        "Walker FC",
+        "Union Eschenau"
+      ],
+      "topScorers": [
+        {
+          "name": "Alexander Walter",
+          "goals": 6
+        },
+        {
+          "name": "Aaron Außermair",
+          "goals": 6
+        },
+        {
+          "name": "Alexander Gfellner",
+          "goals": 5
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Liga 2022/2023",
+      "totalGames": 82,
+      "playedGames": 74,
+      "totalGoals": 367,
+      "goalsPerGame": "4.96",
+      "yellowCards": 193,
+      "yellowRedCards": 10,
+      "redCards": 2,
+      "teamsCount": 14,
+      "teams": [
+        "Union Goldwörth",
+        "Union Eschenau",
+        "DSG Union Traun",
+        "FC Bruck",
+        "DSG UKJ Froschberg",
+        "SV Croatia Linz",
+        "Union Heiligenberg",
+        "Union Geboltskirchen",
+        "DSG St. Josef/Oed FC",
+        "Walker FC",
+        "FC Gornjak",
+        "DSG Thalheim",
+        "FC Hinzenbach",
+        "FC U. Schleißheim"
+      ],
+      "topScorers": [
+        {
+          "name": "Roland Meindlhumer",
+          "goals": 24
+        },
+        {
+          "name": "Ernst Zahrer",
+          "goals": 12
+        },
+        {
+          "name": "Wolfgang Lehner",
+          "goals": 11
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "1. Klasse 2022/2023",
+      "totalGames": 21,
+      "playedGames": 21,
+      "totalGoals": 112,
+      "goalsPerGame": "5.33",
+      "yellowCards": 34,
+      "yellowRedCards": 0,
+      "redCards": 1,
+      "teamsCount": 7,
+      "teams": [
+        "DSG Union Traun",
+        "FC Bruck",
+        "FC Gornjak",
+        "DSG Thalheim",
+        "DSG Auberg",
+        "Union Eschenau",
+        "Walker FC"
+      ],
+      "topScorers": [
+        {
+          "name": "Aaron Außermair",
+          "goals": 9
+        },
+        {
+          "name": "Florian Rebhandl",
+          "goals": 8
+        },
+        {
+          "name": "Michael Dornetshuber",
+          "goals": 7
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Liga 2023/2024",
+      "totalGames": 54,
+      "playedGames": 49,
+      "totalGoals": 268,
+      "goalsPerGame": "5.47",
+      "yellowCards": 91,
+      "yellowRedCards": 2,
+      "redCards": 1,
+      "teamsCount": 13,
+      "teams": [
+        "Walker FC",
+        "FC Bruck",
+        "SV Croatia Linz",
+        "DSG Union Traun",
+        "Union Geboltskirchen",
+        "FC Gornjak",
+        "Union Goldwörth",
+        "Union Heiligenberg",
+        "FC Hinzenbach",
+        "DSG UKJ Froschberg",
+        "Union Eschenau",
+        "DSG St. Josef/Oed FC",
+        "DSG Thalheim"
+      ],
+      "topScorers": [
+        {
+          "name": "Roland Meindlhumer",
+          "goals": 15
+        },
+        {
+          "name": "Florian Rebhandl",
+          "goals": 8
+        },
+        {
+          "name": "Narcis-Benjamin Petrean",
+          "goals": 8
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Liga 2024/2025",
+      "totalGames": 55,
+      "playedGames": 55,
+      "totalGoals": 297,
+      "goalsPerGame": "5.40",
+      "yellowCards": 155,
+      "yellowRedCards": 6,
+      "redCards": 1,
+      "teamsCount": 11,
+      "teams": [
+        "Walker FC",
+        "Hrvatski centar Linz",
+        "FC Hinzenbach",
+        "Union Eschenau",
+        "Union Goldwörth",
+        "FC Gornjak",
+        "FC U. Schleißheim",
+        "Union Heiligenberg",
+        "DSG St. Josef/Oed FC",
+        "DSG Union Traun",
+        "SV Croatia Linz"
+      ],
+      "topScorers": [
+        {
+          "name": "Julian Fischer",
+          "goals": 15
+        },
+        {
+          "name": "Slaven Steko",
+          "goals": 11
+        },
+        {
+          "name": "Josip Foro",
+          "goals": 9
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Oberes Playoff 2024/2025",
+      "totalGames": 15,
+      "playedGames": 15,
+      "totalGoals": 79,
+      "goalsPerGame": "5.27",
+      "yellowCards": 24,
+      "yellowRedCards": 0,
+      "redCards": 1,
+      "teamsCount": 6,
+      "teams": [
+        "Union Heiligenberg",
+        "Hrvatski centar Linz",
+        "SV Croatia Linz",
+        "FC Hinzenbach",
+        "DSG St. Josef/Oed FC",
+        "FC U. Schleißheim"
+      ],
+      "topScorers": [
+        {
+          "name": "Roland Meindlhumer",
+          "goals": 7
+        },
+        {
+          "name": "Michael Haslehner",
+          "goals": 7
+        },
+        {
+          "name": "Wolfgang Lehner",
+          "goals": 6
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Unteres Playoff 2024/2025",
+      "totalGames": 10,
+      "playedGames": 10,
+      "totalGoals": 48,
+      "goalsPerGame": "4.80",
+      "yellowCards": 16,
+      "yellowRedCards": 1,
+      "redCards": 1,
+      "teamsCount": 5,
+      "teams": [
+        "DSG Union Traun",
+        "Union Goldwörth",
+        "Union Eschenau",
+        "FC Gornjak",
+        "Walker FC"
+      ],
+      "topScorers": [
+        {
+          "name": "Onur Odabas",
+          "goals": 4
+        },
+        {
+          "name": "Florian Rebhandl",
+          "goals": 3
+        },
+        {
+          "name": "Michael Mayr",
+          "goals": 2
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Saison 2025/2026",
+      "totalGames": 56,
+      "playedGames": 56,
+      "totalGoals": 320,
+      "goalsPerGame": "5.71",
+      "yellowCards": 138,
+      "yellowRedCards": 5,
+      "redCards": 0,
+      "teamsCount": 8,
+      "teams": [
+        "DSG St. Josef/Oed FC",
+        "Walker FC",
+        "DSG Union Traun",
+        "FC Hinzenbach",
+        "SV Croatia Linz",
+        "FC Gornjak",
+        "Union Eschenau",
+        "Union Heiligenberg"
+      ],
+      "topScorers": [
+        {
+          "name": "Roland Meindlhumer",
+          "goals": 20
+        },
+        {
+          "name": "Thomas Paulmair",
+          "goals": 14
+        },
+        {
+          "name": "Michael Haslehner",
+          "goals": 13
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Saison 2026/2027",
+      "totalGames": 27,
+      "playedGames": 11,
+      "totalGoals": 60,
+      "goalsPerGame": "5.45",
+      "yellowCards": 28,
+      "yellowRedCards": 0,
+      "redCards": 1,
+      "teamsCount": 7,
+      "teams": [
+        "DSG Union Traun",
+        "Union Heiligenberg",
+        "SV Croatia Linz",
+        "Etehad Linz",
+        "DSG St. Josef/Oed FC",
+        "FC Gornjak",
+        "Walker FC"
+      ],
+      "topScorers": [
+        {
+          "name": "Leonardo Glavas",
+          "goals": 5
+        },
+        {
+          "name": "Dominik Penninger",
+          "goals": 4
+        },
+        {
+          "name": "Zia Ghaderi",
+          "goals": 4
+        }
+      ]
+    }
+  ]
+}

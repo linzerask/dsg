@@ -1,7 +1,7 @@
 import { Store } from '../store.js';
 
 
-let currentViewSeason = "2026/2027";
+let currentViewSeason = "2025/2026";
 
 export function viewLiga() {
   const data = Store.getData();
