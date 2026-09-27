@@ -25973,8 +25973,8 @@ export const Store = {
     try {
       for (let i = 1; i <= 60; i++) {
         if (i !== 50) localStorage.removeItem(`dsg_data_v${i}`);
-        if (i !== 36) localStorage.removeItem(`dsg_articles_v${i}`);
-        if (i !== 25) localStorage.removeItem(`dsg_gallery_v${i}`);
+        if (i !== 37) localStorage.removeItem(`dsg_articles_v${i}`);
+        if (i !== 26) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 10) localStorage.removeItem(`dsg_admin_players_v${i}`);
         if (i !== 10) localStorage.removeItem(`dsg_admin_teams_v${i}`);
         if (i !== 10) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
@@ -25984,20 +25984,8 @@ export const Store = {
 
     // Eagerly load synchronous local memory into shared singleton
     state.memoryData = loadLocal('dsg_data', 50) || INITIAL_DATA;
-    
-    const localArticles = loadLocal('dsg_articles', 36) || loadLocal('dsg_articles', 35) || [];
-    const articleMapInit = new Map();
-    // Prioritize user's local articles first
-    localArticles.forEach(a => {
-      if (a && a.id) articleMapInit.set(String(a.id), a);
-    });
-    // Add missing baseline articles
-    (INITIAL_DATA.news || []).forEach(a => {
-      if (a && a.id && !articleMapInit.has(String(a.id))) articleMapInit.set(String(a.id), a);
-    });
-    state.memoryNews = sortArticles(Array.from(articleMapInit.values()));
-
-    state.memoryGallery = loadLocal('dsg_gallery', 25) || INITIAL_DATA.gallery || [];
+    state.memoryNews = loadLocal('dsg_articles', 37) || sortArticles([...(INITIAL_DATA.news || [])]);
+    state.memoryGallery = loadLocal('dsg_gallery', 26) || [];
 
     // Ensure all leagues have an initialized season object in memoryData
     if (!state.memoryData.seasons) state.memoryData.seasons = {};
@@ -26018,21 +26006,6 @@ export const Store = {
 
     state.initialized = true;
 
-    // Check IndexedDB asynchronously to restore rich article images
-    idbGet('dsg_articles').then(idbArticles => {
-      if (idbArticles && Array.isArray(idbArticles) && idbArticles.length > 0) {
-        const idbMergeMap = new Map();
-        idbArticles.forEach(a => { if (a && a.id) idbMergeMap.set(String(a.id), a); });
-        state.memoryNews.forEach(a => { if (a && a.id && !idbMergeMap.has(String(a.id))) idbMergeMap.set(String(a.id), a); });
-        (INITIAL_DATA.news || []).forEach(a => {
-          if (a && a.id && !idbMergeMap.has(String(a.id))) idbMergeMap.set(String(a.id), a);
-        });
-        state.memoryNews = sortArticles(Array.from(idbMergeMap.values()));
-        trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
-        window.dispatchEvent(new CustomEvent('data-updated'));
-      }
-    });
-
     // Trigger Firebase sync in the background
     this.syncFirebase();
   },
@@ -26052,11 +26025,13 @@ export const Store = {
       let needsMigration = false;
       let hasUpdates = false;
 
-      // Sync Data
-      if (dataSnap.exists() && dataSnap.data().data) {
+      // Sync Liga Data
+      if (dataSnap.exists() && dataSnap.data()?.data) {
         const fbData = dataSnap.data().data;
+        const fbTime = dataSnap.data().lastUpdated || fbData.lastUpdated || 0;
         const localData = loadLocal('dsg_data', 50);
-        if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
+        const localTime = localData?.lastUpdated || 0;
+        if (localTime > fbTime) {
           state.memoryData = localData;
           needsMigration = true;
         } else {
@@ -26064,42 +26039,56 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 50);
-        if (!legacyData) legacyData = INITIAL_DATA;
+        let legacyData = loadLocal('dsg_data', 50) || INITIAL_DATA;
         state.memoryData = legacyData;
         needsMigration = true;
       }
 
-      // Sync News - preserve all existing local, IDB and Firestore items
-      const localArticlesSync = loadLocal('dsg_articles', 36) || loadLocal('dsg_articles', 35) || [];
-      const idbArticlesSync = await idbGet('dsg_articles') || [];
-      const articleMergeMap = new Map();
+      // Sync News - authoritative timestamp comparison
+      if (newsSnap.exists() && newsSnap.data() && Array.isArray(newsSnap.data().data)) {
+        const fbNews = newsSnap.data().data;
+        const fbTime = newsSnap.data().lastUpdated || 0;
+        const localTime = parseInt(localStorage.getItem('dsg_news_last_updated')) || 0;
 
-      // Remote Firestore
-      if (newsSnap.exists() && newsSnap.data().data && Array.isArray(newsSnap.data().data)) {
-        newsSnap.data().data.forEach(a => {
-          if (a && a.id) articleMergeMap.set(String(a.id), a);
-        });
+        if (fbTime > localTime) {
+          // Remote is strictly newer -> adopt remote
+          state.memoryNews = sortArticles(fbNews);
+          trySetLocal('dsg_articles_v37', JSON.stringify(state.memoryNews));
+          await idbSet('dsg_articles', state.memoryNews);
+          localStorage.setItem('dsg_news_last_updated', String(fbTime));
+          hasUpdates = true;
+        } else if (localTime > fbTime) {
+          // Local is newer (e.g. deletion or edit happened locally) -> push to Firebase
+          await setDoc(newsRef, { data: state.memoryNews, lastUpdated: localTime }).catch(e => console.error("Firebase save error (news):", e));
+        }
+      } else {
+        if (!state.memoryNews || state.memoryNews.length === 0) {
+          state.memoryNews = sortArticles([...(INITIAL_DATA.news || [])]);
+        }
+        await setDoc(newsRef, { data: state.memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (news):", e));
       }
 
-      // Merge local and IDB items (user articles take precedence)
-      localArticlesSync.forEach(a => {
-        if (a && a.id) articleMergeMap.set(String(a.id), a);
-      });
-      idbArticlesSync.forEach(a => {
-        if (a && a.id) articleMergeMap.set(String(a.id), a);
-      });
+      // Sync Gallery - authoritative timestamp comparison
+      if (gallerySnap.exists() && gallerySnap.data() && Array.isArray(gallerySnap.data().data)) {
+        const fbGallery = gallerySnap.data().data;
+        const fbTime = gallerySnap.data().lastUpdated || 0;
+        const localTime = parseInt(localStorage.getItem('dsg_gallery_last_updated')) || 0;
 
-      // Ensure seed baseline articles exist
-      (INITIAL_DATA.news || []).forEach(a => {
-        if (a && a.id && !articleMergeMap.has(String(a.id))) articleMergeMap.set(String(a.id), a);
-      });
-
-      state.memoryNews = sortArticles(Array.from(articleMergeMap.values()));
-      trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
-      await idbSet('dsg_articles', state.memoryNews);
-      hasUpdates = true;
-      needsMigration = true;
+        if (fbTime > localTime) {
+          // Remote is strictly newer -> adopt remote
+          state.memoryGallery = fbGallery;
+          trySetLocal('dsg_gallery_v26', JSON.stringify(state.memoryGallery));
+          localStorage.setItem('dsg_gallery_last_updated', String(fbTime));
+          hasUpdates = true;
+        } else if (localTime > fbTime) {
+          // Local is newer (e.g. deletion or edit happened locally) -> push to Firebase
+          await setDoc(galleryRef, { data: state.memoryGallery, lastUpdated: localTime }).catch(e => console.error("Firebase save error (gallery):", e));
+        }
+      } else {
+        if (state.memoryGallery && state.memoryGallery.length > 0) {
+          await setDoc(galleryRef, { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (gallery):", e));
+        }
+      }
 
       // Auto-sync all leagues to seasons
       if (leagueSnap && leagueSnap.exists() && leagueSnap.data()?.data) {
@@ -26119,24 +26108,6 @@ export const Store = {
             needsMigration = true;
           }
         });
-      }
-
-      // Sync Gallery
-      if (gallerySnap.exists() && gallerySnap.data().data) {
-        const fbGallery = gallerySnap.data().data;
-        const localGallery = loadLocal('dsg_gallery', 25) || INITIAL_DATA.gallery || [];
-        const memTime = fbGallery[0]?.lastUpdated || 0;
-        const locTime = localGallery[0]?.lastUpdated || 0;
-        if (localGallery.length > fbGallery.length || locTime > memTime) {
-          state.memoryGallery = localGallery;
-          needsMigration = true;
-        } else {
-          state.memoryGallery = fbGallery;
-          hasUpdates = true;
-        }
-      } else {
-        state.memoryGallery = loadLocal('dsg_gallery', 25) || INITIAL_DATA.gallery || [];
-        needsMigration = true;
       }
 
       // Sanitize Gallery items (fix broken image paths)
@@ -26204,13 +26175,12 @@ export const Store = {
       if (needsMigration) {
         await setDoc(dataRef, { data: state.memoryData }).catch(e => console.error("Firebase save error (data):", e));
         await setDoc(newsRef, { data: state.memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (news):", e));
-        await setDoc(galleryRef, { data: state.memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
+        await setDoc(galleryRef, { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
       trySetLocal('dsg_data_v50', JSON.stringify(state.memoryData));
-      trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
-      trySetLocal('dsg_gallery_v25', JSON.stringify(state.memoryGallery));
-      console.log("Synced local and Firebase data. Active articles:", state.memoryNews.length);
+      trySetLocal('dsg_articles_v37', JSON.stringify(state.memoryNews));
+      trySetLocal('dsg_gallery_v26', JSON.stringify(state.memoryGallery));
 
       if (hasUpdates) {
         window.dispatchEvent(new Event('data-updated'));
@@ -26236,7 +26206,7 @@ export const Store = {
 
   getNews() {
     const state = getState();
-    return state.memoryNews && state.memoryNews.length > 0 ? state.memoryNews : INITIAL_DATA.news;
+    return state.memoryNews && state.memoryNews.length > 0 ? state.memoryNews : (INITIAL_DATA.news || []);
   },
   
   getArticle(id) {
@@ -26267,9 +26237,11 @@ export const Store = {
       return aId !== cleanId && String(a.id) !== String(id) && aTitleSlug !== cleanId;
     });
     state.memoryNews = sortArticles(state.memoryNews);
-    trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
+    const now = Date.now();
+    localStorage.setItem('dsg_news_last_updated', String(now));
+    trySetLocal('dsg_articles_v37', JSON.stringify(state.memoryNews));
     idbSet('dsg_articles', state.memoryNews);
-    setDoc(doc(db, 'system', 'news_data'), { data: state.memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
+    setDoc(doc(db, 'system', 'news_data'), { data: state.memoryNews, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
   
@@ -26290,6 +26262,7 @@ export const Store = {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
     const newId = slug ? `${slug}-${Date.now().toString().slice(-4)}` : Date.now().toString();
+    const now = Date.now();
     const newArticle = {
       id: newId,
       title: title || '',
@@ -26300,26 +26273,16 @@ export const Store = {
       image: image || 'dsg.avif',
       gallery: gallery || [],
       date: formattedDate,
-      createdAt: Date.now(),
-      lastUpdated: Date.now()
+      createdAt: now,
+      lastUpdated: now
     };
-    if (!Array.isArray(state.memoryNews) || state.memoryNews.length === 0) {
-      state.memoryNews = [...(INITIAL_DATA.news || [])];
-    }
-    
-    const articleMap = new Map();
-    articleMap.set(String(newArticle.id), newArticle);
-    state.memoryNews.forEach(a => {
-      if (a && a.id && !articleMap.has(String(a.id))) articleMap.set(String(a.id), a);
-    });
-    (INITIAL_DATA.news || []).forEach(a => {
-      if (a && a.id && !articleMap.has(String(a.id))) articleMap.set(String(a.id), a);
-    });
-    
-    state.memoryNews = sortArticles(Array.from(articleMap.values()));
-    trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
+    if (!Array.isArray(state.memoryNews)) state.memoryNews = [];
+    state.memoryNews.unshift(newArticle);
+    state.memoryNews = sortArticles(state.memoryNews);
+    localStorage.setItem('dsg_news_last_updated', String(now));
+    trySetLocal('dsg_articles_v37', JSON.stringify(state.memoryNews));
     idbSet('dsg_articles', state.memoryNews);
-    setDoc(doc(db, 'system', 'news_data'), { data: state.memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
+    setDoc(doc(db, 'system', 'news_data'), { data: state.memoryNews, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
     return newArticle;
   },
@@ -26343,6 +26306,7 @@ export const Store = {
       return aId === cleanId || String(a.id) === String(id) || aTitleSlug === cleanId;
     });
     if (index !== -1) {
+      const now = Date.now();
       state.memoryNews[index] = {
         ...state.memoryNews[index],
         title,
@@ -26353,649 +26317,386 @@ export const Store = {
         author: author || state.memoryNews[index].author || "DSG Redaktion",
         date: formattedDate || state.memoryNews[index].date,
         readTime: readTime || state.memoryNews[index].readTime || "2 min read",
-        lastUpdated: Date.now()
+        lastUpdated: now
       };
       state.memoryNews = sortArticles(state.memoryNews);
-      trySetLocal('dsg_articles_v36', JSON.stringify(state.memoryNews));
+      localStorage.setItem('dsg_news_last_updated', String(now));
+      trySetLocal('dsg_articles_v37', JSON.stringify(state.memoryNews));
       idbSet('dsg_articles', state.memoryNews);
-      setDoc(doc(db, 'system', 'news_data'), { data: state.memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
+      setDoc(doc(db, 'system', 'news_data'), { data: state.memoryNews, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
       window.dispatchEvent(new CustomEvent('data-updated'));
     }
   },
 
-  _resolveSeason(data, seasonId) {
-    if (!data || !data.seasons || !seasonId) return null;
-    if (data.seasons[seasonId]) return data.seasons[seasonId];
-    
-    // Check aliases from admin leagues
-    const leagues = this.getAdminLeaguesSync();
-    for (const l of leagues) {
-      const sKey = l.seasonKey || ((l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name);
-      if (sKey === seasonId || l.name === seasonId || `${l.name} ${l.year}` === seasonId) {
-        if (l.seasonKey && data.seasons[l.seasonKey]) return data.seasons[l.seasonKey];
-        if (data.seasons[sKey]) return data.seasons[sKey];
-        if (data.seasons[l.name]) return data.seasons[l.name];
-        if (data.seasons[`${l.name} ${l.year}`]) return data.seasons[`${l.name} ${l.year}`];
-      }
-    }
-    return null;
-  },
-
-  getLiga(seasonId) {
+  getLiga(season = "2025/2026") {
     const data = this.getData();
-    const sid = seasonId || data.currentSeason;
-    const season = this._resolveSeason(data, sid);
-    if (!season || !season.teams) return [];
-    const teams = [...season.teams];
-    return teams.sort((a, b) => (b.points || 0) - (a.points || 0) || (((b.gf || 0) - (b.ga || 0)) - ((a.gf || 0) - (a.ga || 0))));
-  },
-  
-  getStats(seasonId) {
-    const data = this.getData();
-    const sid = seasonId || data.currentSeason;
-    const season = this._resolveSeason(data, sid);
-    if (!season || !season.stats) return { topScorers: [], cards: [] };
-    return season.stats;
-  },
-
-  getMatches(seasonId) {
-    const data = this.getData();
-    const sid = seasonId || data.currentSeason;
-    const season = this._resolveSeason(data, sid);
-    if (!season || !season.matches) return [];
-    return season.matches;
-  },
-
-  getMatch(seasonId, matchId) {
-    const data = this.getData();
-    const sid = seasonId || data.currentSeason;
-    const season = this._resolveSeason(data, sid);
-    if (!season || !season.matches) return null;
-    return (season.matches || []).find(m => String(m.id) === String(matchId));
-  },
-
-  getPlayers() {
-    return this.getData().players || [];
-  },
-
-  saveMatch(seasonId, matchData) {
-    const data = this.getData();
-    const sid = seasonId || data.currentSeason;
-    
-    // Reverse previous match stats if editing
-    if (matchData.id) {
-      this._reverseMatchStats(data, sid, matchData.id);
-    } else {
-      matchData.id = Date.now().toString();
+    if (!data.seasons) return [];
+    if (data.seasons[season] && data.seasons[season].teams) {
+      return data.seasons[season].teams;
     }
-
-    // Process new match stats
-    this._applyMatchStats(data, sid, matchData);
-    
-    // Update players autocomplete list
-    const newPlayers = new Set(data.players || []);
-    (matchData.scorers || []).forEach(s => newPlayers.add(s.name.trim()));
-    (matchData.cards || []).forEach(c => newPlayers.add(c.name.trim()));
-    data.players = Array.from(newPlayers).filter(n => n.length > 0);
-
-    // Save match
-    const matches = data.seasons[sid].matches;
-    const existingIndex = matches.findIndex(m => String(m.id) === String(matchData.id));
-    if (existingIndex > -1) {
-      matches[existingIndex] = matchData;
-    } else {
-      matches.push(matchData);
-    }
-    
-    // Sort matches by date then round loosely
-    matches.sort((a, b) => {
-      const parseDate = (d) => {
-        if (!d) return 0;
-        const p = d.split('.');
-        if (p.length === 3) return new Date(`${p[2]}-${p[1]}-${p[0]}`).getTime();
-        return new Date(d).getTime() || 0;
-      };
-      return parseDate(b.date) - parseDate(a.date);
-    });
-
-    this.saveData(data);
-  },
-
-  deleteMatch(seasonId, matchId) {
-    const data = this.getData();
-    const sid = seasonId || data.currentSeason;
-    this._reverseMatchStats(data, sid, matchId);
-    data.seasons[sid].matches = data.seasons[sid].matches.filter(m => String(m.id) !== String(matchId));
-    this.saveData(data);
-  },
-
-  _reverseMatchStats(data, sid, matchId) {
-    const match = data.seasons[sid].matches.find(m => String(m.id) === String(matchId));
-    if (!match) return;
-
-    // Reverse Team Points
-    if (match.status === 'Played' || match.status === 'Walkover' || match.status === 'Abgesagt 3:0' || match.status === 'Abgesagt 0:3' || !match.status) {
-      const teamA = data.seasons[sid].teams.find(t => t.name === match.home);
-      const teamB = data.seasons[sid].teams.find(t => t.name === match.away);
-      
-      let goalsA = 0;
-      let goalsB = 0;
-      let validScore = false;
-
-      if (match.status === 'Abgesagt 3:0') {
-        goalsA = 3; goalsB = 0; validScore = true;
-      } else if (match.status === 'Abgesagt 0:3') {
-        goalsA = 0; goalsB = 3; validScore = true;
-      } else {
-        let scoreStr = match.score || "";
-        if (scoreStr.includes(':')) {
-          let parts = scoreStr.split(' ')[0].replace('*', '').split(':');
-          goalsA = parseInt(parts[0]);
-          goalsB = parseInt(parts[1]);
-          validScore = true;
-        }
-      }
-      
-      if (validScore && !isNaN(goalsA) && !isNaN(goalsB) && teamA && teamB) {
-        teamA.played--; teamB.played--;
-        teamA.gf -= goalsA; teamA.ga -= goalsB;
-        teamB.gf -= goalsB; teamB.ga -= goalsA;
-
-        if (goalsA > goalsB) { teamA.won--; teamA.points -= 3; teamB.lost--; }
-        else if (goalsA < goalsB) { teamB.won--; teamB.points -= 3; teamA.lost--; }
-        else { teamA.drawn--; teamB.drawn--; teamA.points--; teamB.points--; }
-      }
-    }
-
-    // Reverse Scorers
-    if (match.scorers) {
-      if (!data.seasons[sid].stats.topScorers) data.seasons[sid].stats.topScorers = [];
-      match.scorers.forEach(s => {
-        const statsObj = data.seasons[sid].stats.topScorers.find(ts => ts.name === s.name && ts.team === s.team);
-        if (statsObj) statsObj.goals -= (s.goals || 1);
-      });
-      data.seasons[sid].stats.topScorers = data.seasons[sid].stats.topScorers.filter(ts => ts.goals > 0);
-    }
-
-    // Reverse Cards
-    if (match.cards) {
-      match.cards.forEach(c => {
-        if (!data.seasons[sid].stats.cards) data.seasons[sid].stats.cards = [];
-        const cObj = data.seasons[sid].stats.cards.find(ts => ts.name === c.name && ts.team === c.team);
-        if (cObj) {
-          if (c.type === 'yellow') cObj.yellow--;
-          if (c.type === 'yellowRed') cObj.yellowRed--;
-          if (c.type === 'red') cObj.red--;
-        }
-      });
-      data.seasons[sid].stats.cards = data.seasons[sid].stats.cards.filter(ts => ts.yellow > 0 || ts.yellowRed > 0 || ts.red > 0);
-    }
-  },
-
-  _applyMatchStats(data, sid, match) {
-    if (match.status === 'Played' || match.status === 'Walkover' || match.status === 'Abgesagt 3:0' || match.status === 'Abgesagt 0:3') {
-      const teamA = data.seasons[sid].teams.find(t => t.name === match.home);
-      const teamB = data.seasons[sid].teams.find(t => t.name === match.away);
-      
-      let goalsA = 0;
-      let goalsB = 0;
-
-      if (match.status === 'Abgesagt 3:0') {
-        goalsA = 3; goalsB = 0;
-      } else if (match.status === 'Abgesagt 0:3') {
-        goalsA = 0; goalsB = 3;
-      } else {
-        let parts = (match.score || "0:0").split(' ')[0].replace('*', '').split(':');
-        goalsA = parseInt(parts[0]) || 0;
-        goalsB = parseInt(parts[1]) || 0;
-      }
-      
-      if (!isNaN(goalsA) && !isNaN(goalsB) && teamA && teamB) {
-        teamA.played++; teamB.played++;
-        teamA.gf += goalsA; teamA.ga += goalsB;
-        teamB.gf += goalsB; teamB.ga += goalsA;
-
-        if (goalsA > goalsB) { teamA.won++; teamA.points += 3; teamB.lost++; }
-        else if (goalsA < goalsB) { teamB.won++; teamB.points += 3; teamA.lost++; }
-        else { teamA.drawn++; teamB.drawn++; teamA.points++; teamB.points++; }
-      }
-    }
-
-    if (match.scorers) {
-      if (!data.seasons[sid].stats.topScorers) data.seasons[sid].stats.topScorers = [];
-      match.scorers.forEach(s => {
-        let statsObj = data.seasons[sid].stats.topScorers.find(ts => ts.name === s.name && ts.team === s.team);
-        if (!statsObj) {
-          statsObj = { name: s.name, team: s.team, goals: 0 };
-          data.seasons[sid].stats.topScorers.push(statsObj);
-        }
-        statsObj.goals += (s.goals || 1);
-      });
-      data.seasons[sid].stats.topScorers.sort((a, b) => b.goals - a.goals);
-    }
-
-    if (match.cards) {
-      if (!data.seasons[sid].stats.cards) data.seasons[sid].stats.cards = [];
-      match.cards.forEach(c => {
-        let cObj = data.seasons[sid].stats.cards.find(ts => ts.name === c.name && ts.team === c.team);
-        if (!cObj) {
-          cObj = { name: c.name, team: c.team, yellow: 0, yellowRed: 0, red: 0 };
-          data.seasons[sid].stats.cards.push(cObj);
-        }
-        if (c.type === 'yellow') cObj.yellow++;
-        if (c.type === 'yellowRed') cObj.yellowRed++;
-        if (c.type === 'red') cObj.red++;
-      });
-    }
-  },
-
-  async getAdminPlayers() {
-    let local = loadLocal('dsg_admin_players', 10);
-    if (local && local.length > 0) return local;
-
-    let baseline = [];
-    try {
-      const res = await fetch('data/players.json');
-      baseline = await res.json();
-    } catch(e) {}
-
-    try {
-      const metaSnap = await getDoc(doc(db, 'system', 'players_meta'));
-      if (metaSnap.exists()) {
-        const meta = metaSnap.data();
-        const partsCount = meta.parts || 0;
-        const partPromises = [];
-        for (let i = 0; i < partsCount; i++) {
-          partPromises.push(getDoc(doc(db, 'system', `players_part_${i}`)));
-        }
-        const partSnaps = await Promise.all(partPromises);
-        let fbPlayers = [];
-        partSnaps.forEach(snap => {
-          if (snap.exists() && snap.data().data) {
-            fbPlayers = fbPlayers.concat(snap.data().data);
-          }
-        });
-
-        if (fbPlayers.length > 0) {
-          trySetLocal('dsg_admin_players_v10', JSON.stringify(fbPlayers));
-          return fbPlayers;
-        }
-      }
-    } catch(e) {
-      console.warn("Could not fetch players from Firebase:", e);
-    }
-
-    if (baseline && baseline.length > 0) {
-      trySetLocal('dsg_admin_players_v10', JSON.stringify(baseline));
-      return baseline;
-    }
-
     return [];
   },
 
-  saveAdminPlayers(players) {
-    trySetLocal('dsg_admin_players_v10', JSON.stringify(players));
-    const CHUNK_SIZE = 400;
-    const chunks = [];
-    for (let i = 0; i < players.length; i += CHUNK_SIZE) {
-      chunks.push(players.slice(i, i + CHUNK_SIZE));
+  getMatches(season = "2025/2026") {
+    const data = this.getData();
+    if (!data.seasons) return [];
+    if (data.seasons[season] && data.seasons[season].matches) {
+      return data.seasons[season].matches;
     }
-    setDoc(doc(db, 'system', 'players_meta'), { 
-      count: players.length, 
-      parts: chunks.length, 
-      lastUpdated: Date.now() 
-    }).catch(e => console.error("Firebase save error (players_meta):", e));
+    return [];
+  },
 
-    chunks.forEach((chunk, idx) => {
-      setDoc(doc(db, 'system', `players_part_${idx}`), { 
-        data: chunk 
-      }).catch(e => console.error(`Firebase save error (players_part_${idx}):`, e));
+  getStats(season = "2025/2026") {
+    const data = this.getData();
+    if (!data.seasons) return { topScorers: [], cards: [] };
+    if (data.seasons[season] && data.seasons[season].stats) {
+      return data.seasons[season].stats;
+    }
+    return { topScorers: [], cards: [] };
+  },
+
+  _applyMatchStats(season, match) {
+    if (!match.status || !match.score) return;
+    const isCancelledHomeWin = match.status === 'Abgesagt 3:0';
+    const isCancelledAwayWin = match.status === 'Abgesagt 0:3';
+    const isPlayed = match.status === 'Gespielt';
+
+    if (!isPlayed && !isCancelledHomeWin && !isCancelledAwayWin) return;
+
+    let homeGoals = 0, awayGoals = 0;
+    if (isCancelledHomeWin) {
+      homeGoals = 3; awayGoals = 0;
+    } else if (isCancelledAwayWin) {
+      homeGoals = 0; awayGoals = 3;
+    } else {
+      const parts = match.score.split(':');
+      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        homeGoals = parseInt(parts[0]);
+        awayGoals = parseInt(parts[1]);
+      } else {
+        return;
+      }
+    }
+
+    const teams = this.getLiga(season);
+    const homeTeam = teams.find(t => t.name === match.home);
+    const awayTeam = teams.find(t => t.name === match.away);
+
+    if (homeTeam && awayTeam) {
+      homeTeam.played = (homeTeam.played || 0) + 1;
+      awayTeam.played = (awayTeam.played || 0) + 1;
+
+      homeTeam.goalsFor = (homeTeam.goalsFor || 0) + homeGoals;
+      homeTeam.goalsAgainst = (homeTeam.goalsAgainst || 0) + awayGoals;
+      homeTeam.goalDiff = homeTeam.goalsFor - homeTeam.goalsAgainst;
+
+      awayTeam.goalsFor = (awayTeam.goalsFor || 0) + awayGoals;
+      awayTeam.goalsAgainst = (awayTeam.goalsAgainst || 0) + homeGoals;
+      awayTeam.goalDiff = awayTeam.goalsFor - awayTeam.goalsAgainst;
+
+      if (homeGoals > awayGoals) {
+        homeTeam.won = (homeTeam.won || 0) + 1;
+        homeTeam.points = (homeTeam.points || 0) + 3;
+        awayTeam.lost = (awayTeam.lost || 0) + 1;
+      } else if (awayGoals > homeGoals) {
+        awayTeam.won = (awayTeam.won || 0) + 1;
+        awayTeam.points = (awayTeam.points || 0) + 3;
+        homeTeam.lost = (homeTeam.lost || 0) + 1;
+      } else {
+        homeTeam.drawn = (homeTeam.drawn || 0) + 1;
+        homeTeam.points = (homeTeam.points || 0) + 1;
+        awayTeam.drawn = (awayTeam.drawn || 0) + 1;
+        awayTeam.points = (awayTeam.points || 0) + 1;
+      }
+    }
+
+    if (isPlayed && match.events && Array.isArray(match.events)) {
+      const stats = this.getStats(season);
+      match.events.forEach(ev => {
+        if (ev.type === 'goal' && ev.player) {
+          let scorer = stats.topScorers.find(s => s.name === ev.player && s.team === ev.team);
+          if (scorer) {
+            scorer.goals += 1;
+          } else {
+            stats.topScorers.push({ name: ev.player, team: ev.team, goals: 1 });
+          }
+        }
+        if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red') && ev.player) {
+          let cardEntry = stats.cards.find(c => c.name === ev.player && c.team === ev.team);
+          if (!cardEntry) {
+            cardEntry = { name: ev.player, team: ev.team, yellow: 0, yellowRed: 0, red: 0 };
+            stats.cards.push(cardEntry);
+          }
+          if (ev.type === 'yellow') cardEntry.yellow += 1;
+          if (ev.type === 'yellowRed') cardEntry.yellowRed += 1;
+          if (ev.type === 'red') cardEntry.red += 1;
+        }
+      });
+      stats.topScorers.sort((a, b) => b.goals - a.goals);
+    }
+  },
+
+  _reverseMatchStats(season, match) {
+    if (!match.status || !match.score) return;
+    const isCancelledHomeWin = match.status === 'Abgesagt 3:0';
+    const isCancelledAwayWin = match.status === 'Abgesagt 0:3';
+    const isPlayed = match.status === 'Gespielt';
+
+    if (!isPlayed && !isCancelledHomeWin && !isCancelledAwayWin) return;
+
+    let homeGoals = 0, awayGoals = 0;
+    if (isCancelledHomeWin) {
+      homeGoals = 3; awayGoals = 0;
+    } else if (isCancelledAwayWin) {
+      homeGoals = 0; awayGoals = 3;
+    } else {
+      const parts = match.score.split(':');
+      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        homeGoals = parseInt(parts[0]);
+        awayGoals = parseInt(parts[1]);
+      } else {
+        return;
+      }
+    }
+
+    const teams = this.getLiga(season);
+    const homeTeam = teams.find(t => t.name === match.home);
+    const awayTeam = teams.find(t => t.name === match.away);
+
+    if (homeTeam && awayTeam) {
+      homeTeam.played = Math.max(0, (homeTeam.played || 0) - 1);
+      awayTeam.played = Math.max(0, (awayTeam.played || 0) - 1);
+
+      homeTeam.goalsFor = Math.max(0, (homeTeam.goalsFor || 0) - homeGoals);
+      homeTeam.goalsAgainst = Math.max(0, (homeTeam.goalsAgainst || 0) - awayGoals);
+      homeTeam.goalDiff = homeTeam.goalsFor - homeTeam.goalsAgainst;
+
+      awayTeam.goalsFor = Math.max(0, (awayTeam.goalsFor || 0) - awayGoals);
+      awayTeam.goalsAgainst = Math.max(0, (awayTeam.goalsAgainst || 0) - homeGoals);
+      awayTeam.goalDiff = awayTeam.goalsFor - awayTeam.goalsAgainst;
+
+      if (homeGoals > awayGoals) {
+        homeTeam.won = Math.max(0, (homeTeam.won || 0) - 1);
+        homeTeam.points = Math.max(0, (homeTeam.points || 0) - 3);
+        awayTeam.lost = Math.max(0, (awayTeam.lost || 0) - 1);
+      } else if (awayGoals > homeGoals) {
+        awayTeam.won = Math.max(0, (awayTeam.won || 0) - 1);
+        awayTeam.points = Math.max(0, (awayTeam.points || 0) - 3);
+        homeTeam.lost = Math.max(0, (homeTeam.lost || 0) - 1);
+      } else {
+        homeTeam.drawn = Math.max(0, (homeTeam.drawn || 0) - 1);
+        homeTeam.points = Math.max(0, (homeTeam.points || 0) - 1);
+        awayTeam.drawn = Math.max(0, (awayTeam.drawn || 0) - 1);
+        awayTeam.points = Math.max(0, (awayTeam.points || 0) - 1);
+      }
+    }
+
+    if (isPlayed && match.events && Array.isArray(match.events)) {
+      const stats = this.getStats(season);
+      match.events.forEach(ev => {
+        if (ev.type === 'goal' && ev.player) {
+          let scorer = stats.topScorers.find(s => s.name === ev.player && s.team === ev.team);
+          if (scorer) {
+            scorer.goals = Math.max(0, scorer.goals - 1);
+          }
+        }
+        if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red') && ev.player) {
+          let cardEntry = stats.cards.find(c => c.name === ev.player && c.team === ev.team);
+          if (cardEntry) {
+            if (ev.type === 'yellow') cardEntry.yellow = Math.max(0, cardEntry.yellow - 1);
+            if (ev.type === 'yellowRed') cardEntry.yellowRed = Math.max(0, cardEntry.yellowRed - 1);
+            if (ev.type === 'red') cardEntry.red = Math.max(0, cardEntry.red - 1);
+          }
+        }
+      });
+      stats.topScorers = stats.topScorers.filter(s => s.goals > 0);
+      stats.cards = stats.cards.filter(c => (c.yellow > 0 || c.yellowRed > 0 || c.red > 0));
+    }
+  },
+
+  addMatch(season, matchData) {
+    const data = this.getData();
+    if (!data.seasons[season]) {
+      data.seasons[season] = { teams: [], matches: [], stats: { topScorers: [], cards: [] } };
+    }
+    const matches = data.seasons[season].matches;
+    const newId = matches.length > 0 ? Math.max(...matches.map(m => m.id)) + 1 : 1;
+    const match = { id: newId, ...matchData };
+    matches.push(match);
+
+    this._applyMatchStats(season, match);
+    this.saveData(data);
+    return match;
+  },
+
+  updateMatch(season, matchId, matchData) {
+    const data = this.getData();
+    if (!data.seasons[season]) return;
+    const matches = data.seasons[season].matches;
+    const index = matches.findIndex(m => m.id === parseInt(matchId));
+    if (index !== -1) {
+      this._reverseMatchStats(season, matches[index]);
+      matches[index] = { ...matches[index], ...matchData };
+      this._applyMatchStats(season, matches[index]);
+      this.saveData(data);
+    }
+  },
+
+  deleteMatch(season, matchId) {
+    const data = this.getData();
+    if (!data.seasons[season]) return;
+    const matches = data.seasons[season].matches;
+    const index = matches.findIndex(m => m.id === parseInt(matchId));
+    if (index !== -1) {
+      this._reverseMatchStats(season, matches[index]);
+      data.seasons[season].matches = matches.filter(m => m.id !== parseInt(matchId));
+      this.saveData(data);
+    }
+  },
+
+  addTeam(season, teamData) {
+    const data = this.getData();
+    if (!data.seasons[season]) {
+      data.seasons[season] = { teams: [], matches: [], stats: { topScorers: [], cards: [] } };
+    }
+    const teams = data.seasons[season].teams;
+    const newId = teams.length > 0 ? Math.max(...teams.map(t => t.id)) + 1 : 1;
+    const team = {
+      id: newId,
+      name: teamData.name,
+      played: 0, won: 0, drawn: 0, lost: 0,
+      goalsFor: 0, goalsAgainst: 0, goalDiff: 0,
+      points: 0,
+      logo: teamData.logo || "stadion.png"
+    };
+    teams.push(team);
+    this.saveData(data);
+    return team;
+  },
+
+  updateTeam(season, teamId, teamData) {
+    const data = this.getData();
+    if (!data.seasons[season]) return;
+    const teams = data.seasons[season].teams;
+    const index = teams.findIndex(t => t.id === parseInt(teamId));
+    if (index !== -1) {
+      teams[index] = { ...teams[index], ...teamData };
+      this.saveData(data);
+    }
+  },
+
+  deleteTeam(season, teamId) {
+    const data = this.getData();
+    if (!data.seasons[season]) return;
+    data.seasons[season].teams = data.seasons[season].teams.filter(t => t.id !== parseInt(teamId));
+    this.saveData(data);
+  },
+
+  recalculateSeason(season) {
+    const data = this.getData();
+    if (!data.seasons[season]) return;
+    const s = data.seasons[season];
+    
+    // Reset teams
+    s.teams.forEach(t => {
+      t.played = 0; t.won = 0; t.drawn = 0; t.lost = 0;
+      t.goalsFor = 0; t.goalsAgainst = 0; t.goalDiff = 0;
+      t.points = 0;
     });
+
+    // Reset stats
+    s.stats = { topScorers: [], cards: [] };
+
+    // Replay all played/cancelled matches
+    s.matches.forEach(m => {
+      this._applyMatchStats(season, m);
+    });
+
+    // Sort teams
+    s.teams.sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.goalDiff !== a.goalDiff) return b.goalDiff - a.goalDiff;
+      return b.goalsFor - a.goalsFor;
+    });
+
+    this.saveData(data);
+  },
+
+  getAdminLeaguesSync() {
+    const local = loadLocal('dsg_admin_leagues', 6);
+    if (local && local.length > 0) return local;
+
+    return [
+      { id: 1, name: 'Liga 2026/2027', year: 2026, seasonKey: '2026/2027', status: 'Aktiv', description: 'Aktuelle DSG Meisterschaft 2026/2027', isCurrent: true, teamsCount: 8 },
+      { id: 2, name: 'Saison 2025/2026', year: 2025, seasonKey: '2025/2026', status: 'Beendet', description: 'DSG Meisterschaft 2025/2026', isCurrent: false, teamsCount: 8 },
+      { id: 3, name: 'Saison 2024/2025', year: 2024, seasonKey: '2024/2025', status: 'Beendet', description: 'DSG Meisterschaft 2024/2025', isCurrent: false, teamsCount: 8 },
+      { id: 4, name: 'Saison 2023/2024', year: 2023, seasonKey: '2023/2024', status: 'Beendet', description: 'DSG Meisterschaft 2023/2024', isCurrent: false, teamsCount: 8 },
+      { id: 5, name: 'Saison 2022/2023', year: 2022, seasonKey: '2022/2023', status: 'Beendet', description: 'DSG Meisterschaft 2022/2023', isCurrent: false, teamsCount: 8 }
+    ];
   },
 
   async getAdminLeagues() {
-    let local = loadLocal('dsg_admin_leagues', 6);
-    if (local && local.length > 0) return local;
-
-    let baseline = [];
+    const local = this.getAdminLeaguesSync();
     try {
-      const res = await fetch('data/leagues.json');
-      baseline = await res.json();
-    } catch(e) {}
-
-    try {
-      const leagueSnap = await getDoc(doc(db, 'system', 'leagues_data'));
-      if (leagueSnap.exists() && leagueSnap.data()?.data) {
-        let fbLeagues = leagueSnap.data().data;
-        
-        // Strict deduplication by ID
-        const seenIds = new Set();
-        const uniqueLeagues = [];
-        fbLeagues.forEach(l => {
-          const numId = parseInt(l.id) || 0;
-          if (numId > 0 && !seenIds.has(numId)) {
-            seenIds.add(numId);
-            uniqueLeagues.push(l);
-          }
+      const leaguesSnap = await getDoc(doc(db, 'system', 'leagues_data'));
+      if (leaguesSnap.exists() && leaguesSnap.data()?.data) {
+        let fbLeagues = leaguesSnap.data().data;
+        fbLeagues = fbLeagues.filter(l => {
+          const sKey = l.seasonKey || l.name;
+          const n = (l.name || '').toLowerCase();
+          return sKey !== '2026_sommer' && sKey !== 'DSG Sommercup 2026' && !n.includes('sommercup') && sKey !== 'Liga 26/27 2026';
         });
-
-        baseline.forEach(b => {
-          const numId = parseInt(b.id) || 0;
-          if (numId > 0 && !seenIds.has(numId)) {
-            seenIds.add(numId);
-            uniqueLeagues.push(b);
-          }
-        });
-
-        trySetLocal('dsg_admin_leagues_v6', JSON.stringify(uniqueLeagues));
-        setDoc(doc(db, 'system', 'leagues_data'), { data: uniqueLeagues, lastUpdated: Date.now() })
-          .catch(e => console.error("Firebase save error (leagues):", e));
-        return uniqueLeagues;
+        trySetLocal('dsg_admin_leagues_v6', JSON.stringify(fbLeagues));
+        return fbLeagues;
       }
     } catch(e) {
       console.warn("Could not fetch leagues from Firebase:", e);
     }
-
-    if (baseline && baseline.length > 0) {
-      trySetLocal('dsg_admin_leagues_v6', JSON.stringify(baseline));
-      setDoc(doc(db, 'system', 'leagues_data'), { data: baseline, lastUpdated: Date.now() })
-        .catch(e => console.error("Firebase save error (leagues):", e));
-      return baseline;
-    }
-
-    return [];
-  },
-
-  ensureLeagueSeason(league) {
-    if (!league) return;
-    const data = this.getData();
-    if (!data.seasons) data.seasons = {};
-
-    let sKey = league.seasonKey;
-    if (!sKey) {
-      sKey = (league.name && league.year && !league.name.includes(String(league.year))) ? `${league.name} ${league.year}` : league.name;
-    }
-
-    if (sKey && !data.seasons[sKey]) {
-      data.seasons[sKey] = {
-        teams: [],
-        matches: [],
-        stats: { topScorers: [], cards: [] }
-      };
-      this.saveData(data);
-    }
-  },
-
-  setLeagueSeasonTeams(seasonKey, selectedTeamNames) {
-    if (!seasonKey) return;
-    const data = this.getData();
-    if (!data.seasons) data.seasons = {};
-    if (!data.seasons[seasonKey]) {
-      data.seasons[seasonKey] = {
-        teams: [],
-        matches: [],
-        stats: { topScorers: [], cards: [] }
-      };
-    }
-
-    const currentTeams = data.seasons[seasonKey].teams || [];
-    const currentMap = new Map();
-    currentTeams.forEach(t => currentMap.set(t.name.trim().toLowerCase(), t));
-
-    const updatedTeams = (selectedTeamNames || []).map(name => {
-      const existing = currentMap.get(name.trim().toLowerCase());
-      if (existing) {
-        return existing;
-      }
-      return {
-        name: name.trim(),
-        played: 0,
-        won: 0,
-        drawn: 0,
-        lost: 0,
-        gf: 0,
-        ga: 0,
-        points: 0
-      };
-    });
-
-    data.seasons[seasonKey].teams = updatedTeams;
-    this.saveData(data);
-  },
-
-  deleteLeagueSeason(deletedLeague) {
-    if (!deletedLeague) return;
-    const data = this.getData();
-    if (!data || !data.seasons) return;
-
-    const protectedKeys = ['2021/2022', '2022/2023', '2023/2024', '2024/2025', '2025/2026', '2026/2027'];
-    const seasonKey = deletedLeague.seasonKey || deletedLeague.name;
-    const normName = (deletedLeague.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-
-    const keysToDelete = Object.keys(data.seasons).filter(k => {
-      if (protectedKeys.includes(k)) return false;
-      if (k === seasonKey || k === deletedLeague.name) return true;
-      const normK = k.toLowerCase().replace(/[^a-z0-9]/g, '');
-      if (normName && (normK.includes(normName) || normName.includes(normK))) return true;
-      return false;
-    });
-
-    let changed = false;
-    keysToDelete.forEach(k => {
-      delete data.seasons[k];
-      changed = true;
-    });
-
-    if (data.seasons['2026_sommer']) {
-      delete data.seasons['2026_sommer'];
-      changed = true;
-    }
-
-    if (changed) {
-      if (data.currentSeason && !data.seasons[data.currentSeason]) {
-        data.currentSeason = '2025/2026';
-      }
-      this.saveData(data);
-    }
+    return local;
   },
 
   saveAdminLeagues(leagues) {
-    const seenIds = new Set();
-    const cleanLeagues = [];
-    (leagues || []).forEach(l => {
-      const num = parseInt(l.id) || 0;
-      if (num > 0 && !seenIds.has(num)) {
-        seenIds.add(num);
-        cleanLeagues.push({ ...l, id: num });
-      }
+    const cleanLeagues = leagues.filter(l => {
+      const sKey = l.seasonKey || l.name;
+      const n = (l.name || '').toLowerCase();
+      return sKey !== '2026_sommer' && sKey !== 'DSG Sommercup 2026' && !n.includes('sommercup') && sKey !== 'Liga 26/27 2026';
     });
 
     trySetLocal('dsg_admin_leagues_v6', JSON.stringify(cleanLeagues));
     setDoc(doc(db, 'system', 'leagues_data'), { data: cleanLeagues, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (leagues):", e));
     window.dispatchEvent(new CustomEvent('leagues-updated'));
-    window.dispatchEvent(new CustomEvent('data-updated'));
   },
 
-  getAdminLeaguesSync() {
-    let local = loadLocal('dsg_admin_leagues', 6);
-    if (local && Array.isArray(local) && local.length > 0) return local;
-    return [
-  {
-    "id": 14,
-    "name": "Saison",
-    "year": "2026/2027",
-    "status": "Aktiv",
-    "seasonKey": "2026/2027",
-    "showOnHomepage": true
-  },
-  {
-    "id": 13,
-    "name": "Saison",
-    "year": "2025/2026",
-    "status": "Inaktiv",
-    "seasonKey": "2025/2026",
-    "showOnHomepage": true
-  },
-  {
-    "id": 6,
-    "name": "Saison",
-    "year": "2024/2025",
-    "status": "Inaktiv",
-    "seasonKey": "2024/2025",
-    "showOnHomepage": true
-  },
-  {
-    "id": 11,
-    "name": "Oberes Playoff",
-    "year": "2024/2025",
-    "status": "Inaktiv",
-    "seasonKey": "2024/2025_oberes",
-    "showOnHomepage": true
-  },
-  {
-    "id": 12,
-    "name": "Unteres Playoff",
-    "year": "2024/2025",
-    "status": "Inaktiv",
-    "seasonKey": "2024/2025_unteres",
-    "showOnHomepage": true
-  },
-  {
-    "id": 5,
-    "name": "Saison",
-    "year": "2023/2024",
-    "status": "Inaktiv",
-    "seasonKey": "2023/2024",
-    "showOnHomepage": true
-  },
-  {
-    "id": 3,
-    "name": "Saison",
-    "year": "2022/2023",
-    "status": "Inaktiv",
-    "seasonKey": "2022/2023",
-    "showOnHomepage": true
-  },
-  {
-    "id": 4,
-    "name": "1. Klasse",
-    "year": "2022/2023",
-    "status": "Inaktiv",
-    "seasonKey": "2022/2023_1klasse",
-    "showOnHomepage": true
-  },
-  {
-    "id": 1,
-    "name": "Saison",
-    "year": "2021/2022",
-    "status": "Inaktiv",
-    "seasonKey": "2021/2022",
-    "showOnHomepage": true
-  },
-  {
-    "id": 2,
-    "name": "1. Klasse",
-    "year": "2021/2022",
-    "status": "Inaktiv",
-    "seasonKey": "2021/2022_1klasse",
-    "showOnHomepage": true
-  }
-];
-  },
+  deleteLeagueSeason(deletedLeague) {
+    if (!deletedLeague) return;
+    const data = this.getData();
+    if (!data.seasons) return;
 
-  getVisibleSeasonItems() {
-    const leagues = this.getAdminLeaguesSync();
-    const items = [];
-    const seenKeys = new Set();
-    const hiddenKeys = new Set();
+    const seasonKey = deletedLeague.seasonKey || deletedLeague.name;
+    const normName = (deletedLeague.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 
-    leagues.forEach(l => {
-      if (l.showOnHomepage === false) {
-        if (l.seasonKey) hiddenKeys.add(l.seasonKey);
-        if (l.name && l.year) hiddenKeys.add(`${l.name} ${l.year}`);
-        const sKey = (l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name;
-        hiddenKeys.add(sKey);
+    for (let k in data.seasons) {
+      if (k === seasonKey || k === deletedLeague.name) {
+        delete data.seasons[k];
       }
-    });
-
-    const sorted = [...leagues].sort((a, b) => {
-      const yA = parseInt(a.year) || 0;
-      const yB = parseInt(b.year) || 0;
-      if (yB !== yA) return yB - yA;
-      return (parseInt(b.id) || 0) - (parseInt(a.id) || 0);
-    });
-
-    sorted.forEach(l => {
-      if (l.showOnHomepage === false) return;
-
-      let sKey = l.seasonKey;
-      if (!sKey) {
-        if (l.name && l.year && !l.name.includes(String(l.year))) sKey = `${l.name} ${l.year}`;
-        else sKey = l.name;
-      }
-
-      const compoundName = (l.name && l.year) ? `${l.name} ${l.year}` : '';
-      if (seenKeys.has(sKey) || hiddenKeys.has(sKey) || (compoundName && hiddenKeys.has(compoundName))) return;
-      seenKeys.add(sKey);
-
-      let label = l.name;
-      if (l.name === 'Saison' || l.name === 'Liga') {
-        label = `Saison ${l.year}`;
-      } else if (l.name && l.year && !l.name.includes(String(l.year))) {
-        label = `${l.name} ${l.year}`;
-      }
-
-      items.push({
-        key: sKey,
-        label: label,
-        year: l.year,
-        id: l.id
-      });
-    });
-
-    return items;
+    }
+    this.saveData(data);
   },
 
-  getVisibleSeasonKeys() {
-    return this.getVisibleSeasonItems().map(i => i.key);
-  },
-
-  async getAdminRounds() {
-    let local = loadLocal('dsg_admin_rounds', 10);
-    if (local && local.length > 0) return local;
-
-    let baseline = [];
-    try {
-      const res = await fetch('data/rounds.json');
-      baseline = await res.json();
-    } catch(e) {}
-
+  async getAdminRounds(seasonName = '2026/2027') {
+    const local = loadLocal('dsg_admin_rounds', 10) || [];
     try {
       const roundsSnap = await getDoc(doc(db, 'system', 'rounds_data'));
       if (roundsSnap.exists() && roundsSnap.data()?.data) {
         let fbRounds = roundsSnap.data().data;
-        const seen = new Set();
-        fbRounds = fbRounds.filter(r => {
-          const key = `${r.seasonKey || ''}_${r.saison || ''}_${r.jahr || ''}_${r.runde || ''}_${r.liga || ''}`;
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
-
         trySetLocal('dsg_admin_rounds_v10', JSON.stringify(fbRounds));
         return fbRounds;
       }
     } catch(e) {
       console.warn("Could not fetch rounds from Firebase:", e);
     }
-
-    if (baseline && baseline.length > 0) {
-      trySetLocal('dsg_admin_rounds_v10', JSON.stringify(baseline));
-      return baseline;
-    }
-
-    return [];
+    return local;
   },
 
   saveAdminRounds(rounds) {
@@ -27005,15 +26706,32 @@ export const Store = {
     window.dispatchEvent(new CustomEvent('rounds-updated'));
   },
 
-  async getAdminTeams() {
-    let local = loadLocal('dsg_admin_teams', 10);
-    if (local && local.length > 0) return local;
-
-    let baseline = [];
+  async getAdminPlayers() {
+    const local = loadLocal('dsg_admin_players', 10) || [];
     try {
-      const res = await fetch('data/teams.json');
-      baseline = await res.json();
-    } catch(e) {}
+      const playersSnap = await getDoc(doc(db, 'system', 'players_data'));
+      if (playersSnap.exists() && playersSnap.data()?.data) {
+        let fbPlayers = playersSnap.data().data;
+        trySetLocal('dsg_admin_players_v10', JSON.stringify(fbPlayers));
+        return fbPlayers;
+      }
+    } catch(e) {
+      console.warn("Could not fetch players from Firebase:", e);
+    }
+    return local;
+  },
+
+  saveAdminPlayers(players) {
+    trySetLocal('dsg_admin_players_v10', JSON.stringify(players));
+    setDoc(doc(db, 'system', 'players_data'), { data: players, lastUpdated: Date.now() })
+      .catch(e => console.error("Firebase save error (players):", e));
+    window.dispatchEvent(new CustomEvent('players-updated'));
+  },
+
+  async getAdminTeams() {
+    const local = loadLocal('dsg_admin_teams', 10);
+    const baseline = this.getLiga('2026/2027') || [];
+    if (local && local.length > 0) return local;
 
     try {
       const teamsSnap = await getDoc(doc(db, 'system', 'teams_data'));
@@ -27043,7 +26761,7 @@ export const Store = {
 
   getGallery() {
     const state = getState();
-    return state.memoryGallery && state.memoryGallery.length > 0 ? state.memoryGallery : INITIAL_DATA.gallery;
+    return Array.isArray(state.memoryGallery) ? state.memoryGallery : [];
   },
 
   getAlbum(id) {
@@ -27073,8 +26791,10 @@ export const Store = {
         .replace(/^-+|-+$/g, '');
       return aId !== cleanId && String(a.id) !== String(id) && aTitleSlug !== cleanId;
     });
-    trySetLocal('dsg_gallery_v25', JSON.stringify(state.memoryGallery));
-    setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
+    const now = Date.now();
+    localStorage.setItem('dsg_gallery_last_updated', String(now));
+    trySetLocal('dsg_gallery_v26', JSON.stringify(state.memoryGallery));
+    setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
 
@@ -27102,6 +26822,7 @@ export const Store = {
       return { url: img.url || '', title: img.title || `${title || 'Foto'} ${idx + 1}` };
     });
 
+    const now = Date.now();
     const newAlbum = {
       id: newId,
       title: title || 'Neues Album',
@@ -27109,14 +26830,15 @@ export const Store = {
       excerpt: excerpt || '',
       image: coverImage || (cleanImages[0]?.url || 'stadion.png'),
       images: cleanImages.length > 0 ? cleanImages : [{ url: coverImage || 'stadion.png', title: title || 'Foto 1' }],
-      createdAt: Date.now(),
-      lastUpdated: Date.now()
+      createdAt: now,
+      lastUpdated: now
     };
 
     if (!Array.isArray(state.memoryGallery)) state.memoryGallery = [];
     state.memoryGallery.unshift(newAlbum);
-    trySetLocal('dsg_gallery_v25', JSON.stringify(state.memoryGallery));
-    setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
+    localStorage.setItem('dsg_gallery_last_updated', String(now));
+    trySetLocal('dsg_gallery_v26', JSON.stringify(state.memoryGallery));
+    setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
     return newAlbum;
   },
@@ -27146,6 +26868,7 @@ export const Store = {
         return { url: img.url || '', title: img.title || `${title || 'Foto'} ${idx + 1}` };
       });
 
+      const now = Date.now();
       state.memoryGallery[index] = {
         ...state.memoryGallery[index],
         title: title || state.memoryGallery[index].title,
@@ -27153,10 +26876,11 @@ export const Store = {
         excerpt: excerpt !== undefined ? excerpt : state.memoryGallery[index].excerpt,
         image: coverImage || state.memoryGallery[index].image || (cleanImages[0]?.url || 'stadion.png'),
         images: cleanImages.length > 0 ? cleanImages : state.memoryGallery[index].images,
-        lastUpdated: Date.now()
+        lastUpdated: now
       };
-      trySetLocal('dsg_gallery_v25', JSON.stringify(state.memoryGallery));
-      setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
+      localStorage.setItem('dsg_gallery_last_updated', String(now));
+      trySetLocal('dsg_gallery_v26', JSON.stringify(state.memoryGallery));
+      setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
       window.dispatchEvent(new CustomEvent('data-updated'));
     }
   }
