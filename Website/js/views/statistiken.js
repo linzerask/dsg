@@ -28,7 +28,7 @@ export const computeAllTimeStats = () => {
     // Matches & Goals
     const matches = s.matches || [];
     matches.forEach(m => {
-      const isPlayed = m.status === 'Played' || (m.status && m.status.startsWith('Abgesagt')) || (m.score && m.score !== '-:-' && m.score !== '- : -');
+      const isPlayed = m.status === 'Gespielt' || m.status === 'Played' || (m.status && m.status.startsWith('Abgesagt')) || (m.score && m.score !== '-:-' && m.score !== '- : -' && m.score.trim() !== '');
       if (isPlayed) {
         totalMatches++;
         let gA = 0, gB = 0;
@@ -56,8 +56,27 @@ export const computeAllTimeStats = () => {
         });
       }
 
-      // Scorers from match events
-      if (m.scorers && Array.isArray(m.scorers)) {
+      // Scorers from match events (m.events or m.scorers)
+      if (m.events && Array.isArray(m.events) && m.events.length > 0) {
+        m.events.forEach(ev => {
+          if (ev.type === 'goal' && ev.player) {
+            const name = (ev.player || '').trim();
+            if (!name) return;
+            if (!playerMap[name]) {
+              playerMap[name] = {
+                name,
+                goals: 0,
+                teams: new Set(),
+                seasons: new Set(),
+                matchCount: 0
+              };
+            }
+            playerMap[name].goals += 1;
+            if (ev.team) playerMap[name].teams.add(ev.team.trim());
+            playerMap[name].seasons.add(seasonKey);
+          }
+        });
+      } else if (m.scorers && Array.isArray(m.scorers) && m.scorers.length > 0) {
         m.scorers.forEach(sc => {
           const name = (sc.name || '').trim();
           if (!name) return;
@@ -78,7 +97,7 @@ export const computeAllTimeStats = () => {
     });
 
     // Also blend stats from s.stats.topScorers if missing in match events
-    if (s.stats && s.stats.topScorers) {
+    if (s.stats && s.stats.topScorers && Array.isArray(s.stats.topScorers)) {
       s.stats.topScorers.forEach(sc => {
         const name = (sc.name || '').trim();
         if (!name) return;
