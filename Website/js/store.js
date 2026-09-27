@@ -27047,33 +27047,117 @@ export const Store = {
   },
 
   getAlbum(id) {
-    return this.getGallery().find(a => String(a.id) === String(id));
+    if (!id) return null;
+    const cleanId = decodeURIComponent(String(id)).trim().toLowerCase();
+    return this.getGallery().find(a => {
+      if (!a) return false;
+      const aId = decodeURIComponent(String(a.id || '')).trim().toLowerCase();
+      if (aId === cleanId || String(a.id) === String(id)) return true;
+      const aTitleSlug = (a.title || '').toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      return aTitleSlug === cleanId;
+    });
   },
 
   deleteAlbum(id) {
     const state = getState();
-    state.memoryGallery = (state.memoryGallery || []).filter(a => String(a.id) !== String(id));
+    const cleanId = decodeURIComponent(String(id)).trim().toLowerCase();
+    state.memoryGallery = (state.memoryGallery || []).filter(a => {
+      if (!a) return false;
+      const aId = decodeURIComponent(String(a.id || '')).trim().toLowerCase();
+      const aTitleSlug = (a.title || '').toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      return aId !== cleanId && String(a.id) !== String(id) && aTitleSlug !== cleanId;
+    });
     trySetLocal('dsg_gallery_v25', JSON.stringify(state.memoryGallery));
-    setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery }).catch(e => console.error("Firebase save error:", e));
+    setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
 
   addAlbum(title, date, excerpt, coverImage, imagesArray) {
     const state = getState();
-    const newId = title.toLowerCase().replace(/\s+/g, '-');
+    let formattedDate = date;
+    if (formattedDate && formattedDate.includes('-')) {
+      const p = formattedDate.split('-');
+      if (p.length === 3) formattedDate = `${p[2]}.${p[1]}.${p[0]}`;
+    }
+    if (!formattedDate) {
+      const now = new Date();
+      formattedDate = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()}`;
+    }
+
+    const slug = (title || 'album').toLowerCase()
+      .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    const newId = slug ? `${slug}-${Date.now().toString().slice(-4)}` : Date.now().toString();
+    
+    // Normalize images array
+    const cleanImages = (imagesArray || []).map((img, idx) => {
+      if (typeof img === 'string') return { url: img, title: `${title || 'Foto'} ${idx + 1}` };
+      return { url: img.url || '', title: img.title || `${title || 'Foto'} ${idx + 1}` };
+    });
+
+    const newAlbum = {
+      id: newId,
+      title: title || 'Neues Album',
+      date: formattedDate,
+      excerpt: excerpt || '',
+      image: coverImage || (cleanImages[0]?.url || 'stadion.png'),
+      images: cleanImages.length > 0 ? cleanImages : [{ url: coverImage || 'stadion.png', title: title || 'Foto 1' }],
+      createdAt: Date.now(),
+      lastUpdated: Date.now()
+    };
+
     if (!Array.isArray(state.memoryGallery)) state.memoryGallery = [];
-    state.memoryGallery.unshift({ id: newId, title, date, excerpt, image: coverImage, images: imagesArray });
+    state.memoryGallery.unshift(newAlbum);
     trySetLocal('dsg_gallery_v25', JSON.stringify(state.memoryGallery));
-    setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery }).catch(e => console.error("Firebase save error:", e));
+    setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
+    window.dispatchEvent(new CustomEvent('data-updated'));
+    return newAlbum;
   },
 
   updateAlbum(id, title, date, excerpt, coverImage, imagesArray) {
     const state = getState();
-    const index = (state.memoryGallery || []).findIndex(a => String(a.id) === String(id));
+    let formattedDate = date;
+    if (formattedDate && formattedDate.includes('-')) {
+      const p = formattedDate.split('-');
+      if (p.length === 3) formattedDate = `${p[2]}.${p[1]}.${p[0]}`;
+    }
+
+    const cleanId = decodeURIComponent(String(id)).trim().toLowerCase();
+    const index = (state.memoryGallery || []).findIndex(a => {
+      if (!a) return false;
+      const aId = decodeURIComponent(String(a.id || '')).trim().toLowerCase();
+      const aTitleSlug = (a.title || '').toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      return aId === cleanId || String(a.id) === String(id) || aTitleSlug === cleanId;
+    });
+
     if (index !== -1) {
-      state.memoryGallery[index] = { id, title, date, excerpt, image: coverImage, images: imagesArray };
+      const cleanImages = (imagesArray || []).map((img, idx) => {
+        if (typeof img === 'string') return { url: img, title: `${title || 'Foto'} ${idx + 1}` };
+        return { url: img.url || '', title: img.title || `${title || 'Foto'} ${idx + 1}` };
+      });
+
+      state.memoryGallery[index] = {
+        ...state.memoryGallery[index],
+        title: title || state.memoryGallery[index].title,
+        date: formattedDate || state.memoryGallery[index].date,
+        excerpt: excerpt !== undefined ? excerpt : state.memoryGallery[index].excerpt,
+        image: coverImage || state.memoryGallery[index].image || (cleanImages[0]?.url || 'stadion.png'),
+        images: cleanImages.length > 0 ? cleanImages : state.memoryGallery[index].images,
+        lastUpdated: Date.now()
+      };
       trySetLocal('dsg_gallery_v25', JSON.stringify(state.memoryGallery));
-      setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery }).catch(e => console.error("Firebase save error:", e));
+      setDoc(doc(db, 'system', 'gallery_data'), { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
+      window.dispatchEvent(new CustomEvent('data-updated'));
     }
   }
 };

@@ -6,6 +6,7 @@ import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js';
 import { renderAdminRounds, initAdminRounds } from './adminRounds.js';
 import { renderAdminGames, initAdminGames } from './adminGames.js';
 import { renderAdminNews, initAdminNews } from './adminNews.js';
+import { renderAdminGallery, initAdminGallery } from './adminGallery.js';
 
 
 
@@ -56,39 +57,8 @@ export const viewAdmin = () => {
         <div id="admin-news" class="admin-section ${isTabActive('admin-news') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-news') ? 'block' : 'none'};">
           ${renderAdminNews()}
         </div>
-        <div id="admin-gallery" class="admin-section" style="display: none;">
-          <h2>Galerie verwalten</h2>
-          <form id="gallery-form" style="margin-top: var(--space-md); max-width: 500px; display: flex; flex-direction: column; gap: var(--space-md);">
-            <input type="hidden" id="gal-id">
-            <input type="text" id="gal-title" placeholder="Albumtitel" required style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">
-            <input type="text" id="gal-date" placeholder="Datum (z.B. 15. Juni 2026)" required style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">
-            <textarea id="gal-excerpt" placeholder="Auszug..." required rows="2" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;"></textarea>
-            
-            <label style="margin-top: 10px; font-weight: 600;">Titelbild-Quelle:</label>
-            <div style="display: flex; gap: var(--space-sm);">
-              <label><input type="radio" name="gal-cover-type" value="url" checked> URL</label>
-              <label><input type="radio" name="gal-cover-type" value="file"> Datei hochladen</label>
-            </div>
-            <input type="text" id="gal-cover" placeholder="Cover Image URL" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">
-            <input type="file" id="gal-cover-file" accept="image/*" style="display: none; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">
-            
-            <label style="margin-top: 10px; font-weight: 600;">Galeriebilder-Quelle:</label>
-            <div style="display: flex; gap: var(--space-sm);">
-              <label><input type="radio" name="gal-images-type" value="url" checked> URLs</label>
-              <label><input type="radio" name="gal-images-type" value="file"> Dateien hochladen</label>
-            </div>
-            <textarea id="gal-images" placeholder="Image URLs (one per line)..." rows="5" style="background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;"></textarea>
-            <input type="file" id="gal-images-file" accept="image/*" multiple style="display: none; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">
-            
-            <div style="display: flex; gap: 10px;">
-              <button type="submit" id="gal-submit-btn" style="flex: 1; background: var(--color-accent); color: #fff; font-weight: 700; padding: var(--space-sm); border-radius: 4px;">Album erstellen</button>
-              <button type="button" id="gal-cancel-btn" style="display:none; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); padding: var(--space-sm); border-radius: 4px;">Bearbeiten abbrechen</button>
-            </div>
-          </form>
-          <div style="margin-top: var(--space-xl);">
-            <h3>Vorhandene Alben</h3>
-            <div id="admin-albums-list" style="margin-top: var(--space-md); display: flex; flex-direction: column; gap: var(--space-sm);"></div>
-          </div>
+        <div id="admin-gallery" class="admin-section ${isTabActive('admin-gallery') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-gallery') ? 'block' : 'none'};">
+          ${renderAdminGallery()}
         </div>
       </div>
     </div>
@@ -109,6 +79,7 @@ export const bindAdmin = () => {
   else if (activeTab === 'admin-teams') initAdminTeams();
   else if (activeTab === 'admin-leagues') initAdminLeagues();
   else if (activeTab === 'admin-news') initAdminNews();
+  else if (activeTab === 'admin-gallery') initAdminGallery();
 
   // Navigation
   const btns = document.querySelectorAll('.admin-nav-btn');
@@ -135,6 +106,7 @@ export const bindAdmin = () => {
       if (targetId === 'admin-teams') initAdminTeams();
       if (targetId === 'admin-leagues') initAdminLeagues();
       if (targetId === 'admin-news') initAdminNews();
+      if (targetId === 'admin-gallery') initAdminGallery();
       const target = document.getElementById(targetId);
       if (target) {
         target.style.display = 'block';
@@ -452,137 +424,6 @@ export const bindAdmin = () => {
     renderAdminMatchesList();
     
     alert('Spiel gespeichert!');
-  });
-
-  const renderAdminAlbumsList = () => {
-    const list = document.getElementById('admin-albums-list');
-    if (!list) return;
-    const albums = Store.getGallery();
-    list.innerHTML = albums.map(a => `
-      <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm);">
-        <div>
-          <strong>${a.title}</strong><br>
-          <span style="font-size: 0.8rem; color: var(--color-text-secondary);">${a.date}</span>
-        </div>
-        <div>
-          <button class="btn btn-outline edit-gal-btn" data-id="${a.id}" style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;">Bearbeiten</button>
-          <button class="btn delete-gal-btn" data-id="${a.id}" style="padding: 5px 10px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">Löschen</button>
-        </div>
-      </div>
-    `).join('');
-
-    document.querySelectorAll('.delete-gal-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        if(confirm('Dieses Album löschen?')) {
-          Store.deleteAlbum(e.target.dataset.id);
-          renderAdminAlbumsList();
-        }
-      });
-    });
-
-    document.querySelectorAll('.edit-gal-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const album = Store.getAlbum(e.target.dataset.id);
-        if (album) {
-          document.getElementById('gal-id').value = album.id;
-          document.getElementById('gal-title').value = album.title;
-          document.getElementById('gal-date').value = album.date;
-          document.getElementById('gal-excerpt').value = album.excerpt;
-          
-          document.querySelector('input[name="gal-cover-type"][value="url"]').checked = true;
-          document.getElementById('gal-cover').style.display = 'block';
-          document.getElementById('gal-cover-file').style.display = 'none';
-          document.getElementById('gal-cover').value = album.image || '';
-          
-          document.querySelector('input[name="gal-images-type"][value="url"]').checked = true;
-          document.getElementById('gal-images').style.display = 'block';
-          document.getElementById('gal-images-file').style.display = 'none';
-          document.getElementById('gal-images').value = album.images ? album.images.map(i => i.url).join('\\n') : '';
-
-          document.getElementById('gal-submit-btn').textContent = 'Album aktualisieren';
-          document.getElementById('gal-cancel-btn').style.display = 'block';
-          window.scrollTo(0,0);
-        }
-      });
-    });
-  };
-  
-  renderAdminAlbumsList();
-
-  document.getElementById('gal-cancel-btn')?.addEventListener('click', (e) => {
-    document.getElementById('gallery-form').reset();
-    document.getElementById('gal-id').value = '';
-    document.getElementById('gal-submit-btn').textContent = 'Album erstellen';
-    e.target.style.display = 'none';
-  });
-
-  document.getElementById('gallery-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    document.getElementById('gal-submit-btn').textContent = 'Speichert...';
-    const id = document.getElementById('gal-id').value;
-    const title = document.getElementById('gal-title').value;
-    const date = document.getElementById('gal-date').value;
-    const excerpt = document.getElementById('gal-excerpt').value;
-    
-    let existingAlbum = null;
-    if (id) existingAlbum = Store.getAlbum(id);
-
-    let cover = '';
-    const coverType = document.querySelector('input[name="gal-cover-type"]:checked').value;
-    if (coverType === 'url') {
-      cover = document.getElementById('gal-cover').value;
-    } else {
-      const coverFile = document.getElementById('gal-cover-file');
-      if (coverFile.files.length > 0) {
-        cover = await compressImage(coverFile.files[0]);
-      }
-    }
-    if (!cover && existingAlbum) cover = existingAlbum.image;
-
-    let imagesArray = [];
-    const imagesType = document.querySelector('input[name="gal-images-type"]:checked').value;
-    if (imagesType === 'url') {
-      const urls = document.getElementById('gal-images').value.split('\\n').map(u => u.trim()).filter(u => u.length > 0);
-      imagesArray = urls.map(url => ({ url, title }));
-    } else {
-      const imagesFiles = document.getElementById('gal-images-file');
-      for (let i = 0; i < imagesFiles.files.length; i++) {
-        const compressed = await compressImage(imagesFiles.files[i]);
-        imagesArray.push({ url: compressed, title });
-      }
-    }
-    if (imagesArray.length === 0 && existingAlbum) {
-      imagesArray = existingAlbum.images;
-    }
-    
-    if (!cover) {
-      alert("Bitte geben Sie ein Titelbild an.");
-      document.getElementById('gal-submit-btn').textContent = 'Album erstellen';
-      return;
-    }
-    if (imagesArray.length === 0) {
-      alert("Bitte geben Sie mindestens ein Galeriebild an.");
-      document.getElementById('gal-submit-btn').textContent = 'Album erstellen';
-      return;
-    }
-    
-    if (id) {
-      Store.updateAlbum(id, title, date, excerpt, cover, imagesArray);
-      alert('Album erfolgreich aktualisiert!');
-    } else {
-      Store.addAlbum(title, date, excerpt, cover, imagesArray);
-      alert('Album erfolgreich erstellt!');
-    }
-    
-    e.target.reset();
-    document.getElementById('gal-id').value = '';
-    document.getElementById('gal-submit-btn').textContent = 'Album erstellen';
-    document.getElementById('gal-cancel-btn').style.display = 'none';
-    document.getElementById('gal-cover').style.display = 'block';
-    document.getElementById('gal-cover-file').style.display = 'none';
-    document.getElementById('gal-images').style.display = 'block';
-    document.getElementById('gal-images-file').style.display = 'none';
-    renderAdminAlbumsList();
   });
 
   // Teams Logic
