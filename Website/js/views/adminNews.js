@@ -3,31 +3,38 @@ import { Store } from '../store.js';
 let stagedImages = []; // Array of { id, url, isCover }
 let editingArticleId = null;
 let searchQuery = '';
+let savedSelectionRange = null;
 
 const compressImage = (file) => {
   return new Promise((resolve) => {
+    if (!file) return resolve(null);
     const reader = new FileReader();
     reader.onload = (e) => {
+      const dataUrl = e.target.result;
       const img = new Image();
       img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1200;
-        const MAX_HEIGHT = 1200;
-        let width = img.width;
-        let height = img.height;
-        if (width > height) {
-          if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-        } else {
-          if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+        try {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+          let width = img.width;
+          let height = img.height;
+          if (width > height) {
+            if (width > MAX_WIDTH) { height = Math.round(height * (MAX_WIDTH / width)); width = MAX_WIDTH; }
+          } else {
+            if (height > MAX_HEIGHT) { width = Math.round(width * (MAX_HEIGHT / height)); height = MAX_HEIGHT; }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+        } catch (err) {
+          resolve(dataUrl);
         }
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', 0.85));
       };
-      img.onerror = () => resolve(e.target.result);
-      img.src = e.target.result;
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
     };
     reader.onerror = () => resolve(null);
     reader.readAsDataURL(file);
@@ -45,7 +52,7 @@ export const renderAdminNews = () => {
       </div>
 
       <!-- Modern News Editor Form Card -->
-      <div class="glass-card" style="padding: var(--space-lg); margin-bottom: var(--space-xl); border: 1px solid rgba(255, 255, 255, 0.08);">
+      <div class="glass-card" style="padding: var(--space-lg); margin-bottom: var(--space-xl); border: 1px solid rgba(255, 255, 255, 0.12);">
         <h3 id="news-form-title" style="margin-bottom: var(--space-md); color: var(--color-accent); font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
           <span>📝</span> Neuer Artikel
         </h3>
@@ -124,8 +131,8 @@ export const renderAdminNews = () => {
             <div class="dropzone-container" id="news-dropzone">
               <input type="file" id="news-file-input" accept="image/*" multiple style="display: none;">
               <div class="dropzone-icon">📁</div>
-              <div class="dropzone-text">Bilder hierher ziehen oder <span style="color: var(--color-accent); text-decoration: underline;">durchsuchen</span></div>
-              <div class="dropzone-hint">Unterstützt JPG, PNG, WEBP, AVIF. Mehrere Bilder gleichzeitig möglich.</div>
+              <div class="dropzone-text">Bilder hierher ziehen oder <span style="color: var(--color-accent); text-decoration: underline; font-weight: 700;">durchsuchen</span></div>
+              <div class="dropzone-hint">Unterstützt JPG, PNG, WEBP, AVIF. Mehrere Bilder gleichzeitig auswählen oder ablegen.</div>
             </div>
 
             <!-- Staged Images Grid (With Cover Selector) -->
@@ -185,32 +192,71 @@ export const initAdminNews = () => {
     dateInput.value = new Date().toISOString().split('T')[0];
   }
 
+  // --- Selection Preservation Helpers ---
+  const saveSelection = () => {
+    const sel = window.getSelection();
+    if (sel.rangeCount > 0) {
+      const range = sel.getRangeAt(0);
+      // Only save if selection is inside editor
+      if (editor.contains(range.commonAncestorContainer)) {
+        savedSelectionRange = range.cloneRange();
+      }
+    }
+  };
+
+  const restoreSelection = () => {
+    if (savedSelectionRange) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(savedSelectionRange);
+    }
+  };
+
   // --- 1. Rich Text Editor Toolbar Actions ---
   toolbar?.querySelectorAll('.rte-btn[data-command]').forEach(btn => {
+    // Prevent focus loss from editor when button is pressed
+    btn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+    });
+
     btn.addEventListener('click', (e) => {
       e.preventDefault();
+      editor.focus();
+      restoreSelection();
       const command = btn.getAttribute('data-command');
       document.execCommand(command, false, null);
-      editor.focus();
+      saveSelection();
       updateToolbarActiveStates();
     });
   });
 
-  document.getElementById('rte-block-format')?.addEventListener('change', (e) => {
+  const blockFormatSelect = document.getElementById('rte-block-format');
+  blockFormatSelect?.addEventListener('change', (e) => {
+    editor.focus();
+    restoreSelection();
     const value = e.target.value;
     if (value === 'blockquote') {
       document.execCommand('formatBlock', false, 'blockquote');
     } else {
       document.execCommand('formatBlock', false, `<${value}>`);
     }
+    saveSelection();
     editor.focus();
   });
 
-  document.getElementById('rte-link-btn')?.addEventListener('click', (e) => {
+  const linkBtn = document.getElementById('rte-link-btn');
+  linkBtn?.addEventListener('mousedown', (e) => {
     e.preventDefault();
+  });
+
+  linkBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    editor.focus();
+    restoreSelection();
     const url = prompt('Webadresse (URL) eingeben:', 'https://');
     if (url && url.trim() !== '' && url !== 'https://') {
       document.execCommand('createLink', false, url.trim());
+      saveSelection();
       editor.focus();
     }
   });
@@ -228,9 +274,12 @@ export const initAdminNews = () => {
     });
   };
 
-  editor?.addEventListener('keyup', updateToolbarActiveStates);
-  editor?.addEventListener('mouseup', updateToolbarActiveStates);
-  editor?.addEventListener('selectionchange', updateToolbarActiveStates);
+  ['keyup', 'mouseup', 'touchend', 'input'].forEach(evt => {
+    editor?.addEventListener(evt, () => {
+      saveSelection();
+      updateToolbarActiveStates();
+    });
+  });
 
   // --- 2. Drag & Drop & Multi-Image Stage ---
   const renderMediaStage = () => {
@@ -279,26 +328,37 @@ export const initAdminNews = () => {
     });
   };
 
-  const handleFiles = async (files) => {
-    if (!files || files.length === 0) return;
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (file.type.startsWith('image/')) {
-        const compressed = await compressImage(file);
-        if (compressed) {
-          const isFirst = stagedImages.length === 0;
-          stagedImages.push({
-            id: 'img_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
-            url: compressed,
-            isCover: isFirst
-          });
-        }
+  const handleFiles = async (fileList) => {
+    if (!fileList || fileList.length === 0) return;
+    const files = Array.from(fileList);
+    
+    // Process all files in parallel
+    const processed = await Promise.all(files.map(async (file) => {
+      return await compressImage(file);
+    }));
+
+    processed.forEach(compressed => {
+      if (compressed) {
+        const isFirst = stagedImages.length === 0;
+        stagedImages.push({
+          id: 'img_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+          url: compressed,
+          isCover: isFirst
+        });
       }
-    }
+    });
+
     renderMediaStage();
   };
 
-  dropzone?.addEventListener('click', () => fileInput?.click());
+  dropzone?.addEventListener('click', () => {
+    fileInput?.click();
+  });
+
+  fileInput?.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
   fileInput?.addEventListener('change', (e) => {
     handleFiles(e.target.files);
     e.target.value = '';
@@ -306,28 +366,32 @@ export const initAdminNews = () => {
 
   dropzone?.addEventListener('dragover', (e) => {
     e.preventDefault();
+    e.stopPropagation();
     dropzone.classList.add('dragover');
   });
 
-  dropzone?.addEventListener('dragleave', () => {
+  dropzone?.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     dropzone.classList.remove('dragover');
   });
 
   dropzone?.addEventListener('drop', (e) => {
     e.preventDefault();
+    e.stopPropagation();
     dropzone.classList.remove('dragover');
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       handleFiles(e.dataTransfer.files);
     }
   });
 
-  // URL modal / prompt
+  // URL input modal
   document.getElementById('btn-add-image-url')?.addEventListener('click', () => {
     const url = prompt('Bild-URL eingeben (z.B. https://example.com/foto.jpg):');
     if (url && url.trim() !== '') {
       const isFirst = stagedImages.length === 0;
       stagedImages.push({
-        id: 'img_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+        id: 'img_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
         url: url.trim(),
         isCover: isFirst
       });
@@ -391,6 +455,7 @@ export const initAdminNews = () => {
     editor.innerHTML = '';
     stagedImages = [];
     editingArticleId = null;
+    savedSelectionRange = null;
     if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
     if (document.getElementById('news-author')) document.getElementById('news-author').value = 'DSG Redaktion';
     if (cancelBtn) cancelBtn.style.display = 'none';
@@ -437,7 +502,7 @@ export const initAdminNews = () => {
               <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">
                 <span>📅 ${a.date || 'Kein Datum'}</span>
                 ${a.author ? ` &bull; <span>✍ ${a.author}</span>` : ''}
-                ${hasGallery ? ` &bull; <span style="color: var(--color-accent);">📷 +${a.gallery.length} Fotos</span>` : ''}
+                ${hasGallery ? ` &bull; <span style="color: var(--color-accent); font-weight: 700;">📷 +${a.gallery.length} Fotos</span>` : ''}
               </div>
               <div style="font-size: 0.8rem; color: var(--color-text-secondary); opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;">
                 ${previewText}...

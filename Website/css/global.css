@@ -1086,9 +1086,14 @@ main {
     box-shadow: none;
 }
 
+.admin-layout {
+    padding-top: 80px;
+}
+
 @media (max-width: 768px) {
     .admin-layout {
         grid-template-columns: 1fr !important;
+        padding-top: 70px;
     }
 }
 
@@ -1114,9 +1119,9 @@ main {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 4px;
-    padding: 8px 12px;
-    background: rgba(0, 0, 0, 0.3);
+    gap: 6px;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.05);
     border-bottom: var(--glass-border);
     user-select: none;
 }
@@ -1124,10 +1129,10 @@ main {
 .rte-btn-group {
     display: flex;
     align-items: center;
-    gap: 2px;
-    padding-right: 6px;
-    margin-right: 6px;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 3px;
+    padding-right: 8px;
+    margin-right: 4px;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .rte-btn-group:last-child {
@@ -1137,15 +1142,15 @@ main {
 }
 
 .rte-btn {
-    background: transparent;
-    color: var(--color-text-secondary);
-    border: none;
-    border-radius: 4px;
-    min-width: 30px;
-    height: 30px;
-    padding: 2px 6px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--color-text-primary);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    min-width: 32px;
+    height: 32px;
+    padding: 3px 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -1154,36 +1159,40 @@ main {
 }
 
 .rte-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.12);
     color: var(--color-text-primary);
+    transform: translateY(-1px);
 }
 
 .rte-btn.active {
-    background: var(--color-accent);
-    color: #fff;
+    background: var(--color-accent) !important;
+    color: #ffffff !important;
+    border-color: var(--color-accent) !important;
+    box-shadow: 0 2px 8px var(--color-accent-glow);
 }
 
 .rte-select {
-    background: var(--color-bg);
+    background: var(--color-surface);
     color: var(--color-text-primary);
-    border: var(--glass-border);
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 0.8rem;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     outline: none;
+    height: 32px;
 }
 
 .rte-editor {
     min-height: 220px;
     max-height: 500px;
     overflow-y: auto;
-    padding: 14px 16px;
+    padding: 16px;
     color: var(--color-text-primary);
     font-family: inherit;
-    font-size: 0.95rem;
-    line-height: 1.6;
+    font-size: 0.98rem;
+    line-height: 1.65;
     outline: none;
 }
 
@@ -1196,15 +1205,17 @@ main {
 }
 
 .rte-editor h2 {
-    font-size: 1.35rem;
+    font-size: 1.4rem;
     margin: 14px 0 6px;
     color: var(--color-text-primary);
+    font-weight: 800;
 }
 
 .rte-editor h3 {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     margin: 10px 0 4px;
     color: var(--color-text-primary);
+    font-weight: 700;
 }
 
 .rte-editor p {
@@ -1237,9 +1248,9 @@ main {
 
 /* DRAG & DROP MEDIA UPLOADER */
 .dropzone-container {
-    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border: 2px dashed rgba(0, 0, 0, 0.2);
     border-radius: var(--border-radius-md);
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(0, 0, 0, 0.02);
     padding: 24px 16px;
     text-align: center;
     cursor: pointer;
@@ -1247,9 +1258,13 @@ main {
     position: relative;
 }
 
+.dropzone-container * {
+    pointer-events: none;
+}
+
 .dropzone-container:hover, .dropzone-container.dragover {
     border-color: var(--color-accent);
-    background: rgba(142, 198, 63, 0.06);
+    background: rgba(142, 198, 63, 0.08);
 }
 
 .dropzone-icon {
