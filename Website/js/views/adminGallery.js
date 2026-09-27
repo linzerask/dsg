@@ -1,6 +1,7 @@
 import { Store } from '../store.js';
 import { storage } from '../firebase.js';
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-storage.js";
+import { renderIcon } from '../icons.js';
 
 let stagedGalleryImages = []; // Array of { id, url, isCover, loading, fileName }
 let editingAlbumId = null;
@@ -73,7 +74,7 @@ export const renderAdminGallery = () => {
       <!-- Modern Album Editor Form Card -->
       <div class="glass-card" style="padding: var(--space-lg); margin-bottom: var(--space-xl); border: 1px solid rgba(255, 255, 255, 0.12);">
         <h3 id="gal-form-title" style="margin-bottom: var(--space-md); color: var(--color-accent); font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
-          <span>📷</span> Neues Album erstellen
+          ${renderIcon('camera', { size: 20, color: 'var(--color-accent)' })} Neues Album erstellen
         </h3>
 
         <form id="gallery-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
@@ -107,7 +108,7 @@ export const renderAdminGallery = () => {
             <!-- Drop Zone -->
             <div class="dropzone-container" id="gal-dropzone">
               <input type="file" id="gal-file-input" accept="image/*" multiple style="display: none;">
-              <div class="dropzone-icon">📷</div>
+              <div class="dropzone-icon" style="display: flex; justify-content: center; align-items: center;">${renderIcon('cloudUpload', { size: 40, color: 'var(--color-accent)' })}</div>
               <div class="dropzone-text">Fotos hierher ziehen oder <span style="color: var(--color-accent); text-decoration: underline; font-weight: 700;">durchsuchen</span></div>
               <div class="dropzone-hint">Lade mehrere Fotos gleichzeitig hoch. Wähle anschließend per Klick das Titelbild aus.</div>
             </div>
@@ -433,8 +434,8 @@ export const initAdminGallery = () => {
             <div style="min-width: 0;">
               <strong style="font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${a.title}</strong>
               <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">
-                <span>📅 ${a.date || 'Kein Datum'}</span>
-                &bull; <span style="color: var(--color-accent); font-weight: 700;">📷 ${photosCount} ${photosCount === 1 ? 'Foto' : 'Fotos'}</span>
+                <span style="display: inline-flex; align-items: center; gap: 3px;">${renderIcon('calendar', { size: 13, color: 'var(--color-text-secondary)' })} ${a.date || 'Kein Datum'}</span>
+                &bull; <span style="display: inline-flex; align-items: center; gap: 3px; color: var(--color-accent); font-weight: 700;">${renderIcon('camera', { size: 13, color: 'var(--color-accent)' })} ${photosCount} ${photosCount === 1 ? 'Foto' : 'Fotos'}</span>
               </div>
               ${a.excerpt ? `
                 <div style="font-size: 0.8rem; color: var(--color-text-secondary); opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;">
@@ -444,7 +445,7 @@ export const initAdminGallery = () => {
             </div>
           </div>
           <div style="display: flex; gap: 6px; flex-shrink: 0;">
-            <a href="#/galerie" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem;" title="Galerie ansehen">👁 Ansehen</a>
+            <a href="#/galerie" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;" title="Galerie ansehen">${renderIcon('eye', { size: 14 })} Ansehen</a>
             <button class="btn btn-outline edit-gal-btn" data-id="${a.id}" style="padding: 6px 12px; font-size: 0.8rem;">Bearbeiten</button>
             <button class="btn delete-gal-btn" data-id="${a.id}" style="padding: 6px 12px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">Löschen</button>
           </div>
@@ -506,7 +507,7 @@ export const initAdminGallery = () => {
 
         // UI state changes
         if (submitText) submitText.textContent = 'Album aktualisieren';
-        if (formTitle) formTitle.innerHTML = `<span>✏️</span> Album bearbeiten: <i>${album.title}</i>`;
+        if (formTitle) formTitle.innerHTML = `${renderIcon('edit', { size: 20, color: 'var(--color-accent)' })} Album bearbeiten: <i>${album.title}</i>`;
         if (cancelBtn) cancelBtn.style.display = 'inline-block';
 
         // Smooth scroll to top of form
