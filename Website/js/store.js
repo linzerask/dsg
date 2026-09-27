@@ -11403,7 +11403,7 @@ export const Store = {
     // Clear all obsolete cache versions to prevent old corrupt/timestamp data
     try {
       for (let i = 1; i <= 60; i++) {
-        if (i !== 43) localStorage.removeItem(`dsg_data_v${i}`);
+        if (i !== 44) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 20) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 20) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 8) localStorage.removeItem(`dsg_admin_players_v${i}`);
@@ -11414,7 +11414,7 @@ export const Store = {
     } catch(e) {}
 
     // Eagerly load local memory so the app doesn't block on network
-    memoryData = loadLocal('dsg_data', 43) || INITIAL_DATA;
+    memoryData = loadLocal('dsg_data', 44) || INITIAL_DATA;
     memoryNews = loadLocal('dsg_articles', 20) || INITIAL_DATA.news || [];
     memoryGallery = loadLocal('dsg_gallery', 20) || INITIAL_DATA.gallery || [];
 
@@ -11438,7 +11438,7 @@ export const Store = {
       // Sync Data
       if (dataSnap.exists() && dataSnap.data().data) {
         const fbData = dataSnap.data().data;
-        const localData = loadLocal('dsg_data', 43);
+        const localData = loadLocal('dsg_data', 44);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
           memoryData = localData;
           needsMigration = true;
@@ -11447,7 +11447,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 43);
+        let legacyData = loadLocal('dsg_data', 44);
         if (!legacyData) legacyData = INITIAL_DATA;
         memoryData = legacyData;
         needsMigration = true;
@@ -11514,6 +11514,14 @@ export const Store = {
 
                               // Initialize / ensure seasons are present
       if (!memoryData.seasons) memoryData.seasons = {};
+      if (memoryData.seasons['2026_sommer']) {
+        delete memoryData.seasons['2026_sommer'];
+        needsMigration = true;
+      }
+      if (memoryData.seasons['DSG Sommercup 2026']) {
+        delete memoryData.seasons['DSG Sommercup 2026'];
+        needsMigration = true;
+      }
       
       // Always ensure 2025/2026 historical season is loaded
       if (!memoryData.seasons["2025/2026"] || !memoryData.seasons["2025/2026"].teams || memoryData.seasons["2025/2026"].teams.length === 0) {
@@ -11567,7 +11575,7 @@ export const Store = {
         await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v43', JSON.stringify(memoryData));
+      trySetLocal('dsg_data_v44', JSON.stringify(memoryData));
       trySetLocal('dsg_articles_v20', JSON.stringify(memoryNews));
       trySetLocal('dsg_gallery_v20', JSON.stringify(memoryGallery));
       console.log("Migrated local data to Firebase.");
@@ -11587,7 +11595,7 @@ export const Store = {
   saveData(data) {
     data.lastUpdated = Date.now();
     memoryData = data;
-    trySetLocal('dsg_data_v42', JSON.stringify(data));
+    trySetLocal('dsg_data_v44', JSON.stringify(data));
     
     const fbSaveData = JSON.parse(JSON.stringify(data));
     if (fbSaveData.seasons && fbSaveData.seasons["2025/2026"]) {
@@ -12100,6 +12108,42 @@ export const Store = {
     }
 
     return [];
+  },
+
+  deleteLeagueSeason(deletedLeague) {
+    if (!deletedLeague) return;
+    const data = this.getData();
+    if (!data || !data.seasons) return;
+
+    const protectedKeys = ['2025/2026', '2026/2027'];
+    const seasonKey = deletedLeague.seasonKey || deletedLeague.name;
+    const normName = (deletedLeague.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    const keysToDelete = Object.keys(data.seasons).filter(k => {
+      if (protectedKeys.includes(k)) return false;
+      if (k === seasonKey || k === deletedLeague.name) return true;
+      const normK = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (normName && (normK.includes(normName) || normName.includes(normK))) return true;
+      return false;
+    });
+
+    let changed = false;
+    keysToDelete.forEach(k => {
+      delete data.seasons[k];
+      changed = true;
+    });
+
+    if (data.seasons['2026_sommer']) {
+      delete data.seasons['2026_sommer'];
+      changed = true;
+    }
+
+    if (changed) {
+      if (data.currentSeason && !data.seasons[data.currentSeason]) {
+        data.currentSeason = '2026/2027';
+      }
+      this.saveData(data);
+    }
   },
 
   saveAdminLeagues(leagues) {

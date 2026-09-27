@@ -793,8 +793,9 @@ const bindEvents = () => {
                 const idx = parseInt(idVal);
                 const l = leaguesData[idx];
                 if (confirm(`Möchten Sie die Liga "${l.name} (${l.year})" wirklich löschen?`)) {
-                    leaguesData.splice(idx, 1);
+                    const deletedLeague = leaguesData.splice(idx, 1)[0];
                     Store.saveAdminLeagues(leaguesData);
+                    Store.deleteLeagueSeason(deletedLeague);
                     closeEditModal();
                     applyFilters();
                 }
