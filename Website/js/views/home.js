@@ -45,6 +45,40 @@ export const viewHome = () => {
     return dateStr;
   };
 
+  // Helper: Parse Date & Time to Timestamp for accurate sorting
+  const parseMatchDateTime = (dateStr, timeStr) => {
+    if (!dateStr) return 0;
+    let year = 1970, month = 0, day = 1;
+    if (dateStr.includes('-')) {
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        year = parseInt(parts[0]) || 1970;
+        month = (parseInt(parts[1]) || 1) - 1;
+        day = parseInt(parts[2]) || 1;
+      }
+    } else if (dateStr.includes('.')) {
+      const parts = dateStr.split('.');
+      if (parts.length === 3) {
+        day = parseInt(parts[0]) || 1;
+        month = (parseInt(parts[1]) || 1) - 1;
+        year = parseInt(parts[2]) || 1970;
+        if (year < 100) year += 2000;
+      }
+    }
+
+    let hours = 12, minutes = 0;
+    if (timeStr) {
+      const cleanTime = String(timeStr).replace(/[^\d:]/g, '');
+      const tParts = cleanTime.split(':');
+      if (tParts.length >= 2) {
+        hours = parseInt(tParts[0]) || 0;
+        minutes = parseInt(tParts[1]) || 0;
+      }
+    }
+
+    return new Date(year, month, day, hours, minutes).getTime();
+  };
+
   // Filter Played and Upcoming matches
   const playedMatches = allMatches.filter(m => 
     m.status === 'Played' || 
@@ -59,14 +93,34 @@ export const viewHome = () => {
     m.score === '- : -'
   );
 
+  // Sort upcoming matches ascending by date & time (earliest first)
+  const sortedUpcomingMatches = [...upcomingMatches].sort((a, b) => {
+    const timeA = parseMatchDateTime(a.date, a.time);
+    const timeB = parseMatchDateTime(b.date, b.time);
+    if (timeA !== timeB) return timeA - timeB;
+    const rA = parseInt(String(a.round || '').replace(/\D/g, '')) || 0;
+    const rB = parseInt(String(b.round || '').replace(/\D/g, '')) || 0;
+    return rA - rB;
+  });
+
+  // Sort played matches descending by date & time (most recent first)
+  const sortedPlayedMatches = [...playedMatches].sort((a, b) => {
+    const timeA = parseMatchDateTime(a.date, a.time);
+    const timeB = parseMatchDateTime(b.date, b.time);
+    if (timeA !== timeB) return timeB - timeA;
+    const rA = parseInt(String(a.round || '').replace(/\D/g, '')) || 0;
+    const rB = parseInt(String(b.round || '').replace(/\D/g, '')) || 0;
+    return rB - rA;
+  });
+
   // Next Featured Match
-  const nextMatch = upcomingMatches[0] || null;
+  const nextMatch = sortedUpcomingMatches[0] || null;
 
   // Next upcoming fixtures (up to 4)
-  const nextFixtures = upcomingMatches.slice(0, 4);
+  const nextFixtures = sortedUpcomingMatches.slice(0, 4);
 
   // Recent results (last 4 played)
-  const recentResults = [...playedMatches].slice(-4).reverse();
+  const recentResults = sortedPlayedMatches.slice(0, 4);
 
   // Render Top 5 Teams
   const teamRows = teams.map((t, index) => `
