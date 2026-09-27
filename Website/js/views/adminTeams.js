@@ -314,7 +314,10 @@ const bindEvents = () => {
             };
 
             if (idVal === 'new') {
-                const maxId = teamsData.reduce((max, t) => Math.max(max, parseInt(t.ID) || 0), 0);
+                const validIds = teamsData
+                    .map(t => parseInt(t.ID || t.id) || 0)
+                    .filter(n => n > 0 && n < 100000);
+                const maxId = validIds.length > 0 ? Math.max(...validIds) : 54;
                 teamsData.unshift({
                     ID: String(maxId + 1),
                     "Aktive Spieler": "0",

@@ -11407,7 +11407,7 @@ export const Store = {
         if (i !== 20) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 20) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 8) localStorage.removeItem(`dsg_admin_players_v${i}`);
-        if (i !== 5) localStorage.removeItem(`dsg_admin_teams_v${i}`);
+        if (i !== 6) localStorage.removeItem(`dsg_admin_teams_v${i}`);
         if (i !== 4) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
         if (i !== 3) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
       }
@@ -11861,42 +11861,92 @@ export const Store = {
 
 
   async getAdminTeams() {
-    let local = loadLocal('dsg_admin_teams', 4);
-    
+    let local = loadLocal('dsg_admin_teams', 6);
+    if (local && local.length > 0) return local;
+
+    let baseline = [];
+    try {
+      const res = await fetch('data/teams.json');
+      baseline = await res.json();
+    } catch(e) {}
+
     // Check Firestore
     try {
       const teamSnap = await getDoc(doc(db, 'system', 'teams_data'));
       if (teamSnap.exists() && teamSnap.data()?.data) {
-        const fbTeams = teamSnap.data().data;
-        trySetLocal('dsg_admin_teams_v4', JSON.stringify(fbTeams));
+        let fbTeams = teamSnap.data().data;
+        let maxSeqId = 54;
+        fbTeams.forEach(t => {
+          const num = parseInt(t.ID || t.id) || 0;
+          if (num > 0 && num < 100000 && num > maxSeqId) maxSeqId = num;
+        });
+
+        fbTeams = fbTeams.map(t => {
+          const num = parseInt(t.ID || t.id) || 0;
+          let cleanId = String(num);
+          if (num >= 100000 || num <= 0) {
+            maxSeqId++;
+            cleanId = String(maxSeqId);
+          }
+          return {
+            ...t,
+            ID: cleanId,
+            Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv'
+          };
+        });
+
+        const fbNames = new Set(fbTeams.map(t => (t.Name || '').toLowerCase().trim()));
+        baseline.forEach(b => {
+          if (!fbNames.has((b.Name || '').toLowerCase().trim())) {
+            fbTeams.push(b);
+          }
+        });
+
+        trySetLocal('dsg_admin_teams_v6', JSON.stringify(fbTeams));
+        setDoc(doc(db, 'system', 'teams_data'), { data: fbTeams, lastUpdated: Date.now() })
+          .catch(e => console.error("Firebase save error (teams):", e));
         return fbTeams;
       }
     } catch(e) {
       console.warn("Could not fetch teams from Firebase:", e);
     }
 
-    if (local) return local;
-
-    try {
-      const res = await fetch('data/teams.json');
-      const data = await res.json();
-      const normalized = data.map(t => ({
+    if (baseline && baseline.length > 0) {
+      const normalized = baseline.map(t => ({
         ...t,
         Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv'
       }));
-      trySetLocal('dsg_admin_teams_v4', JSON.stringify(normalized));
-      
-      // Upload initial teams to Firestore
+      trySetLocal('dsg_admin_teams_v6', JSON.stringify(normalized));
       setDoc(doc(db, 'system', 'teams_data'), { data: normalized, lastUpdated: Date.now() })
         .catch(e => console.error("Firebase save error (teams):", e));
-        
       return normalized;
-    } catch(e) { return []; }
+    }
+
+    return [];
   },
 
   saveAdminTeams(teams) {
-    trySetLocal('dsg_admin_teams_v4', JSON.stringify(teams));
-    setDoc(doc(db, 'system', 'teams_data'), { data: teams, lastUpdated: Date.now() })
+    let maxSeqId = 54;
+    (teams || []).forEach(t => {
+      const num = parseInt(t.ID || t.id) || 0;
+      if (num > 0 && num < 100000 && num > maxSeqId) maxSeqId = num;
+    });
+    const cleanTeams = (teams || []).map(t => {
+      const num = parseInt(t.ID || t.id) || 0;
+      let cleanId = String(num);
+      if (num >= 100000 || num <= 0) {
+        maxSeqId++;
+        cleanId = String(maxSeqId);
+      }
+      return {
+        ...t,
+        ID: cleanId,
+        Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv'
+      };
+    });
+
+    trySetLocal('dsg_admin_teams_v6', JSON.stringify(cleanTeams));
+    setDoc(doc(db, 'system', 'teams_data'), { data: cleanTeams, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (teams):", e));
     window.dispatchEvent(new CustomEvent('teams-updated'));
   },

@@ -484,5 +484,14 @@
     "Aktiv seit": "0000-00-00",
     "Inaktiv seit": "1997-06-30",
     "Action": "Edit Delete Spieler"
+  },
+  {
+    "ID": "55",
+    "Name": "FC Linzer Adler",
+    "Status": "Aktiv",
+    "Aktive Spieler": "2",
+    "Aktiv seit": "2026-09-27",
+    "Inaktiv seit": "",
+    "Action": "Edit Delete Spieler"
   }
 ]
