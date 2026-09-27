@@ -11418,6 +11418,23 @@ export const Store = {
     memoryNews = loadLocal('dsg_articles', 20) || INITIAL_DATA.news || [];
     memoryGallery = loadLocal('dsg_gallery', 20) || INITIAL_DATA.gallery || [];
 
+    // Ensure all leagues have an initialized season object in memoryData
+    if (!memoryData.seasons) memoryData.seasons = {};
+    const initialLeagues = this.getAdminLeaguesSync();
+    initialLeagues.forEach(l => {
+      let sKey = l.seasonKey;
+      if (!sKey) {
+        sKey = (l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name;
+      }
+      if (sKey && !memoryData.seasons[sKey]) {
+        memoryData.seasons[sKey] = {
+          teams: [],
+          matches: [],
+          stats: { topScorers: [], cards: [] }
+        };
+      }
+    });
+
     // Trigger Firebase sync in the background
     this.syncFirebase();
   },
@@ -11470,23 +11487,22 @@ export const Store = {
         needsMigration = true;
       }
 
-            // Auto-sync active leagues to seasons
+      // Auto-sync all leagues to seasons
       if (leagueSnap && leagueSnap.exists() && leagueSnap.data()?.data) {
         const leagues = leagueSnap.data().data;
+        if (!memoryData.seasons) memoryData.seasons = {};
         leagues.forEach(l => {
-          if (l.status === 'Aktiv' || l.Status === 'Aktiv') {
-            let sKey = l.seasonKey;
-            if (!sKey) {
-              sKey = (l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name;
-            }
-            if (sKey && !memoryData.seasons[sKey]) {
-              memoryData.seasons[sKey] = {
-                teams: [],
-                matches: [],
-                stats: { topScorers: [], cards: [] }
-              };
-              needsMigration = true;
-            }
+          let sKey = l.seasonKey;
+          if (!sKey) {
+            sKey = (l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name;
+          }
+          if (sKey && !memoryData.seasons[sKey]) {
+            memoryData.seasons[sKey] = {
+              teams: [],
+              matches: [],
+              stats: { topScorers: [], cards: [] }
+            };
+            needsMigration = true;
           }
         });
       }
@@ -11687,33 +11703,55 @@ export const Store = {
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
 
+  _resolveSeason(data, seasonId) {
+    if (!data || !data.seasons || !seasonId) return null;
+    if (data.seasons[seasonId]) return data.seasons[seasonId];
+    
+    // Check aliases from admin leagues
+    const leagues = this.getAdminLeaguesSync();
+    for (const l of leagues) {
+      const sKey = l.seasonKey || ((l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name);
+      if (sKey === seasonId || l.name === seasonId || `${l.name} ${l.year}` === seasonId) {
+        if (l.seasonKey && data.seasons[l.seasonKey]) return data.seasons[l.seasonKey];
+        if (data.seasons[sKey]) return data.seasons[sKey];
+        if (data.seasons[l.name]) return data.seasons[l.name];
+        if (data.seasons[`${l.name} ${l.year}`]) return data.seasons[`${l.name} ${l.year}`];
+      }
+    }
+    return null;
+  },
+
   getLiga(seasonId) {
     const data = this.getData();
     const sid = seasonId || data.currentSeason;
-    if (!data.seasons || !data.seasons[sid] || !data.seasons[sid].teams) return [];
-    const teams = [...data.seasons[sid].teams];
-    return teams.sort((a, b) => b.points - a.points || (b.gf - b.ga) - (a.gf - a.ga));
+    const season = this._resolveSeason(data, sid);
+    if (!season || !season.teams) return [];
+    const teams = [...season.teams];
+    return teams.sort((a, b) => (b.points || 0) - (a.points || 0) || (((b.gf || 0) - (b.ga || 0)) - ((a.gf || 0) - (a.ga || 0))));
   },
   
   getStats(seasonId) {
     const data = this.getData();
     const sid = seasonId || data.currentSeason;
-    if (!data.seasons || !data.seasons[sid] || !data.seasons[sid].stats) return { topScorers: [], cards: [] };
-    return data.seasons[sid].stats;
+    const season = this._resolveSeason(data, sid);
+    if (!season || !season.stats) return { topScorers: [], cards: [] };
+    return season.stats;
   },
 
   getMatches(seasonId) {
     const data = this.getData();
     const sid = seasonId || data.currentSeason;
-    if (!data.seasons || !data.seasons[sid] || !data.seasons[sid].matches) return [];
-    return data.seasons[sid].matches;
+    const season = this._resolveSeason(data, sid);
+    if (!season || !season.matches) return [];
+    return season.matches;
   },
 
   getMatch(seasonId, matchId) {
     const data = this.getData();
     const sid = seasonId || data.currentSeason;
-    if (!data.seasons || !data.seasons[sid] || !data.seasons[sid].matches) return null;
-    return (data.seasons[sid].matches || []).find(m => String(m.id) === String(matchId));
+    const season = this._resolveSeason(data, sid);
+    if (!season || !season.matches) return null;
+    return (season.matches || []).find(m => String(m.id) === String(matchId));
   },
 
   getPlayers() {
@@ -12253,35 +12291,88 @@ export const Store = {
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
 
-  getVisibleSeasonKeys() {
-    const data = this.getData();
-    const allSeasonKeys = Object.keys(data.seasons || {}).filter(s => 
-      s !== '2026_sommer' && s !== 'DSG Sommercup 2026' && s !== 'Liga 26/27 2026'
-    );
-    
-    const localLeagues = loadLocal('dsg_admin_leagues', 4);
-    if (!localLeagues || !Array.isArray(localLeagues) || localLeagues.length === 0) {
-      return allSeasonKeys;
-    }
+  getAdminLeaguesSync() {
+    let local = loadLocal('dsg_admin_leagues', 4);
+    if (local && Array.isArray(local) && local.length > 0) return local;
+    return [
+      { id: 14, name: "Liga 26/27", year: 2026, status: "Aktiv", seasonKey: "2026/2027", showOnHomepage: true },
+      { id: 13, name: "Liga 25/26", year: 2026, status: "Inaktiv", seasonKey: "2025/2026", showOnHomepage: true },
+      { id: 6, name: "Liga", year: 2025, status: "Inaktiv", seasonKey: "2024/2025", showOnHomepage: true },
+      { id: 11, name: "Oberes Playoff", year: 2025, status: "Inaktiv", seasonKey: "2024/2025_oberes", showOnHomepage: true },
+      { id: 12, name: "Unteres Playoff", year: 2025, status: "Inaktiv", seasonKey: "2024/2025_unteres", showOnHomepage: true },
+      { id: 5, name: "Liga", year: 2024, status: "Inaktiv", seasonKey: "2023/2024", showOnHomepage: true },
+      { id: 3, name: "Liga", year: 2023, status: "Inaktiv", seasonKey: "2022/2023", showOnHomepage: true },
+      { id: 4, name: "1. Klasse", year: 2023, status: "Inaktiv", seasonKey: "2022/2023_1klasse", showOnHomepage: true },
+      { id: 1, name: "Liga", year: 2022, status: "Inaktiv", seasonKey: "2021/2022", showOnHomepage: true },
+      { id: 2, name: "1. Klasse", year: 2022, status: "Inaktiv", seasonKey: "2021/2022_1klasse", showOnHomepage: true }
+    ];
+  },
 
-    const visibilityMap = new Map();
-    localLeagues.forEach(l => {
+  getVisibleSeasonItems() {
+    const leagues = this.getAdminLeaguesSync();
+    const items = [];
+    const seenKeys = new Set();
+
+    // Sort descending: highest year first, then highest ID first
+    const sorted = [...leagues].sort((a, b) => {
+      const yA = parseInt(a.year) || 0;
+      const yB = parseInt(b.year) || 0;
+      if (yB !== yA) return yB - yA;
+      return (parseInt(b.id) || 0) - (parseInt(a.id) || 0);
+    });
+
+    sorted.forEach(l => {
+      if (l.showOnHomepage === false) return;
+
       let sKey = l.seasonKey;
       if (!sKey) {
-        sKey = (l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name;
+        if (l.name && l.name.includes('26/27')) sKey = '2026/2027';
+        else if (l.name && l.name.includes('25/26')) sKey = '2025/2026';
+        else if (l.name && l.year && !l.name.includes(String(l.year))) sKey = `${l.name} ${l.year}`;
+        else sKey = l.name;
       }
-      const isVisible = (l.showOnHomepage !== false);
-      if (sKey) visibilityMap.set(sKey, isVisible);
-      if (l.name) visibilityMap.set(l.name, isVisible);
-      if (l.name && l.year) visibilityMap.set(`${l.name} ${l.year}`, isVisible);
+
+      if (seenKeys.has(sKey)) return;
+      seenKeys.add(sKey);
+
+      let label = l.name;
+      if (sKey === '2026/2027' || l.name === 'Liga 26/27') {
+        label = 'Saison 2026/2027';
+      } else if (sKey === '2025/2026' || l.name === 'Liga 25/26') {
+        label = 'Saison 2025/2026';
+      } else if (l.name && l.year && !l.name.includes(String(l.year))) {
+        label = `${l.name} ${l.year}`;
+      }
+
+      items.push({
+        key: sKey,
+        label: label,
+        year: l.year,
+        id: l.id
+      });
     });
 
-    return allSeasonKeys.filter(sKey => {
-      if (visibilityMap.has(sKey)) {
-        return visibilityMap.get(sKey);
-      }
-      return true;
-    });
+    // Also include any custom seasons in data.seasons not covered by admin leagues
+    const data = this.getData();
+    if (data && data.seasons) {
+      Object.keys(data.seasons).forEach(s => {
+        if (s === '2026_sommer' || s === 'DSG Sommercup 2026' || s === 'Liga 26/27 2026') return;
+        if (seenKeys.has(s)) return;
+        seenKeys.add(s);
+        items.push({
+          key: s,
+          label: s.toLowerCase().includes('saison') || s.toLowerCase().startsWith('liga') ? s : 'Saison ' + s,
+          year: parseInt(s.split('/')[0]) || 2026,
+          id: 0
+        });
+      });
+    }
+
+    return items;
+  },
+
+  getVisibleSeasonKeys() {
+    return this.getVisibleSeasonItems().map(i => i.key);
   },
 
   async getAdminRounds() {

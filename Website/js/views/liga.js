@@ -5,11 +5,13 @@ let currentViewSeason = "2026/2027";
 
 export function viewLiga() {
   const data = Store.getData();
-  const visibleSeasonKeys = Store.getVisibleSeasonKeys ? Store.getVisibleSeasonKeys() : Object.keys(data.seasons || {});
-  if (!visibleSeasonKeys.includes(currentViewSeason)) {
+  const visibleItems = Store.getVisibleSeasonItems ? Store.getVisibleSeasonItems() : [];
+  const visibleSeasonKeys = visibleItems.map(i => i.key);
+  if (visibleSeasonKeys.length > 0 && !visibleSeasonKeys.includes(currentViewSeason)) {
     currentViewSeason = visibleSeasonKeys.includes("2026/2027") ? "2026/2027" : (visibleSeasonKeys[0] || "2026/2027");
   }
   const currentSeason = currentViewSeason;
+  const currentItem = visibleItems.find(i => i.key === currentSeason) || { key: currentSeason, label: currentSeason };
   const teams = Store.getLiga(currentSeason);
   const stats = Store.getStats(currentSeason) || { topScorers: [] };
   const topScorers = stats.topScorers || [];
@@ -196,13 +198,13 @@ export function viewLiga() {
     rot: generateCardsHTML('red', 'card-icon-red', '<div class="card-icon card-icon-red"></div>')
   };
 
-  const scorersHTML = `
+  const scorersHTML = topScorers.length > 0 ? `
     ${top10}
     <div id="extra-scorers-container" style="display: none;">
       ${restScorers}
     </div>
     ${topScorers.length > 10 ? '<div class="btn-container"><button id="btn-show-all-scorers" class="link-btn">Alle anschauen</button></div>' : ''}
-  `;
+  ` : '<div style="color: var(--color-text-secondary); font-size: 0.9rem; padding: var(--space-md) 0;">Keine Torschützen erfasst.</div>';
 
   // Group matches by round
   const rounds = {};
@@ -359,17 +361,17 @@ export function viewLiga() {
   return `
     <div class="container">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; position: relative; z-index: 50;" class="stagger-item">
-        <h1 style="margin: 0;">SAISON <span class="accent-text" id="liga-season-label">${currentSeason}</span></h1>
+        <h1 style="margin: 0;"><span class="accent-text" id="liga-season-label">${(currentItem.label || currentSeason).toUpperCase()}</span></h1>
         
         <div class="season-select-wrapper">
           <div class="season-select-trigger" id="season-custom-trigger">
-            <span>${currentSeason.toLowerCase().includes('saison') || currentSeason.toLowerCase().startsWith('liga') ? currentSeason : 'Saison ' + currentSeason}</span>
+            <span>${currentItem.label || currentSeason}</span>
             <span style="font-size: 0.7rem; margin-left: 10px;">▼</span>
           </div>
           <div class="season-select-options" id="season-custom-options">
-            ${visibleSeasonKeys.slice().reverse().map(s => `
-              <div class="season-option ${s === currentSeason ? 'selected' : ''}" data-value="${s}">
-                ${s.toLowerCase().includes('saison') || s.toLowerCase().startsWith('liga') ? s : 'Saison ' + s}
+            ${visibleItems.map(item => `
+              <div class="season-option ${item.key === currentSeason ? 'selected' : ''}" data-value="${item.key}">
+                ${item.label}
               </div>
             `).join('')}
           </div>

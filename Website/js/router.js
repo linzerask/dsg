@@ -1,10 +1,10 @@
 import { viewHome } from './views/home.js';
 import { viewNews, bindNews } from './views/news.js';
-import { viewLiga, bindLigaTabs } from './views/liga.js';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790500000000';
 import { viewArchiv } from './views/simpleViews.js';
 import { viewOrganisation, bindOrganisation } from './views/organisation.js';
 import { viewGalerie, bindGalerie } from './views/galerie.js';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1790498000000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1790500000000';
 import { viewArticle, bindArticle } from './views/article.js';
 import { viewImpressum } from './views/impressum.js';
 import { viewDatenschutz } from './views/datenschutz.js';
