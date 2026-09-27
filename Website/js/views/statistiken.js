@@ -1,5 +1,5 @@
-import { Store } from '../store.js';
-import { renderIcon } from '../icons.js';
+import { Store } from '../store.js?v=1790560000008';
+import { renderIcon } from '../icons.js?v=1790560000008';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -223,6 +223,13 @@ export const computeAllTimeStats = () => {
     }
   });
 
+  // Sort season honors descending by year (e.g. 2025/2026 first down to 2021/2022 last)
+  const parseSeasonYear = (seasonStr) => {
+    const match = String(seasonStr).match(/\d{4}/);
+    return match ? parseInt(match[0]) : 0;
+  };
+  seasonHonors.sort((a, b) => parseSeasonYear(b.season) - parseSeasonYear(a.season));
+
   const goalsPerMatch = totalMatches > 0 ? (totalGoals / totalMatches).toFixed(2) : '0';
 
   return {
@@ -234,7 +241,7 @@ export const computeAllTimeStats = () => {
     seasonsCount: mainSeasons.length,
     allTimeScorers,
     allTimeClubs,
-    seasonHonors: seasonHonors.reverse(), // most recent first
+    seasonHonors,
     records: {
       highestScoringMatch,
       biggestWin,
