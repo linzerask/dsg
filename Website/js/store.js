@@ -11403,7 +11403,7 @@ export const Store = {
     // Clear all obsolete cache versions to prevent old corrupt/timestamp data
     try {
       for (let i = 1; i <= 60; i++) {
-        if (i !== 44) localStorage.removeItem(`dsg_data_v${i}`);
+        if (i !== 45) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 20) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 20) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 8) localStorage.removeItem(`dsg_admin_players_v${i}`);
@@ -11414,7 +11414,7 @@ export const Store = {
     } catch(e) {}
 
     // Eagerly load local memory so the app doesn't block on network
-    memoryData = loadLocal('dsg_data', 44) || INITIAL_DATA;
+    memoryData = loadLocal('dsg_data', 45) || INITIAL_DATA;
     memoryNews = loadLocal('dsg_articles', 20) || INITIAL_DATA.news || [];
     memoryGallery = loadLocal('dsg_gallery', 20) || INITIAL_DATA.gallery || [];
 
@@ -11426,10 +11426,11 @@ export const Store = {
     const dataRef = doc(db, 'system', 'liga_data');
     const newsRef = doc(db, 'system', 'news_data');
     const galleryRef = doc(db, 'system', 'gallery_data');
+    const leagueRef = doc(db, 'system', 'leagues_data');
 
     try {
-      const [dataSnap, newsSnap, gallerySnap] = await Promise.all([
-        getDoc(dataRef), getDoc(newsRef), getDoc(galleryRef)
+      const [dataSnap, newsSnap, gallerySnap, leagueSnap] = await Promise.all([
+        getDoc(dataRef), getDoc(newsRef), getDoc(galleryRef), getDoc(leagueRef)
       ]);
 
       let needsMigration = false;
@@ -11438,7 +11439,7 @@ export const Store = {
       // Sync Data
       if (dataSnap.exists() && dataSnap.data().data) {
         const fbData = dataSnap.data().data;
-        const localData = loadLocal('dsg_data', 44);
+        const localData = loadLocal('dsg_data', 45);
         if (localData && localData.lastUpdated && (!fbData.lastUpdated || localData.lastUpdated > fbData.lastUpdated)) {
           memoryData = localData;
           needsMigration = true;
@@ -11447,7 +11448,7 @@ export const Store = {
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 44);
+        let legacyData = loadLocal('dsg_data', 45);
         if (!legacyData) legacyData = INITIAL_DATA;
         memoryData = legacyData;
         needsMigration = true;
@@ -11467,6 +11468,27 @@ export const Store = {
       } else {
         memoryNews = loadLocal('dsg_articles', 20) || INITIAL_DATA.news || [];
         needsMigration = true;
+      }
+
+            // Auto-sync active leagues to seasons
+      if (leagueSnap && leagueSnap.exists() && leagueSnap.data()?.data) {
+        const leagues = leagueSnap.data().data;
+        leagues.forEach(l => {
+          if (l.status === 'Aktiv' || l.Status === 'Aktiv') {
+            let sKey = l.seasonKey;
+            if (!sKey) {
+              sKey = (l.name && l.year && !l.name.includes(String(l.year))) ? `${l.name} ${l.year}` : l.name;
+            }
+            if (sKey && !memoryData.seasons[sKey]) {
+              memoryData.seasons[sKey] = {
+                teams: [],
+                matches: [],
+                stats: { topScorers: [], cards: [] }
+              };
+              needsMigration = true;
+            }
+          }
+        });
       }
 
       // Sync Gallery
@@ -11522,6 +11544,10 @@ export const Store = {
         delete memoryData.seasons['DSG Sommercup 2026'];
         needsMigration = true;
       }
+      if (memoryData.seasons['Liga 26/27 2026']) {
+        delete memoryData.seasons['Liga 26/27 2026'];
+        needsMigration = true;
+      }
       
       // Always ensure 2025/2026 historical season is loaded
       if (!memoryData.seasons["2025/2026"] || !memoryData.seasons["2025/2026"].teams || memoryData.seasons["2025/2026"].teams.length === 0) {
@@ -11575,7 +11601,7 @@ export const Store = {
         await setDoc(galleryRef, { data: memoryGallery }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v44', JSON.stringify(memoryData));
+      trySetLocal('dsg_data_v45', JSON.stringify(memoryData));
       trySetLocal('dsg_articles_v20', JSON.stringify(memoryNews));
       trySetLocal('dsg_gallery_v20', JSON.stringify(memoryGallery));
       console.log("Migrated local data to Firebase.");
@@ -11595,7 +11621,7 @@ export const Store = {
   saveData(data) {
     data.lastUpdated = Date.now();
     memoryData = data;
-    trySetLocal('dsg_data_v44', JSON.stringify(data));
+    trySetLocal('dsg_data_v45', JSON.stringify(data));
     
     const fbSaveData = JSON.parse(JSON.stringify(data));
     if (fbSaveData.seasons && fbSaveData.seasons["2025/2026"]) {
@@ -12108,6 +12134,26 @@ export const Store = {
     }
 
     return [];
+  },
+
+    ensureLeagueSeason(league) {
+    if (!league) return;
+    const data = this.getData();
+    if (!data.seasons) data.seasons = {};
+
+    let sKey = league.seasonKey || league.name;
+    if (league.name && league.year && !league.name.includes(String(league.year))) {
+      sKey = `${league.name} ${league.year}`;
+    }
+
+    if (sKey && !data.seasons[sKey]) {
+      data.seasons[sKey] = {
+        teams: [],
+        matches: [],
+        stats: { topScorers: [], cards: [] }
+      };
+      this.saveData(data);
+    }
   },
 
   deleteLeagueSeason(deletedLeague) {

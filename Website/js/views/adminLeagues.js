@@ -143,10 +143,9 @@ const getSeasonKey = (league) => {
     if (league.seasonKey) return league.seasonKey;
     if (league.name && league.name.includes('26/27')) return '2026/2027';
     if (league.name && league.name.includes('25/26')) return '2025/2026';
-    if (league.year === 2026 && (league.name || '').includes('25/26')) return '2025/2026';
-    if (league.year === 2025) return '2024/2025';
-    if (league.year === 2024) return '2023/2024';
-    if (league.year === 2023) return '2022/2023';
+    if (league.name && league.year && !league.name.includes(String(league.year))) {
+        return `${league.name} ${league.year}`;
+    }
     return league.name;
 };
 
@@ -813,11 +812,14 @@ const bindEvents = () => {
                 status: document.getElementById('edit-league-status').value
             };
 
+            const sKey = getSeasonKey(updatedLeague);
+            updatedLeague.seasonKey = sKey;
+
             if (idVal === 'new') {
                 const validIds = leaguesData
                     .map(l => parseInt(l.id) || 0)
                     .filter(n => n > 0 && n < 100000);
-                const maxId = validIds.length > 0 ? Math.max(...validIds) : 15;
+                const maxId = validIds.length > 0 ? Math.max(...validIds) : 14;
                 updatedLeague.id = maxId + 1;
                 leaguesData.unshift(updatedLeague);
             } else {
@@ -826,6 +828,7 @@ const bindEvents = () => {
             }
 
             Store.saveAdminLeagues(leaguesData);
+            Store.ensureLeagueSeason(updatedLeague);
             closeEditModal();
             applyFilters();
         };

@@ -362,13 +362,13 @@ export function viewLiga() {
         
         <div class="season-select-wrapper">
           <div class="season-select-trigger" id="season-custom-trigger">
-            <span>Saison ${currentSeason}</span>
+            <span>${currentSeason.toLowerCase().includes('saison') || currentSeason.toLowerCase().startsWith('liga') ? currentSeason : 'Saison ' + currentSeason}</span>
             <span style="font-size: 0.7rem; margin-left: 10px;">▼</span>
           </div>
           <div class="season-select-options" id="season-custom-options">
-            ${Object.keys(Store.getData().seasons || {}).filter(s => s !== '2026_sommer' && s !== 'DSG Sommercup 2026').reverse().map(s => `
+            ${Object.keys(Store.getData().seasons || {}).filter(s => s !== '2026_sommer' && s !== 'DSG Sommercup 2026' && s !== 'Liga 26/27 2026').reverse().map(s => `
               <div class="season-option ${s === currentSeason ? 'selected' : ''}" data-value="${s}">
-                Saison ${s}
+                ${s.toLowerCase().includes('saison') || s.toLowerCase().startsWith('liga') ? s : 'Saison ' + s}
               </div>
             `).join('')}
           </div>
@@ -382,23 +382,33 @@ export function viewLiga() {
       </div>
 
       <div id="tab-table" class="tab-content" style="display: block;">
-        <div class="liga-header" style="display: grid; grid-template-columns: 40px 1fr 100px 40px 35px 35px 35px 70px 50px 60px; padding: 0 var(--space-md) var(--space-sm); color: var(--color-text-secondary); font-size: 0.8rem; text-transform: uppercase;">
-          <span>#</span>
-          <span>Team</span>
-          <span>Form</span>
-          <span class="hide-mobile" style="text-align: center;">Sp</span>
-          <span class="hide-mobile" style="text-align: center;">S</span>
-          <span class="hide-mobile" style="text-align: center;">U</span>
-          <span class="hide-mobile" style="text-align: center;">N</span>
-          <span class="hide-mobile" style="text-align: center;">Tore</span>
-          <span class="hide-mobile" style="text-align: center;">Diff.</span>
-          <span style="text-align: right;">Pkt</span>
-        </div>
-        ${rows}
+        ${rows.length > 0 ? `
+          <div class="liga-header" style="display: grid; grid-template-columns: 40px 1fr 100px 40px 35px 35px 35px 70px 50px 60px; padding: 0 var(--space-md) var(--space-sm); color: var(--color-text-secondary); font-size: 0.8rem; text-transform: uppercase;">
+            <span>#</span>
+            <span>Team</span>
+            <span>Form</span>
+            <span class="hide-mobile" style="text-align: center;">Sp</span>
+            <span class="hide-mobile" style="text-align: center;">S</span>
+            <span class="hide-mobile" style="text-align: center;">U</span>
+            <span class="hide-mobile" style="text-align: center;">N</span>
+            <span class="hide-mobile" style="text-align: center;">Tore</span>
+            <span class="hide-mobile" style="text-align: center;">Diff.</span>
+            <span style="text-align: right;">Pkt</span>
+          </div>
+          ${rows}
+        ` : `
+          <div class="glass-card" style="text-align: center; padding: 40px; color: var(--color-text-secondary); margin-top: var(--space-md);">
+            <p style="margin: 0; font-size: 1.05rem;">Noch keine Mannschaften für diese Saison eingetragen.</p>
+          </div>
+        `}
       </div>
 
       <div id="tab-spiele" class="tab-content" style="display: none;">
-        ${spieleSlider}
+        ${spieleSlider && spieleSlider.length > 0 ? spieleSlider : `
+          <div class="glass-card" style="text-align: center; padding: 40px; color: var(--color-text-secondary); margin-top: var(--space-md);">
+            <p style="margin: 0; font-size: 1.05rem;">Noch keine Spielrunden für diese Saison angelegt.</p>
+          </div>
+        `}
       </div>
 
       <div id="tab-stats" class="tab-content" style="display: none;">
