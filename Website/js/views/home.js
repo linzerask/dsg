@@ -366,24 +366,40 @@ export const viewHome = () => {
         </h3>
         <div class="marquee">
           <div class="marquee-content">
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
+            <img src="dsg.avif" alt="DSG Diözesansportgemeinschaft" />
+            <a href="https://anonymcreator.online" target="_blank" rel="noopener noreferrer" class="marquee-partner-link" title="AnonymCreator - Digitalstudio">
+              <img src="ac_black.png" alt="AnonymCreator" />
+            </a>
+            <img src="dsg.avif" alt="DSG Diözesansportgemeinschaft" />
+            <a href="https://anonymcreator.online" target="_blank" rel="noopener noreferrer" class="marquee-partner-link" title="AnonymCreator - Digitalstudio">
+              <img src="ac_black.png" alt="AnonymCreator" />
+            </a>
+            <img src="dsg.avif" alt="DSG Diözesansportgemeinschaft" />
+            <a href="https://anonymcreator.online" target="_blank" rel="noopener noreferrer" class="marquee-partner-link" title="AnonymCreator - Digitalstudio">
+              <img src="ac_black.png" alt="AnonymCreator" />
+            </a>
+            <img src="dsg.avif" alt="DSG Diözesansportgemeinschaft" />
+            <a href="https://anonymcreator.online" target="_blank" rel="noopener noreferrer" class="marquee-partner-link" title="AnonymCreator - Digitalstudio">
+              <img src="ac_black.png" alt="AnonymCreator" />
+            </a>
           </div>
           <div class="marquee-content" aria-hidden="true">
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
-            <img src="dsg.avif" alt="Sponsor" />
+            <img src="dsg.avif" alt="DSG Diözesansportgemeinschaft" />
+            <a href="https://anonymcreator.online" target="_blank" rel="noopener noreferrer" class="marquee-partner-link" tabindex="-1">
+              <img src="ac_black.png" alt="AnonymCreator" />
+            </a>
+            <img src="dsg.avif" alt="DSG Diözesansportgemeinschaft" />
+            <a href="https://anonymcreator.online" target="_blank" rel="noopener noreferrer" class="marquee-partner-link" tabindex="-1">
+              <img src="ac_black.png" alt="AnonymCreator" />
+            </a>
+            <img src="dsg.avif" alt="DSG Diözesansportgemeinschaft" />
+            <a href="https://anonymcreator.online" target="_blank" rel="noopener noreferrer" class="marquee-partner-link" tabindex="-1">
+              <img src="ac_black.png" alt="AnonymCreator" />
+            </a>
+            <img src="dsg.avif" alt="DSG Diözesansportgemeinschaft" />
+            <a href="https://anonymcreator.online" target="_blank" rel="noopener noreferrer" class="marquee-partner-link" tabindex="-1">
+              <img src="ac_black.png" alt="AnonymCreator" />
+            </a>
           </div>
         </div>
       </div>

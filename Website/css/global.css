@@ -311,24 +311,40 @@ main {
 .marquee-content {
   flex-shrink: 0;
   display: flex;
+  align-items: center;
   justify-content: space-around;
   min-width: 100%;
-  gap: var(--space-lg);
-  animation: scroll 20s linear infinite;
+  gap: var(--space-xl);
+  animation: scroll 22s linear infinite;
+}
+
+.marquee:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+.marquee-partner-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .marquee-content img {
-  height: 60px;
+  height: 52px;
+  max-width: 170px;
   width: auto;
-  opacity: 0.6;
-  transition: opacity var(--transition-fast), filter var(--transition-fast);
+  opacity: 0.65;
+  transition: opacity var(--transition-fast), filter var(--transition-fast), transform var(--transition-fast);
   filter: grayscale(100%);
   object-fit: contain;
 }
 
-.marquee-content img:hover {
+.marquee-content img:hover,
+.marquee-partner-link:hover img {
   opacity: 1;
   filter: grayscale(0%);
+  transform: scale(1.05);
 }
 
 @keyframes scroll {
