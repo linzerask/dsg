@@ -8,38 +8,51 @@ import { renderAdminGames, initAdminGames } from './adminGames.js?v=179051500000
 
 
 
+let currentAdminTab = 'admin-rounds';
+try {
+  const savedTab = sessionStorage.getItem('dsg_admin_tab');
+  if (savedTab) currentAdminTab = savedTab;
+} catch(e) {}
+
 export const viewAdmin = () => {
+  try {
+    const savedTab = sessionStorage.getItem('dsg_admin_tab');
+    if (savedTab) currentAdminTab = savedTab;
+  } catch(e) {}
+  const activeTab = currentAdminTab || 'admin-rounds';
+  const isTabActive = (tabId) => activeTab === tabId;
+
   return `
     <div class="admin-layout" style="display: grid; grid-template-columns: 250px 1fr; min-height: 80vh; gap: var(--space-lg);">
       <aside class="glass-card stagger-item" style="border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; height: 100%; border-left: none;">
         <h2 style="font-size: 1.5rem; color: var(--color-accent); margin-bottom: var(--space-lg);">Admin Panel</h2>
         <nav style="display: flex; flex-direction: column; gap: var(--space-sm);">
-          <button class="admin-nav-btn active" data-target="admin-rounds" style="text-align: left; padding: var(--space-sm); color: var(--color-text-primary); font-weight: 700; background: rgba(0,0,0,0.05); border-radius: 4px;">Spielrunden</button>
-          <button class="admin-nav-btn" data-target="admin-games" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Spiele</button>
-          <button class="admin-nav-btn" data-target="admin-players" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Spieler verwalten</button>
-          <button class="admin-nav-btn" data-target="admin-teams" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Teams verwalten</button>
-          <button class="admin-nav-btn" data-target="admin-leagues" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Ligen verwalten</button>
-          <button class="admin-nav-btn" data-target="admin-news" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">News verwalten</button>
-          <button class="admin-nav-btn" data-target="admin-gallery" style="text-align: left; padding: var(--space-sm); color: var(--color-text-secondary); font-weight: 700; background: none; border: none;">Galerie verwalten</button>
+          <button class="admin-nav-btn ${isTabActive('admin-rounds') ? 'active' : ''}" data-target="admin-rounds" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-rounds') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-rounds') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Spielrunden</button>
+          <button class="admin-nav-btn ${isTabActive('admin-games') ? 'active' : ''}" data-target="admin-games" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-games') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-games') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Spiele</button>
+          <button class="admin-nav-btn ${isTabActive('admin-players') ? 'active' : ''}" data-target="admin-players" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-players') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-players') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Spieler verwalten</button>
+          <button class="admin-nav-btn ${isTabActive('admin-teams') ? 'active' : ''}" data-target="admin-teams" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-teams') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-teams') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Teams verwalten</button>
+          <button class="admin-nav-btn ${isTabActive('admin-leagues') ? 'active' : ''}" data-target="admin-leagues" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-leagues') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-leagues') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Ligen verwalten</button>
+          <button class="admin-nav-btn ${isTabActive('admin-news') ? 'active' : ''}" data-target="admin-news" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-news') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-news') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">News verwalten</button>
+          <button class="admin-nav-btn ${isTabActive('admin-gallery') ? 'active' : ''}" data-target="admin-gallery" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-gallery') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-gallery') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Galerie verwalten</button>
         </nav>
       </aside>
       <div class="admin-content" style="padding: var(--space-lg);">
-        <div id="admin-rounds" class="admin-section stagger-item" style="display: block;">
+        <div id="admin-rounds" class="admin-section ${isTabActive('admin-rounds') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-rounds') ? 'block' : 'none'};">
           ${renderAdminRounds()}
         </div>
-        <div id="admin-games" class="admin-section" style="display: none;">
+        <div id="admin-games" class="admin-section ${isTabActive('admin-games') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-games') ? 'block' : 'none'};">
           ${renderAdminGames()}
         </div>
-        <div id="admin-players" class="admin-section" style="display: none;">
+        <div id="admin-players" class="admin-section ${isTabActive('admin-players') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-players') ? 'block' : 'none'};">
           ${renderAdminPlayers()}
         </div>
-        <div id="admin-teams" class="admin-section" style="display: none;">
+        <div id="admin-teams" class="admin-section ${isTabActive('admin-teams') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-teams') ? 'block' : 'none'};">
           ${renderAdminTeams()}
         </div>
-        <div id="admin-leagues" class="admin-section" style="display: none;">
+        <div id="admin-leagues" class="admin-section ${isTabActive('admin-leagues') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-leagues') ? 'block' : 'none'};">
           ${renderAdminLeagues()}
         </div>
-<div id="admin-news" class="admin-section" style="display: none;">
+        <div id="admin-news" class="admin-section ${isTabActive('admin-news') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-news') ? 'block' : 'none'};">
           <h2>News verwalten</h2>
           <form id="news-form" style="margin-top: var(--space-md); max-width: 500px; display: flex; flex-direction: column; gap: var(--space-md);">
             <input type="hidden" id="news-id">
@@ -110,6 +123,14 @@ export const viewAdmin = () => {
 };
 
 export const bindAdmin = () => {
+  const activeTab = currentAdminTab || 'admin-rounds';
+  if (activeTab === 'admin-rounds') initAdminRounds();
+  else if (activeTab === 'admin-games') initAdminGames();
+  else if (activeTab === 'admin-players') initAdminPlayers();
+  else if (activeTab === 'admin-teams') initAdminTeams();
+  else if (activeTab === 'admin-leagues') initAdminLeagues();
+
+  // Also initialize background modules
   initAdminRounds();
   initAdminGames();
   initAdminPlayers();
@@ -120,25 +141,31 @@ export const bindAdmin = () => {
   const btns = document.querySelectorAll('.admin-nav-btn');
   btns.forEach(btn => {
     btn.addEventListener('click', (e) => {
+      const clickedBtn = e.currentTarget || e.target;
       btns.forEach(b => {
         b.classList.remove('active');
         b.style.background = 'none';
         b.style.color = 'var(--color-text-secondary)';
       });
-      e.target.classList.add('active');
-      e.target.style.background = 'rgba(0,0,0,0.05)';
-      e.target.style.color = 'var(--color-text-primary)';
+      clickedBtn.classList.add('active');
+      clickedBtn.style.background = 'rgba(0,0,0,0.05)';
+      clickedBtn.style.color = 'var(--color-text-primary)';
       
       document.querySelectorAll('.admin-section').forEach(sec => sec.style.display = 'none');
-      const targetId = e.target.dataset.target;
+      const targetId = clickedBtn.getAttribute('data-target');
+      currentAdminTab = targetId;
+      try { sessionStorage.setItem('dsg_admin_tab', targetId); } catch(err) {}
+
       if (targetId === 'admin-rounds') initAdminRounds();
       if (targetId === 'admin-games') initAdminGames();
       if (targetId === 'admin-players') initAdminPlayers();
       if (targetId === 'admin-teams') initAdminTeams();
       if (targetId === 'admin-leagues') initAdminLeagues();
       const target = document.getElementById(targetId);
-      target.style.display = 'block';
-      anime({ targets: target, opacity: [0, 1], translateY: [10, 0], duration: 400, complete: () => { target.style.transform = 'none'; } });
+      if (target) {
+        target.style.display = 'block';
+        anime({ targets: target, opacity: [0, 1], translateY: [10, 0], duration: 400, complete: () => { target.style.transform = 'none'; } });
+      }
     });
   });
 
