@@ -25849,21 +25849,62 @@ let memoryData = null;
 let memoryNews = [];
 let memoryGallery = [];
 
+// Lightweight IndexedDB helper for resilient offline storage beyond 5MB
+const openDB = () => {
+  return new Promise((resolve) => {
+    try {
+      const req = indexedDB.open('dsg_database_v2', 1);
+      req.onupgradeneeded = (e) => {
+        const d = e.target.result;
+        if (!d.objectStoreNames.contains('keyval')) {
+          d.createObjectStore('keyval');
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => resolve(null);
+    } catch(e) {
+      resolve(null);
+    }
+  });
+};
+
+const idbGet = async (key) => {
+  try {
+    const database = await openDB();
+    if (!database) return null;
+    return new Promise((resolve) => {
+      const tx = database.transaction('keyval', 'readonly');
+      const store = tx.objectStore('keyval');
+      const req = store.get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  } catch (e) {
+    return null;
+  }
+};
+
+const idbSet = async (key, val) => {
+  try {
+    const database = await openDB();
+    if (!database) return false;
+    return new Promise((resolve) => {
+      const tx = database.transaction('keyval', 'readwrite');
+      const store = tx.objectStore('keyval');
+      store.put(val, key);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    });
+  } catch (e) {
+    return false;
+  }
+};
+
 function trySetLocal(key, dataStr) {
   try {
     localStorage.setItem(key, dataStr);
   } catch (e) {
-    console.warn("localStorage quota exceeded. Attempting to clear old caches...", e);
-    try {
-      for (let i = 1; i <= 60; i++) {
-        localStorage.removeItem(`dsg_data_v${i}`);
-        localStorage.removeItem(`dsg_articles_v${i}`);
-        localStorage.removeItem(`dsg_gallery_v${i}`);
-      }
-      localStorage.setItem(key, dataStr);
-    } catch(err) {
-      console.error("Still exceeded after cleanup:", err);
-    }
+    console.warn("localStorage quota exceeded for key:", key);
   }
 }
 
@@ -25881,7 +25922,7 @@ const loadLocal = (prefix, exactVer) => {
 
 export const Store = {
   init() {
-    // Clear all obsolete cache versions to prevent old corrupt/timestamp data
+    // Clear all obsolete cache versions
     try {
       for (let i = 1; i <= 60; i++) {
         if (i !== 50) localStorage.removeItem(`dsg_data_v${i}`);
@@ -25894,7 +25935,7 @@ export const Store = {
       }
     } catch(e) {}
 
-    // Eagerly load local memory so the app doesn't block on network
+    // Eagerly load synchronous local memory
     memoryData = loadLocal('dsg_data', 50) || INITIAL_DATA;
     
     const localArticles = loadLocal('dsg_articles', 35) || [];
@@ -25921,6 +25962,19 @@ export const Store = {
           matches: [],
           stats: { topScorers: [], cards: [] }
         };
+      }
+    });
+
+    // Check IndexedDB asynchronously to restore rich article images if localStorage was constrained
+    idbGet('dsg_articles').then(idbArticles => {
+      if (idbArticles && Array.isArray(idbArticles) && idbArticles.length > 0) {
+        const idbMergeMap = new Map();
+        (INITIAL_DATA.news || []).forEach(a => idbMergeMap.set(String(a.id), a));
+        memoryNews.forEach(a => { if (a && a.id) idbMergeMap.set(String(a.id), a); });
+        idbArticles.forEach(a => { if (a && a.id) idbMergeMap.set(String(a.id), a); });
+        memoryNews = Array.from(idbMergeMap.values());
+        trySetLocal('dsg_articles_v35', JSON.stringify(memoryNews));
+        window.dispatchEvent(new CustomEvent('data-updated'));
       }
     });
 
@@ -25962,6 +26016,7 @@ export const Store = {
 
       // Sync News
       const localArticlesSync = loadLocal('dsg_articles', 35) || [];
+      const idbArticlesSync = await idbGet('dsg_articles') || [];
       const articleMergeMap = new Map();
       (INITIAL_DATA.news || []).forEach(a => articleMergeMap.set(String(a.id), a));
       if (newsSnap.exists() && newsSnap.data().data && Array.isArray(newsSnap.data().data)) {
@@ -25972,8 +26027,13 @@ export const Store = {
       localArticlesSync.forEach(a => {
         if (a && a.id) articleMergeMap.set(String(a.id), a);
       });
+      idbArticlesSync.forEach(a => {
+        if (a && a.id) articleMergeMap.set(String(a.id), a);
+      });
       memoryNews = Array.from(articleMergeMap.values());
       trySetLocal('dsg_articles_v35', JSON.stringify(memoryNews));
+      await idbSet('dsg_articles', memoryNews);
+      hasUpdates = true;
       needsMigration = true;
 
       // Auto-sync all leagues to seasons
@@ -26138,6 +26198,7 @@ export const Store = {
       return aId !== cleanId && String(a.id) !== String(id) && aTitleSlug !== cleanId;
     });
     trySetLocal('dsg_articles_v35', JSON.stringify(memoryNews));
+    idbSet('dsg_articles', memoryNews);
     setDoc(doc(db, 'system', 'news_data'), { data: memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
@@ -26165,6 +26226,7 @@ export const Store = {
     }
     memoryNews.unshift(newArticle);
     trySetLocal('dsg_articles_v35', JSON.stringify(memoryNews));
+    idbSet('dsg_articles', memoryNews);
     setDoc(doc(db, 'system', 'news_data'), { data: memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
     return newArticle;
@@ -26195,6 +26257,7 @@ export const Store = {
         lastUpdated: Date.now()
       };
       trySetLocal('dsg_articles_v35', JSON.stringify(memoryNews));
+      idbSet('dsg_articles', memoryNews);
       setDoc(doc(db, 'system', 'news_data'), { data: memoryNews, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error:", e));
       window.dispatchEvent(new CustomEvent('data-updated'));
     }

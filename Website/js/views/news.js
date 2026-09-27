@@ -94,4 +94,12 @@ export const bindNews = () => {
     });
     observer.observe(trigger);
   }
+
+  window.addEventListener('data-updated', () => {
+    const grid = document.getElementById('news-grid');
+    if (grid && window.location.hash.startsWith('#/news')) {
+      const freshNews = Store.getNews();
+      grid.innerHTML = freshNews.slice(0, visibleCount).map(renderCard).join('');
+    }
+  });
 };

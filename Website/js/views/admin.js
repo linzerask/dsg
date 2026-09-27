@@ -5,7 +5,7 @@ import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=179051500000
 import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790515000000';
 import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790515000000';
 import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790515000000';
-import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790538000000';
+import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790545000000';
 
 
 

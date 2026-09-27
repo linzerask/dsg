@@ -103,9 +103,15 @@ export const viewHome = () => {
 
   // Render News
   const newsCards = news.map(n => `
-    <a href="#/article/${n.id}" class="glass-card news-card stagger-item" style="display: flex; flex-direction: column;">
-      <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: var(--space-xs); color: var(--color-text-primary);">${n.title}</h3>
-      ${(n.excerpt || (n.content ? n.content.replace(/<[^>]+>/g, ' ').substring(0, 120) + '...' : '')) ? `<p style="color: var(--color-text-secondary); font-size: 0.95rem; margin-bottom: var(--space-md); flex-grow: 1;">${n.excerpt || n.content.replace(/<[^>]+>/g, ' ').substring(0, 120) + '...'}</p>` : '<div style="flex-grow: 1;"></div>'}
+    <a href="#/article/${n.id}" class="glass-card news-card stagger-item" style="display: flex; flex-direction: column; overflow: hidden; text-decoration: none;">
+      ${n.image ? `
+        <div style="width: 100%; height: 160px; overflow: hidden; border-radius: 4px; margin-bottom: var(--space-sm);">
+          <img src="${n.image}" alt="${n.title}" style="width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-fast);">
+        </div>
+      ` : ''}
+      <div style="font-size: 0.75rem; color: var(--color-accent); font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">${n.date || ''}</div>
+      <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: var(--space-xs); color: var(--color-text-primary);">${n.title}</h3>
+      ${(n.excerpt || (n.content ? n.content.replace(/<[^>]+>/g, ' ').substring(0, 120) + '...' : '')) ? `<p style="color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md); flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${n.excerpt || n.content.replace(/<[^>]+>/g, ' ').substring(0, 120) + '...'}</p>` : '<div style="flex-grow: 1;"></div>'}
       <span class="text-btn" style="align-self: flex-start; margin-top: auto; color: var(--color-accent); font-weight: 600;">Mehr lesen &rarr;</span>
     </a>
   `).join('');
