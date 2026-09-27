@@ -244,6 +244,53 @@ export const viewHome = () => {
     </div>
 
     <div class="container">
+      <!-- Count-Up Stats Section -->
+      <div class="stats-counter-section stagger-item glass-card" style="margin-top: var(--space-xl); padding: var(--space-lg) var(--space-xl); border-top: 3px solid var(--color-accent);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-lg);">
+          <div>
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px;">DSG Liga in Zahlen</div>
+            <h2 style="font-size: 1.6rem; margin: 4px 0 0 0; color: var(--color-text-primary);">Statistiken & Rekorde</h2>
+          </div>
+          <a href="#/statistiken" class="primary-btn" style="padding: 9px 20px; font-size: 0.9rem; text-decoration: none;">
+            Zur gesamten Statistik & Hall of Fame &rarr;
+          </a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-md); text-align: center;">
+          <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
+            <div style="font-size: 1.8rem; margin-bottom: 2px;">⚽</div>
+            <div class="home-stat-number" data-target="${allTimeStats.totalGoals}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Tore gesamt</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Ø ${allTimeStats.goalsPerMatch} / Spiel</div>
+          </div>
+
+          <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
+            <div style="font-size: 1.8rem; margin-bottom: 2px;">🏟️</div>
+            <div class="home-stat-number" data-target="${allTimeStats.totalMatches}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Gespielte Partien</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Seit 2021/2022</div>
+          </div>
+
+          <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
+            <div style="font-size: 1.8rem; margin-bottom: 2px;">🏃</div>
+            <div class="home-stat-number" data-target="${allTimeStats.uniquePlayersCount}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Torschützen</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Eingetragene Torschützen</div>
+          </div>
+
+          <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
+            <div style="font-size: 1.8rem; margin-bottom: 2px;">🏆</div>
+            <div class="home-stat-number" data-target="${allTimeStats.seasonsCount}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Saisons</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Digital dokumentiert</div>
+          </div>
+        </div>
+
+        <div style="margin-top: var(--space-md); text-align: center; font-size: 0.78rem; color: var(--color-text-secondary); opacity: 0.85;">
+          * Sämtliche Statistiken und Rekorde basieren auf den digital erfassten Spielberichten seit Beginn der Aufzeichnungen in der Saison 2021/2022.
+        </div>
+      </div>
+
       ${upcomingMatchHtml}
 
       <!-- Match Center: Recent Results & Upcoming Fixtures -->
@@ -309,53 +356,6 @@ export const viewHome = () => {
           <div style="margin-top: var(--space-lg); text-align: right;">
             <a href="#/statistiken" class="text-btn">Alle Statistiken &rarr;</a>
           </div>
-        </div>
-      </div>
-
-      <!-- Count-Up Stats Section -->
-      <div class="stats-counter-section stagger-item glass-card" style="margin-top: var(--space-xl); padding: var(--space-lg) var(--space-xl); border-top: 3px solid var(--color-accent);">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-lg);">
-          <div>
-            <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px;">DSG Liga in Zahlen</div>
-            <h2 style="font-size: 1.6rem; margin: 4px 0 0 0; color: var(--color-text-primary);">Statistiken & Rekorde</h2>
-          </div>
-          <a href="#/statistiken" class="primary-btn" style="padding: 9px 20px; font-size: 0.9rem; text-decoration: none;">
-            Zur gesamten Statistik & Hall of Fame &rarr;
-          </a>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-md); text-align: center;">
-          <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
-            <div style="font-size: 1.8rem; margin-bottom: 2px;">⚽</div>
-            <div class="home-stat-number" data-target="${allTimeStats.totalGoals}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
-            <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Tore gesamt</div>
-            <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Ø ${allTimeStats.goalsPerMatch} / Spiel</div>
-          </div>
-
-          <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
-            <div style="font-size: 1.8rem; margin-bottom: 2px;">🏟️</div>
-            <div class="home-stat-number" data-target="${allTimeStats.totalMatches}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
-            <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Gespielte Partien</div>
-            <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Seit 2021/2022</div>
-          </div>
-
-          <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
-            <div style="font-size: 1.8rem; margin-bottom: 2px;">🏃</div>
-            <div class="home-stat-number" data-target="${allTimeStats.uniquePlayersCount}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
-            <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Torschützen</div>
-            <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Eingetragene Torschützen</div>
-          </div>
-
-          <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
-            <div style="font-size: 1.8rem; margin-bottom: 2px;">🏆</div>
-            <div class="home-stat-number" data-target="${allTimeStats.seasonsCount}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
-            <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Saisons</div>
-            <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Digital dokumentiert</div>
-          </div>
-        </div>
-
-        <div style="margin-top: var(--space-md); text-align: center; font-size: 0.78rem; color: var(--color-text-secondary); opacity: 0.85;">
-          * Sämtliche Statistiken und Rekorde basieren auf den digital erfassten Spielberichten seit Beginn der Aufzeichnungen in der Saison 2021/2022.
         </div>
       </div>
 
