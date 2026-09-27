@@ -83,8 +83,8 @@ export const renderAdminLeagues = () => {
                         </select>
                     </div>
 
-                    <!-- Participating Teams Selector -->
-                    <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-sm); margin-top: var(--space-xs);">
+                    <!-- Participating Teams Selector (Active leagues only) -->
+                    <div id="league-teams-section" style="border-top: 1px solid var(--color-border); padding-top: var(--space-sm); margin-top: var(--space-xs);">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                             <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-text-primary);">⚽ Teilnehmende Teams</label>
                             <div style="display: flex; gap: 6px;">
@@ -755,6 +755,11 @@ const openEditModal = async (idx = null) => {
     const teamSearch = document.getElementById('league-team-search');
     if (teamSearch) teamSearch.value = '';
 
+    const teamsSection = document.getElementById('league-teams-section');
+    if (teamsSection) {
+        teamsSection.style.display = (document.getElementById('edit-league-status').value === 'Inaktiv') ? 'none' : 'block';
+    }
+
     modal.style.display = 'flex';
 };
 
@@ -879,6 +884,16 @@ const bindEvents = () => {
         };
     }
 
+    const editStatusSelect = document.getElementById('edit-league-status');
+    if (editStatusSelect) {
+        editStatusSelect.onchange = () => {
+            const teamsSection = document.getElementById('league-teams-section');
+            if (teamsSection) {
+                teamsSection.style.display = editStatusSelect.value === 'Inaktiv' ? 'none' : 'block';
+            }
+        };
+    }
+
     if (addBtn) addBtn.onclick = () => openEditModal(null);
     if (closeBtn) closeBtn.onclick = closeEditModal;
 
@@ -924,13 +939,14 @@ const bindEvents = () => {
                 leaguesData[idx] = { ...leaguesData[idx], ...updatedLeague };
             }
 
-            const selectedTeamNames = cachedActiveTeams
-                .map(t => t.Name || t.name)
-                .filter(name => assignedTeamNames.has(name.trim().toLowerCase()));
-
             Store.saveAdminLeagues(leaguesData);
             Store.ensureLeagueSeason(updatedLeague);
-            Store.setLeagueSeasonTeams(sKey, selectedTeamNames);
+            if (updatedLeague.status === 'Aktiv') {
+                const selectedTeamNames = cachedActiveTeams
+                    .map(t => t.Name || t.name)
+                    .filter(name => assignedTeamNames.has(name.trim().toLowerCase()));
+                Store.setLeagueSeasonTeams(sKey, selectedTeamNames);
+            }
 
             closeEditModal();
             applyFilters();
