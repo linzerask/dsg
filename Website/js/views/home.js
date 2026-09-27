@@ -4,10 +4,30 @@ import { renderIcon } from '../icons.js';
 
 export const viewHome = () => {
   const data = Store.getData();
-  const defaultHomeSeason = data.currentSeason || "2026/2027";
+  const leagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
+  const currentLeague = leagues.find(l => l.isCurrent) || leagues[0];
+  const defaultHomeSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : (data.currentSeason || "2026/2027");
 
-  const teams = Store.getLiga(defaultHomeSeason).slice(0, 5);
-  const scorers = (Store.getStats(defaultHomeSeason) || { topScorers: [] }).topScorers.slice(0, 4);
+  const rawTeams = Store.getLiga(defaultHomeSeason) || [];
+  const sortedTeams = [...rawTeams].sort((a, b) => {
+    const ptsA = Number(a.points) || 0;
+    const ptsB = Number(b.points) || 0;
+    if (ptsB !== ptsA) return ptsB - ptsA;
+
+    const diffA = (a.diff !== undefined ? Number(a.diff) : (Number(a.goalDiff) || (Number(a.gf || a.goalsFor || 0) - Number(a.ga || a.goalsAgainst || 0))));
+    const diffB = (b.diff !== undefined ? Number(b.diff) : (Number(b.goalDiff) || (Number(b.gf || b.goalsFor || 0) - Number(b.ga || b.goalsAgainst || 0))));
+    if (diffB !== diffA) return diffB - diffA;
+
+    const gfA = Number(a.gf !== undefined ? a.gf : (a.goalsFor || 0));
+    const gfB = Number(b.gf !== undefined ? b.gf : (b.goalsFor || 0));
+    return gfB - gfA;
+  });
+  const teams = sortedTeams.slice(0, 5);
+
+  const rawScorers = (Store.getStats(defaultHomeSeason) || { topScorers: [] }).topScorers || [];
+  const sortedScorers = [...rawScorers].sort((a, b) => (b.goals || 0) - (a.goals || 0));
+  const scorers = sortedScorers.slice(0, 4);
+
   const news = Store.getNews().slice(0, 3);
   const allMatches = Store.getMatches(defaultHomeSeason) || [];
   const allTimeStats = computeAllTimeStats();

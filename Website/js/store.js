@@ -26622,6 +26622,24 @@ export const Store = {
     this.saveData(data);
   },
 
+  getVisibleSeasonItems() {
+    const leagues = this.getAdminLeaguesSync();
+    if (leagues && leagues.length > 0) {
+      return leagues.map(l => ({ key: l.seasonKey || l.name, label: l.name || l.seasonKey }));
+    }
+    const data = this.getData();
+    if (data && data.seasons) {
+      return Object.keys(data.seasons).map(s => ({ key: s, label: s }));
+    }
+    return [
+      { key: '2026/2027', label: 'Liga 2026/2027' },
+      { key: '2025/2026', label: 'Saison 2025/2026' },
+      { key: '2024/2025', label: 'Saison 2024/2025' },
+      { key: '2023/2024', label: 'Saison 2023/2024' },
+      { key: '2022/2023', label: 'Saison 2022/2023' }
+    ];
+  },
+
   getAdminLeaguesSync() {
     const local = loadLocal('dsg_admin_leagues', 6);
     if (local && local.length > 0) return local;

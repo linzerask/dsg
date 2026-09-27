@@ -1,19 +1,54 @@
 import { Store } from '../store.js';
 
 
-let currentViewSeason = "2025/2026";
+let currentViewSeason = null;
 
 export function viewLiga() {
   const data = Store.getData();
-  const visibleItems = Store.getVisibleSeasonItems ? Store.getVisibleSeasonItems() : [];
+  const leagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
+  const currentLeague = leagues.find(l => l.isCurrent) || leagues[0];
+  const defaultSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : "2026/2027";
+
+  let visibleItems = Store.getVisibleSeasonItems ? Store.getVisibleSeasonItems() : [];
+  if (!visibleItems || visibleItems.length === 0) {
+    if (leagues && leagues.length > 0) {
+      visibleItems = leagues.map(l => ({ key: l.seasonKey || l.name, label: l.name || l.seasonKey }));
+    } else if (data && data.seasons) {
+      visibleItems = Object.keys(data.seasons).map(s => ({ key: s, label: s }));
+    } else {
+      visibleItems = [
+        { key: "2026/2027", label: "Liga 2026/2027" },
+        { key: "2025/2026", label: "Saison 2025/2026" },
+        { key: "2024/2025", label: "Saison 2024/2025" },
+        { key: "2023/2024", label: "Saison 2023/2024" },
+        { key: "2022/2023", label: "Saison 2022/2023" }
+      ];
+    }
+  }
+
   const visibleSeasonKeys = visibleItems.map(i => i.key);
-  if (visibleSeasonKeys.length > 0 && !visibleSeasonKeys.includes(currentViewSeason)) {
-    currentViewSeason = visibleSeasonKeys.includes("2026/2027") ? "2026/2027" : (visibleSeasonKeys[0] || "2026/2027");
+  if (!currentViewSeason || !visibleSeasonKeys.includes(currentViewSeason)) {
+    currentViewSeason = defaultSeason;
   }
   const currentSeason = currentViewSeason;
   const currentItem = visibleItems.find(i => i.key === currentSeason) || { key: currentSeason, label: currentSeason };
-  const teams = Store.getLiga(currentSeason);
-  const stats = Store.getStats(currentSeason) || { topScorers: [] };
+  
+  const rawTeams = Store.getLiga(currentSeason) || [];
+  const teams = [...rawTeams].sort((a, b) => {
+    const ptsA = Number(a.points) || 0;
+    const ptsB = Number(b.points) || 0;
+    if (ptsB !== ptsA) return ptsB - ptsA;
+
+    const diffA = (a.diff !== undefined ? Number(a.diff) : (Number(a.goalDiff) || (Number(a.gf || a.goalsFor || 0) - Number(a.ga || a.goalsAgainst || 0))));
+    const diffB = (b.diff !== undefined ? Number(b.diff) : (Number(b.goalDiff) || (Number(b.gf || b.goalsFor || 0) - Number(b.ga || b.goalsAgainst || 0))));
+    if (diffB !== diffA) return diffB - diffA;
+
+    const gfA = Number(a.gf !== undefined ? a.gf : (a.goalsFor || 0));
+    const gfB = Number(b.gf !== undefined ? b.gf : (b.goalsFor || 0));
+    return gfB - gfA;
+  });
+
+  const stats = Store.getStats(currentSeason) || { topScorers: [], cards: [] };
   const topScorers = stats.topScorers || [];
   const matches = Store.getMatches(currentSeason) || [];
 
@@ -75,33 +110,36 @@ export function viewLiga() {
   };
 
   const rows = teams.map((t, i) => {
-    const diff = t.gf - t.ga;
+    const gf = Number(t.gf !== undefined ? t.gf : (t.goalsFor || 0));
+    const ga = Number(t.ga !== undefined ? t.ga : (t.goalsAgainst || 0));
+    const diff = t.diff !== undefined ? Number(t.diff) : (t.goalDiff !== undefined ? Number(t.goalDiff) : (gf - ga));
     const diffStr = diff > 0 ? '+' + diff : diff;
     return `
       <div class="liga-row glass-card stagger-item ${i < 3 ? 'top-3-row' : ''} has-table-accordion" style="display: grid; grid-template-columns: 40px 1fr 100px 40px 35px 35px 35px 70px 50px 60px; align-items: center; margin-bottom: var(--space-sm); padding: var(--space-sm) var(--space-md); cursor: pointer; transition: background 0.3s;">
         <span style="font-weight: 900; font-size: 1.2rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">${i + 1}</span>
         <span style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
         ${generateForm(t.name)}
-        <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.played}</span>
-        <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.won}</span>
-        <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.drawn}</span>
-        <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.lost}</span>
-        <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.gf}:${t.ga}</span>
+        <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.played || 0}</span>
+        <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.won || 0}</span>
+        <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.drawn || 0}</span>
+        <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.lost || 0}</span>
+        <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${gf}:${ga}</span>
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${diffStr}</span>
-        <span class="accent-text" style="font-weight: 900; text-align: right; font-size: 1.2rem;">${t.points}</span>
+        <span class="accent-text" style="font-weight: 900; text-align: right; font-size: 1.2rem;">${t.points || 0}</span>
         
         <div class="table-accordion show-mobile" style="grid-column: 1 / -1; display: none; margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--color-border); font-size: 0.85rem; color: var(--color-text-secondary);">
            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; text-align: center;">
-             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Spiele</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.played}</div></div>
-             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Siege</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.won}</div></div>
-             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Unent.</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.drawn}</div></div>
-             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Nied.</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.lost}</div></div>
-             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Tore</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.gf}:${t.ga}</div></div>
+             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Spiele</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.played || 0}</div></div>
+             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Siege</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.won || 0}</div></div>
+             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Unent.</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.drawn || 0}</div></div>
+             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Nied.</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.lost || 0}</div></div>
+             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Tore</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${gf}:${ga}</div></div>
              <div><div style="font-size: 0.65rem; text-transform: uppercase;">Diff</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${diffStr}</div></div>
            </div>
         </div>
       </div>
-    `}).join('');
+    `;
+  }).join('');
 
   let currentRankScorer = 1;
   let prevGoalsScorer = -1;
@@ -459,12 +497,11 @@ export function bindLigaTabs() {
 
     options.forEach(opt => {
       opt.addEventListener('click', (e) => {
-        const selectedValue = e.target.dataset.value;
-        if (currentViewSeason !== selectedValue) {
+        const selectedValue = e.currentTarget.dataset.value || e.target.dataset.value;
+        optionsWrapper.classList.remove('open');
+        if (selectedValue && currentViewSeason !== selectedValue) {
           currentViewSeason = selectedValue;
           window.dispatchEvent(new CustomEvent('data-updated'));
-        } else {
-          optionsWrapper.classList.remove('open');
         }
       });
     });

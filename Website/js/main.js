@@ -1,5 +1,5 @@
-import { Router } from './router.js';
-import { Store } from './store.js';
+import { Router } from './router.js?v=1790560000005';
+import { Store } from './store.js?v=1790560000005';
 
 const initApp = () => {
   Store.init();
