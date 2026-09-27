@@ -362,7 +362,7 @@ export const viewHome = () => {
       <!-- Sponsor Marquee -->
       <div class="marquee-container stagger-item" style="margin-top: var(--space-xl); margin-bottom: var(--space-xl);">
         <h3 style="text-align: center; color: var(--color-text-secondary); margin-bottom: var(--space-md); display: flex; justify-content: center; align-items: center; gap: 8px;">
-          ${renderIcon('handshake', { size: 22, color: 'var(--color-accent)' })} Offizielle Partner
+          ${renderIcon('badgeCheck', { size: 22, color: 'var(--color-accent)' })} Offizielle Partner
         </h3>
         <div class="marquee">
           <div class="marquee-content">
