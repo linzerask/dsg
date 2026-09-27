@@ -3,7 +3,6 @@ import { Store } from '../store.js';
 let stagedImages = []; // Array of { id, url, isCover }
 let editingArticleId = null;
 let searchQuery = '';
-let savedSelectionRange = null;
 
 const compressImage = (file) => {
   return new Promise((resolve) => {
@@ -22,7 +21,7 @@ const compressImage = (file) => {
           if (width > height) {
             if (width > MAX_WIDTH) { height = Math.round(height * (MAX_WIDTH / width)); width = MAX_WIDTH; }
           } else {
-            if (height > MAX_HEIGHT) { width = Math.round(width * (MAX_HEIGHT / height)); height = MAX_HEIGHT; }
+            if (height > MAX_HEIGHT) { width = Math.round(height * (MAX_HEIGHT / height)); height = MAX_HEIGHT; }
           }
           canvas.width = width;
           canvas.height = height;
@@ -178,10 +177,12 @@ export const initAdminNews = () => {
 
   const editor = document.getElementById('rte-editor');
   const toolbar = document.getElementById('rte-toolbar');
+  const blockFormatSelect = document.getElementById('rte-block-format');
   const dropzone = document.getElementById('news-dropzone');
   const fileInput = document.getElementById('news-file-input');
   const stageGrid = document.getElementById('media-stage-grid');
   const cancelBtn = document.getElementById('news-cancel-btn');
+  const submitBtn = document.getElementById('news-submit-btn');
   const submitText = document.getElementById('news-submit-text');
   const formTitle = document.getElementById('news-form-title');
   const dateInput = document.getElementById('news-date');
@@ -192,18 +193,57 @@ export const initAdminNews = () => {
     dateInput.value = new Date().toISOString().split('T')[0];
   }
 
-  // --- 1. Rich Text Editor Toolbar Actions ---
-  const executeCommand = (command, value = null) => {
+  // Toast Notification Helper
+  const showToast = (message, isError = false) => {
+    let toast = document.getElementById('dsg-admin-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'dsg-admin-toast';
+      toast.className = 'dsg-toast';
+      document.body.appendChild(toast);
+    }
+    toast.className = `dsg-toast ${isError ? 'error' : ''}`;
+    toast.innerHTML = `<span>${isError ? '⚠️' : '✅'}</span> <span>${message}</span>`;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3500);
+  };
+
+  // --- 1. Rich Text Editor Range & Actions ---
+  let savedRange = null;
+
+  const saveSelection = () => {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      const range = sel.getRangeAt(0);
+      if (editor && (editor.contains(range.commonAncestorContainer) || editor === range.commonAncestorContainer)) {
+        savedRange = range.cloneRange();
+      }
+    }
+  };
+
+  const restoreSelection = () => {
     if (!editor) return;
     editor.focus();
+    if (savedRange) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(savedRange);
+    }
+  };
+
+  const executeCommand = (command, value = null) => {
+    if (!editor) return;
+    restoreSelection();
     document.execCommand(command, false, value);
+    saveSelection();
     updateToolbarActiveStates();
   };
 
   toolbar?.querySelectorAll('.rte-btn[data-command]').forEach(btn => {
     const command = btn.getAttribute('data-command');
     
-    // Execute on mousedown so selection is never lost
     btn.addEventListener('mousedown', (e) => {
       e.preventDefault();
       executeCommand(command);
@@ -214,7 +254,10 @@ export const initAdminNews = () => {
     });
   });
 
-  const blockFormatSelect = document.getElementById('rte-block-format');
+  blockFormatSelect?.addEventListener('mousedown', () => {
+    saveSelection();
+  });
+
   blockFormatSelect?.addEventListener('change', (e) => {
     const value = e.target.value;
     if (value === 'blockquote') {
@@ -227,14 +270,15 @@ export const initAdminNews = () => {
   const linkBtn = document.getElementById('rte-link-btn');
   linkBtn?.addEventListener('mousedown', (e) => {
     e.preventDefault();
-    const url = prompt('Webadresse (URL) eingeben:', 'https://');
-    if (url && url.trim() !== '' && url !== 'https://') {
-      executeCommand('createLink', url.trim());
-    }
+    saveSelection();
   });
 
   linkBtn?.addEventListener('click', (e) => {
     e.preventDefault();
+    const url = prompt('Webadresse (URL) eingeben:', 'https://');
+    if (url && url.trim() !== '' && url !== 'https://') {
+      executeCommand('createLink', url.trim());
+    }
   });
 
   const updateToolbarActiveStates = () => {
@@ -248,26 +292,53 @@ export const initAdminNews = () => {
         }
       } catch (err) {}
     });
+
+    if (blockFormatSelect) {
+      try {
+        const val = document.queryCommandValue('formatBlock');
+        if (val) {
+          const cleanVal = val.toLowerCase().replace(/[<>]/g, '');
+          if (['h2', 'h3', 'blockquote', 'p'].includes(cleanVal)) {
+            blockFormatSelect.value = cleanVal;
+          }
+        }
+      } catch(e) {}
+    }
   };
 
   // Keyboard Shortcuts (Ctrl+B, Ctrl+I, Ctrl+U)
   editor?.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey) {
-      if (e.key === 'b' || e.key === 'B') {
+      const key = e.key.toLowerCase();
+      if (key === 'b') {
         e.preventDefault();
         executeCommand('bold');
-      } else if (e.key === 'i' || e.key === 'I') {
+      } else if (key === 'i') {
         e.preventDefault();
         executeCommand('italic');
-      } else if (e.key === 'u' || e.key === 'U') {
+      } else if (key === 'u') {
         e.preventDefault();
         executeCommand('underline');
       }
     }
   });
 
-  ['keyup', 'mouseup', 'touchend', 'input'].forEach(evt => {
-    editor?.addEventListener(evt, updateToolbarActiveStates);
+  ['keyup', 'mouseup', 'touchend', 'input', 'focus', 'blur'].forEach(evt => {
+    editor?.addEventListener(evt, () => {
+      saveSelection();
+      updateToolbarActiveStates();
+    });
+  });
+
+  document.addEventListener('selectionchange', () => {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      const range = sel.getRangeAt(0);
+      if (editor && (editor.contains(range.commonAncestorContainer) || editor === range.commonAncestorContainer)) {
+        savedRange = range.cloneRange();
+        updateToolbarActiveStates();
+      }
+    }
   });
 
   // --- 2. Drag & Drop & Multi-Image Stage ---
@@ -389,54 +460,77 @@ export const initAdminNews = () => {
   });
 
   // --- 3. Form Submit (Add / Update) ---
-  form.addEventListener('submit', (e) => {
+  let isSubmitting = false;
+
+  form.onsubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     const id = document.getElementById('news-id').value;
     const title = document.getElementById('news-title').value.trim();
     const author = document.getElementById('news-author').value.trim() || 'DSG Redaktion';
     const date = document.getElementById('news-date').value || new Date().toISOString().split('T')[0];
     const htmlContent = editor.innerHTML.trim();
 
-    if (!htmlContent || htmlContent === '<br>' || htmlContent === '<p></p>') {
-      alert('Bitte gib einen Artikelinhalt ein!');
+    if (!title) {
+      showToast('Bitte gib einen Artikeltitel ein!', true);
+      document.getElementById('news-title').focus();
+      return;
+    }
+
+    // Check if plain text content is empty
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    const plainText = (tempDiv.textContent || tempDiv.innerText || '').trim();
+
+    if (!plainText) {
+      showToast('Bitte gib einen Artikelinhalt ein!', true);
       editor.focus();
       return;
     }
 
-    // Determine cover and gallery
-    let coverImage = 'dsg.avif';
-    let galleryArray = [];
+    isSubmitting = true;
+    if (submitBtn) submitBtn.disabled = true;
 
-    if (stagedImages.length > 0) {
-      const coverItem = stagedImages.find(img => img.isCover) || stagedImages[0];
-      coverImage = coverItem.url;
-      galleryArray = stagedImages.filter(img => img !== coverItem).map(img => ({ url: img.url }));
+    try {
+      // Determine cover and gallery
+      let coverImage = 'dsg.avif';
+      let galleryArray = [];
+
+      if (stagedImages.length > 0) {
+        const coverItem = stagedImages.find(img => img.isCover) || stagedImages[0];
+        coverImage = coverItem.url;
+        galleryArray = stagedImages.filter(img => img !== coverItem).map(img => ({ url: img.url }));
+      }
+
+      // Excerpt for cards: strip HTML
+      const excerpt = plainText.substring(0, 160).trim() + (plainText.length > 160 ? '...' : '');
+
+      // Reading time calculation
+      const words = plainText.split(/\s+/).filter(w => w.length > 0).length;
+      const readMinutes = Math.max(1, Math.ceil(words / 180));
+      const readTime = `${readMinutes} min read`;
+
+      if (id) {
+        // Update existing article
+        Store.updateNews(id, title, excerpt, htmlContent, coverImage, galleryArray, author, date, readTime);
+        showToast('Artikel erfolgreich aktualisiert!');
+      } else {
+        // Create new article
+        Store.addNews(title, excerpt, htmlContent, coverImage, galleryArray, author, date, readTime);
+        showToast('Artikel erfolgreich veröffentlicht!');
+      }
+
+      resetNewsForm();
+      renderNewsList();
+    } catch(err) {
+      console.error("Error saving article:", err);
+      showToast('Fehler beim Speichern des Artikels.', true);
+    } finally {
+      isSubmitting = false;
+      if (submitBtn) submitBtn.disabled = false;
     }
-
-    // Excerpt for cards: strip HTML
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlContent;
-    const plainText = tempDiv.textContent || tempDiv.innerText || '';
-    const excerpt = plainText.substring(0, 160).trim() + (plainText.length > 160 ? '...' : '');
-
-    // Reading time calculation
-    const words = plainText.split(/\s+/).filter(w => w.length > 0).length;
-    const readMinutes = Math.max(1, Math.ceil(words / 180));
-    const readTime = `${readMinutes} min read`;
-
-    if (id) {
-      // Update existing article
-      Store.updateNews(id, title, excerpt, htmlContent, coverImage, galleryArray, author, date, readTime);
-      alert('Artikel erfolgreich aktualisiert!');
-    } else {
-      // Create new article
-      Store.addNews(title, excerpt, htmlContent, coverImage, galleryArray, author, date, readTime);
-      alert('Artikel erfolgreich veröffentlicht!');
-    }
-
-    resetNewsForm();
-    renderNewsList();
-  });
+  };
 
   const resetNewsForm = () => {
     form.reset();
@@ -444,13 +538,14 @@ export const initAdminNews = () => {
     editor.innerHTML = '';
     stagedImages = [];
     editingArticleId = null;
-    savedSelectionRange = null;
+    savedRange = null;
     if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
     if (document.getElementById('news-author')) document.getElementById('news-author').value = 'DSG Redaktion';
     if (cancelBtn) cancelBtn.style.display = 'none';
     if (submitText) submitText.textContent = 'News veröffentlichen';
     if (formTitle) formTitle.innerHTML = '<span>📝</span> Neuer Artikel';
     renderMediaStage();
+    updateToolbarActiveStates();
   };
 
   cancelBtn?.addEventListener('click', resetNewsForm);
@@ -564,6 +659,7 @@ export const initAdminNews = () => {
           Store.deleteArticle(id);
           if (editingArticleId === id) resetNewsForm();
           renderNewsList();
+          showToast('Artikel gelöscht.');
         }
       });
     });

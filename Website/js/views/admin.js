@@ -5,7 +5,7 @@ import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=179051500000
 import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790515000000';
 import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790515000000';
 import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790515000000';
-import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790530000000';
+import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790538000000';
 
 
 
@@ -109,14 +109,6 @@ export const bindAdmin = () => {
   else if (activeTab === 'admin-teams') initAdminTeams();
   else if (activeTab === 'admin-leagues') initAdminLeagues();
   else if (activeTab === 'admin-news') initAdminNews();
-
-  // Also initialize background modules
-  initAdminRounds();
-  initAdminGames();
-  initAdminPlayers();
-  initAdminTeams();
-  initAdminLeagues();
-  initAdminNews();
 
   // Navigation
   const btns = document.querySelectorAll('.admin-nav-btn');
