@@ -217,7 +217,7 @@ const renderTable = () => {
                 <td><span class="badge ${badgeClass}">${status}</span></td>
                 <td style="text-align: center;">
                     <span class="badge ${isVisible ? 'badge-success' : 'badge-secondary'}" style="font-size: 0.75rem;">
-                        ${isVisible ? '👁️ Ja' : '🚫 Nein'}
+                        ${isVisible ? 'Ja' : 'Nein'}
                     </span>
                 </td>
                 <td style="text-align: center;">

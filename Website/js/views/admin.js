@@ -1,10 +1,10 @@
 import { Store } from '../store.js';
 
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790500600000';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790500600000';
-import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790500600000';
-import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790500600000';
-import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790500600000';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790515000000';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790515000000';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790515000000';
+import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790515000000';
+import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790515000000';
 
 
 
