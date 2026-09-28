@@ -56,13 +56,13 @@ const renderContent = (id) => {
     ];
 
     const buildFileRow = (file) => `
-      <div class="glass-card file-row hover-lift" style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-md); margin-bottom: var(--space-sm); background: rgba(255,255,255,0.5); transition: transform 0.2s;">
+      <div class="glass-card file-row hover-lift" style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-md); margin-bottom: var(--space-sm); background: var(--color-surface); border: 1px solid var(--color-border); transition: transform 0.2s;">
         <div style="display: flex; align-items: center; gap: var(--space-md);">
           <div style="color: var(--color-accent); flex-shrink: 0;">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
           </div>
           <div style="display: flex; flex-direction: column;">
-            <span style="font-weight: 700; color: var(--color-primary);">${file.name}</span>
+            <span style="font-weight: 700; color: var(--color-text-primary);">${file.name}</span>
             ${file.details ? `<span style="font-size: 0.85rem; color: var(--color-text-secondary);">${file.details}</span>` : ''}
           </div>
         </div>
@@ -84,18 +84,18 @@ const renderContent = (id) => {
 
     return `
       <div>
-        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--color-primary); margin-bottom: var(--space-lg); text-align: center;">Berichte, Listen & Statuten</h2>
+        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-lg); text-align: center;">Berichte, Listen & Statuten</h2>
         
         <div class="downloads-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
           <!-- Left Column: Allgemeines -->
           <div>
-            <h3 style="font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin-bottom: var(--space-md);">Allgemeines</h3>
+            <h3 style="font-size: 1.4rem; font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-md);">Allgemeines</h3>
             ${allgemeinHTML}
           </div>
 
           <!-- Right Column: Archiv -->
           <div>
-            <h3 style="font-size: 1.4rem; font-weight: 800; color: var(--color-primary); margin-bottom: var(--space-md);">Archiv Spielpläne</h3>
+            <h3 style="font-size: 1.4rem; font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-md);">Archiv Spielpläne</h3>
             ${archivHTML}
           </div>
         </div>
@@ -115,14 +115,14 @@ const renderContent = (id) => {
     `;
   } else if (id === 'bestimmungen') {
     return `
-      <div class="glass-card bestimmungen-card" style="padding: var(--space-xl); max-width: 900px; margin: 0 auto; background: rgba(255,255,255,0.85);">
+      <div class="glass-card bestimmungen-card" style="padding: var(--space-xl); max-width: 900px; margin: 0 auto; background: var(--color-surface); border: 1px solid var(--color-border);">
         <div style="text-align: center; margin-bottom: var(--space-xl);">
-          <h2 class="bestimmungen-title" style="font-size: 2rem; font-weight: 900; color: var(--color-primary); display: inline-block; border-bottom: 3px solid var(--color-accent); padding-bottom: var(--space-sm);">DSG-Meisterschaftsbestimmungen</h2>
+          <h2 class="bestimmungen-title" style="font-size: 2rem; font-weight: 900; color: var(--color-text-primary); display: inline-block; border-bottom: 3px solid var(--color-accent); padding-bottom: var(--space-sm);">DSG-Meisterschaftsbestimmungen</h2>
         </div>
         
-        <div style="font-family: 'Inter', sans-serif; line-height: 1.7; color: var(--color-text); text-align: left;">
+        <div style="font-family: 'Outfit', sans-serif; line-height: 1.7; color: var(--color-text-primary); text-align: left;">
           
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-lg); margin-bottom: var(--space-sm);">§ 1 Teilnahmeberechtigung</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-lg); margin-bottom: var(--space-sm);">§ 1 Teilnahmeberechtigung</h3>
           <p style="margin-bottom: var(--space-md);">Teilnahmeberechtigt sind alle Vereine und Sportgruppen der Diözesansportgemeinschaft, sowie Pfarr-, und Hobbymannschaften, sofern diese Teams nicht an der Meisterschaft des ÖFB teilnehmen. Neuaufnahmen von Mannschaften zur Meisterschaftsteilnahme unterliegen einem Vorstandsbeschluss der DSG OÖ.</p>
           <p style="margin-bottom: var(--space-md);">Alle Gästemannschaften haben bis 15. Juni (Poststempel) jedes Spieljahres einen schriftlichen Antrag um Spielerlaubnis für das folgende Meisterschaftsjahr beim geschäftsführenden Obmann der DSG-Fußballmeisterschaft einzureichen.</p>
           <p style="margin-bottom: var(--space-md);">Spieler, welche Mitglieder des ÖFB sind, können in einer der obengenannten Mannschaft spielen. Nicht spielberechtigt sind beim ÖFB in der laufenden Meisterschaft zum Einsatz gekommene Spieler der</p>
@@ -134,7 +134,7 @@ const renderContent = (id) => {
           <p style="margin-bottom: var(--space-md);">Die Spielberechtigung für die DSG-Meisterschaft verfällt mit dem erstmaligen Einsatz (=Aufscheinen auf dem Spielbericht) in einer der oben angeführten ÖFB-Mannschaften eines ÖFB-Bewerbs (Meisterschaft, Cup). Jeder einzelne Spieler muss am 31. August bzw. 31. März des Meisterschaftsjahres das 14. Lebensjahr vollendet haben.</p>
           <p style="margin-bottom: var(--space-md);">Spielberechtigt sind nur Spieler mit einem von der DSG-Leitung ausgestellten Spielerpass. Außerdem müssen die Spieler in der Kaderliste des jeweiligen Vereines aufscheinen.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 2 Spieleranmeldungen, Spielerkader, Anmeldetermine, Nenngeld</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 2 Spieleranmeldungen, Spielerkader, Anmeldetermine, Nenngeld</h3>
           <p style="margin-bottom: var(--space-md);">Vor Beginn der Herbstmeisterschaft können maximal 50 Spieler angemeldet werden. Voraussetzung sind die im § 1c) angeführten Bedingungen.</p>
           <p style="margin-bottom: var(--space-md);">Bei Übertritt zu einer anderen Mannschaft eines Teilnehmers an der DSG-Meisterschaft muss die nachweisliche Freigabe des Vereins vorliegen, bei welchem der Spieler gemeldet war. Der ausgestellte Spielerpass muss geändert werden, weshalb er mit der Kaderliste mitzuschicken ist. Bei Streitigkeiten entscheidet die Disziplinarkommission.</p>
           <p style="margin-bottom: var(--space-md);">Anmeldefristen für die Herbst- und Frühjahrsmeisterschaft sind der 1. August bzw. 1. März. Bis zu diesen Terminen sind auch eventuelle Terminwünsche schriftlich beim geschäftsführenden Obmann der DSG-Fußballmeisterschaft einzureichen.</p>
@@ -150,49 +150,49 @@ const renderContent = (id) => {
           <p style="margin-bottom: var(--space-md);">Immer zum Monats-Zehnten werden die bis dahin per Post eingereichten Pässe (mit aufgeklebtem Passbild und vollständig ausgefüllt) bearbeitet. Weiters sind € 2,-- für ein Rücksendekuvert und Postgebühren beizulegen. Eine aktuelle Kaderliste ist per Mail an die für die Spielerpässe verantwortliche Person zu schicken. Die Spieler sind ab dem Zeitpunkt spielberechtigt, an dem die abgestempelten Spielerpässe beim Verein eingelangt sind.</p>
           <p style="margin-bottom: var(--space-md);">Vereine, die eine I. und II. Mannschaft stellen: Eine Spielerlaubnis kann nur vom DSG-Vorstand auf Grund eines Antrages erteilt werden.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 3 Spielregeln</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 3 Spielregeln</h3>
           <p style="margin-bottom: var(--space-md);">Es gelten grundsätzlich die Satzungen und besonderen Bestimmungen des Österreichischen Fußballbundes für Kampfmannschaften (mit Ausnahme der DSG-Meisterschaftsbestimmungen, sowie nach Beschlüssen der Gesamtleitung).</p>
           <p style="margin-bottom: var(--space-md);">Auf dem Spielbericht dürfen vor Beginn des jeweiligen Spieles 16 Spieler schriftlich namhaft gemacht werden. Davon können 5 Spieler während der gesamten Spielzeit ausgetauscht werden. Ein Rücktausch ist nicht gestattet.</p>
           <p style="margin-bottom: var(--space-md);">Betreffend Dressenausstattung und -wahl gelten die Bestimmungen des OÖFV, d.h., Dressenwahl hat die Auswärtsmannschaft. Die Heimmannschaft muss, wenn benötigt, für Ersatztrikots oder Überziehleibchen sorgen. Der Torwart darf nicht in den selben Farben wie eines der beiden Teams auflaufen.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 4 Heimmannschaft</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 4 Heimmannschaft</h3>
           <p style="margin-bottom: var(--space-md);">Heimmannschaft ist jeweils die am Spielplan erstgenannte Mannschaft.</p>
           <p style="margin-bottom: var(--space-md);">Die Heimmannschaft hat einen Matchball und einen Ersatzball sowie Spielberichts- und Ausschlussberichtsformulare mitzubringen.</p>
           <p style="margin-bottom: var(--space-md);">Das Spielberichtsformular ist von der Gast- und Heimmannschaft auszufertigen. Der Spielbericht und die Pässe der am Spielbericht aufscheinenden Spieler sind dem Schiedsrichter mindestens 20 Minuten vor Spielbeginn zu übergeben. Ebenso muss dem Schiedsrichter von der Heimmannschaft ein ausreichend frankiertes Kuvert (Stand 1.8.2022: € 0,85) mit der Anschrift des zuständigen Klassenausschussobmannes übergeben werden. Sollte kein frankiertes und beschriftetes Kuvert übergeben werden, so sind dem Schiedsrichter € 3,-- zusätzlich zu entrichten.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 5 Ausweispflicht</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 5 Ausweispflicht</h3>
           <p style="margin-bottom: var(--space-md);">Vor dem Spiel müssen sich alle Aktiven einschließlich der Austauschspieler vor dem Schiedsrichter und den Mannschaftskapitänen mit den Spielerpässen der DSG-Fußballmeisterschaft legitimieren. Ist ein Spieler dazu nicht in der Lage, so darf er sich durch einen öffentlichen Lichtbildausweis ausweisen. Dies muss jedoch zur Überprüfung im Spielbericht angeführt werden.</p>
           <p style="margin-bottom: var(--space-md);">Spielerpässe ohne Lichtbild, Spielerunterschrift und DSG-Stempel sind ungültig.</p>
           <p style="margin-bottom: var(--space-md);">Die erhaltenen Karten müssen von den Mannschaftsbetreuern in den betreffenden Spielerpässen eingetragen werden. Bei Zuwiderhandlung entscheidet die Disziplinarkommission!</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 6 Ausfüllen des Spielberichtsformulars</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 6 Ausfüllen des Spielberichtsformulars</h3>
           <p style="margin-bottom: var(--space-md);">Für das Ausfüllen des Spielberichts sind die Mannschaftsbetreuer verantwortlich. Der Spielbericht muss ordentlich, vollständig und leserlich ausgefüllt sein.</p>
           <p style="margin-bottom: var(--space-md);">Auf der Vorderseite ist die Mannschaftsaufstellung samt 5 Austauschspielern mit Rückennummern vor dem Anpfiff in Blockschrift einzutragen. Beginnt eine Mannschaft ein Spiel mit weniger als 11 Spielern, kann ab dem 8. Spieler jederzeit ergänzt werden.</p>
           <p style="margin-bottom: var(--space-md);">Der Schiedsrichter hat bei Verwarnungen und Ausschlüssen eine Begründung anzugeben. Gelb-rote Karten sind unter „Spielerausschlüsse“ als solche zu vermerken.</p>
           <p style="margin-bottom: var(--space-md);">Besondere Vorfälle soll der Schiedsrichter auf der Rückseite des Spielberichts notieren. [Spielerausschlüsse --> siehe § 13]</p>
           <p style="margin-bottom: var(--space-md);">Bei nicht exakter Anführung bestrafter Spieler wird die Strafe allen laut Kaderliste in Frage kommenden Spielern angerechnet.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 7 Wartezeit</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 7 Wartezeit</h3>
           <p style="margin-bottom: var(--space-md);">Die Wartezeit beträgt 20 Minuten.</p>
           <p style="margin-bottom: var(--space-md);">Eine Mannschaft gilt als angetreten, wenn mindestens sieben Spieler zum festgesetzten Spielbeginn in Spielkleidung auf dem Spielfeld anwesend sind.</p>
           <p style="margin-bottom: var(--space-md);">Für das rechtzeitige Erscheinen der restlichen Spieler kann die Wartezeit von 20 Minuten nicht in Anspruch genommen werden.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 8 Sportplatzmarkierung</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 8 Sportplatzmarkierung</h3>
           <p style="margin-bottom: var(--space-md);">Jeder Heimverein muss sich immer zeitgerecht vor dem Spiel überzeugen, ob die Sportplatzmarkierung in Ordnung ist oder nachmarkiert werden muss.</p>
           <p style="margin-bottom: var(--space-md);">Bei nicht ordnungsgemäßer Markierung könnte es eintreten, dass der Schiedsrichter das Spiel nicht anpfeift, und das würde heißen, dass der Heimverein in Auslegung der ÖFB-Satzungen die Konsequenzen daraus tragen müsste.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 9 Schiedsrichtergeld</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 9 Schiedsrichtergeld</h3>
           <p style="margin-bottom: var(--space-md);">Der Betrag von € 50,-- ist jeweils von der Heimmannschaft an den Schiedsrichter vor dem Spiel zu entrichten.</p>
           <p style="margin-bottom: var(--space-md);">Bei Nichterscheinen einer Mannschaft sind dem Schiedsrichter von der anwesenden Mannschaft € 50,-- zu bezahlen, die jedoch bei der DSG rückverrechnet werden können.</p>
           <p style="margin-bottom: var(--space-md);">Bei unentschuldigtem Fernbleiben des Schiedsrichters sind von diesem € 50,-- in die Disziplinarkasse zu bezahlen.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 10 Spielabsagen, Spielverschiebungen</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 10 Spielabsagen, Spielverschiebungen</h3>
           <p style="margin-bottom: var(--space-md);">Spielabsagen und Spielverschiebungen sind nur durch den Obmann möglich!</p>
           <p style="margin-bottom: var(--space-md);">Bei anhaltendem Schlechtwetter werden die Mannschaftsbetreuer spätestens 3 Stunden vor dem Spiel von der Spielabsage verständigt.</p>
           <p style="margin-bottom: var(--space-md);">Wenn keine vorherige Spielabsage durchgegeben wird, haben die Mannschaften auf dem jeweiligen Sportplatz zu erscheinen.</p>
           <p style="margin-bottom: var(--space-md);">In letzter Konsequenz entscheidet der Platzwart, ob gespielt werden darf.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 11 Nichtantreten einer Mannschaft, Geldstrafen</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 11 Nichtantreten einer Mannschaft, Geldstrafen</h3>
           <p style="margin-bottom: var(--space-md);">Bei Nichtantreten einer Mannschaft wird diese Mannschaft mit € 150,-- bestraft, weiters ist dieses Spiel mit 0:3 strafzuverifizieren.</p>
           <p style="margin-bottom: var(--space-md);">Bei Fernbleiben einer Mannschaft bei offiziellen Besprechungen und an der Meisterschaftsfeier wird diese mit € 100,-- bestraft.</p>
           <p style="margin-bottom: var(--space-md);">Bei Abtreten vor dem Spielende € 50,-- Strafe sowie Strafverifizierung.</p>
@@ -201,7 +201,7 @@ const renderContent = (id) => {
           <p style="margin-bottom: var(--space-md);">Bei Strafverifizierung wird das Spiel mit 0:3 gewertet. Sollte bei Spielabbruch der Spielstand höher als 0:3 sein, so wird dieser gewertet. Die Torschützen und Karten behalten ihre Gültigkeit.</p>
           <p style="margin-bottom: var(--space-md);">Die Strafen sind spätestens 2 Wochen nach Erhalt des Schreibens der Disziplinarkommission auf das in §12 angeführte Konto zu überweisen.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 12 Spielabbruch, Abtreten einer Mannschaft, Protest</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 12 Spielabbruch, Abtreten einer Mannschaft, Protest</h3>
           <p style="margin-bottom: var(--space-md);">Bei einem Spielabbruch entscheidet die Disziplinarkommission auf Grund des Spielberichts und der Zeugeneinvernahmen auf Strafverifizierung bzw. Neuaustragung.</p>
           <p style="margin-bottom: var(--space-md);">Eine Mannschaft verursacht auch dadurch einen Spielabbruch, wenn sie weniger als 7 Spieler auf dem Platz hat.</p>
           <p style="margin-bottom: var(--space-md);">Für die Aufrechterhaltung der Ordnung am Sportplatz sind beide Mannschaften verantwortlich. Bei Zuwiderhandlungen entscheidet die Disziplinarkommission!</p>
@@ -219,7 +219,7 @@ const renderContent = (id) => {
             <li>IBAN: AT61 3427 6000 0058 3088</li>
           </ul>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 13 Spielerausschluss, Ausschluss aus der Meisterschaft</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 13 Spielerausschluss, Ausschluss aus der Meisterschaft</h3>
           <p style="margin-bottom: var(--space-md);">Wird ein Spieler mit der roten Karte ausgeschlossen (ausgenommen Torraub), ist bei Matchende der Spielerpass vom Schiedsrichter einzubehalten und mit einem Ausschlussbericht dem Disziplinarobmann zuzusenden. Der ausgeschlossene Spieler bleibt bis zum Entscheid der Disziplinarkommission in Suspension.</p>
           <p style="margin-bottom: var(--space-md);">Nach drei gelben Karten tritt eine automatische Sperre von einem Spiel ein, danach nach zwei weiteren gelben Karten. Nach der 5. gelben Karte erfolgt nach jeder weiteren Verwarnung automatisch ein Spiel Sperre.</p>
           <p style="margin-bottom: var(--space-md);">Bei Torraub und gelb-roter Karte tritt ein Sperre von einem Spiel in Kraft. Der Spielerpass verbleibt bei der Mannschaft.</p>
@@ -234,7 +234,7 @@ const renderContent = (id) => {
             <li>bei unentschuldigtem Fernbleiben von den Funktionärsbesprechungen und Meisterschaftsfeiern.</li>
           </ul>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 14 Disziplinarkommission</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 14 Disziplinarkommission</h3>
           <p style="margin-bottom: var(--space-md);">Nach Ende der Meisterschaft wird für das folgende Spieljahr die Disziplinarkommission neu gewählt.</p>
           <ul style="list-style-type: none; margin-left: var(--space-xl); margin-bottom: var(--space-md);">
             <li>1. Instanz (Senat I): Obmann, 3 Mitglieder und 3 Ersatzmitglieder</li>
@@ -242,13 +242,13 @@ const renderContent = (id) => {
           </ul>
           <p style="margin-bottom: var(--space-md);">Verstöße gegen die ÖFB-Spielregeln sowie die DSG-Meisterschaftsbestimmungen – vor, während und nach dem Spiel – werden von der Disziplinarkommission behandelt, die sich an die Satzungen des ÖFB und die DSG-Meisterschaftsbestimmungen hält.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 15 Auf- und Abstiegsregelung</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 15 Auf- und Abstiegsregelung</h3>
           <p style="margin-bottom: var(--space-md);">Der Erstplatzierte einer Spielklasse steigt automatisch in die nächsthöhere Klasse auf. Der Letzte muss in die tiefer liegende Klasse absteigen.</p>
           <p style="margin-bottom: var(--space-md);">Der Zweitplatzierte einer Spielklasse spielt um den Aufstieg mit dem Vorletzten der nächsthöheren Klasse. Endet diese Begegnung nach 90 Minuten unentschieden, gibt es eine Verlängerung von zweimal 15 Minuten. Ändert sich auch dann am Resultat "Unentschieden" nichts, so muss solange ein Elfmeterschießen durchgeführt werden, bis eine Entscheidung gefallen ist. Jede Mannschaft stellt anfänglich fünf Schützen. Die Reihenfolge des Elfmeterschießens wird durch das Los ermittelt (lt. ÖFB-Cupbestimmungen).</p>
           <p style="margin-bottom: var(--space-md);">Sollte sich die Anzahl der an der Meisterschaft teilnehmenden Mannschaften ändern wird die Zusammensetzung der Ligen zahlenmäßig so gestaltet, dass eine sinnvolle Organisation des Spielbetriebs möglich ist.</p>
           <p style="margin-bottom: var(--space-md);">Aus der laufenden Meisterschaft ausscheidende Mannschaften werden an die letzte Stelle gereiht.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 16 Fairness-Bewerb-Bestimmungen</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 16 Fairness-Bewerb-Bestimmungen</h3>
           <p style="margin-bottom: var(--space-md);">Den Fairnesspreis erhält jene Mannschaft, welche am Ende der Meisterschaft die wenigsten Strafpunkte aufweist.</p>
           <p style="margin-bottom: var(--space-sm);"><strong>Strafpunkttarif:</strong></p>
           <ul style="list-style-type: disc; margin-left: var(--space-xl); margin-bottom: var(--space-md);">
@@ -259,19 +259,19 @@ const renderContent = (id) => {
           <p style="margin-bottom: var(--space-md);">Abtreten, Strafverifizierungen, Nichtantreten, Verschulden eines Spielabbruches sowie Einsatz eines nicht spielberechtigten Spielers führen automatisch zum Ausschluss aus dem Fairnessbewerb.<br>
           Die Disziplinarkommission ist berechtigt nach Begründung eine Mannschaft aus dem Fairnessbewerb auszuschließen.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 17 DSG-Meisterschafts-Auslosungstermine</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 17 DSG-Meisterschafts-Auslosungstermine</h3>
           <p style="margin-bottom: var(--space-md);">Die DSG-Spielauslosungstermine sind stichhaltig. Die eingeplanten Ersatzspieltermine können nur für Absagen wegen Schlechtwetter in Anspruch genommen werden.</p>
 
-          <h3 style="font-size: 1.3rem; color: var(--color-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 18 DSG-Meisterschaftsende und Preisverteilung</h3>
+          <h3 style="font-size: 1.3rem; color: var(--color-accent); margin-top: var(--space-xl); margin-bottom: var(--space-sm);">§ 18 DSG-Meisterschaftsende und Preisverteilung</h3>
           <p style="margin-bottom: var(--space-md);">Nach Beendigung der Frühjahrsmeisterschaft erfolgt eine Meisterschaftsabschlussfeier mit Preisverteilung.</p>
 
-          <hr style="margin: var(--space-xl) 0; border: none; border-top: 1px solid rgba(0,0,0,0.1);">
+          <hr style="margin: var(--space-xl) 0; border: none; border-top: 1px solid var(--color-border);">
           
           <div style="text-align: right; font-style: italic; color: var(--color-text-secondary);">
             <p style="margin-bottom: var(--space-sm);">Die DSG-Meisterschaftsbestimmungen vom 28. Juni 2018 treten somit außer Kraft.</p>
             <p style="margin-bottom: 4px;">Linz, 29. Juli 2022</p>
             <p style="margin-bottom: 4px;">Für die Ausführung verantwortlich</p>
-            <p style="margin-bottom: 4px; font-weight: bold; color: var(--color-primary);">Michael Angerbauer</p>
+            <p style="margin-bottom: 4px; font-weight: bold; color: var(--color-accent);">Michael Angerbauer</p>
             <p>Geschäftsführender Obmann</p>
           </div>
         </div>
@@ -304,23 +304,23 @@ const renderContent = (id) => {
     ];
 
     const rows = data.map(person => `
-      <div class="contact-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-sm); padding: var(--space-sm) 0; border-bottom: 1px solid rgba(0,0,0,0.05); align-items: center;">
+      <div class="contact-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-sm); padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); align-items: center;">
         <div style="display: flex; flex-direction: column;">
-          <span style="font-weight: 700; font-size: 1.1rem;">${person.name}</span>
+          <span style="font-weight: 700; font-size: 1.1rem; color: var(--color-text-primary);">${person.name}</span>
           <span style="color: var(--color-text-secondary); font-size: 0.9rem;">${person.role}</span>
         </div>
         <div>
           ${person.phone ? `<a href="tel:${person.phone.replace(/[ /]/g, '')}" class="primary-btn" style="padding: 4px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> ${person.phone}</a>` : ''}
         </div>
         <div>
-          ${person.email ? `<a href="mailto:${person.email}" class="primary-btn" style="padding: 4px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px; background: var(--color-text-primary); color: var(--color-bg);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Email</a>` : ''}
+          ${person.email ? `<a href="mailto:${person.email}" class="primary-btn" style="padding: 4px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px; background: var(--color-surface-hover); color: var(--color-text-primary); border: 1px solid var(--color-border);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Email</a>` : ''}
         </div>
       </div>
     `).join('');
 
     return `
-      <div class="glass-card" style="background: rgba(255,255,255,0.5); padding: var(--space-lg);">
-        <div class="contact-header" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-sm); border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: var(--space-xs); margin-bottom: var(--space-sm); font-weight: 700; color: var(--color-accent);">
+      <div class="glass-card" style="background: var(--color-surface); border: 1px solid var(--color-border); padding: var(--space-lg);">
+        <div class="contact-header" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-sm); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs); margin-bottom: var(--space-sm); font-weight: 700; color: var(--color-accent);">
           <span>Name / Funktion</span>
           <span>Telefon</span>
           <span>Email</span>
@@ -351,9 +351,9 @@ const renderContent = (id) => {
     ];
 
     const rows = data.map(place => `
-      <div class="glass-card sportplatz-card" style="background: rgba(255,255,255,0.5); margin-bottom: var(--space-md); padding: var(--space-lg); display: flex; justify-content: space-between; align-items: center; gap: var(--space-md);">
+      <div class="glass-card sportplatz-card" style="background: var(--color-surface); border: 1px solid var(--color-border); margin-bottom: var(--space-md); padding: var(--space-lg); display: flex; justify-content: space-between; align-items: center; gap: var(--space-md);">
         <div style="display: flex; flex-direction: column;">
-          <h3 style="color: var(--color-primary); font-size: 1.3rem; font-weight: 800; margin-bottom: var(--space-xs);">${place.name}</h3>
+          <h3 style="color: var(--color-text-primary); font-size: 1.3rem; font-weight: 800; margin-bottom: var(--space-xs);">${place.name}</h3>
           <p style="color: var(--color-text-secondary); font-size: 1rem; margin: 0;">${place.address}</p>
         </div>
         <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.address)}" target="_blank" class="primary-btn" style="padding: 6px 20px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;">
@@ -396,23 +396,23 @@ const renderContent = (id) => {
     ];
 
     const rows = data.map(person => `
-      <div class="contact-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-sm); padding: var(--space-sm) 0; border-bottom: 1px solid rgba(0,0,0,0.05); align-items: center;">
+      <div class="contact-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-sm); padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); align-items: center;">
         <div style="display: flex; flex-direction: column;">
-          <span style="font-weight: 700; font-size: 1.1rem;">${person.name}</span>
+          <span style="font-weight: 700; font-size: 1.1rem; color: var(--color-text-primary);">${person.name}</span>
           <span style="color: var(--color-text-secondary); font-size: 0.9rem;">${person.role}</span>
         </div>
         <div>
           ${person.phone ? `<a href="tel:${person.phone.replace(/[ /]/g, '')}" class="primary-btn" style="padding: 4px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> ${person.phone}</a>` : ''}
         </div>
         <div>
-          ${person.email ? `<a href="mailto:${person.email}" class="primary-btn" style="padding: 4px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px; background: var(--color-text-primary); color: var(--color-bg);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Email</a>` : ''}
+          ${person.email ? `<a href="mailto:${person.email}" class="primary-btn" style="padding: 4px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px; background: var(--color-surface-hover); color: var(--color-text-primary); border: 1px solid var(--color-border);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Email</a>` : ''}
         </div>
       </div>
     `).join('');
 
     return `
-      <div class="glass-card" style="background: rgba(255,255,255,0.5); padding: var(--space-lg);">
-        <div class="contact-header" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-sm); border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: var(--space-xs); margin-bottom: var(--space-sm); font-weight: 700; color: var(--color-accent);">
+      <div class="glass-card" style="background: var(--color-surface); border: 1px solid var(--color-border); padding: var(--space-lg);">
+        <div class="contact-header" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-sm); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs); margin-bottom: var(--space-sm); font-weight: 700; color: var(--color-accent);">
           <span>Name / Mannschaft</span>
           <span>Telefon</span>
           <span>Email</span>
@@ -435,13 +435,13 @@ const renderContent = (id) => {
   } else {
     // Mock Table Data for Mannschaften, etc.
     return `
-      <div class="glass-card" style="background: rgba(255,255,255,0.5); padding: var(--space-lg);">
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: var(--space-sm); border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: var(--space-xs); margin-bottom: var(--space-sm); font-weight: 700; color: var(--color-accent);">
+      <div class="glass-card" style="background: var(--color-surface); border: 1px solid var(--color-border); padding: var(--space-lg);">
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: var(--space-sm); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-xs); margin-bottom: var(--space-sm); font-weight: 700; color: var(--color-accent);">
           <span>Name / Bezeichnung</span>
           <span>Details / Kontakt</span>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: var(--space-sm); padding: var(--space-xs) 0; border-bottom: 1px solid rgba(0,0,0,0.05);">
-          <span style="font-weight: 500;">Noch keine Daten vorhanden</span>
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: var(--space-sm); padding: var(--space-xs) 0; border-bottom: 1px solid var(--color-border);">
+          <span style="font-weight: 500; color: var(--color-text-primary);">Noch keine Daten vorhanden</span>
           <span style="color: var(--color-text-secondary);">-</span>
         </div>
       </div>
@@ -458,13 +458,13 @@ export const viewOrganisation = () => {
         <div style="color: var(--color-accent); margin-bottom: var(--space-md); transition: transform 0.3s ease;" class="icon-wrapper">
           ${section.icon}
         </div>
-        <h3>${section.title}</h3>
+        <h3 style="color: var(--color-text-primary);">${section.title}</h3>
       </div>
     `}).join('');
 
     return `
       <div class="container" style="padding-top: var(--space-xl);">
-        <h1 class="stagger-item" style="margin-bottom: var(--space-xl); text-align: left;">DSG <span class="accent-text">ORGANISATION</span></h1>
+        <h1 class="stagger-item" style="margin-bottom: var(--space-xl); text-align: left; color: var(--color-text-primary);">DSG <span class="accent-text">ORGANISATION</span></h1>
         
         <div class="org-grid bento-box">
           ${cardsHTML}
@@ -493,7 +493,7 @@ export const viewOrganisation = () => {
             hyphens: auto !important; 
           }
         }
-        .org-card { transition: all 0.3s ease; box-sizing: border-box; min-width: 0; }
+        .org-card { transition: all 0.3s ease; box-sizing: border-box; min-width: 0; background: var(--color-surface); border: 1px solid var(--color-border); }
         .org-card:hover { transform: scale(1.02); box-shadow: 0 0 20px var(--color-accent-glow); border-color: var(--color-accent); }
       </style>
     `;
@@ -501,12 +501,12 @@ export const viewOrganisation = () => {
     const section = orgSections.find(s => s.id === currentSection);
     return `
       <div class="container" style="padding-top: var(--space-xl); animation: fadeIn 0.3s ease;">
-        <div class="glass-card detail-view" style="position: relative; padding: var(--space-xl); background: rgba(255, 255, 255, 0.8); box-shadow: var(--glass-shadow); min-height: 60vh;">
+        <div class="glass-card detail-view" style="position: relative; padding: var(--space-xl); background: var(--color-surface); border: 1px solid var(--color-border); box-shadow: var(--glass-shadow); min-height: 60vh;">
           <button id="close-org-detail" style="position: absolute; top: var(--space-md); right: var(--space-md); background: none; border: none; color: var(--color-text-secondary); font-size: 2rem; cursor: pointer; transition: color 0.2s;">&times;</button>
           
           <div class="detail-header" style="display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-xl);">
             <div style="color: var(--color-accent);">${section.icon}</div>
-            <h1 class="detail-title" style="font-size: 2rem;">${section.title}</h1>
+            <h1 class="detail-title" style="font-size: 2rem; color: var(--color-text-primary);">${section.title}</h1>
           </div>
           
           <div class="content-area">
@@ -523,7 +523,7 @@ export const viewOrganisation = () => {
           .detail-title { 
             font-size: clamp(1.2rem, 6vw, 1.5rem) !important; 
             word-break: break-word; 
-            hyphens: auto;
+            hyphens: auto; 
             line-height: 1.3;
           }
           .detail-header { margin-bottom: var(--space-md) !important; }
