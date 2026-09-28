@@ -110,9 +110,9 @@ const initApp = () => {
   const getInitialTheme = () => {
     try {
       const saved = localStorage.getItem('dsg_theme');
-      if (saved === 'dark' || saved === 'light') return saved;
+      if (saved === 'dark') return 'dark';
     } catch(e) {}
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'light';
   };
 
   const initialTheme = document.documentElement.getAttribute('data-theme') || getInitialTheme();
