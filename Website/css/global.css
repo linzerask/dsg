@@ -2548,14 +2548,15 @@ main {
     margin: 0 !important;
 }
 
-.modal-content, #game-modal > .glass-card, #report-modal > .glass-card, #round-modal > .glass-card, #player-modal > .glass-card, #team-modal > .glass-card, #league-modal > .glass-card, #add-game-modal > .glass-card {
+.modal-content, #game-modal > .glass-card, #report-modal > .glass-card, #round-modal > .glass-card, #player-modal > .glass-card, #team-modal > .glass-card, #league-modal > .glass-card, #add-game-modal > .glass-card, #league-data-modal > div {
     position: relative !important;
     z-index: 10 !important;
     box-sizing: border-box !important;
-    background: #ffffff !important;
+    background: var(--color-surface) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border) !important;
     width: 100% !important;
     max-width: min(650px, calc(100vw - 20px)) !important;
     max-height: 90vh !important;

@@ -91,9 +91,9 @@ export const renderAdminGames = () => {
 
         <!-- Modal 1: Spiel anlegen / bearbeiten -->
         <div id="game-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
-            <div class="glass-card modal-content" style="width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.3);">
+            <div class="glass-card modal-content" style="width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.3);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
-                    <h3 id="game-modal-title" style="margin: 0; font-size: 1.3rem;">Spiel hinzufügen</h3>
+                    <h3 id="game-modal-title" style="margin: 0; font-size: 1.3rem; color: var(--color-text-primary);">Spiel hinzufügen</h3>
                     <button type="button" class="btn-close-game-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
                 </div>
                 
@@ -159,21 +159,21 @@ export const renderAdminGames = () => {
 
         <!-- Modal 2: Spielbericht eingeben -->
         <div id="report-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
-            <div class="glass-card modal-content" style="width: 100%; max-width: 900px; max-height: 92vh; overflow-y: auto; background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 48px rgba(0,0,0,0.35);">
+            <div class="glass-card modal-content" style="width: 100%; max-width: 900px; max-height: 92vh; overflow-y: auto; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 48px rgba(0,0,0,0.35);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
-                    <h3 style="margin: 0; font-size: 1.4rem;">Spielbericht eingeben</h3>
+                    <h3 style="margin: 0; font-size: 1.4rem; color: var(--color-text-primary);">Spielbericht eingeben</h3>
                     <button type="button" class="btn-close-report-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
                 </div>
 
                 <!-- Match Header Information Card -->
-                <div class="glass-card" style="padding: var(--space-md); background: rgba(0,150,64,0.04); border-left: 4px solid var(--color-accent); margin-bottom: var(--space-md);">
+                <div class="glass-card" style="padding: var(--space-md); background: rgba(0,150,64,0.08); border-left: 4px solid var(--color-accent); margin-bottom: var(--space-md);">
                     <div style="font-size: 1.15rem; font-weight: 700; color: var(--color-text-primary);" id="report-match-title">Walker FC gegen DSG Union Traun</div>
                     <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 4px;" id="report-match-meta">2026 Herbst | 31.10.2026 16:00:00 | DSG-Platz</div>
                 </div>
 
                 <form id="report-form" style="display: flex; flex-direction: column; gap: var(--space-lg);">
                     <!-- Score & Halftime Section -->
-                    <div style="background: rgba(0,0,0,0.02); padding: var(--space-md); border-radius: 6px; border: var(--glass-border);">
+                    <div style="background: var(--color-surface-hover); padding: var(--space-md); border-radius: 6px; border: 1px solid var(--color-border);">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
                             <div>
                                 <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;" id="lbl-goals-home">Tore Heim</label>
