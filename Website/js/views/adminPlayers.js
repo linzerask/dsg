@@ -85,56 +85,63 @@ export const renderAdminPlayers = () => {
 
         <!-- Edit / Create Modal matching original menu -->
         <div id="player-modal" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; height: 100dvh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 16px; margin: 0;">
-            <div class="glass-card modal-content" style="background: #ffffff; max-width: 520px; width: 100%; max-height: 90vh; max-height: 90dvh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 16px 40px rgba(0,0,0,0.3); margin: auto;">
-                <h3 id="modal-player-title" style="margin-bottom: var(--space-md); color: var(--color-text-primary);">Spieler hinzufügen</h3>
+            <div class="glass-card modal-content" style="background: #ffffff; max-width: 580px; width: 100%; max-height: 90vh; max-height: 90dvh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 16px 40px rgba(0,0,0,0.3); border: 1px solid var(--color-border); margin: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
+                    <h3 id="modal-player-title" style="margin: 0; font-size: 1.3rem; color: var(--color-text-primary);">Spieler hinzufügen</h3>
+                    <button type="button" id="btn-close-modal" class="btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
+                </div>
                 <form id="player-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-player-id">
                     
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Vorname</label>
-                        <input type="text" id="edit-vorname" class="admin-input" placeholder="Vorname" style="width: 100%;" required>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+                        <div>
+                            <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Vorname</label>
+                            <input type="text" id="edit-vorname" class="admin-input" placeholder="Vorname" style="width: 100%;" required>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Nachname</label>
+                            <input type="text" id="edit-nachname" class="admin-input" placeholder="Nachname" style="width: 100%;" required>
+                        </div>
                     </div>
 
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Nachname</label>
-                        <input type="text" id="edit-nachname" class="admin-input" placeholder="Nachname" style="width: 100%;" required>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+                        <div>
+                            <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Geburtstag</label>
+                            <input type="date" id="edit-geburt" class="admin-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Mitglied</label>
+                            <select id="edit-mitglied" class="admin-input" style="width: 100%;">
+                                <option value="Ja">Ja</option>
+                                <option value="Nein">Nein</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Geburtstag</label>
-                        <input type="date" id="edit-geburt" class="admin-input" style="width: 100%;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+                        <div>
+                            <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Mitglied seit:</label>
+                            <input type="date" id="edit-seit" class="admin-input" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Status</label>
+                            <select id="edit-status" class="admin-input" style="width: 100%;">
+                                <option value="Aktiv">Aktiv</option>
+                                <option value="Inaktiv">Inaktiv</option>
+                                <option value="Archiviert">Archiviert</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Mitglied</label>
-                        <select id="edit-mitglied" class="admin-input" style="width: 100%;">
-                            <option value="Ja">Ja</option>
-                            <option value="Nein">Nein</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Mitglied seit:</label>
-                        <input type="date" id="edit-seit" class="admin-input" style="width: 100%;">
-                    </div>
-
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Status</label>
-                        <select id="edit-status" class="admin-input" style="width: 100%;">
-                            <option value="Aktiv">Aktiv</option>
-                            <option value="Inaktiv">Inaktiv</option>
-                            <option value="Archiviert">Archiviert</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">ÖFB-Verein</label>
-                        <input type="text" id="edit-ofb" class="admin-input" placeholder="ÖFB-Verein" style="width: 100%;">
-                    </div>
-
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Sperre</label>
-                        <input type="text" id="edit-sperre" class="admin-input" placeholder="Grund für Sperre" style="width: 100%;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+                        <div>
+                            <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">ÖFB-Verein</label>
+                            <input type="text" id="edit-ofb" class="admin-input" placeholder="ÖFB-Verein" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Sperre</label>
+                            <input type="text" id="edit-sperre" class="admin-input" placeholder="Grund für Sperre" style="width: 100%;">
+                        </div>
                     </div>
 
                     <div>
@@ -144,12 +151,9 @@ export const renderAdminPlayers = () => {
                         </select>
                     </div>
 
-                    <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md); justify-content: space-between; align-items: center;">
-                        <button type="button" id="btn-delete-player" class="btn" style="background: #e74c3c; color: white; padding: 8px 16px;">Löschen</button>
-                        <div style="display: flex; gap: var(--space-sm); margin-left: auto;">
-                            <button type="button" id="btn-close-modal" class="btn btn-outline" style="padding: 8px 16px;">Abbrechen</button>
-                            <button type="submit" id="btn-submit-player" class="btn-dsg" style="padding: 8px 18px;">Erstellen</button>
-                        </div>
+                    <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
+                        <button type="button" id="btn-delete-player" style="display: none; padding: 10px 16px; background: #dc3545; color: #fff; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Löschen</button>
+                        <button type="submit" id="btn-submit-player" class="primary-btn" style="flex: 1; padding: 10px; font-weight: 700; background: var(--color-accent); color: #fff; border: none; border-radius: 4px; cursor: pointer; text-transform: uppercase;">ERSTELLEN</button>
                     </div>
                 </form>
             </div>

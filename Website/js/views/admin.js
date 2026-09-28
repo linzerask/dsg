@@ -1,10 +1,10 @@
 import { Store } from '../store.js?v=1790560000100';
 
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560000300';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560000300';
-import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560000300';
-import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560000300';
-import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560000300';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560000310';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560000310';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560000310';
+import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560000310';
+import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560000310';
 import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790560000100';
 import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1790560000100';
 
@@ -16,6 +16,15 @@ export const ensureAllAdminModalsInBody = () => {
     'league-modal', 'league-data-modal'
   ];
   modalIds.forEach(id => {
+    const allMatching = Array.from(document.querySelectorAll('#' + id));
+    if (allMatching.length > 1) {
+      const innerModal = allMatching.find(el => el.parentElement !== document.body);
+      if (innerModal) {
+        allMatching.filter(el => el !== innerModal).forEach(el => el.remove());
+        document.body.appendChild(innerModal);
+        return;
+      }
+    }
     const el = document.getElementById(id);
     if (el && el.parentElement !== document.body) {
       document.body.appendChild(el);
