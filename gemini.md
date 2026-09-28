@@ -35,8 +35,8 @@ The frontend implements aggressive client-side caching across `localStorage` and
 * **The Pitfall:** Forcing horizontal scrollbars on mobile (`<= 768px`) for tab menus or complex data tables creates a poor user experience.
 * **The Rule:**
   1. **Floating Pill Navigation & Mobile Hamburger Drawer:** 
-     - The floating navigation pill expands to full screen width on mobile (`calc(100% - 28px)`), displays the DSG logo on the left, **centered bold green title `DSG Fußballmeisterschaft`** (`.brand-mobile-title`, `color: var(--color-accent)`, `position: absolute; left: 50%; transform: translateX(-50%);`) in the middle, and the crisp SVG hamburger button (`#open-drawer`) on the right.
-     - On desktop (`> 768px`), `.brand-mobile-title` is hidden (`display: none;`) to maintain the clean pill aesthetic.
+     - On mobile screens (`<= 768px`), the navigation renders as an ultra-compact **Dynamic Island Floating Capsule** centered at the top (`width: auto; max-width: max-content; left: 50%; transform: translateX(-50%); position: fixed; top: 14px;`). It contains the clean DSG logo on the left, an elegant subtle 1px divider, and the crisp SVG hamburger button (`#open-drawer`) on the right.
+     - Never stretch the mobile pill edge-to-edge with redundant title text, as the Hero section below already displays the main brand heading.
      - Never add inline `style="display: none"` directly into `#open-drawer` HTML tags, as inline styles override responsive `@media (max-width: 768px)` stylesheet rules.
      - Opening the mobile drawer activates `#drawer-overlay` with backdrop blur, and tapping anywhere outside the drawer or selecting any nav link automatically closes the drawer with Anime.js spring animations.
   2. **Admin Tab Navigation:** On mobile screens, the admin navigation transforms into an **Accordion / Collapsible Dropdown Drawer**. The toggle button displays the current active tab name and an animated SVG chevron that rotates on open/close. Selecting any tab switches the view and collapses the menu automatically.
