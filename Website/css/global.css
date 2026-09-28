@@ -943,10 +943,35 @@ main {
   box-sizing: border-box;
 }
 
+.round-select-dropdown option {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  padding: 8px;
+}
+
 .round-select-dropdown:hover,
 .round-select-dropdown:focus {
   background: rgba(142, 198, 63, 0.2);
   box-shadow: 0 0 12px rgba(142, 198, 63, 0.2);
+}
+
+[data-theme="dark"] .round-select-dropdown {
+  background: rgba(0, 200, 83, 0.16);
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+  box-shadow: 0 2px 8px rgba(0, 200, 83, 0.15);
+}
+
+[data-theme="dark"] .round-select-dropdown:hover,
+[data-theme="dark"] .round-select-dropdown:focus {
+  background: rgba(0, 200, 83, 0.25);
+  box-shadow: 0 0 12px rgba(0, 200, 83, 0.25);
+}
+
+[data-theme="dark"] .round-select-dropdown option {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
 }
 
 .round-select-chevron {
@@ -1643,7 +1668,7 @@ main {
   z-index: 9999;
 }
 .season-select-trigger {
-  background: #ffffff !important;
+  background: var(--color-surface) !important;
   border: 1px solid var(--color-border);
   padding: var(--space-xs) var(--space-md);
   border-radius: 8px;
@@ -1657,20 +1682,21 @@ main {
   transition: all 0.3s;
 }
 .season-select-trigger:hover {
-  background: var(--color-surface-hover);
+  background: var(--color-surface-hover) !important;
+  border-color: var(--color-accent);
 }
 .season-select-options {
   position: absolute;
   top: calc(100% + 5px);
   left: 0;
   right: 0;
-  background: #ffffff !important;
+  background: var(--color-surface) !important;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   overflow: hidden;
   display: none;
   z-index: 10000;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: var(--glass-shadow);
   opacity: 0;
   transform: translateY(-10px);
   transition: opacity 0.3s, transform 0.3s;
@@ -1696,10 +1722,14 @@ main {
   color: var(--color-text-primary);
 }
 .season-option.selected {
-  background: rgba(142, 198, 63, 0.1);
+  background: rgba(0, 179, 65, 0.12);
   color: var(--color-accent);
   font-weight: 700;
   border-left: 3px solid var(--color-accent);
+}
+[data-theme="dark"] .season-option.selected {
+  background: rgba(0, 200, 83, 0.18);
+  color: var(--color-accent);
 }
 /* Datagrid Styles */
 .datagrid-container {
