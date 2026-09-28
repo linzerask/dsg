@@ -1,4 +1,4 @@
-import { Router } from './router.js?v=1790560000260';
+import { Router } from './router.js?v=1790560000270';
 import { Store } from './store.js?v=1790560000181';
 
 const initApp = () => {

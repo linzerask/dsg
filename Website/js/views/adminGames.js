@@ -7,7 +7,7 @@ let playersData = [];
 let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 15;
-let currentSort = { column: 'date', asc: false };
+let currentSort = { column: 'date', asc: true };
 
 let editingMatchId = null;
 let currentReportMatch = null;
@@ -44,8 +44,8 @@ export const renderAdminGames = () => {
                     <option value="canceled">Abgesagt/Verschoben</option>
                 </select>
                 <select id="game-sort-select" class="admin-input" style="width: 170px;">
+                    <option value="date-asc" selected>Datum (älteste)</option>
                     <option value="date-desc">Datum (neueste)</option>
-                    <option value="date-asc">Datum (älteste)</option>
                     <option value="round-asc">Runde (1-14)</option>
                     <option value="round-desc">Runde (14-1)</option>
                     <option value="home-asc">Heim (A-Z)</option>
@@ -339,7 +339,7 @@ const filterAndSortGames = () => {
     const searchVal = (document.getElementById('game-search')?.value || '').toLowerCase().trim();
     const roundFilter = document.getElementById('game-round-filter')?.value || 'all';
     const statusFilter = document.getElementById('game-status-filter')?.value || 'all';
-    const sortVal = document.getElementById('game-sort-select')?.value || 'date-desc';
+    const sortVal = document.getElementById('game-sort-select')?.value || 'date-asc';
 
     filteredData = gamesData.filter(m => {
         const matchesSearch = !searchVal || 
@@ -402,7 +402,12 @@ const filterAndSortGames = () => {
             };
             valA = parseD(a.date);
             valB = parseD(b.date);
-            return currentSort.asc ? valA - valB : valB - valA;
+            if (valA !== valB) {
+                return currentSort.asc ? valA - valB : valB - valA;
+            }
+            const roundA = parseInt(String(a.round || a.roundNr || '').replace(/\D/g, '')) || 0;
+            const roundB = parseInt(String(b.round || b.roundNr || '').replace(/\D/g, '')) || 0;
+            return currentSort.asc ? roundA - roundB : roundB - roundA;
         }
 
         if (currentSort.column === 'round') {
