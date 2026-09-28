@@ -381,19 +381,19 @@ export const renderScorerPagination = (totalScorers, currentPage, perPage = SCOR
         Zeige <strong style="color: var(--color-text-primary);">${totalScorers > 0 ? startIndex + 1 : 0}&ndash;${endIndex}</strong> von <strong style="color: var(--color-text-primary);">${totalScorers}</strong> Torschützen (Seite ${currentPage} von ${totalPages})
       </div>
       <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-        <button class="stats-page-btn stats-prev-page glass-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled style="opacity: 0.35; pointer-events: none; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;"' : 'style="padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;"'}>
+        <button class="stats-page-btn stats-prev-page" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>
           &laquo; Zurück
         </button>
         ${pages.map(p => {
           if (p === '...') return `<span style="padding: 6px 8px; color: var(--color-text-secondary); font-size: 0.85rem;">&hellip;</span>`;
           const isActive = p === currentPage;
           return `
-            <button class="stats-page-btn" data-page="${p}" style="min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid ${isActive ? 'var(--color-accent)' : 'var(--color-border)'}; background: ${isActive ? 'var(--color-accent)' : 'var(--color-surface)'}; color: ${isActive ? '#ffffff' : 'var(--color-text-primary)'}; cursor: pointer; font-size: 0.85rem; font-weight: ${isActive ? '800' : '600'}; transition: all 0.2s;">
+            <button class="stats-page-btn ${isActive ? 'active' : ''}" data-page="${p}">
               ${p}
             </button>
           `;
         }).join('')}
-        <button class="stats-page-btn stats-next-page glass-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled style="opacity: 0.35; pointer-events: none; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;"' : 'style="padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;"'}>
+        <button class="stats-page-btn stats-next-page" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>
           Weiter &raquo;
         </button>
       </div>
