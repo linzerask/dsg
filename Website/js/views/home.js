@@ -134,13 +134,34 @@ export const viewHome = () => {
   const recentResults = sortedPlayedMatches.slice(0, 4);
 
   // Render Top 5 Teams
-  const teamRows = teams.map((t, index) => `
-    <div class="table-row">
-      <span class="rank" style="font-weight: 700; color: ${index === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; min-width: 20px;">${index + 1}</span>
-      <span class="team-name" style="font-weight: 600; flex: 1; margin-left: var(--space-sm); color: var(--color-text-primary);">${t.name}</span>
-      <span class="points" style="font-weight: 700; color: var(--color-accent);">${t.points} Pkt</span>
+  const teamRows = teams.map((t, index) => {
+    const gf = Number(t.gf !== undefined ? t.gf : (t.goalsFor || 0));
+    const ga = Number(t.ga !== undefined ? t.ga : (t.goalsAgainst || 0));
+    const diff = t.diff !== undefined ? Number(t.diff) : (t.goalDiff !== undefined ? Number(t.goalDiff) : (gf - ga));
+    const diffStr = diff > 0 ? '+' + diff : diff;
+    return `
+    <div class="table-row has-home-accordion" style="display: flex; flex-direction: column; cursor: pointer; transition: background 0.2s; padding: 10px 12px; border-radius: 6px; margin-bottom: 4px; border: 1px solid transparent;">
+      <div style="display: flex; align-items: center; width: 100%;">
+        <span class="rank" style="font-weight: 700; color: ${index === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; min-width: 22px;">${index + 1}</span>
+        <span class="team-name" style="font-weight: 600; flex: 1; margin-left: var(--space-sm); color: var(--color-text-primary);">${t.name}</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="points" style="font-weight: 700; color: var(--color-accent);">${t.points} Pkt</span>
+          <svg class="home-accordion-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+      </div>
+      <div class="home-table-accordion-body" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--color-border); font-size: 0.85rem; color: var(--color-text-secondary);">
+        <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center;">
+          <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Spiele</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.played || 0}</div></div>
+          <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Siege</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.won || 0}</div></div>
+          <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Unent.</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.drawn || 0}</div></div>
+          <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Nied.</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.lost || 0}</div></div>
+          <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Tore</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${gf}:${ga}</div></div>
+          <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Diff</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${diffStr}</div></div>
+        </div>
+      </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   // Render Top Scorers
   let currentRankHome = 1;
@@ -452,5 +473,28 @@ export const bindHome = () => {
     } else {
       counter.textContent = targetVal;
     }
+  });
+
+  // Top 5 Table Accordions (Expand/collapse on click)
+  const homeTableRows = document.querySelectorAll('.has-home-accordion');
+  homeTableRows.forEach(row => {
+    row.addEventListener('click', () => {
+      const body = row.querySelector('.home-table-accordion-body');
+      const chevron = row.querySelector('.home-accordion-chevron');
+      if (body) {
+        const isVisible = body.style.display === 'block';
+        body.style.display = isVisible ? 'none' : 'block';
+        if (chevron) chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+        if (!isVisible && typeof anime !== 'undefined') {
+          anime({
+            targets: body,
+            opacity: [0, 1],
+            translateY: [-6, 0],
+            duration: 250,
+            easing: 'easeOutQuad'
+          });
+        }
+      }
+    });
   });
 };

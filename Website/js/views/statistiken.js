@@ -364,23 +364,38 @@ export const renderClubsTableRows = (filteredClubs) => {
   }
 
   return filteredClubs.map((c) => `
-    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem;">
+    <tr class="stats-club-row has-stats-club-accordion" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem; cursor: pointer;">
       <td style="padding: 10px; font-weight: 700; color: ${c.rank <= 3 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">
         ${c.rank}.
       </td>
       <td style="padding: 10px; font-weight: 700; color: var(--color-text-primary);">
-        ${c.name} ${c.titles > 0 ? `<span title="${c.titles}x Meister" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.85rem; color: #f59e0b; margin-left: 6px;">${renderIcon('trophy', { size: 15, color: '#f59e0b' })} ${c.titles > 1 ? c.titles + 'x' : ''}</span>` : ''}
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+          <span>${c.name} ${c.titles > 0 ? `<span title="${c.titles}x Meister" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.85rem; color: #f59e0b; margin-left: 6px;">${renderIcon('trophy', { size: 15, color: '#f59e0b' })} ${c.titles > 1 ? c.titles + 'x' : ''}</span>` : ''}</span>
+          <svg class="stats-club-chevron show-mobile" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); transition: transform 0.2s; flex-shrink: 0;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
       </td>
-      <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.played}</td>
-      <td style="padding: 10px; text-align: center; font-weight: 600; color: var(--color-text-primary);">${c.won}</td>
-      <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.drawn}</td>
-      <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.lost}</td>
-      <td style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.gf}:${c.ga}</td>
-      <td style="padding: 10px; text-align: center; color: ${c.diff > 0 ? 'var(--color-accent)' : (c.diff < 0 ? '#e74c3c' : 'var(--color-text-secondary)')}; font-weight: 600;">
+      <td class="hide-mobile" style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.played}</td>
+      <td class="hide-mobile" style="padding: 10px; text-align: center; font-weight: 600; color: var(--color-text-primary);">${c.won}</td>
+      <td class="hide-mobile" style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.drawn}</td>
+      <td class="hide-mobile" style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.lost}</td>
+      <td class="hide-mobile" style="padding: 10px; text-align: center; color: var(--color-text-secondary);">${c.gf}:${c.ga}</td>
+      <td class="hide-mobile" style="padding: 10px; text-align: center; color: ${c.diff > 0 ? 'var(--color-accent)' : (c.diff < 0 ? '#e74c3c' : 'var(--color-text-secondary)')}; font-weight: 600;">
         ${c.diff > 0 ? '+' + c.diff : c.diff}
       </td>
-      <td style="padding: 10px; text-align: center; color: var(--color-accent); font-weight: 600;">${c.winRate}%</td>
+      <td class="hide-mobile" style="padding: 10px; text-align: center; color: var(--color-accent); font-weight: 600;">${c.winRate}%</td>
       <td style="padding: 10px; text-align: right; font-weight: 800; font-size: 1.05rem; color: var(--color-accent);">${c.points}</td>
+    </tr>
+    <tr class="stats-club-accordion-row show-mobile-row" style="display: none; background: rgba(0,0,0,0.02);">
+      <td colspan="3" style="padding: 8px 10px 14px 10px; border-bottom: 1px solid var(--color-border);">
+        <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; font-size: 0.8rem; color: var(--color-text-secondary);">
+          <div><div style="font-size: 0.65rem; text-transform: uppercase;">Spiele</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${c.played}</div></div>
+          <div><div style="font-size: 0.65rem; text-transform: uppercase;">Siege</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${c.won}</div></div>
+          <div><div style="font-size: 0.65rem; text-transform: uppercase;">Unent.</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${c.drawn}</div></div>
+          <div><div style="font-size: 0.65rem; text-transform: uppercase;">Nied.</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${c.lost}</div></div>
+          <div><div style="font-size: 0.65rem; text-transform: uppercase;">Tore</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${c.gf}:${c.ga}</div></div>
+          <div><div style="font-size: 0.65rem; text-transform: uppercase;">Quote</div><div style="font-weight: 700; color: var(--color-accent); font-size: 0.95rem;">${c.winRate}%</div></div>
+        </div>
+      </td>
     </tr>
   `).join('');
 };
@@ -597,13 +612,13 @@ export const viewStatistiken = () => {
                 <tr style="border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); font-size: 0.85rem;">
                   <th style="padding: 10px; width: 50px;">Rang</th>
                   <th style="padding: 10px;">Verein</th>
-                  <th style="padding: 10px; text-align: center;">Sp</th>
-                  <th style="padding: 10px; text-align: center;">S</th>
-                  <th style="padding: 10px; text-align: center;">U</th>
-                  <th style="padding: 10px; text-align: center;">N</th>
-                  <th style="padding: 10px; text-align: center;">Tore</th>
-                  <th style="padding: 10px; text-align: center;">Diff</th>
-                  <th style="padding: 10px; text-align: center;">Siegquote</th>
+                  <th class="hide-mobile" style="padding: 10px; text-align: center;">Sp</th>
+                  <th class="hide-mobile" style="padding: 10px; text-align: center;">S</th>
+                  <th class="hide-mobile" style="padding: 10px; text-align: center;">U</th>
+                  <th class="hide-mobile" style="padding: 10px; text-align: center;">N</th>
+                  <th class="hide-mobile" style="padding: 10px; text-align: center;">Tore</th>
+                  <th class="hide-mobile" style="padding: 10px; text-align: center;">Diff</th>
+                  <th class="hide-mobile" style="padding: 10px; text-align: center;">Siegquote</th>
                   <th style="padding: 10px; text-align: right;">Punkte</th>
                 </tr>
               </thead>
@@ -843,6 +858,22 @@ export const bindStatistiken = () => {
     updateScorersView();
   });
 
+  const bindClubAccordions = () => {
+    const clubRows = document.querySelectorAll('.has-stats-club-accordion');
+    clubRows.forEach(row => {
+      row.onclick = () => {
+        if (window.innerWidth > 768) return;
+        const accordionRow = row.nextElementSibling;
+        const chevron = row.querySelector('.stats-club-chevron');
+        if (accordionRow && accordionRow.classList.contains('stats-club-accordion-row')) {
+          const isVisible = accordionRow.style.display === 'table-row';
+          accordionRow.style.display = isVisible ? 'none' : 'table-row';
+          if (chevron) chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+      };
+    });
+  };
+
   // Club Search (in-place DOM update)
   const clubSearch = document.getElementById('stats-club-search');
   clubSearch?.addEventListener('input', (e) => {
@@ -853,8 +884,12 @@ export const bindStatistiken = () => {
       ? stats.allTimeClubs.filter(c => c.name.toLowerCase().includes(query))
       : stats.allTimeClubs;
     const clubsTbody = document.getElementById('stats-clubs-tbody');
-    if (clubsTbody) clubsTbody.innerHTML = renderClubsTableRows(filteredClubs);
+    if (clubsTbody) {
+      clubsTbody.innerHTML = renderClubsTableRows(filteredClubs);
+      bindClubAccordions();
+    }
   });
 
   bindPaginationButtons();
+  bindClubAccordions();
 };

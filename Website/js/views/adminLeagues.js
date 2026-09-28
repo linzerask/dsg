@@ -141,31 +141,34 @@ export const renderAdminLeagues = () => {
             <div style="background: #ffffff; max-width: 900px; width: 100%; max-height: 90vh; max-height: 90dvh; display: flex; flex-direction: column; border-radius: var(--border-radius-md); box-shadow: 0 16px 48px rgba(0,0,0,0.35); border: 1px solid var(--color-border); overflow: hidden; margin: auto;">
                 
                 <!-- Fixed Modal Top Header -->
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--color-border); background: rgba(0,0,0,0.02); flex-shrink: 0;">
-                    <div style="display: flex; align-items: center; gap: var(--space-sm);">
-                        <h3 id="league-data-title" style="margin: 0; font-size: 1.25rem; font-weight: 700;">Liga Details</h3>
-                        <span id="league-data-badge" class="badge badge-secondary" style="font-size: 0.75rem;">Inaktiv</span>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--color-border); background: rgba(0,0,0,0.02); flex-shrink: 0;">
+                    <div style="display: flex; align-items: center; gap: var(--space-sm); overflow: hidden;">
+                        <h3 id="league-data-title" style="margin: 0; font-size: 1.15rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Liga Details</h3>
+                        <span id="league-data-badge" class="badge badge-secondary" style="font-size: 0.72rem;">Inaktiv</span>
                     </div>
-                    <button type="button" id="btn-close-data-modal" style="background: none; border: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--color-text-secondary); padding: 4px 8px;">&times;</button>
+                    <button type="button" id="btn-close-data-modal" class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Zurück
+                    </button>
                 </div>
 
-                <!-- Fixed Modal Sub-Nav Tabs (Never scrolls out of view) -->
-                <div id="league-data-tab-bar" style="display: flex; gap: 8px; padding: 12px 24px; border-bottom: 1px solid var(--color-border); background: rgba(0,0,0,0.03); overflow-x: auto; flex-shrink: 0;">
-                    <button class="modal-tab-btn" data-modal-tab="table" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                        Tabelle
+                <!-- Fixed Modal Sub-Nav Tabs (4 Equal Columns on Mobile & Desktop) -->
+                <div id="league-data-tab-bar" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px 16px; border-bottom: 1px solid var(--color-border); background: rgba(0,0,0,0.03); flex-shrink: 0; box-sizing: border-box;">
+                    <button class="modal-tab-btn" data-modal-tab="table" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 4px; font-size: 0.82rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s; white-space: nowrap;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        <span>Tabelle</span>
                     </button>
-                    <button class="modal-tab-btn" data-modal-tab="matches" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
-                        Spielberichte
+                    <button class="modal-tab-btn" data-modal-tab="matches" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 4px; font-size: 0.82rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s; white-space: nowrap;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                        <span>Spiele</span>
                     </button>
-                    <button class="modal-tab-btn" data-modal-tab="cards" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">
-                        <span style="display:inline-block;width:10px;height:13px;background:#f1c40f;border-radius:2px;"></span>
-                        Karten
+                    <button class="modal-tab-btn" data-modal-tab="cards" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 4px; font-size: 0.82rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s; white-space: nowrap;">
+                        <span style="display:inline-block;width:9px;height:12px;background:#f1c40f;border-radius:2px;"></span>
+                        <span>Karten</span>
                     </button>
-                    <button class="modal-tab-btn" data-modal-tab="scorers" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-                        Tore
+                    <button class="modal-tab-btn" data-modal-tab="scorers" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 4px; font-size: 0.82rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s; white-space: nowrap;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                        <span>Tore</span>
                     </button>
                 </div>
 
@@ -510,43 +513,83 @@ const renderModalContent = () => {
         }
 
         container.innerHTML = `
-            <div class="table-responsive" style="overflow-x: auto;">
-                <table class="admin-table" style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px; text-align: center;">#</th>
-                            <th>Mannschaft</th>
-                            <th style="text-align: center;">Sp</th>
-                            <th style="text-align: center;">S</th>
-                            <th style="text-align: center;">U</th>
-                            <th style="text-align: center;">N</th>
-                            <th style="text-align: center;">Tore</th>
-                            <th style="text-align: center;">Diff</th>
-                            <th style="text-align: right; font-weight: 700;">Pkt</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${teams.map((t, i) => {
-                            const diff = (t.gf || 0) - (t.ga || 0);
-                            const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
-                            return `
-                                <tr>
-                                    <td style="text-align: center; font-weight: 700; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">${i + 1}</td>
-                                    <td><strong style="color: var(--color-text-primary);">${t.name}</strong></td>
-                                    <td style="text-align: center; color: var(--color-text-secondary);">${t.played ?? 0}</td>
-                                    <td style="text-align: center; color: var(--color-text-secondary);">${t.won ?? 0}</td>
-                                    <td style="text-align: center; color: var(--color-text-secondary);">${t.drawn ?? 0}</td>
-                                    <td style="text-align: center; color: var(--color-text-secondary);">${t.lost ?? 0}</td>
-                                    <td style="text-align: center; color: var(--color-text-secondary);">${t.gf ?? 0}:${t.ga ?? 0}</td>
-                                    <td style="text-align: center; color: var(--color-text-secondary);">${diffStr}</td>
-                                    <td style="text-align: right; font-weight: 900; color: var(--color-accent);">${t.points ?? 0}</td>
-                                </tr>
-                            `;
-                        }).join('')}
-                    </tbody>
-                </table>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Desktop Header -->
+                <div class="hide-mobile" style="display: grid; grid-template-columns: 40px 1fr 45px 40px 40px 40px 65px 50px 55px; padding: 8px 14px; font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; border-bottom: 1px solid var(--color-border); letter-spacing: 0.05em;">
+                    <span style="text-align: center;">#</span>
+                    <span>Mannschaft</span>
+                    <span style="text-align: center;">Sp</span>
+                    <span style="text-align: center;">S</span>
+                    <span style="text-align: center;">U</span>
+                    <span style="text-align: center;">N</span>
+                    <span style="text-align: center;">Tore</span>
+                    <span style="text-align: center;">Diff</span>
+                    <span style="text-align: right; color: var(--color-accent);">Pkt</span>
+                </div>
+
+                <!-- Teams Accordion List -->
+                ${teams.map((t, i) => {
+                    const diff = (t.gf || 0) - (t.ga || 0);
+                    const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
+                    return `
+                        <div class="has-league-table-accordion" style="border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface); overflow: hidden; cursor: pointer; transition: all 0.2s;">
+                            <!-- Desktop Row View -->
+                            <div class="hide-mobile" style="display: grid; grid-template-columns: 40px 1fr 45px 40px 40px 40px 65px 50px 55px; align-items: center; padding: 12px 14px; font-size: 0.9rem;">
+                                <span style="text-align: center; font-weight: 700; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">${i + 1}</span>
+                                <span style="font-weight: 700; color: var(--color-text-primary);">${t.name}</span>
+                                <span style="text-align: center; color: var(--color-text-secondary);">${t.played ?? 0}</span>
+                                <span style="text-align: center; color: var(--color-text-secondary);">${t.won ?? 0}</span>
+                                <span style="text-align: center; color: var(--color-text-secondary);">${t.drawn ?? 0}</span>
+                                <span style="text-align: center; color: var(--color-text-secondary);">${t.lost ?? 0}</span>
+                                <span style="text-align: center; color: var(--color-text-secondary);">${t.gf ?? 0}:${t.ga ?? 0}</span>
+                                <span style="text-align: center; color: var(--color-text-secondary);">${diffStr}</span>
+                                <span style="text-align: right; font-weight: 900; color: var(--color-accent); font-size: 1.05rem;">${t.points ?? 0}</span>
+                            </div>
+
+                            <!-- Mobile Row View (Click to toggle stats breakdown) -->
+                            <div class="show-mobile" style="padding: 12px 14px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
+                                        <span style="font-weight: 800; font-size: 1.05rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; min-width: 20px;">${i + 1}</span>
+                                        <strong style="font-size: 0.95rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</strong>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                                        <span style="font-weight: 900; font-size: 1.1rem; color: var(--color-accent);">${t.points ?? 0} Pkt</span>
+                                        <svg class="league-accordion-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    </div>
+                                </div>
+
+                                <!-- Accordion Body on Mobile -->
+                                <div class="league-table-accordion-body" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--color-border);">
+                                    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center;">
+                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Spiele</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.played ?? 0}</div></div>
+                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Siege</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.won ?? 0}</div></div>
+                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Unent.</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.drawn ?? 0}</div></div>
+                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Nied.</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.lost ?? 0}</div></div>
+                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Tore</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.gf ?? 0}:${t.ga ?? 0}</div></div>
+                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Diff</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${diffStr}</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
             </div>
         `;
+
+        // Bind table accordion toggles on mobile
+        container.querySelectorAll('.has-league-table-accordion').forEach(card => {
+            card.onclick = () => {
+                const body = card.querySelector('.league-table-accordion-body');
+                const chevron = card.querySelector('.league-accordion-chevron');
+                if (body) {
+                    const isVisible = body.style.display === 'block';
+                    body.style.display = isVisible ? 'none' : 'block';
+                    if (chevron) chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+            };
+        });
+
     } else if (currentModalTab === 'matches') {
         const matches = seasonData.schedule || seasonData.matches || [];
         if (matches.length === 0) {
@@ -779,31 +822,32 @@ const renderModalContent = () => {
         });
 
         container.innerHTML = `
-            <div class="table-responsive" style="overflow-x: auto;">
-                <table class="admin-table" style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px; text-align: center;">#</th>
-                            <th>Spieler</th>
-                            <th>Mannschaft</th>
-                            <th style="text-align: center; width: 60px;"><span style="display:inline-block;width:10px;height:14px;background:#f1c40f;border-radius:2px;"></span></th>
-                            <th style="text-align: center; width: 60px;"><span style="display:inline-flex;gap:2px;"><span style="display:inline-block;width:8px;height:14px;background:#f1c40f;border-radius:1px;"></span><span style="display:inline-block;width:8px;height:14px;background:#e74c3c;border-radius:1px;"></span></span></th>
-                            <th style="text-align: center; width: 60px;"><span style="display:inline-block;width:10px;height:14px;background:#e74c3c;border-radius:2px;"></span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${sortedCards.map((c, i) => `
-                            <tr>
-                                <td style="text-align: center; font-weight: 700; color: var(--color-text-secondary);">${i + 1}</td>
-                                <td><strong style="color: var(--color-text-primary);">${c.name}</strong></td>
-                                <td style="color: var(--color-text-secondary);">${c.team || '-'}</td>
-                                <td style="text-align: center; font-weight: 700;">${c.yellow || 0}</td>
-                                <td style="text-align: center; font-weight: 700; color: #f39c12;">${c.yellowRed || 0}</td>
-                                <td style="text-align: center; font-weight: 700; color: #e74c3c;">${c.red || 0}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                ${sortedCards.map((c, i) => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px;">
+                        <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
+                            <span style="font-weight: 700; color: var(--color-text-secondary); min-width: 20px; font-size: 0.9rem;">${i + 1}</span>
+                            <div style="display: flex; flex-direction: column;">
+                                <strong style="color: var(--color-text-primary); font-size: 0.92rem;">${c.name}</strong>
+                                <span style="color: var(--color-text-secondary); font-size: 0.78rem;">${c.team || '-'}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+                            <div style="display: flex; align-items: center; gap: 4px;" title="Gelbe Karten">
+                                <span style="display:inline-block;width:9px;height:13px;background:#f1c40f;border-radius:2px;"></span>
+                                <span style="font-weight: 700; font-size: 0.9rem;">${c.yellow || 0}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 4px;" title="Gelb-Rote Karten">
+                                <span style="display:inline-flex;gap:1px;"><span style="display:inline-block;width:7px;height:13px;background:#f1c40f;border-radius:1px;"></span><span style="display:inline-block;width:7px;height:13px;background:#e74c3c;border-radius:1px;"></span></span>
+                                <span style="font-weight: 700; font-size: 0.9rem; color: #f39c12;">${c.yellowRed || 0}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 4px;" title="Rote Karten">
+                                <span style="display:inline-block;width:9px;height:13px;background:#e74c3c;border-radius:2px;"></span>
+                                <span style="font-weight: 700; font-size: 0.9rem; color: #e74c3c;">${c.red || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
             </div>
         `;
     } else if (currentModalTab === 'scorers') {
@@ -816,27 +860,19 @@ const renderModalContent = () => {
         const sortedScorers = [...scorersList].sort((a, b) => (b.goals || 0) - (a.goals || 0));
 
         container.innerHTML = `
-            <div class="table-responsive" style="overflow-x: auto;">
-                <table class="admin-table" style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px; text-align: center;">#</th>
-                            <th>Spieler</th>
-                            <th>Mannschaft</th>
-                            <th style="text-align: right; width: 80px; font-weight: 700;">Tore</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${sortedScorers.map((s, i) => `
-                            <tr>
-                                <td style="text-align: center; font-weight: 700; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">${i + 1}</td>
-                                <td><strong style="color: var(--color-text-primary);">${s.name}</strong></td>
-                                <td style="color: var(--color-text-secondary);">${s.team || '-'}</td>
-                                <td style="text-align: right; font-weight: 900; color: var(--color-accent);">${s.goals || 0}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                ${sortedScorers.map((s, i) => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px;">
+                        <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
+                            <span style="font-weight: 700; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; min-width: 20px; font-size: 0.9rem;">${i + 1}</span>
+                            <div style="display: flex; flex-direction: column;">
+                                <strong style="color: var(--color-text-primary); font-size: 0.92rem;">${s.name}</strong>
+                                <span style="color: var(--color-text-secondary); font-size: 0.78rem;">${s.team || '-'}</span>
+                            </div>
+                        </div>
+                        <span style="font-weight: 900; font-size: 1.05rem; color: var(--color-accent); flex-shrink: 0;">${s.goals || 0} Tore</span>
+                    </div>
+                `).join('')}
             </div>
         `;
     }

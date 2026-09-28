@@ -1,11 +1,11 @@
-import { viewHome, bindHome } from './views/home.js?v=1790560000170';
-import { viewNews, bindNews } from './views/news.js?v=1790560000190';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560000230';
+import { viewHome, bindHome } from './views/home.js?v=1790560000390';
+import { viewNews, bindNews } from './views/news.js?v=1790560000390';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560000390';
 import { viewArchiv } from './views/simpleViews.js?v=1790560000099';
 import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560000099';
 import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560000099';
-import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560000240';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560000380';
+import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560000390';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560000390';
 import { viewArticle, bindArticle } from './views/article.js?v=1790560000099';
 import { viewImpressum } from './views/impressum.js?v=1790560000099';
 import { viewDatenschutz } from './views/datenschutz.js?v=1790560000099';
