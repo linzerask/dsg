@@ -162,7 +162,7 @@ DSG Liga/
 
 ## 13. Admin Data Grid Default Sort Orders
 * **The Rule:**
-  1. **Spieler Tab (`adminPlayers.js`):** Default sort order is set to **`Datum (älteste)` (`date-asc`)**, sorting by membership/registration date (`seit`) ascending from oldest to newest, with `# ID` ascending as the secondary tiebreaker.
+  1. **Spieler Tab (`adminPlayers.js`):** Default sort order is set to **`Datum (neueste)` (`date-desc`)**, sorting by membership/registration date (`seit`) descending from newest to oldest, with `# ID` descending as the secondary tiebreaker.
   2. **Spiele Tab (`adminGames.js`):** Default sort order is set to **`Datum (älteste)` (`date-asc`)**, ordering matches chronologically.
 
 

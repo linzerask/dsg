@@ -5,7 +5,7 @@ let teamsData = [];
 let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 15;
-let currentSort = { column: 'seit', asc: true };
+let currentSort = { column: 'seit', asc: false };
 
 export const renderAdminPlayers = () => {
     return `
@@ -33,13 +33,13 @@ export const renderAdminPlayers = () => {
                     <option value="Archiviert">Archiviert</option>
                 </select>
                 <select id="player-sort-select" class="admin-input" style="width: 170px;">
-                    <option value="date-asc" selected>Datum (älteste)</option>
-                    <option value="date-desc">Datum (neueste)</option>
+                    <option value="date-desc" selected>Datum (neueste)</option>
+                    <option value="date-asc">Datum (älteste)</option>
                     <option value="birth-asc">Geburtsdatum (älteste)</option>
                     <option value="birth-desc">Geburtsdatum (jüngste)</option>
                     <option value="status">Status (Aktiv zuerst)</option>
-                    <option value="id-asc"># ID (aufsteigend)</option>
                     <option value="id-desc"># ID (absteigend)</option>
+                    <option value="id-asc"># ID (aufsteigend)</option>
                     <option value="nachname">Nachname (A-Z)</option>
                     <option value="vorname">Vorname (A-Z)</option>
                     <option value="team">Team (A-Z)</option>
@@ -173,7 +173,7 @@ export const initAdminPlayers = async () => {
     
     populateFilterTeamDropdown();
     filteredData = [...playersData];
-    sortData('seit', true);
+    sortData('seit', false);
     bindEvents();
     renderTable();
 };
