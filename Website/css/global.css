@@ -1847,6 +1847,81 @@ main {
     box-shadow: none;
 }
 
+/* Base Button & Outline Button System */
+.btn {
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    line-height: 1.4;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+}
+
+.btn-outline,
+.edit-single-player-btn,
+.edit-single-team-btn,
+.edit-single-league-btn,
+.edit-news-btn,
+.edit-gal-btn,
+.admin-item-btn.btn-outline {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: 4px;
+}
+
+.btn-outline:hover,
+.edit-single-player-btn:hover,
+.edit-single-team-btn:hover,
+.edit-single-league-btn:hover,
+.edit-news-btn:hover,
+.edit-gal-btn:hover,
+.admin-item-btn.btn-outline:hover {
+    background: rgba(0, 0, 0, 0.08);
+    color: var(--color-text-primary) !important;
+    border-color: var(--color-text-secondary) !important;
+}
+
+.admin-item-btn {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.admin-item-actions .btn-danger,
+.delete-news-btn,
+.delete-gal-btn,
+.btn-danger {
+    background: rgba(231, 76, 60, 0.1) !important;
+    color: #e74c3c !important;
+    border: 1px solid rgba(231, 76, 60, 0.3) !important;
+}
+
+.admin-item-actions .btn-danger:hover,
+.delete-news-btn:hover,
+.delete-gal-btn:hover,
+.btn-danger:hover {
+    background: #e74c3c !important;
+    color: #ffffff !important;
+    border-color: #e74c3c !important;
+}
+
 .admin-layout {
     padding-top: 0;
     margin-top: -15px;
@@ -2995,6 +3070,48 @@ main {
     color: rgba(255, 255, 255, 0.3);
 }
 
+/* Dark Mode Admin Buttons */
+[data-theme="dark"] .btn-outline,
+[data-theme="dark"] .edit-single-player-btn,
+[data-theme="dark"] .edit-single-team-btn,
+[data-theme="dark"] .edit-single-league-btn,
+[data-theme="dark"] .edit-news-btn,
+[data-theme="dark"] .edit-gal-btn,
+[data-theme="dark"] .admin-item-btn.btn-outline {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #f7fafc !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .btn-outline:hover,
+[data-theme="dark"] .edit-single-player-btn:hover,
+[data-theme="dark"] .edit-single-team-btn:hover,
+[data-theme="dark"] .edit-single-league-btn:hover,
+[data-theme="dark"] .edit-news-btn:hover,
+[data-theme="dark"] .edit-gal-btn:hover,
+[data-theme="dark"] .admin-item-btn.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.16) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+[data-theme="dark"] .admin-item-actions .btn-danger,
+[data-theme="dark"] .delete-news-btn,
+[data-theme="dark"] .delete-gal-btn,
+[data-theme="dark"] .btn-danger {
+    background: rgba(231, 76, 60, 0.2) !important;
+    color: #ff6b6b !important;
+    border: 1px solid rgba(231, 76, 60, 0.4) !important;
+}
+
+[data-theme="dark"] .admin-item-actions .btn-danger:hover,
+[data-theme="dark"] .delete-news-btn:hover,
+[data-theme="dark"] .delete-gal-btn:hover,
+[data-theme="dark"] .btn-danger:hover {
+    background: #e74c3c !important;
+    color: #ffffff !important;
+}
+
 @media (max-width: 768px) {
     .stats-page-btn {
         padding: 6px 10px;
@@ -3002,3 +3119,4 @@ main {
         min-height: 32px;
     }
 }
+
