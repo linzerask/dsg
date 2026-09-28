@@ -1868,6 +1868,7 @@ main {
         overflow-x: hidden !important;
     }
     .admin-layout aside {
+        position: static !important;
         min-width: 0 !important;
         width: 100% !important;
         max-width: 100% !important;

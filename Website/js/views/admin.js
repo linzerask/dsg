@@ -114,7 +114,7 @@ export const viewAdmin = () => {
           </button>
         </nav>
       </aside>
-      <div class="admin-content" style="padding: var(--space-md) var(--space-lg);">
+      <div class="admin-content" style="padding: 0; min-width: 0;">
         <div id="admin-rounds" class="admin-section ${isTabActive('admin-rounds') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-rounds') ? 'block' : 'none'};">
           ${renderAdminRounds()}
         </div>
@@ -154,10 +154,12 @@ export const viewAdmin = () => {
         border: var(--glass-border);
         padding: var(--space-md);
         min-width: 0;
+        position: sticky;
+        top: 100px;
       }
       .admin-content {
         min-width: 0;
-        padding: var(--space-md) var(--space-lg);
+        padding: 0;
       }
       .admin-m-nav-toggle-btn {
         display: none;
@@ -234,6 +236,7 @@ export const viewAdmin = () => {
           width: 100% !important;
         }
         .admin-sidebar {
+          position: static !important;
           border-radius: var(--border-radius-md) !important;
           border: var(--glass-border) !important;
           margin: 0 auto 12px auto !important;
