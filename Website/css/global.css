@@ -65,11 +65,10 @@ h2 {
 .brand-link {
   display: flex;
   align-items: center;
-  gap: 8px;
   text-decoration: none;
 }
 
-.brand-mobile-text {
+.brand-mobile-title {
   display: none;
 }
 
@@ -232,19 +231,29 @@ main {
     justify-content: space-between !important;
     padding: 6px 14px !important;
     top: 12px !important;
+    position: fixed !important;
   }
   .floating-nav .nav-links {
     display: none !important;
   }
-  .brand-mobile-text {
-    display: inline-block !important;
+  .brand-mobile-title {
+    display: block !important;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     font-family: var(--font-primary);
-    font-weight: 900;
-    font-size: 1.15rem;
+    font-weight: 800;
+    font-size: clamp(0.68rem, 2.7vw, 0.92rem);
     color: var(--color-accent);
     letter-spacing: -0.01em;
-    line-height: 1;
-    margin-left: 2px;
+    line-height: 1.1;
+    text-align: center;
+    white-space: nowrap;
+    text-decoration: none;
+    max-width: calc(100% - 125px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: auto;
   }
   .mobile-menu-btn {
     display: flex !important;
