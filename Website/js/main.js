@@ -38,6 +38,37 @@ const initApp = () => {
   document.querySelectorAll('.drawer-link').forEach(link => {
     link.addEventListener('click', closeDrawer);
   });
+
+  // Smart dynamic auto-hiding floating navigation
+  const floatingNav = document.querySelector('.floating-nav');
+  let lastScrollY = window.scrollY;
+  const scrollThreshold = 8;
+
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+
+    // Always visible at the top
+    if (currentScrollY <= 20) {
+      floatingNav?.classList.remove('nav-hidden');
+      lastScrollY = currentScrollY;
+      return;
+    }
+
+    // Scroll Down -> Slide out
+    if (currentScrollY > lastScrollY + scrollThreshold && currentScrollY > 60) {
+      floatingNav?.classList.add('nav-hidden');
+    }
+    // Scroll Up -> Slide in
+    else if (currentScrollY < lastScrollY - scrollThreshold) {
+      floatingNav?.classList.remove('nav-hidden');
+    }
+
+    lastScrollY = currentScrollY;
+  }, { passive: true });
+
+  window.addEventListener('hashchange', () => {
+    floatingNav?.classList.remove('nav-hidden');
+  });
 };
 
 if (document.readyState === 'loading') {

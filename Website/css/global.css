@@ -60,6 +60,14 @@ h2 {
   border: var(--glass-border);
   border-radius: var(--border-radius-pill);
   box-shadow: var(--glass-shadow);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, box-shadow var(--transition-fast);
+  will-change: transform, opacity;
+}
+
+.floating-nav.nav-hidden {
+  transform: translate(-50%, -170%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .brand-link {
@@ -235,11 +243,12 @@ main {
     top: 14px !important;
     position: fixed !important;
     left: 50% !important;
-    transform: translateX(-50%) !important;
+    transform: translateX(-50%);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14) !important;
     background: rgba(255, 255, 255, 0.85) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, box-shadow var(--transition-fast) !important;
   }
   .floating-nav .nav-links {
     display: none !important;
