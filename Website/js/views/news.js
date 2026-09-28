@@ -1,13 +1,17 @@
-import { Store } from '../store.js';
+import { Store } from '../store.js?v=1790560000181';
 
 const renderCard = (n) => `
     <div class="glass-card stagger-item news-item-card">
       ${n.image ? `
-      <div style="position: relative; overflow: hidden; border-radius: 4px; margin-bottom: var(--space-sm);">
+      <a href="#/article/${n.id}" class="news-img-link" style="display: block; position: relative; overflow: hidden; border-radius: 4px; margin-bottom: var(--space-sm); text-decoration: none;">
         <img src="${n.image}" alt="${n.title}" style="width: 100%; height: 200px; object-fit: cover; display: block; transition: transform var(--transition-smooth);">
-      </div>` : ''}
+      </a>` : ''}
       <div style="font-size: 0.8rem; color: var(--color-accent); font-weight: 700; margin-bottom: var(--space-xs); text-transform: uppercase;">${n.date} &bull; ${n.readTime || ''}</div>
-      <h3 style="margin-bottom: var(--space-sm); font-size: 1.2rem; line-height: 1.3;">${n.title}</h3>
+      <h3 style="margin-bottom: var(--space-sm); font-size: 1.2rem; line-height: 1.3;">
+        <a href="#/article/${n.id}" class="news-title-link" style="color: inherit; text-decoration: none; transition: color var(--transition-fast); display: inline-block;">
+          ${n.title}
+        </a>
+      </h3>
       <div style="color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md); flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
         ${(n.content ? n.content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : (n.excerpt || '')).substring(0, 150)}...
       </div>
@@ -40,6 +44,8 @@ export const viewNews = () => {
       .news-item-card { display: flex; flex-direction: column; transition: all var(--transition-fast); height: 100%; }
       .news-item-card:hover { transform: translateY(-4px); box-shadow: var(--glass-shadow); border-color: var(--color-border); }
       .news-item-card:hover img { transform: scale(1.05); }
+      .news-item-card .news-title-link:hover,
+      .news-item-card:hover .news-title-link { color: var(--color-accent) !important; }
     </style>
   `;
 };

@@ -45,6 +45,7 @@ The frontend implements aggressive client-side caching across `localStorage` and
   4. **Fluid Typography & Containers:** Use `clamp()`, `word-break: break-word`, and `hyphens: auto` for long German compound words (e.g., *Meisterschaftsbestimmungen*, *Datenschutzerklärung*). Grids must collapse to single columns (`grid-template-columns: 1fr`).
   5. **Stats Section Action Buttons:** On desktop, action buttons remain aligned with section headings (`.stats-header-btn`). On mobile (`<= 768px`), header buttons are hidden and placed cleanly beneath the data card grid (`.stats-mobile-footer-btn`) with concise text ("Zur gesamten Statistik &rarr;") to prevent multi-line button wrapping.
   6. **Topspiel Match Card:** On mobile (`<= 768px`), team names stack vertically (`.topspiel-teams { flex-direction: column; }`): Home team on top, centered `VS` badge in the middle, Guest team at the bottom. Metadata rows below feature strictly equal vertical spacing (`margin-top: 12px; gap: 12px;`) between the Guest team, the Date/Time row, and the Location row.
+  7. **News Card Interaction & Navigation:** On all news listing grids (`news.js`) and carousels, the article image (`.news-img-link`), the article headline (`.news-title-link`), and the footer link (`Weiterlesen ->`) must all be direct clickable anchor tags pointing to `#/article/:id` for effortless tap and click ergonomics on both desktop and mobile.
 
 ---
 
