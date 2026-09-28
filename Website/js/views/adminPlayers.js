@@ -5,7 +5,7 @@ let teamsData = [];
 let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 15;
-let currentSort = { column: 'Status', asc: true };
+let currentSort = { column: 'seit', asc: true };
 
 export const renderAdminPlayers = () => {
     return `
@@ -32,10 +32,14 @@ export const renderAdminPlayers = () => {
                     <option value="Inaktiv">Inaktiv</option>
                     <option value="Archiviert">Archiviert</option>
                 </select>
-                <select id="player-sort-select" class="admin-input" style="width: 160px;">
+                <select id="player-sort-select" class="admin-input" style="width: 170px;">
+                    <option value="date-asc" selected>Datum (älteste)</option>
+                    <option value="date-desc">Datum (neueste)</option>
+                    <option value="birth-asc">Geburtsdatum (älteste)</option>
+                    <option value="birth-desc">Geburtsdatum (jüngste)</option>
                     <option value="status">Status (Aktiv zuerst)</option>
-                    <option value="id-desc"># ID (absteigend)</option>
                     <option value="id-asc"># ID (aufsteigend)</option>
+                    <option value="id-desc"># ID (absteigend)</option>
                     <option value="nachname">Nachname (A-Z)</option>
                     <option value="vorname">Vorname (A-Z)</option>
                     <option value="team">Team (A-Z)</option>
@@ -169,7 +173,7 @@ export const initAdminPlayers = async () => {
     
     populateFilterTeamDropdown();
     filteredData = [...playersData];
-    sortData('Status', true);
+    sortData('seit', true);
     bindEvents();
     renderTable();
 };
@@ -432,15 +436,58 @@ const applyFilters = () => {
     sortData(currentSort.column, currentSort.asc);
 };
 
+const parsePlayerDate = (dStr) => {
+    if (!dStr || dStr === '-' || dStr.startsWith('0000')) return 0;
+    if (dStr.includes('.')) {
+        const parts = dStr.split('.');
+        if (parts.length === 3) {
+            const d = parseInt(parts[0], 10);
+            const m = parseInt(parts[1], 10) - 1;
+            const y = parseInt(parts[2], 10);
+            return new Date(y, m, d).getTime() || 0;
+        }
+    }
+    const t = new Date(dStr).getTime();
+    return isNaN(t) ? 0 : t;
+};
+
 const sortData = (column, asc) => {
     currentSort = { column, asc };
     filteredData.sort((a, b) => {
+        if (column === 'seit' || column === 'date' || column === 'Datum') {
+            const dateA = parsePlayerDate(a.seit || a.Geburtsdatum);
+            const dateB = parsePlayerDate(b.seit || b.Geburtsdatum);
+            if (dateA && dateB && dateA !== dateB) {
+                return asc ? dateA - dateB : dateB - dateA;
+            }
+            if (dateA && !dateB) return asc ? -1 : 1;
+            if (!dateA && dateB) return asc ? 1 : -1;
+            const numA = parseInt(a['#']) || 0;
+            const numB = parseInt(b['#']) || 0;
+            return asc ? numA - numB : numB - numA;
+        }
+
+        if (column === 'Geburtsdatum' || column === 'birth') {
+            const dateA = parsePlayerDate(a.Geburtsdatum);
+            const dateB = parsePlayerDate(b.Geburtsdatum);
+            if (dateA && dateB && dateA !== dateB) {
+                return asc ? dateA - dateB : dateB - dateA;
+            }
+            if (dateA && !dateB) return asc ? -1 : 1;
+            if (!dateA && dateB) return asc ? 1 : -1;
+            const numA = parseInt(a['#']) || 0;
+            const numB = parseInt(b['#']) || 0;
+            return asc ? numA - numB : numB - numA;
+        }
+
         if (column === 'Status') {
             const priority = { 'Aktiv': 1, 'Inaktiv': 2, 'Archiviert': 3 };
             const pA = priority[a.Status] || 99;
             const pB = priority[b.Status] || 99;
             if (pA !== pB) return asc ? pA - pB : pB - pA;
-            return (b.seit || '').localeCompare(a.seit || '');
+            const dateA = parsePlayerDate(a.seit);
+            const dateB = parsePlayerDate(b.seit);
+            return dateB - dateA;
         }
 
         if (column === '#') {
@@ -478,9 +525,13 @@ const bindEvents = () => {
     if (sortSelect) {
         sortSelect.onchange = () => {
             const val = sortSelect.value;
-            if (val === 'status') sortData('Status', true);
-            else if (val === 'id-desc') sortData('#', false);
+            if (val === 'date-asc') sortData('seit', true);
+            else if (val === 'date-desc') sortData('seit', false);
+            else if (val === 'birth-asc') sortData('Geburtsdatum', true);
+            else if (val === 'birth-desc') sortData('Geburtsdatum', false);
+            else if (val === 'status') sortData('Status', true);
             else if (val === 'id-asc') sortData('#', true);
+            else if (val === 'id-desc') sortData('#', false);
             else if (val === 'nachname') sortData('Nachname', true);
             else if (val === 'vorname') sortData('Vorname', true);
             else if (val === 'team') sortData('Team', true);
