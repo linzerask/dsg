@@ -454,11 +454,11 @@ export const viewOrganisation = () => {
     const cardsHTML = orgSections.map((section, index) => {
       const colSpan = index < 2 ? 3 : 2;
       return `
-      <div class="glass-card org-card hover-lift stagger-item" data-id="${section.id}" style="grid-column: span ${colSpan}; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: var(--space-xl); transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%; min-height: 220px;">
+      <div class="glass-card org-card hover-lift stagger-item org-col-${colSpan}" data-id="${section.id}">
         <div style="color: var(--color-accent); margin-bottom: var(--space-md); transition: transform 0.3s ease;" class="icon-wrapper">
           ${section.icon}
         </div>
-        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-primary);">${section.title}</h3>
+        <h3>${section.title}</h3>
       </div>
     `}).join('');
 
@@ -466,7 +466,7 @@ export const viewOrganisation = () => {
       <div class="container" style="padding-top: var(--space-xl);">
         <h1 class="stagger-item" style="margin-bottom: var(--space-xl); text-align: left;">DSG <span class="accent-text">ORGANISATION</span></h1>
         
-        <div class="org-grid bento-box" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-lg);">
+        <div class="org-grid bento-box">
           ${cardsHTML}
         </div>
       </div>
@@ -476,10 +476,25 @@ export const viewOrganisation = () => {
           .bento-box > div { grid-column: span 1 !important; }
         }
         @media (max-width: 600px) { 
-          .bento-box { grid-template-columns: 1fr !important; } 
+          .bento-box { grid-template-columns: 1fr !important; gap: var(--space-md) !important; } 
+          .bento-box > div { 
+            grid-column: span 1 !important; 
+            width: 100% !important; 
+            min-width: 0 !important; 
+            max-width: 100% !important; 
+            box-sizing: border-box !important; 
+            padding: var(--space-lg) var(--space-md) !important; 
+            min-height: 150px !important; 
+          }
+          .org-card h3 { 
+            font-size: clamp(1rem, 4.5vw, 1.25rem) !important; 
+            word-break: break-word !important; 
+            overflow-wrap: break-word !important;
+            hyphens: auto !important; 
+          }
         }
-        .org-card { transition: all 0.3s ease; }
-        .org-card:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--color-accent-glow); border-color: var(--color-accent); }
+        .org-card { transition: all 0.3s ease; box-sizing: border-box; min-width: 0; }
+        .org-card:hover { transform: scale(1.02); box-shadow: 0 0 20px var(--color-accent-glow); border-color: var(--color-accent); }
       </style>
     `;
   } else {
@@ -512,6 +527,9 @@ export const viewOrganisation = () => {
             line-height: 1.3;
           }
           .detail-header { margin-bottom: var(--space-md) !important; }
+          .downloads-grid { grid-template-columns: 1fr !important; gap: var(--space-lg) !important; }
+          .file-row { flex-direction: column !important; align-items: flex-start !important; gap: var(--space-sm) !important; }
+          .file-row a.primary-btn { align-self: flex-end !important; }
         }
       </style>
     `;

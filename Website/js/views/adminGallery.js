@@ -1,4 +1,4 @@
-import { Store } from '../store.js';
+import { Store } from '../store.js?v=1790560000100';
 import { storage } from '../firebase.js';
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-storage.js";
 import { renderIcon } from '../icons.js';
@@ -179,7 +179,10 @@ export const initAdminGallery = () => {
       document.body.appendChild(toast);
     }
     toast.className = `dsg-toast ${isError ? 'error' : ''}`;
-    toast.innerHTML = `<span>${isError ? '⚠️' : '✅'}</span> <span>${message}</span>`;
+    const iconSvg = isError
+      ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
+      : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+    toast.innerHTML = `${iconSvg} <span>${message}</span>`;
     toast.classList.add('show');
     setTimeout(() => {
       toast.classList.remove('show');
@@ -206,9 +209,9 @@ export const initAdminGallery = () => {
         ` : `
           <img src="${img.url}" alt="Vorschau" onerror="this.onerror=null; this.src='stadion.png';">
           <div class="cover-badge select-cover-btn" data-idx="${idx}" title="Klicken, um als Titelbild festzulegen">
-            ${img.isCover ? '★ Titelbild' : '☆ Als Titelbild'}
+            ${img.isCover ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="margin-right: 4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Titelbild' : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Als Titelbild'}
           </div>
-          <button type="button" class="media-remove-btn remove-image-btn" data-idx="${idx}" title="Bild entfernen">✕</button>
+          <button type="button" class="media-remove-btn remove-image-btn" data-idx="${idx}" title="Bild entfernen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         `}
       </div>
     `).join('');
@@ -398,7 +401,7 @@ export const initAdminGallery = () => {
     if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
     if (cancelBtn) cancelBtn.style.display = 'none';
     if (submitText) submitText.textContent = 'Album erstellen';
-    if (formTitle) formTitle.innerHTML = '<span>📷</span> Neues Album erstellen';
+    if (formTitle) formTitle.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> Neues Album erstellen';
     renderMediaStage();
   };
 

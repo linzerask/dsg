@@ -1,4 +1,4 @@
-import { Store } from '../store.js';
+import { Store } from '../store.js?v=1790560000100';
 
 let roundsData = [];
 let leaguesData = [];
@@ -21,18 +21,31 @@ export const renderAdminRounds = () => {
 
         <!-- Controls Toolbar -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-xs); margin-bottom: var(--space-xs);">
-            <button class="btn-dsg" id="btn-add-round" style="background: var(--color-accent); color: #fff; font-weight: 700;">
-                <span style="font-size: 1.1rem; line-height: 1;">+</span> Runde anlegen
+            <button class="btn-dsg" id="btn-add-round" style="background: var(--color-accent); color: #fff; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Runde anlegen
             </button>
             <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;">
-                <input type="text" id="round-search" class="admin-input" placeholder="Runde / Liga suchen..." style="width: 220px;">
-                <select id="round-league-filter" class="admin-input" style="width: 180px;">
+                <input type="text" id="round-search" class="admin-input" placeholder="Runde / Liga suchen..." style="width: 170px;">
+                <select id="round-league-filter" class="admin-input" style="width: 140px;">
                     <option value="all">Alle Ligen</option>
+                </select>
+                <select id="round-status-filter" class="admin-input" style="width: 130px;">
+                    <option value="all">Alle Status</option>
+                    <option value="active">Nur Aktiv</option>
+                    <option value="inactive">Nur Inaktiv</option>
+                </select>
+                <select id="round-sort-select" class="admin-input" style="width: 160px;">
+                    <option value="runde-asc">Runde (1-14)</option>
+                    <option value="runde-desc">Runde (14-1)</option>
+                    <option value="jahr-desc">Jahr (neueste)</option>
+                    <option value="date-asc">Datum von</option>
                 </select>
             </div>
         </div>
         
-        <div class="table-responsive glass-card" style="padding: 0;">
+        <!-- Desktop Table View -->
+        <div class="table-responsive glass-card admin-desktop-table" style="padding: 0;">
             <table class="admin-table">
                 <thead>
                     <tr>
@@ -49,6 +62,11 @@ export const renderAdminRounds = () => {
                     <tr><td colspan="7" style="text-align: center; padding: 2rem;">Lade Spielrunden...</td></tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Mobile Card Accordion View -->
+        <div id="rounds-mobile-cards" class="admin-mobile-cards">
+            <div style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">Lade Spielrunden...</div>
         </div>
 
         <div class="datagrid-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md);">
@@ -173,6 +191,18 @@ export const renderAdminRounds = () => {
 const filterAndSortData = () => {
     const searchVal = (document.getElementById('round-search')?.value || '').toLowerCase().trim();
     const leagueFilter = document.getElementById('round-league-filter')?.value || 'all';
+    const statusFilter = document.getElementById('round-status-filter')?.value || 'all';
+    const sortVal = document.getElementById('round-sort-select')?.value || 'runde-asc';
+
+    const activeLeagues = leaguesData.filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
+    const isLeagueActive = (r) => {
+        if (!r.liga && !r.seasonKey) return false;
+        return activeLeagues.some(l => 
+            (l.seasonKey && l.seasonKey === r.seasonKey) || 
+            (l.name && r.liga && r.liga.toLowerCase().includes(l.name.toLowerCase())) ||
+            (r.seasonKey === '2026/2027')
+        );
+    };
 
     filteredData = roundsData.filter(r => {
         const matchesSearch = !searchVal || 
@@ -183,8 +213,24 @@ const filterAndSortData = () => {
 
         const matchesLeague = leagueFilter === 'all' || r.liga === leagueFilter || r.seasonKey === leagueFilter;
 
-        return matchesSearch && matchesLeague;
+        let matchesStatus = true;
+        const active = isLeagueActive(r);
+        if (statusFilter === 'active') matchesStatus = active;
+        else if (statusFilter === 'inactive') matchesStatus = !active;
+
+        return matchesSearch && matchesLeague && matchesStatus;
     });
+
+    // Handle sortVal
+    if (sortVal === 'runde-asc') {
+        currentSort = { column: 'runde', asc: true };
+    } else if (sortVal === 'runde-desc') {
+        currentSort = { column: 'runde', asc: false };
+    } else if (sortVal === 'jahr-desc') {
+        currentSort = { column: 'jahr', asc: false };
+    } else if (sortVal === 'date-asc') {
+        currentSort = { column: 'datumVon', asc: true };
+    }
 
     // Sorting
     filteredData.sort((a, b) => {
@@ -260,39 +306,117 @@ const renderTable = () => {
                 </td>
                 <td style="text-align: center;">
                     <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
-                        <button class="btn-edit-round" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">Editieren</button>
-                        <button class="btn-delete-round" data-idx="${rawIndex}" style="background: #dc3545; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Löschen</button>
-                        <button class="btn-add-game-to-round" data-idx="${rawIndex}" ${!isActive ? 'disabled style="opacity: 0.5; cursor: not-allowed; background: #6c757d; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600;"' : 'style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer;"'}>Spiel anlegen</button>
+                        <button class="btn-edit-round" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            Editieren
+                        </button>
+                        <button class="btn-delete-round" data-idx="${rawIndex}" style="background: #dc3545; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            Löschen
+                        </button>
+                        <button class="btn-add-game-to-round" data-idx="${rawIndex}" ${!isActive ? 'disabled style="opacity: 0.5; cursor: not-allowed; background: #6c757d; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"' : 'style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;"'}>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Spiel anlegen
+                        </button>
                     </div>
                 </td>
             </tr>
         `;
     }).join('');
 
-    // Bind row action buttons
-    tbody.querySelectorAll('.btn-edit-round').forEach(btn => {
-        btn.onclick = (e) => {
-            const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-            openEditRoundModal(idx);
-        };
-    });
+    // Render Mobile Accordion Cards
+    const mobileCardsContainer = document.getElementById('rounds-mobile-cards');
+    if (mobileCardsContainer) {
+        if (pageRows.length === 0) {
+            mobileCardsContainer.innerHTML = '<div class="glass-card" style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">Keine Spielrunden gefunden.</div>';
+        } else {
+            mobileCardsContainer.innerHTML = pageRows.map(r => {
+                const rawIndex = roundsData.indexOf(r);
+                const isActive = isLeagueActive(r);
+                return `
+                    <div class="admin-m-card" data-idx="${rawIndex}">
+                        <div class="admin-m-header">
+                            <div>
+                                <div class="admin-m-title">${r.runde || 'Runde'} <span style="font-weight: normal; color: var(--color-text-secondary); font-size: 0.9rem;">(${r.saison || ''} ${r.jahr || ''})</span></div>
+                                <div class="admin-m-subtitle">
+                                    <span style="font-weight: 600; color: var(--color-text-primary);">${r.liga || '-'}</span>
+                                    ${isActive ? '<span class="badge badge-success" style="font-size: 0.7rem;">Aktiv</span>' : '<span class="badge badge-secondary" style="font-size: 0.7rem;">Inaktiv</span>'}
+                                </div>
+                            </div>
+                            <div class="admin-m-chevron">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                        </div>
+                        <div class="admin-m-body">
+                            <div class="admin-m-grid">
+                                <div class="admin-m-grid-item">
+                                    <span class="admin-m-label">Datum von</span>
+                                    <span class="admin-m-value">${r.datumVon || '-'}</span>
+                                </div>
+                                <div class="admin-m-grid-item">
+                                    <span class="admin-m-label">Datum bis</span>
+                                    <span class="admin-m-value">${r.datumBis || '-'}</span>
+                                </div>
+                            </div>
+                            <div class="admin-m-actions">
+                                <button class="btn-add-game-to-round full-width" data-idx="${rawIndex}" ${!isActive ? 'disabled style="opacity: 0.5; cursor: not-allowed; background: #6c757d; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;"' : 'style="background: var(--color-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;"'}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                    Spiel anlegen
+                                </button>
+                                <button class="btn-edit-round" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                    Editieren
+                                </button>
+                                <button class="btn-delete-round" data-idx="${rawIndex}" style="background: #dc3545; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                    Löschen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
-    tbody.querySelectorAll('.btn-delete-round').forEach(btn => {
-        btn.onclick = (e) => {
-            const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-            deleteRound(idx);
-        };
-    });
+            // Accordion toggle on header click
+            mobileCardsContainer.querySelectorAll('.admin-m-header').forEach(hdr => {
+                hdr.onclick = () => {
+                    const card = hdr.closest('.admin-m-card');
+                    if (card) card.classList.toggle('expanded');
+                };
+            });
+        }
+    }
 
-    tbody.querySelectorAll('.btn-add-game-to-round').forEach(btn => {
-        btn.onclick = (e) => {
-            const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-            const round = roundsData[idx];
-            if (round) {
-                openAddGameModal(round);
-            }
-        };
-    });
+    // Bind row action buttons for both Desktop and Mobile views
+    const container = document.getElementById('admin-rounds');
+    if (container) {
+        container.querySelectorAll('.btn-edit-round').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+                openEditRoundModal(idx);
+            };
+        });
+
+        container.querySelectorAll('.btn-delete-round').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+                deleteRound(idx);
+            };
+        });
+
+        container.querySelectorAll('.btn-add-game-to-round').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+                const round = roundsData[idx];
+                if (round) {
+                    openAddGameModal(round);
+                }
+            };
+        });
+    }
 };
 
 const populateLeaguesDropdowns = () => {
@@ -487,6 +611,33 @@ export const initAdminRounds = async () => {
         currentPage = 1;
         renderTable();
     };
+
+    const statusFilter = document.getElementById('round-status-filter');
+    if (statusFilter) statusFilter.onchange = () => {
+        currentPage = 1;
+        renderTable();
+    };
+
+    const sortSelect = document.getElementById('round-sort-select');
+    if (sortSelect) sortSelect.onchange = () => {
+        currentPage = 1;
+        renderTable();
+    };
+
+    // Outside-click close for modals
+    const roundModal = document.getElementById('round-modal');
+    if (roundModal) {
+        roundModal.onclick = (e) => {
+            if (e.target === roundModal) closeRoundModal();
+        };
+    }
+
+    const addGameModal = document.getElementById('add-game-modal');
+    if (addGameModal) {
+        addGameModal.onclick = (e) => {
+            if (e.target === addGameModal) closeAddGameModal();
+        };
+    }
 
     // Sorting headers
     document.querySelectorAll('.datagrid-container table.admin-table th.sortable').forEach(th => {

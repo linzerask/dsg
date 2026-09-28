@@ -1,4 +1,4 @@
-import { Store } from '../store.js';
+import { Store } from '../store.js?v=1790560000100';
 
 let leaguesData = [];
 let filteredData = [];
@@ -19,20 +19,29 @@ export const renderAdminLeagues = () => {
 
         <!-- Controls Toolbar immediately above table -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-xs); margin-bottom: var(--space-xs);">
-            <button class="btn-dsg" id="btn-add-league">
-                <span style="font-size: 1.1rem; line-height: 1;">+</span> Liga anlegen
+            <button class="btn-dsg" id="btn-add-league" style="background: var(--color-accent); color: #fff; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Liga anlegen
             </button>
             <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;">
-                <input type="text" id="league-search" class="admin-input" placeholder="Suchen..." style="width: 200px;">
-                <select id="league-status-filter" class="admin-input" style="width: 140px;">
+                <input type="text" id="league-search" class="admin-input" placeholder="Suchen..." style="width: 170px;">
+                <select id="league-status-filter" class="admin-input" style="width: 130px;">
                     <option value="all">Alle Status</option>
                     <option value="Aktiv">Aktiv</option>
                     <option value="Inaktiv">Inaktiv</option>
                 </select>
+                <select id="league-sort-select" class="admin-input" style="width: 170px;">
+                    <option value="id-desc"># ID (absteigend)</option>
+                    <option value="id-asc"># ID (aufsteigend)</option>
+                    <option value="name">Name (A-Z)</option>
+                    <option value="year-desc">Jahr (neueste)</option>
+                    <option value="status">Status (Aktiv zuerst)</option>
+                </select>
             </div>
         </div>
         
-        <div class="table-responsive glass-card" style="padding: 0; overflow-x: auto;">
+        <!-- Desktop Table View -->
+        <div class="table-responsive glass-card admin-desktop-table" style="padding: 0; overflow-x: auto;">
             <table class="admin-table">
                 <thead>
                     <tr>
@@ -54,6 +63,11 @@ export const renderAdminLeagues = () => {
             </table>
         </div>
 
+        <!-- Mobile Card Accordion View -->
+        <div id="leagues-mobile-cards" class="admin-mobile-cards">
+            <div style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">Lade Ligen...</div>
+        </div>
+
         <div class="datagrid-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md);">
             <span id="leagues-page-info" style="color: var(--color-text-secondary); font-size: 0.9rem;">Zeige 0 bis 0 von 0</span>
             <div style="display: flex; gap: var(--space-xs);">
@@ -64,7 +78,7 @@ export const renderAdminLeagues = () => {
 
         <!-- Edit / Create League Modal -->
         <div id="league-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
-            <div style="background: var(--color-surface); max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: var(--glass-border);">
+            <div class="glass-card modal-content" style="background: var(--color-surface); max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: var(--glass-border);">
                 <h3 id="modal-league-title" style="margin-bottom: var(--space-md);">Liga bearbeiten</h3>
                 <form id="league-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-league-id">
@@ -95,7 +109,10 @@ export const renderAdminLeagues = () => {
                     <!-- Participating Teams Selector (Active leagues only) -->
                     <div id="league-teams-section" style="border-top: 1px solid var(--color-border); padding-top: var(--space-sm); margin-top: var(--space-xs);">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                            <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-text-primary);">⚽ Teilnehmende Teams</label>
+                            <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-text-primary); display: inline-flex; align-items: center; gap: 6px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                                Teilnehmende Teams
+                            </label>
                             <div style="display: flex; gap: 6px;">
                                 <button type="button" id="btn-select-all-league-teams" class="btn" style="padding: 3px 8px; font-size: 0.75rem; background: var(--color-surface); border: 1px solid var(--color-border); cursor: pointer; border-radius: 4px; color: var(--color-text-primary);">Alle auswählen</button>
                                 <button type="button" id="btn-deselect-all-league-teams" class="btn" style="padding: 3px 8px; font-size: 0.75rem; background: var(--color-surface); border: 1px solid var(--color-border); cursor: pointer; border-radius: 4px; color: var(--color-text-primary);">Keine</button>
@@ -134,10 +151,22 @@ export const renderAdminLeagues = () => {
 
                 <!-- Fixed Modal Sub-Nav Tabs (Never scrolls out of view) -->
                 <div id="league-data-tab-bar" style="display: flex; gap: 8px; padding: 12px 24px; border-bottom: 1px solid var(--color-border); background: rgba(0,0,0,0.03); overflow-x: auto; flex-shrink: 0;">
-                    <button class="modal-tab-btn" data-modal-tab="table" style="padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">📊 Tabelle</button>
-                    <button class="modal-tab-btn" data-modal-tab="matches" style="padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">⚽ Spielberichte</button>
-                    <button class="modal-tab-btn" data-modal-tab="cards" style="padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">🟨 Karten</button>
-                    <button class="modal-tab-btn" data-modal-tab="scorers" style="padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">🎯 Tore</button>
+                    <button class="modal-tab-btn" data-modal-tab="table" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        Tabelle
+                    </button>
+                    <button class="modal-tab-btn" data-modal-tab="matches" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                        Spielberichte
+                    </button>
+                    <button class="modal-tab-btn" data-modal-tab="cards" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">
+                        <span style="display:inline-block;width:10px;height:13px;background:#f1c40f;border-radius:2px;"></span>
+                        Karten
+                    </button>
+                    <button class="modal-tab-btn" data-modal-tab="scorers" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 0.85rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--color-border); cursor: pointer; background: var(--color-surface); color: var(--color-text-primary); transition: all 0.2s;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                        Tore
+                    </button>
                 </div>
 
                 <!-- Scrollable Content Area -->
@@ -221,38 +250,132 @@ const renderTable = () => {
                     </span>
                 </td>
                 <td style="text-align: center;">
-                    <button class="btn btn-outline edit-single-league-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px;">Bearbeiten</button>
+                    <button class="btn btn-outline edit-single-league-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                        Bearbeiten
+                    </button>
                 </td>
                 <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="table" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Tabelle</button>
+                    <button class="btn-league-view" data-action="table" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        Tabelle
+                    </button>
                 </td>
                 <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="matches" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Spielberichte</button>
+                    <button class="btn-league-view" data-action="matches" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                        Spielberichte
+                    </button>
                 </td>
                 <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="cards" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Karten</button>
+                    <button class="btn-league-view" data-action="cards" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
+                        <span style="display:inline-block;width:9px;height:12px;background:#f1c40f;border-radius:2px;"></span>
+                        Karten
+                    </button>
                 </td>
                 <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="scorers" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Tore</button>
+                    <button class="btn-league-view" data-action="scorers" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                        Tore
+                    </button>
                 </td>
             </tr>
         `;
     }).join('');
 
-    tbody.querySelectorAll('.edit-single-league-btn').forEach(btn => {
-        btn.onclick = (e) => {
-            const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-            openEditModal(idx);
-        };
-    });
+    // Render Mobile Accordion Cards
+    const mobileCardsContainer = document.getElementById('leagues-mobile-cards');
+    if (mobileCardsContainer) {
+        if (pageRows.length === 0) {
+            mobileCardsContainer.innerHTML = '<div class="glass-card" style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">Keine Ligen gefunden.</div>';
+        } else {
+            mobileCardsContainer.innerHTML = pageRows.map(l => {
+                const status = (l.status === 'Nein' || l.status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv';
+                let badgeClass = status === 'Aktiv' ? 'badge-success' : 'badge-secondary';
+                const isVisible = (l.showOnHomepage !== false);
+                const rawIndex = leaguesData.indexOf(l);
 
-    tbody.querySelectorAll('.btn-league-view').forEach(btn => {
-        btn.onclick = (e) => {
-            const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-            const action = e.currentTarget.getAttribute('data-action');
-            openLeagueDataModal(idx, action);
-        };
-    });
+                return `
+                    <div class="admin-m-card" data-idx="${rawIndex}">
+                        <div class="admin-m-header">
+                            <div style="flex: 1; min-width: 0;">
+                                <div class="admin-m-title">
+                                    <span style="color: var(--color-accent); font-weight: 800; margin-right: 4px;">#${l.id || '-'}</span>
+                                    <strong>${l.name || '-'}</strong>
+                                </div>
+                                <div class="admin-m-subtitle">
+                                    <span class="badge ${badgeClass}" style="font-size: 0.72rem;">${status}</span>
+                                    <span>•</span>
+                                    <span>Jahr: ${l.year || '-'}</span>
+                                    <span>•</span>
+                                    <span>Homepage: ${isVisible ? 'Ja' : 'Nein'}</span>
+                                </div>
+                            </div>
+                            <svg class="admin-m-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                        <div class="admin-m-body">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; margin-bottom: 6px;">
+                                Daten & Statistiken einsehen
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: var(--space-sm);">
+                                <button class="btn-league-view" data-action="table" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 700; padding: 8px; border-radius: 4px; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                                    Tabelle
+                                </button>
+                                <button class="btn-league-view" data-action="matches" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 700; padding: 8px; border-radius: 4px; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                                    Spielberichte
+                                </button>
+                                <button class="btn-league-view" data-action="cards" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 700; padding: 8px; border-radius: 4px; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <span style="display:inline-block;width:10px;height:13px;background:#f1c40f;border-radius:2px;"></span>
+                                    Karten
+                                </button>
+                                <button class="btn-league-view" data-action="scorers" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 700; padding: 8px; border-radius: 4px; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                                    Tore
+                                </button>
+                            </div>
+                            <div class="admin-m-actions" style="border-top: 1px solid var(--color-border); padding-top: 8px;">
+                                <button class="edit-single-league-btn full-width" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                    Liga bearbeiten
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Accordion toggle on header click
+            mobileCardsContainer.querySelectorAll('.admin-m-header').forEach(hdr => {
+                hdr.onclick = () => {
+                    const card = hdr.closest('.admin-m-card');
+                    if (card) card.classList.toggle('expanded');
+                };
+            });
+        }
+    }
+
+    // Bind action buttons across both Desktop and Mobile views
+    const container = document.getElementById('admin-leagues');
+    if (container) {
+        container.querySelectorAll('.edit-single-league-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+                openEditModal(idx);
+            };
+        });
+
+        container.querySelectorAll('.btn-league-view').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+                const action = e.currentTarget.getAttribute('data-action');
+                openLeagueDataModal(idx, action);
+            };
+        });
+    }
 };
 
 const updateModalTabsUI = () => {
@@ -344,7 +467,9 @@ const renderModalContent = () => {
     if (!seasonData) {
         container.innerHTML = `
             <div style="text-align: center; padding: 40px 20px; color: var(--color-text-secondary);">
-                <div style="font-size: 2.5rem; margin-bottom: 12px;">📁</div>
+                <div style="margin-bottom: 12px; color: var(--color-text-secondary); opacity: 0.6;">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                </div>
                 <h4 style="color: var(--color-text-primary); margin-bottom: 6px;">Keine Spieldaten vorhanden</h4>
                 <p style="font-size: 0.9rem; max-width: 420px; margin: 0 auto;">Für die Saison <strong>${selectedLeague.name} (${seasonKey})</strong> wurden noch keine Daten erfasst oder importiert.</p>
             </div>
@@ -470,7 +595,7 @@ const renderModalContent = () => {
                                             ${teamGoals.map(g => `
                                                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 0.85rem;">
                                                     <span style="font-weight: 600; color: var(--color-text-primary);">${g.name} ${g.count > 1 ? `<span style="color: var(--color-accent); font-weight: 700;">(${g.count}x)</span>` : ''}</span>
-                                                    <span style="font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600;">${g.minute ? `${g.minute}'` : '⚽'}</span>
+                                                    <span style="font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600;">${g.minute ? `${g.minute}'` : ''}</span>
                                                 </div>
                                             `).join('')}
                                         </div>
@@ -484,14 +609,19 @@ const renderModalContent = () => {
                                     return `
                                         <div style="display: flex; flex-direction: column; gap: 4px;">
                                             ${teamCards.map(c => {
-                                                let cardIcon = '🟨';
+                                                let cardBadge = '<span style="display:inline-block;width:10px;height:14px;background:#f1c40f;border-radius:2px;"></span>';
                                                 let cardColor = 'var(--color-text-primary)';
-                                                if (c.type === 'yellowRed') { cardIcon = '🟨🟥'; cardColor = '#f39c12'; }
-                                                else if (c.type === 'red') { cardIcon = '🟥'; cardColor = '#e74c3c'; }
+                                                if (c.type === 'yellowRed') {
+                                                    cardBadge = '<span style="display:inline-flex;gap:2px;"><span style="display:inline-block;width:8px;height:14px;background:#f1c40f;border-radius:1px;"></span><span style="display:inline-block;width:8px;height:14px;background:#e74c3c;border-radius:1px;"></span></span>';
+                                                    cardColor = '#f39c12';
+                                                } else if (c.type === 'red') {
+                                                    cardBadge = '<span style="display:inline-block;width:10px;height:14px;background:#e74c3c;border-radius:2px;"></span>';
+                                                    cardColor = '#e74c3c';
+                                                }
                                                 return `
                                                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 0.85rem;">
                                                         <div style="display: flex; align-items: center; gap: 6px;">
-                                                            <span>${cardIcon}</span>
+                                                            ${cardBadge}
                                                             <span style="font-weight: 600; color: ${cardColor};">${c.name}</span>
                                                         </div>
                                                         <span style="font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600;">${c.minute ? `${c.minute}'` : ''}</span>
@@ -507,8 +637,16 @@ const renderModalContent = () => {
                                         <!-- Main Compact Header (Clickable for dropdown) -->
                                         <div class="match-toggle-header" data-target="${matchId}" style="padding: 12px 16px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; user-select: none;">
                                             <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--color-text-secondary);">
-                                                <span>📅 ${m.date || ''} ${m.time ? `• ${m.time} Uhr` : ''}</span>
-                                                <span>${m.location ? `📍 ${m.location}` : ''}</span>
+                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                                    ${m.date || ''} ${m.time ? `• ${m.time} Uhr` : ''}
+                                                </span>
+                                                ${m.location ? `
+                                                    <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                                        ${m.location}
+                                                    </span>
+                                                ` : ''}
                                             </div>
                                             <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;">
                                                 <div style="text-align: right; font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">${homeName}</div>
@@ -521,7 +659,8 @@ const renderModalContent = () => {
                                             </div>
                                             <div style="display: flex; justify-content: center; align-items: center; margin-top: 2px;">
                                                 <span class="accordion-hint" style="font-size: 0.75rem; color: var(--color-accent); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
-                                                    <span class="hint-text">Details anzeigen</span> <span class="hint-arrow">▼</span>
+                                                    <span class="hint-text">Details anzeigen</span>
+                                                    <svg class="hint-arrow-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                                 </span>
                                             </div>
                                         </div>
@@ -538,15 +677,17 @@ const renderModalContent = () => {
                                                     </div>
                                                     
                                                     <div>
-                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
-                                                            <span>⚽</span> Tore (${homeGoals.reduce((sum, g) => sum + (g.count || 1), 0)})
+                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                                                            Tore (${homeGoals.reduce((sum, g) => sum + (g.count || 1), 0)})
                                                         </div>
                                                         ${renderTeamGoals(homeGoals)}
                                                     </div>
 
                                                     <div>
-                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
-                                                            <span>🟨</span> Karten (${homeCards.length})
+                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                                            <span style="display:inline-block;width:10px;height:13px;background:#f1c40f;border-radius:2px;"></span>
+                                                            Karten (${homeCards.length})
                                                         </div>
                                                         ${renderTeamCards(homeCards)}
                                                     </div>
@@ -560,15 +701,17 @@ const renderModalContent = () => {
                                                     </div>
                                                     
                                                     <div>
-                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
-                                                            <span>⚽</span> Tore (${awayGoals.reduce((sum, g) => sum + (g.count || 1), 0)})
+                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                                                            Tore (${awayGoals.reduce((sum, g) => sum + (g.count || 1), 0)})
                                                         </div>
                                                         ${renderTeamGoals(awayGoals)}
                                                     </div>
 
                                                     <div>
-                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
-                                                            <span>🟨</span> Karten (${awayCards.length})
+                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                                            <span style="display:inline-block;width:10px;height:13px;background:#f1c40f;border-radius:2px;"></span>
+                                                            Karten (${awayCards.length})
                                                         </div>
                                                         ${renderTeamCards(awayCards)}
                                                     </div>
@@ -591,13 +734,13 @@ const renderModalContent = () => {
                 const targetId = header.getAttribute('data-target');
                 const targetBody = document.getElementById(targetId);
                 const hintText = header.querySelector('.hint-text');
-                const hintArrow = header.querySelector('.hint-arrow');
+                const hintSvg = header.querySelector('.hint-arrow-svg');
 
                 if (targetBody) {
                     const isVisible = targetBody.style.display === 'block';
                     targetBody.style.display = isVisible ? 'none' : 'block';
                     if (hintText) hintText.innerText = isVisible ? 'Details anzeigen' : 'Details ausblenden';
-                    if (hintArrow) hintArrow.innerText = isVisible ? '▼' : '▲';
+                    if (hintSvg) hintSvg.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
                 }
             };
         });
@@ -625,9 +768,9 @@ const renderModalContent = () => {
                             <th style="width: 40px; text-align: center;">#</th>
                             <th>Spieler</th>
                             <th>Mannschaft</th>
-                            <th style="text-align: center; width: 60px;">🟨</th>
-                            <th style="text-align: center; width: 60px;">🟨🟥</th>
-                            <th style="text-align: center; width: 60px;">🟥</th>
+                            <th style="text-align: center; width: 60px;"><span style="display:inline-block;width:10px;height:14px;background:#f1c40f;border-radius:2px;"></span></th>
+                            <th style="text-align: center; width: 60px;"><span style="display:inline-flex;gap:2px;"><span style="display:inline-block;width:8px;height:14px;background:#f1c40f;border-radius:1px;"></span><span style="display:inline-block;width:8px;height:14px;background:#e74c3c;border-radius:1px;"></span></span></th>
+                            <th style="text-align: center; width: 60px;"><span style="display:inline-block;width:10px;height:14px;background:#e74c3c;border-radius:2px;"></span></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -662,7 +805,7 @@ const renderModalContent = () => {
                             <th style="width: 40px; text-align: center;">#</th>
                             <th>Spieler</th>
                             <th>Mannschaft</th>
-                            <th style="text-align: right; width: 80px; font-weight: 700;">Tore ⚽</th>
+                            <th style="text-align: right; width: 80px; font-weight: 700;">Tore</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -842,12 +985,31 @@ const sortData = (column, asc) => {
 const bindEvents = () => {
     const search = document.getElementById('league-search');
     const status = document.getElementById('league-status-filter');
+    const sortSelect = document.getElementById('league-sort-select');
     const prevBtn = document.getElementById('btn-prev-page-l');
     const nextBtn = document.getElementById('btn-next-page-l');
     const addBtn = document.getElementById('btn-add-league');
     const closeBtn = document.getElementById('btn-close-league-modal');
     const deleteBtn = document.getElementById('btn-delete-league');
     const form = document.getElementById('league-edit-form');
+    const leagueModal = document.getElementById('league-modal');
+
+    if (sortSelect) {
+        sortSelect.onchange = () => {
+            const val = sortSelect.value;
+            if (val === 'id-desc') sortData('id', false);
+            else if (val === 'id-asc') sortData('id', true);
+            else if (val === 'name') sortData('name', true);
+            else if (val === 'year-desc') sortData('year', false);
+            else if (val === 'status') sortData('status', true);
+        };
+    }
+
+    if (leagueModal) {
+        leagueModal.onclick = (e) => {
+            if (e.target === leagueModal) closeEditModal();
+        };
+    }
     
     // Data modal close & tabs
     const closeDataModalBtn = document.getElementById('btn-close-data-modal');

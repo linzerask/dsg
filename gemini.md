@@ -1,39 +1,140 @@
-# Gemini AI - Project Memory & System Directives
+# DSG Liga — Project Memory, System Directives & Architectural Guidelines
 
-This document is a persistent memory file for Gemini/Antigravity. Read this before making structural changes to the DSG Liga project to avoid repeating past mistakes.
+> **Persistent Memory File for AI Agents & Developers**  
+> Read this document before making any modifications to the DSG Liga codebase. When completing tasks or resolving issues, **update this document** to ensure past learnings and architectural decisions are preserved.
 
-## 1. Caching Protocol (CRITICAL)
-The frontend implements aggressive caching via `localStorage` in `Website/js/store.js`. 
-- **The Mistake:** Modifying `Website/data/liga.json` without bumping the cache key, causing the AI to hallucinate that the changes were broken or missing.
-- **The Rule:** Whenever you write or append to `liga.json`, you MUST simultaneously open `store.js` and increment the storage key (e.g., `dsg_data_v6` -> `dsg_data_v7`). There are three instances of this key in `store.js` that must be replaced.
+---
 
-## 2. String Literal Escaping & DOM Manipulation
-- **The Mistake:** Injecting complex inline `onmouseover` styles into a Javascript template literal that already contained nested quotes. This broke the JS syntax and crashed the view.
-- **The Rule:** NEVER use inline Javascript for styling or hover states. ALWAYS define a class in `Website/css/global.css` and apply that class in the JS string literal. Keep HTML strings in JS as dumb and clean as possible.
+## 1. Aggressive Caching & Version Synchronization Protocol (CRITICAL)
+The frontend implements aggressive client-side caching across `localStorage` and ES module imports.
+* **The Mistake:** Modifying `Website/data/*.json` or updating JS modules without bumping cache versions. This causes the browser and Puppeteer to serve stale cached state, leading to false bug reports or missing features.
+* **The Rule:**
+  1. **LocalStorage Keys (`store.js`):** Whenever JSON data structures or initial seeds are modified, bump the corresponding version in `store.js` (e.g. `dsg_data_v50`, `dsg_articles_v37`, `dsg_gallery_v26`, `dsg_admin_players_v12`, `dsg_admin_teams_v12`, `dsg_admin_rounds_v12`, `dsg_admin_leagues_v8`).
+  2. **ES Module Query Strings:** When editing JS views or CSS files, increment the query string across import statements (e.g. `import { viewAdmin } from './views/admin.js?v=1790560000100'`) in `index.html`, `main.js`, `router.js`, and parent view modules.
 
-## 3. Key Mapping Disconnects
-- **The Mistake:** Generating HTML elements dynamically using one set of keys (English: `yellow`, `yellowRed`, `red`) while iterating over a different set of keys (German: `gelb`, `gelbrot`, `rot`) to bind event listeners via `document.getElementById()`.
-- **The Rule:** Trace the exact variable used to generate an ID in the HTML template back to the event listener loop. Ensure language uniformity (prefer English for keys/IDs, German for user-facing labels).
+---
 
-## 4. Local Server Awareness
-- **The Mistake:** Failing to realize the user was opening `index.html` via the `file://` protocol, which blocks `fetch('data/liga.json')` due to CORS. 
-- **The Rule:** If the user reports "no content" or a blank screen after a fresh load, verify that the local Python server is running in the correct root directory (`Website/`), and remind the user to use `http://localhost:8000`.
+## 2. Complete Database Integrity & Scraped Dataset Accuracy
+* **The Mistake:** Accidentally replacing or capping large scraped datasets with truncated mock arrays (e.g. only 360 player names instead of the complete historical roster).
+* **The Rule:**
+  1. **Never Truncate Data:** The canonical player database in `Website/data/players.json` contains **4,386+ players** with exact `#` IDs (`#4491`, `#4490`, etc.), real birthdays, team affiliations, ÖFB clubs, membership dates, and active statuses.
+  2. **Initial Data Flow:** `Store.getAdminPlayers()`, `Store.getAdminTeams()`, `Store.getAdminRounds()`, and `Store.getAdminLeagues()` must always load the full dataset from `data/*.json`, cache it in versioned `localStorage`, and synchronize with Firebase Firestore.
 
-## 5. Visual Data Transcription
-- **The Mistake:** Misinterpreting an overlapping yellow-and-red card icon as a straight red card during bulk data entry from images.
-- **The Rule:** When parsing sports statistics from screenshots, look closely at icon composites. A Yellow-Red card is a distinct statistical category from a straight Red card. Map data specifically to `yellowRed` vs `red` integer counts.
+---
 
-## 6. Directory Context
-- **The Rule:** All web assets have been moved to the `Website/` subdirectory. Do not attempt to write or edit files in the root `DSG Liga/` directory (except for these markdown documentation files). Ensure scripts have the correct `Cwd` or path targets.
+## 3. Strict SVG Icon Mandate (Zero Unicode Emojis)
+* **The Mistake:** Using unicode emojis (e.g. 📁, 📷, 📝, ⚠️, ✅, ✕, ★, 🔗, 🧹, ◀, ▶, ▼, ☰) which look inconsistent, low-res, or juvenile across different operating systems.
+* **The Rule:**
+  1. **Zero Emojis:** Strictly prohibited in all UI elements, headings, buttons, toasts, tables, dialogs, and text editors.
+  2. **Clean SVGs:** Use crisp, accessible inline SVGs with standard 24x24 viewBoxes, `fill="none"`, `stroke="currentColor"`, and semantic stroke widths (1.5–2.5px).
+  3. **Badges:** Use styled CSS badges (e.g. yellow/red card squares) for sports indicators instead of emoji squares.
 
-## 7. Mobile Responsiveness & Layout Architecture
-- **The Rule:** When designing pages (like the `Organisation` page), always implement responsive CSS (using `@media (max-width: 768px)`).
-- **The Pitfall:** Hardcoded widths, rigid grids without `flex-wrap`, and missing font clamps (`clamp()`) lead to text overflowing or UI elements squishing on mobile devices.
-- **The Fix:** Ensure grids switch to stacked flex columns on mobile (e.g. `grid-template-columns: 1fr` or `flex-direction: column`). Use `word-break: break-word` and `hyphens: auto` alongside `clamp()` for long compound words (like "Meisterschaftsbestimmungen") so they fit inside screen bounds without horizontally scrolling or clipping.
+---
 
-## 8. Match Status & Automatic Scoring
-- **The Rule:** The old `Strafverifiziert 3:0` status was deleted and replaced by directionally-aware `Abgesagt 3:0` and `Abgesagt 0:3` statuses. These new statuses trigger automated points and score assignments in `store.js` (`_applyMatchStats` and `_reverseMatchStats`), while visually rendering in red with no Halftime score on the Liga page. Furthermore, planned matches should use the `Ausstehend` status with NO entered results (`-:-`) so they are ignored by points calculation.
+## 4. Mobile Responsiveness & Layout Architecture (No Horizontal Slider Chaos)
+* **The Pitfall:** Forcing horizontal scrollbars on mobile (`<= 768px`) for tab menus or complex data tables creates a poor user experience.
+* **The Rule:**
+  1. **Admin Tab Navigation:** On mobile screens, the admin navigation transforms into an **Accordion / Collapsible Dropdown Drawer**. The toggle button displays the current active tab name and an animated SVG chevron that rotates on open/close. Selecting any tab switches the view and collapses the menu automatically.
+  2. **Mobile Data Cards (`.admin-m-card`):** Complex desktop tables switch to touch-friendly card accordions on screens `<= 768px`.
+  3. **Fluid Typography & Containers:** Use `clamp()`, `word-break: break-word`, and `hyphens: auto` for long German compound words (e.g., *Meisterschaftsbestimmungen*, *Datenschutzerklärung*). Grids must collapse to single columns (`grid-template-columns: 1fr`).
 
-## 9. Mobile Accordions in Complex Tables
-- **The Rule:** The main league table in `liga.js` displays 10 columns on desktop using a complex CSS grid. To maintain readability on mobile devices, secondary stats (like S, U, N, Sp, Tore, Diff) are hidden using a `hide-mobile` class.
-- **The Fix:** We implemented a slide-down accordion (powered by Anime.js) attached to `.has-table-accordion` row elements, revealing the hidden stats upon tapping. Always ensure query selectors accurately target the local accordion (`.table-accordion` vs `.events-accordion`) to prevent event collisions between different interactive components on the same page.
+---
+
+## 5. Modal Viewport Centering & Outside-Click Dismissal
+* **The Rule:**
+  1. **Centering:** All dialog modals (`#player-modal`, `#game-modal`, `#round-modal`, `#team-modal`, `#league-modal`, `#league-data-modal`, `#report-modal`) must be fixed and centered in the active viewport:
+     ```css
+     position: fixed;
+     inset: 0;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     z-index: 9999;
+     background: rgba(0, 0, 0, 0.65);
+     backdrop-filter: blur(4px);
+     ```
+  2. **Outside-Click Dismissal:** Clicking anywhere on the darkened backdrop outside the modal content container must automatically close the modal.
+  3. **Mobile Bounds:** Modal cards must have `max-width: calc(100vw - 24px)` and `max-height: 90vh` with smooth internal scrolling (`overflow-y: auto`).
+
+---
+
+## 6. Sort & Filter Functionality Across All Admin Tabs
+* **The Rule:** Every administrative table must feature a comprehensive toolbar with:
+  1. **Live Search Input:** Instant debounced filtering on text.
+  2. **Contextual Filter Dropdown:** Specific status filters (e.g., `Alle Spiele`, `Nur Gespielte`, `Nur Ausstehend`, `Abgesagt/Verschoben` in Spiele; `Aktiv`/`Inaktiv` in Teams, Runden, Ligen, Spieler).
+  3. **Sort Dropdown:** Multi-column sorting options (e.g. by `# ID`, `Datum`, `Runde`, `Name`, `Status`, `Aktive Spieler`).
+
+---
+
+## 7. Match Statuses & Automated Standings Calculations
+* **The Rule:**
+  1. **Status Definitions:**
+     - `Ausstehend`: Unplayed match (`-:-`). Ignored by points/goal calculations.
+     - `Beendet`: Finished match with valid score (e.g. `3:1 (1:0)`).
+     - `Abgesagt 3:0`: Home team forfeit win (3 points to home, 3:0 score).
+     - `Abgesagt 0:3`: Away team forfeit win (3 points to away, 0:3 score).
+     - `Abgesagt` / `Verschoben`: Canceled or postponed match without score.
+  2. **Recalculation:** `Store.recalculateSeason(season)` must be called after creating, editing, or deleting matches to recalculate points, goal difference, goals scored, and standings order.
+
+---
+
+## 8. Clean DOM Manipulation & String Literal Safety
+* **The Mistake:** Injecting complex inline `onmouseover` / `onclick` code with nested quotes into JS template literals, crashing the parser.
+* **The Rule:**
+  1. Never use inline JS for styles or hover effects.
+  2. Keep HTML strings in JS templates clean, declarative, and semantic.
+  3. Attach all event listeners programmatically in dedicated `bind...()` / `init...()` lifecycle functions.
+
+---
+
+## 9. Key Mapping & Language Uniformity
+* **The Rule:**
+  - **Internal Data Keys & IDs:** Standardized in English (e.g. `yellow`, `yellowRed`, `red`, `goalsFor`, `goalsAgainst`, `points`, `goalDiff`).
+  - **User-Facing UI Labels:** Authentic, formal Austrian German (e.g. `Gelb`, `Gelb-Rot`, `Rot`, `Tore`, `Punkte`, `Diff`, `Spiele`, `Torschützen`, `Spielbericht`).
+
+---
+
+## 10. Local Server Environment
+* **The Rule:** The application relies on vanilla ES modules and dynamic `fetch()` calls. Always run and test the app via the local HTTP server (`http://localhost:8000`) rooted in `Website/`. Never open files directly via the `file://` protocol.
+
+---
+
+## 11. Project Directory Structure
+```
+DSG Liga/
+├── GEMINI.md                  # This persistent memory & rules file
+├── scraper/                   # Python scrapers & raw html extraction files
+└── Website/                   # Main production web application
+    ├── index.html             # Vanilla SPA entry shell
+    ├── logo.png               # DSG logo
+    ├── css/
+    │   ├── variables.css      # CSS variables & typography tokens
+    │   └── global.css         # Global stylesheet & responsive rules
+    ├── data/
+    │   ├── liga.json          # Main league seasons, teams, matches
+    │   ├── players.json       # 4,386+ complete historical player database
+    │   ├── teams.json         # Teams master list
+    │   ├── rounds.json        # Rounds master list
+    │   └── leagues.json       # Historical leagues & seasons
+    └── js/
+        ├── main.js            # App bootstrap & drawer binding
+        ├── router.js          # Hash router
+        ├── store.js           # Central data store & Firestore sync
+        ├── firebase.js        # Firebase SDK config & instances
+        └── views/
+            ├── home.js        # Homepage view
+            ├── liga.js        # Public league standings & matchdays
+            ├── news.js        # News masonry list
+            ├── article.js     # Single article view
+            ├── galerie.js     # Photo gallery view
+            ├── statistiken.js # Player rankings & stats
+            ├── organisation.js# Board & federation info
+            ├── admin.js       # Admin layout & mobile accordion nav
+            ├── adminGames.js  # Matches management & match reports
+            ├── adminPlayers.js# 4,386+ players database management
+            ├── adminTeams.js  # Teams management
+            ├── adminRounds.js # Matchday rounds management
+            ├── adminLeagues.js# League seasons & archive data
+            ├── adminNews.js   # News articles & rich text editor
+            └── adminGallery.js# Photo albums & uploads
+```

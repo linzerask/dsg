@@ -7,3 +7,7 @@ clean_store_sync.js
 fix_store.js
 sync_liga.js
 validate_all.js
+Backups/
+scratch/
+test_runner/
+

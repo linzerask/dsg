@@ -1,12 +1,12 @@
-import { Store } from '../store.js';
+import { Store } from '../store.js?v=1790560000100';
 
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js';
-import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js';
-import { renderAdminRounds, initAdminRounds } from './adminRounds.js';
-import { renderAdminGames, initAdminGames } from './adminGames.js';
-import { renderAdminNews, initAdminNews } from './adminNews.js';
-import { renderAdminGallery, initAdminGallery } from './adminGallery.js';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560000100';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560000100';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560000100';
+import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560000100';
+import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560000100';
+import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790560000100';
+import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1790560000100';
 
 
 
@@ -16,6 +16,16 @@ try {
   if (savedTab) currentAdminTab = savedTab;
 } catch(e) {}
 
+const tabLabels = {
+  'admin-rounds': 'Spielrunden',
+  'admin-games': 'Spiele',
+  'admin-players': 'Spieler verwalten',
+  'admin-teams': 'Teams verwalten',
+  'admin-leagues': 'Ligen verwalten',
+  'admin-news': 'News verwalten',
+  'admin-gallery': 'Galerie verwalten'
+};
+
 export const viewAdmin = () => {
   try {
     const savedTab = sessionStorage.getItem('dsg_admin_tab');
@@ -23,22 +33,50 @@ export const viewAdmin = () => {
   } catch(e) {}
   const activeTab = currentAdminTab || 'admin-rounds';
   const isTabActive = (tabId) => activeTab === tabId;
+  const currentLabel = tabLabels[activeTab] || 'Spielrunden';
 
   return `
     <div class="admin-layout" style="display: grid; grid-template-columns: 250px 1fr; min-height: 80vh; gap: var(--space-lg);">
-      <aside class="glass-card stagger-item" style="border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; height: 100%; border-left: none;">
-        <h2 style="font-size: 1.5rem; color: var(--color-accent); margin-bottom: var(--space-lg);">Admin Panel</h2>
-        <nav style="display: flex; flex-direction: column; gap: var(--space-sm);">
-          <button class="admin-nav-btn ${isTabActive('admin-rounds') ? 'active' : ''}" data-target="admin-rounds" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-rounds') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-rounds') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Spielrunden</button>
-          <button class="admin-nav-btn ${isTabActive('admin-games') ? 'active' : ''}" data-target="admin-games" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-games') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-games') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Spiele</button>
-          <button class="admin-nav-btn ${isTabActive('admin-players') ? 'active' : ''}" data-target="admin-players" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-players') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-players') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Spieler verwalten</button>
-          <button class="admin-nav-btn ${isTabActive('admin-teams') ? 'active' : ''}" data-target="admin-teams" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-teams') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-teams') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Teams verwalten</button>
-          <button class="admin-nav-btn ${isTabActive('admin-leagues') ? 'active' : ''}" data-target="admin-leagues" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-leagues') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-leagues') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Ligen verwalten</button>
-          <button class="admin-nav-btn ${isTabActive('admin-news') ? 'active' : ''}" data-target="admin-news" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-news') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-news') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">News verwalten</button>
-          <button class="admin-nav-btn ${isTabActive('admin-gallery') ? 'active' : ''}" data-target="admin-gallery" style="text-align: left; padding: var(--space-sm); color: ${isTabActive('admin-gallery') ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}; font-weight: 700; background: ${isTabActive('admin-gallery') ? 'rgba(0,0,0,0.05)' : 'none'}; border: none; border-radius: 4px; cursor: pointer;">Galerie verwalten</button>
+      <aside class="glass-card stagger-item admin-sidebar" style="border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; height: 100%; border-left: none; padding: var(--space-md);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+          <h2 style="font-size: 1.4rem; color: var(--color-accent); margin: 0;">Admin Panel</h2>
+          <button id="admin-m-nav-toggle" class="admin-m-nav-toggle-btn">
+            <span id="admin-m-nav-current-label">${currentLabel}</span>
+            <svg class="admin-m-nav-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.25s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+        </div>
+        <nav id="admin-nav-menu" class="admin-nav-accordion-content">
+          <button class="admin-nav-btn ${isTabActive('admin-rounds') ? 'active' : ''}" data-target="admin-rounds">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Spielrunden
+          </button>
+          <button class="admin-nav-btn ${isTabActive('admin-games') ? 'active' : ''}" data-target="admin-games">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+            Spiele
+          </button>
+          <button class="admin-nav-btn ${isTabActive('admin-players') ? 'active' : ''}" data-target="admin-players">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Spieler verwalten
+          </button>
+          <button class="admin-nav-btn ${isTabActive('admin-teams') ? 'active' : ''}" data-target="admin-teams">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Teams verwalten
+          </button>
+          <button class="admin-nav-btn ${isTabActive('admin-leagues') ? 'active' : ''}" data-target="admin-leagues">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path><path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+            Ligen verwalten
+          </button>
+          <button class="admin-nav-btn ${isTabActive('admin-news') ? 'active' : ''}" data-target="admin-news">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path><path d="M18 14h-8"></path><path d="M15 18h-5"></path><path d="M10 6h8v4h-8V6Z"></path></svg>
+            News verwalten
+          </button>
+          <button class="admin-nav-btn ${isTabActive('admin-gallery') ? 'active' : ''}" data-target="admin-gallery">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            Galerie verwalten
+          </button>
         </nav>
       </aside>
-      <div class="admin-content" style="padding: var(--space-lg);">
+      <div class="admin-content" style="padding: var(--space-md) var(--space-lg);">
         <div id="admin-rounds" class="admin-section ${isTabActive('admin-rounds') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-rounds') ? 'block' : 'none'};">
           ${renderAdminRounds()}
         </div>
@@ -63,9 +101,62 @@ export const viewAdmin = () => {
       </div>
     </div>
     <style>
+      .admin-m-nav-toggle-btn {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        background: rgba(0, 150, 64, 0.08);
+        border: 1px solid var(--color-accent);
+        color: var(--color-text-primary);
+        border-radius: 6px;
+        padding: 8px 14px;
+        font-weight: 700;
+        font-size: 0.92rem;
+        cursor: pointer;
+      }
+      .admin-nav-accordion-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
+      .admin-nav-btn {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        padding: 10px 14px;
+        font-weight: 600;
+        font-size: 0.92rem;
+        color: var(--color-text-secondary);
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .admin-nav-btn:hover {
+        background: rgba(0, 150, 64, 0.05);
+        color: var(--color-accent);
+      }
+      .admin-nav-btn.active {
+        background: rgba(0, 150, 64, 0.1) !important;
+        color: var(--color-accent) !important;
+        font-weight: 700;
+      }
       @media (max-width: 768px) {
-        .admin-layout { grid-template-columns: 1fr !important; }
-        .admin-layout aside { border-radius: 0; border-bottom: var(--glass-border); }
+        .admin-layout { grid-template-columns: 1fr !important; gap: var(--space-sm) !important; }
+        .admin-sidebar { border-radius: var(--border-radius-md) !important; border-left: var(--glass-border) !important; margin: 0 10px; }
+        .admin-sidebar > div:first-child { width: 100%; }
+        .admin-m-nav-toggle-btn { display: flex !important; width: 100%; justify-content: space-between; }
+        .admin-nav-accordion-content {
+          display: none !important;
+          margin-top: 10px;
+          border-top: 1px solid var(--color-border);
+          padding-top: 10px;
+        }
+        .admin-nav-accordion-content.open {
+          display: flex !important;
+        }
+        .admin-sidebar h2 { display: none; }
       }
     </style>
   `;
@@ -81,24 +172,48 @@ export const bindAdmin = () => {
   else if (activeTab === 'admin-news') initAdminNews();
   else if (activeTab === 'admin-gallery') initAdminGallery();
 
-  // Navigation
+  // Mobile Accordion Toggle
+  const toggleBtn = document.getElementById('admin-m-nav-toggle');
+  const navMenu = document.getElementById('admin-nav-menu');
+  const chevron = toggleBtn?.querySelector('.admin-m-nav-chevron');
+
+  if (toggleBtn && navMenu) {
+    toggleBtn.addEventListener('click', () => {
+      const isOpen = navMenu.classList.contains('open');
+      if (isOpen) {
+        navMenu.classList.remove('open');
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+      } else {
+        navMenu.classList.add('open');
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+      }
+    });
+  }
+
+  // Navigation Buttons
   const btns = document.querySelectorAll('.admin-nav-btn');
   btns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       const clickedBtn = e.currentTarget || e.target;
-      btns.forEach(b => {
-        b.classList.remove('active');
-        b.style.background = 'none';
-        b.style.color = 'var(--color-text-secondary)';
-      });
+      btns.forEach(b => b.classList.remove('active'));
       clickedBtn.classList.add('active');
-      clickedBtn.style.background = 'rgba(0,0,0,0.05)';
-      clickedBtn.style.color = 'var(--color-text-primary)';
       
       document.querySelectorAll('.admin-section').forEach(sec => sec.style.display = 'none');
       const targetId = clickedBtn.getAttribute('data-target');
       currentAdminTab = targetId;
       try { sessionStorage.setItem('dsg_admin_tab', targetId); } catch(err) {}
+
+      // Update mobile label
+      const currentLabelEl = document.getElementById('admin-m-nav-current-label');
+      if (currentLabelEl && tabLabels[targetId]) {
+        currentLabelEl.textContent = tabLabels[targetId];
+      }
+
+      // Close mobile accordion menu on selection
+      if (navMenu && window.innerWidth <= 768) {
+        navMenu.classList.remove('open');
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+      }
 
       if (targetId === 'admin-rounds') initAdminRounds();
       if (targetId === 'admin-games') initAdminGames();

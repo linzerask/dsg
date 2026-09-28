@@ -1,4 +1,4 @@
-import { Store } from '../store.js';
+import { Store } from '../store.js?v=1790560000100';
 
 let teamsData = [];
 let filteredData = [];
@@ -16,20 +16,29 @@ export const renderAdminTeams = () => {
 
         <!-- Controls Toolbar immediately above table -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-xs); margin-bottom: var(--space-xs);">
-            <button class="btn-dsg" id="btn-add-team">
-                <span style="font-size: 1.1rem; line-height: 1;">+</span> Team anlegen
+            <button class="btn-dsg" id="btn-add-team" style="background: var(--color-accent); color: #fff; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Team anlegen
             </button>
             <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;">
-                <input type="text" id="team-search" class="admin-input" placeholder="Team suchen..." style="width: 220px;">
-                <select id="team-status-filter" class="admin-input" style="width: 140px;">
+                <input type="text" id="team-search" class="admin-input" placeholder="Team suchen..." style="width: 180px;">
+                <select id="team-status-filter" class="admin-input" style="width: 130px;">
                     <option value="all">Alle Status</option>
                     <option value="Aktiv">Aktiv</option>
                     <option value="Inaktiv">Inaktiv</option>
                 </select>
+                <select id="team-sort-select" class="admin-input" style="width: 170px;">
+                    <option value="status">Status (Aktiv zuerst)</option>
+                    <option value="name">Name (A-Z)</option>
+                    <option value="id-asc"># ID (aufsteigend)</option>
+                    <option value="id-desc"># ID (absteigend)</option>
+                    <option value="players-desc">Aktive Spieler (meiste)</option>
+                </select>
             </div>
         </div>
         
-        <div class="table-responsive glass-card" style="padding: 0;">
+        <!-- Desktop Table View -->
+        <div class="table-responsive glass-card admin-desktop-table" style="padding: 0;">
             <table class="admin-table">
                 <thead>
                     <tr>
@@ -48,6 +57,11 @@ export const renderAdminTeams = () => {
             </table>
         </div>
 
+        <!-- Mobile Card Accordion View -->
+        <div id="teams-mobile-cards" class="admin-mobile-cards">
+            <div style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">Lade Teams...</div>
+        </div>
+
         <div class="datagrid-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md);">
             <span id="teams-page-info" style="color: var(--color-text-secondary); font-size: 0.9rem;">Zeige 0 bis 0 von 0</span>
             <div style="display: flex; gap: var(--space-xs);">
@@ -58,7 +72,7 @@ export const renderAdminTeams = () => {
 
         <!-- Edit / Create Team Modal -->
         <div id="team-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
-            <div class="glass-card" style="background: var(--color-surface); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <div class="glass-card modal-content" style="background: var(--color-surface); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
                 <h3 id="modal-team-title" style="margin-bottom: var(--space-md);">Mannschaft bearbeiten</h3>
                 <form id="team-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-team-id">
@@ -156,18 +170,89 @@ const renderTable = () => {
                 <td>${t["Inaktiv seit"] || '-'}</td>
                 <td><span class="badge ${badgeClass}">${status}</span></td>
                 <td style="text-align: center;">
-                    <button class="btn btn-outline edit-single-team-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px;">Bearbeiten</button>
+                    <button class="btn btn-outline edit-single-team-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                        Bearbeiten
+                    </button>
                 </td>
             </tr>
         `;
     }).join('');
 
-    tbody.querySelectorAll('.edit-single-team-btn').forEach(btn => {
-        btn.onclick = (e) => {
-            const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-            openEditModal(idx);
-        };
-    });
+    // Render Mobile Accordion Cards
+    const mobileCardsContainer = document.getElementById('teams-mobile-cards');
+    if (mobileCardsContainer) {
+        if (pageRows.length === 0) {
+            mobileCardsContainer.innerHTML = '<div class="glass-card" style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">Keine Teams gefunden.</div>';
+        } else {
+            mobileCardsContainer.innerHTML = pageRows.map(t => {
+                const status = (t.Status === 'Nein' || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv';
+                let badgeClass = status === 'Aktiv' ? 'badge-success' : 'badge-secondary';
+                const rawIndex = teamsData.indexOf(t);
+
+                return `
+                    <div class="admin-m-card" data-idx="${rawIndex}">
+                        <div class="admin-m-header">
+                            <div style="flex: 1; min-width: 0;">
+                                <div class="admin-m-title">
+                                    <span style="color: var(--color-accent); font-weight: 800; margin-right: 4px;">#${t.ID || '-'}</span>
+                                    <strong>${t.Name || '-'}</strong>
+                                </div>
+                                <div class="admin-m-subtitle">
+                                    <span class="badge ${badgeClass}" style="font-size: 0.72rem;">${status}</span>
+                                    <span>•</span>
+                                    <span>${t["Aktive Spieler"] || '0'} Spieler</span>
+                                </div>
+                            </div>
+                            <svg class="admin-m-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                        <div class="admin-m-body">
+                            <div class="admin-m-grid">
+                                <div class="admin-m-grid-item">
+                                    <span class="admin-m-label">Aktiv seit</span>
+                                    <span class="admin-m-value">${t["Aktiv seit"] || '-'}</span>
+                                </div>
+                                <div class="admin-m-grid-item">
+                                    <span class="admin-m-label">Inaktiv seit</span>
+                                    <span class="admin-m-value">${t["Inaktiv seit"] || '-'}</span>
+                                </div>
+                                <div class="admin-m-grid-item" style="grid-column: 1 / -1;">
+                                    <span class="admin-m-label">Kadergröße</span>
+                                    <span class="admin-m-value">${t["Aktive Spieler"] || '0'} aktive registrierte Spieler</span>
+                                </div>
+                            </div>
+                            <div class="admin-m-actions">
+                                <button class="edit-single-team-btn full-width" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                    Mannschaft bearbeiten
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Accordion toggle on header click
+            mobileCardsContainer.querySelectorAll('.admin-m-header').forEach(hdr => {
+                hdr.onclick = () => {
+                    const card = hdr.closest('.admin-m-card');
+                    if (card) card.classList.toggle('expanded');
+                };
+            });
+        }
+    }
+
+    // Bind edit buttons across both Desktop and Mobile views
+    const container = document.getElementById('admin-teams');
+    if (container) {
+        container.querySelectorAll('.edit-single-team-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+                openEditModal(idx);
+            };
+        });
+    }
 };
 
 const formatDateForInput = (dateStr) => {
@@ -261,15 +346,34 @@ const sortData = (column, asc) => {
 const bindEvents = () => {
     const search = document.getElementById('team-search');
     const status = document.getElementById('team-status-filter');
+    const sortSelect = document.getElementById('team-sort-select');
     const prevBtn = document.getElementById('btn-prev-page-t');
     const nextBtn = document.getElementById('btn-next-page-t');
     const addBtn = document.getElementById('btn-add-team');
     const closeBtn = document.getElementById('btn-close-team-modal');
     const deleteBtn = document.getElementById('btn-delete-team');
     const form = document.getElementById('team-edit-form');
+    const teamModal = document.getElementById('team-modal');
 
     if (search) search.oninput = applyFilters;
     if (status) status.onchange = applyFilters;
+
+    if (sortSelect) {
+        sortSelect.onchange = () => {
+            const val = sortSelect.value;
+            if (val === 'status') sortData('Status', true);
+            else if (val === 'name') sortData('Name', true);
+            else if (val === 'id-asc') sortData('ID', true);
+            else if (val === 'id-desc') sortData('ID', false);
+            else if (val === 'players-desc') sortData('Aktive Spieler', false);
+        };
+    }
+
+    if (teamModal) {
+        teamModal.onclick = (e) => {
+            if (e.target === teamModal) closeEditModal();
+        };
+    }
 
     if (prevBtn) {
         prevBtn.onclick = () => {

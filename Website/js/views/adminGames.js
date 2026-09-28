@@ -1,4 +1,4 @@
-import { Store } from '../store.js';
+import { Store } from '../store.js?v=1790560000100';
 
 let gamesData = [];
 let roundsData = [];
@@ -28,18 +28,34 @@ export const renderAdminGames = () => {
 
         <!-- Controls Toolbar -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-xs); margin-bottom: var(--space-xs);">
-            <button class="btn-dsg" id="btn-add-game-main" style="background: var(--color-accent); color: #fff; font-weight: 700;">
-                <span style="font-size: 1.1rem; line-height: 1;">+</span> Spiel anlegen
+            <button class="btn-dsg" id="btn-add-game-main" style="background: var(--color-accent); color: #fff; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Spiel anlegen
             </button>
             <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;">
-                <input type="text" id="game-search" class="admin-input" placeholder="Team / Ort / Runde suchen..." style="width: 220px;">
-                <select id="game-round-filter" class="admin-input" style="width: 200px;">
+                <input type="text" id="game-search" class="admin-input" placeholder="Team / Ort / Runde..." style="width: 170px;">
+                <select id="game-round-filter" class="admin-input" style="width: 140px;">
                     <option value="all">Alle Runden</option>
+                </select>
+                <select id="game-status-filter" class="admin-input" style="width: 150px;">
+                    <option value="all">Alle Spiele</option>
+                    <option value="played">Nur Gespielte</option>
+                    <option value="unplayed">Nur Ausstehend</option>
+                    <option value="canceled">Abgesagt/Verschoben</option>
+                </select>
+                <select id="game-sort-select" class="admin-input" style="width: 170px;">
+                    <option value="date-desc">Datum (neueste)</option>
+                    <option value="date-asc">Datum (älteste)</option>
+                    <option value="round-asc">Runde (1-14)</option>
+                    <option value="round-desc">Runde (14-1)</option>
+                    <option value="home-asc">Heim (A-Z)</option>
+                    <option value="away-asc">Auswärts (A-Z)</option>
                 </select>
             </div>
         </div>
         
-        <div class="table-responsive glass-card" style="padding: 0;">
+        <!-- Desktop Table View -->
+        <div class="table-responsive glass-card admin-desktop-table" style="padding: 0;">
             <table class="admin-table">
                 <thead>
                     <tr>
@@ -58,6 +74,11 @@ export const renderAdminGames = () => {
                     <tr><td colspan="9" style="text-align: center; padding: 2rem;">Lade Spiele...</td></tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Mobile Card Accordion View -->
+        <div id="games-mobile-cards" class="admin-mobile-cards">
+            <div style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">Lade Spiele...</div>
         </div>
 
         <div class="datagrid-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md);">
@@ -317,6 +338,8 @@ const formatDisplayDate = (dateStr, timeStr) => {
 const filterAndSortGames = () => {
     const searchVal = (document.getElementById('game-search')?.value || '').toLowerCase().trim();
     const roundFilter = document.getElementById('game-round-filter')?.value || 'all';
+    const statusFilter = document.getElementById('game-status-filter')?.value || 'all';
+    const sortVal = document.getElementById('game-sort-select')?.value || 'date-desc';
 
     filteredData = gamesData.filter(m => {
         const matchesSearch = !searchVal || 
@@ -329,8 +352,36 @@ const filterAndSortGames = () => {
 
         const matchesRound = roundFilter === 'all' || m.round === roundFilter || String(m.roundNr) === roundFilter;
 
-        return matchesSearch && matchesRound;
+        let matchesStatus = true;
+        const isPlayed = (m.score && m.score !== '-:-' && m.score !== ':' && m.score.trim() !== '') || m.status === 'Played' || m.status === 'Gespielt';
+        const isCanceledOrPostponed = m.status === 'Postponed' || m.status === 'Canceled' || (m.status && m.status.startsWith('Abgesagt'));
+        const isUnplayed = !isPlayed && !isCanceledOrPostponed;
+
+        if (statusFilter === 'played') {
+            matchesStatus = isPlayed;
+        } else if (statusFilter === 'unplayed') {
+            matchesStatus = isUnplayed;
+        } else if (statusFilter === 'canceled') {
+            matchesStatus = isCanceledOrPostponed;
+        }
+
+        return matchesSearch && matchesRound && matchesStatus;
     });
+
+    // Handle sortVal
+    if (sortVal === 'date-desc') {
+        currentSort = { column: 'date', asc: false };
+    } else if (sortVal === 'date-asc') {
+        currentSort = { column: 'date', asc: true };
+    } else if (sortVal === 'round-asc') {
+        currentSort = { column: 'round', asc: true };
+    } else if (sortVal === 'round-desc') {
+        currentSort = { column: 'round', asc: false };
+    } else if (sortVal === 'home-asc') {
+        currentSort = { column: 'home', asc: true };
+    } else if (sortVal === 'away-asc') {
+        currentSort = { column: 'away', asc: true };
+    }
 
     // Sorting
     filteredData.sort((a, b) => {
@@ -352,6 +403,12 @@ const filterAndSortGames = () => {
             valA = parseD(a.date);
             valB = parseD(b.date);
             return currentSort.asc ? valA - valB : valB - valA;
+        }
+
+        if (currentSort.column === 'round') {
+            const numA = parseInt(String(a.round || a.roundNr || '').replace(/\D/g, '')) || 0;
+            const numB = parseInt(String(b.round || b.roundNr || '').replace(/\D/g, '')) || 0;
+            return currentSort.asc ? numA - numB : numB - numA;
         }
 
         valA = (valA || '').toString().toLowerCase();
@@ -415,37 +472,136 @@ const renderGamesTable = () => {
                 <td style="text-align: center; color: var(--color-text-secondary); font-size: 0.9rem;">${htDisplay}</td>
                 <td>${noteBadge}</td>
                 <td style="text-align: center;">
-                    <div style="display: flex; gap: 5px; justify-content: center; align-items: center; flex-wrap: wrap;">
-                        <button class="btn-edit-game" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">Editieren</button>
-                        <button class="btn-delete-game" data-idx="${rawIndex}" style="background: #dc3545; color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Löschen</button>
-                        <button class="btn-report-game" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">Spielbericht</button>
+                    <div style="display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap;">
+                        <button class="btn-edit-game" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            Editieren
+                        </button>
+                        <button class="btn-delete-game" data-idx="${rawIndex}" style="background: #dc3545; color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            Löschen
+                        </button>
+                        <button class="btn-report-game" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            Spielbericht
+                        </button>
                     </div>
                 </td>
             </tr>
         `;
     }).join('');
 
-    // Bind row action buttons
-    tbody.querySelectorAll('.btn-edit-game').forEach(btn => {
-        btn.onclick = (e) => {
-            const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-            openEditGameModal(idx);
-        };
-    });
+    // Render Mobile Accordion Cards
+    const mobileCardsContainer = document.getElementById('games-mobile-cards');
+    if (mobileCardsContainer) {
+        if (pageRows.length === 0) {
+            mobileCardsContainer.innerHTML = '<div class="glass-card" style="text-align: center; padding: 2rem; color: var(--color-text-secondary);">Keine Spiele gefunden.</div>';
+        } else {
+            mobileCardsContainer.innerHTML = pageRows.map(m => {
+                const rawIndex = gamesData.indexOf(m);
+                const scoreDisplay = (m.score && m.score !== '-:-') ? m.score : ':';
+                const htDisplay = m.ht ? m.ht : ':';
+                const venue = m.venue || m.location || 'DSG-Platz';
+                const dateDisplay = formatDisplayDate(m.date, m.time);
 
-    tbody.querySelectorAll('.btn-delete-game').forEach(btn => {
-        btn.onclick = (e) => {
-            const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-            deleteGame(idx);
-        };
-    });
+                let noteBadge = m.note || '';
+                if (m.status === 'Abgesagt 3:0') noteBadge = '<span class="badge badge-danger" style="font-size: 0.72rem;">Abgesagt 3:0</span>';
+                else if (m.status === 'Abgesagt 0:3') noteBadge = '<span class="badge badge-danger" style="font-size: 0.72rem;">Abgesagt 0:3</span>';
+                else if (m.status === 'Postponed') noteBadge = '<span class="badge badge-secondary" style="font-size: 0.72rem;">Verschoben</span>';
+                else if (m.status === 'Canceled') noteBadge = '<span class="badge badge-danger" style="font-size: 0.72rem;">Abgesagt</span>';
 
-    tbody.querySelectorAll('.btn-report-game').forEach(btn => {
-        btn.onclick = (e) => {
-            const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-            openReportModal(idx);
-        };
-    });
+                return `
+                    <div class="admin-m-card" data-idx="${rawIndex}">
+                        <div class="admin-m-header">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 4px;">
+                                    <div class="admin-m-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <strong>${m.home || '-'}</strong> vs <strong>${m.away || '-'}</strong>
+                                    </div>
+                                    <span style="font-weight: 900; font-size: 1.15rem; color: var(--color-accent); flex-shrink: 0;">${scoreDisplay}</span>
+                                </div>
+                                <div class="admin-m-subtitle">
+                                    <span style="color: var(--color-accent); font-weight: 700;">${m.round || 'Spiel'}</span>
+                                    <span>•</span>
+                                    <span>${dateDisplay}</span>
+                                    ${noteBadge ? `<span>•</span> ${noteBadge}` : ''}
+                                </div>
+                            </div>
+                            <div class="admin-m-chevron">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                        </div>
+                        <div class="admin-m-body">
+                            <div class="admin-m-grid">
+                                <div class="admin-m-grid-item">
+                                    <span class="admin-m-label">Spielort</span>
+                                    <span class="admin-m-value">${venue}</span>
+                                </div>
+                                <div class="admin-m-grid-item">
+                                    <span class="admin-m-label">Halbzeitstand</span>
+                                    <span class="admin-m-value">${htDisplay}</span>
+                                </div>
+                                <div class="admin-m-grid-item" style="grid-column: 1 / -1;">
+                                    <span class="admin-m-label">Status / Notiz</span>
+                                    <span class="admin-m-value">${m.status || m.note || 'Regulär'}</span>
+                                </div>
+                            </div>
+                            <div class="admin-m-actions">
+                                <button class="btn-report-game full-width" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                                    Spielbericht erfassen
+                                </button>
+                                <button class="btn-edit-game" data-idx="${rawIndex}" style="background: rgba(0,0,0,0.06); color: var(--color-text-primary); border: var(--glass-border); display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                    Editieren
+                                </button>
+                                <button class="btn-delete-game" data-idx="${rawIndex}" style="background: #dc3545; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                    Löschen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Accordion toggle on header click
+            mobileCardsContainer.querySelectorAll('.admin-m-header').forEach(hdr => {
+                hdr.onclick = () => {
+                    const card = hdr.closest('.admin-m-card');
+                    if (card) card.classList.toggle('expanded');
+                };
+            });
+        }
+    }
+
+    // Bind row action buttons across both Desktop and Mobile views
+    const container = document.getElementById('admin-games');
+    if (container) {
+        container.querySelectorAll('.btn-edit-game').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+                openEditGameModal(idx);
+            };
+        });
+
+        container.querySelectorAll('.btn-delete-game').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+                deleteGame(idx);
+            };
+        });
+
+        container.querySelectorAll('.btn-report-game').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+                openReportModal(idx);
+            };
+        });
+    }
 };
 
 const populateFilterAndFormDropdowns = () => {
@@ -525,6 +681,7 @@ const openAddGameModal = () => {
 };
 
 const openEditGameModal = (idx) => {
+    gamesData = Store.getMatches('2026/2027') || [];
     const match = gamesData[idx];
     if (!match) return;
 
@@ -582,6 +739,7 @@ const closeGameModal = () => {
 };
 
 const deleteGame = (idx) => {
+    gamesData = Store.getMatches('2026/2027') || [];
     const match = gamesData[idx];
     if (!match) return;
 
@@ -648,6 +806,7 @@ const saveGameForm = (e) => {
 /* --- Spielbericht (Match Report) Logic --- */
 
 const openReportModal = (idx) => {
+    gamesData = Store.getMatches('2026/2027') || [];
     const match = gamesData[idx];
     if (!match) return;
 
@@ -751,7 +910,10 @@ const renderReportLists = () => {
     if (homeGoalsDiv) {
         homeGoalsDiv.innerHTML = reportScorersHome.map((p, i) => `
             <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
-                <span>⚽ <strong>${p}</strong></span>
+                <span style="display: inline-flex; align-items: center; gap: 5px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                    <strong>${p}</strong>
+                </span>
                 <button type="button" class="btn-del-goal-h" data-idx="${i}" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">X</button>
             </div>
         `).join('');
@@ -770,7 +932,10 @@ const renderReportLists = () => {
     if (awayGoalsDiv) {
         awayGoalsDiv.innerHTML = reportScorersAway.map((p, i) => `
             <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
-                <span>⚽ <strong>${p}</strong></span>
+                <span style="display: inline-flex; align-items: center; gap: 5px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                    <strong>${p}</strong>
+                </span>
                 <button type="button" class="btn-del-goal-a" data-idx="${i}" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">X</button>
             </div>
         `).join('');
@@ -924,6 +1089,18 @@ const setupEventHandlers = () => {
         renderGamesTable();
     };
 
+    const statusFilter = document.getElementById('game-status-filter');
+    if (statusFilter) statusFilter.onchange = () => {
+        currentPage = 1;
+        renderGamesTable();
+    };
+
+    const sortSelect = document.getElementById('game-sort-select');
+    if (sortSelect) sortSelect.onchange = () => {
+        currentPage = 1;
+        renderGamesTable();
+    };
+
     // Pagination
     const prevBtn = document.getElementById('btn-prev-page-g');
     if (prevBtn) prevBtn.onclick = () => {
@@ -965,6 +1142,14 @@ const setupEventHandlers = () => {
     const saveGameBtn = document.getElementById('btn-save-game-submit');
     if (saveGameBtn) saveGameBtn.onclick = (e) => { e.preventDefault(); saveGameForm(e); };
 
+    // Modal 1 outside-click listener
+    const gameModal = document.getElementById('game-modal');
+    if (gameModal) {
+        gameModal.onclick = (e) => {
+            if (e.target === gameModal) closeGameModal();
+        };
+    }
+
     // Modal 2: Report Form
     document.querySelectorAll('.btn-close-report-modal').forEach(b => {
         b.onclick = closeReportModal;
@@ -973,6 +1158,14 @@ const setupEventHandlers = () => {
     if (reportForm) reportForm.onsubmit = saveReportForm;
     const saveReportBtn = document.getElementById('btn-save-report');
     if (saveReportBtn) saveReportBtn.onclick = (e) => { e.preventDefault(); saveReportForm(e); };
+
+    // Modal 2 outside-click listener
+    const reportModal = document.getElementById('report-modal');
+    if (reportModal) {
+        reportModal.onclick = (e) => {
+            if (e.target === reportModal) closeReportModal();
+        };
+    }
 
     // Add Goal buttons
     const addGoalH = document.getElementById('btn-add-goal-home');
