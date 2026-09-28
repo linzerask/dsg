@@ -384,10 +384,10 @@ const openEditModal = (idx = null) => {
     const submitBtn = document.getElementById('btn-submit-player');
     
     let currentTeam = '';
-    if (idx !== null && playersData[idx]) {
+    if (idx !== null && !isNaN(idx) && playersData[idx]) {
         const p = playersData[idx];
         currentTeam = p.Team || '';
-        title.innerText = 'Spieler bearbeiten';
+        if (title) title.innerText = 'Spieler bearbeiten';
         if (submitBtn) submitBtn.innerText = 'Aktualisieren';
         document.getElementById('edit-player-id').value = idx;
         document.getElementById('edit-vorname').value = p.Vorname || '';
@@ -398,9 +398,9 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-status').value = p.Status || 'Aktiv';
         document.getElementById('edit-ofb').value = p['ÖFB-Verein'] || '';
         document.getElementById('edit-sperre').value = p.Sperre || '';
-        deleteBtn.style.display = 'block';
+        if (deleteBtn) deleteBtn.style.display = 'block';
     } else {
-        title.innerText = 'Spieler hinzufügen';
+        if (title) title.innerText = 'Spieler hinzufügen';
         if (submitBtn) submitBtn.innerText = 'Erstellen';
         document.getElementById('edit-player-id').value = 'new';
         document.getElementById('player-edit-form').reset();
@@ -409,7 +409,7 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-seit').value = new Date().toISOString().split('T')[0];
         document.getElementById('edit-ofb').value = '';
         document.getElementById('edit-sperre').value = '';
-        deleteBtn.style.display = 'none';
+        if (deleteBtn) deleteBtn.style.display = 'none';
     }
 
     populateModalTeamDropdown(currentTeam);
