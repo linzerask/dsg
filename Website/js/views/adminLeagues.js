@@ -46,19 +46,16 @@ export const renderAdminLeagues = () => {
                 <thead>
                     <tr>
                         <th data-sort="id" class="sortable" style="width: 50px;"># ↕</th>
-                        <th data-sort="name" class="sortable">Name ↕</th>
+                        <th data-sort="name" class="sortable">Liga / Name ↕</th>
                         <th data-sort="year" class="sortable">Jahr ↕</th>
-                        <th data-sort="status" class="sortable">Aktiv ↕</th>
+                        <th data-sort="status" class="sortable">Status ↕</th>
                         <th data-sort="showOnHomepage" class="sortable" style="text-align: center;">Homepage ↕</th>
+                        <th style="text-align: center;">Daten & Statistiken</th>
                         <th style="width: 100px; text-align: center;">Aktion</th>
-                        <th style="text-align: center;">Tabelle</th>
-                        <th style="text-align: center;">Spielberichte</th>
-                        <th style="text-align: center;">Karten</th>
-                        <th style="text-align: center;">Tore</th>
                     </tr>
                 </thead>
                 <tbody id="leagues-table-body">
-                    <tr><td colspan="10" style="text-align: center; padding: 2rem;">Lade Ligen...</td></tr>
+                    <tr><td colspan="7" style="text-align: center; padding: 2rem;">Lade Ligen...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -256,43 +253,39 @@ const renderTable = () => {
 
         return `
             <tr>
-                <td style="color: var(--color-text-secondary);">#${l.id || '-'}</td>
-                <td><strong style="color: var(--color-text-primary);">${l.name || '-'}</strong></td>
-                <td>${l.year || '-'}</td>
-                <td><span class="badge ${badgeClass}">${status}</span></td>
-                <td style="text-align: center;">
+                <td style="color: var(--color-text-secondary); white-space: nowrap;">#${l.id || '-'}</td>
+                <td style="white-space: nowrap;"><strong style="color: var(--color-text-primary);">${l.name || '-'}</strong></td>
+                <td style="white-space: nowrap;">${l.year || '-'}</td>
+                <td style="white-space: nowrap;"><span class="badge ${badgeClass}">${status}</span></td>
+                <td style="text-align: center; white-space: nowrap;">
                     <span class="badge ${isVisible ? 'badge-success' : 'badge-secondary'}" style="font-size: 0.75rem;">
                         ${isVisible ? 'Ja' : 'Nein'}
                     </span>
                 </td>
-                <td style="text-align: center;">
+                <td style="text-align: center; white-space: nowrap;">
+                    <div style="display: inline-flex; gap: 4px; justify-content: center; align-items: center;">
+                        <button class="btn-league-view" data-action="table" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 3px;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            Tabelle
+                        </button>
+                        <button class="btn-league-view" data-action="matches" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 3px;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                            Spiele
+                        </button>
+                        <button class="btn-league-view" data-action="cards" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 3px;">
+                            <span style="display:inline-block;width:7px;height:10px;background:#f1c40f;border-radius:1px;"></span>
+                            Karten
+                        </button>
+                        <button class="btn-league-view" data-action="scorers" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 3px;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                            Tore
+                        </button>
+                    </div>
+                </td>
+                <td style="text-align: center; white-space: nowrap;">
                     <button class="btn btn-outline edit-single-league-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
                         Bearbeiten
-                    </button>
-                </td>
-                <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="table" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                        Tabelle
-                    </button>
-                </td>
-                <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="matches" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
-                        Spielberichte
-                    </button>
-                </td>
-                <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="cards" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
-                        <span style="display:inline-block;width:9px;height:12px;background:#f1c40f;border-radius:2px;"></span>
-                        Karten
-                    </button>
-                </td>
-                <td style="text-align: center;">
-                    <button class="btn-league-view" data-action="scorers" data-idx="${rawIndex}" style="background: rgba(0,179,65,0.06); border: 1px solid rgba(0,179,65,0.4); color: var(--color-accent); font-weight: 600; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-                        Tore
                     </button>
                 </td>
             </tr>

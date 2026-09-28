@@ -59,15 +59,15 @@ export const renderAdminGames = () => {
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th data-sort="date" class="sortable">Datum ↕</th>
-                        <th data-sort="venue" class="sortable">Ort ↕</th>
-                        <th data-sort="round" class="sortable">Runde ↕</th>
-                        <th data-sort="home" class="sortable">Heimmannschaft ↕</th>
-                        <th data-sort="away" class="sortable">Auswärtsmannschaft ↕</th>
-                        <th data-sort="score" class="sortable" style="text-align: center;">Ergebnis ↕</th>
-                        <th data-sort="ht" class="sortable" style="text-align: center;">Halbzeit ↕</th>
-                        <th>Sonstiges</th>
-                        <th style="min-width: 280px; text-align: center;">Aktion</th>
+                        <th data-sort="date" class="sortable" style="width: 100px;">Datum ↕</th>
+                        <th data-sort="venue" class="sortable" style="max-width: 105px;">Ort ↕</th>
+                        <th data-sort="round" class="sortable" style="max-width: 80px;">Runde ↕</th>
+                        <th data-sort="home" class="sortable" style="max-width: 125px;">Heim ↕</th>
+                        <th data-sort="away" class="sortable" style="max-width: 125px;">Auswärts ↕</th>
+                        <th data-sort="score" class="sortable" style="text-align: center; width: 65px;">Ergebnis ↕</th>
+                        <th data-sort="ht" class="sortable" style="text-align: center; width: 55px;">HZ ↕</th>
+                        <th style="max-width: 75px;">Sonstiges</th>
+                        <th style="text-align: center; width: 115px;">Aktionen</th>
                     </tr>
                 </thead>
                 <tbody id="games-table-body">
@@ -466,29 +466,29 @@ const renderGamesTable = () => {
         else if (m.status === 'Postponed') noteBadge = '<span class="badge badge-secondary" style="font-size: 0.75rem;">Verschoben</span>';
         else if (m.status === 'Canceled') noteBadge = '<span class="badge badge-danger" style="font-size: 0.75rem;">Abgesagt</span>';
 
+        const roundDisplay = m.round ? m.round.replace(/\s+\d{2}\.\d{2}\..*$/, '') : '-';
+
         return `
             <tr>
-                <td style="font-weight: 600; color: var(--color-text-primary); font-size: 0.85rem;">${dateDisplay}</td>
-                <td style="color: var(--color-text-secondary); font-size: 0.85rem;">${venue}</td>
-                <td style="font-weight: 600; color: var(--color-accent); font-size: 0.85rem;">${m.round || '-'}</td>
-                <td style="font-weight: 700; color: var(--color-text-primary);">${m.home || '-'}</td>
-                <td style="font-weight: 700; color: var(--color-text-primary);">${m.away || '-'}</td>
-                <td style="text-align: center; font-weight: 800; font-size: 1.05rem; color: var(--color-accent);">${scoreDisplay}</td>
-                <td style="text-align: center; color: var(--color-text-secondary); font-size: 0.9rem;">${htDisplay}</td>
-                <td>${noteBadge}</td>
-                <td style="text-align: center;">
-                    <div style="display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap;">
-                        <button class="btn-edit-game" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                            Editieren
+                <td style="font-weight: 600; color: var(--color-text-primary); font-size: 0.82rem; white-space: nowrap;">${dateDisplay}</td>
+                <td style="color: var(--color-text-secondary); font-size: 0.82rem; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${venue}">${venue}</td>
+                <td style="font-weight: 600; color: var(--color-accent); font-size: 0.82rem; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.round || ''}">${roundDisplay}</td>
+                <td style="font-weight: 700; color: var(--color-text-primary); font-size: 0.85rem; max-width: 125px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.home || ''}">${m.home || '-'}</td>
+                <td style="font-weight: 700; color: var(--color-text-primary); font-size: 0.85rem; max-width: 125px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.away || ''}">${m.away || '-'}</td>
+                <td style="text-align: center; font-weight: 800; font-size: 1rem; color: var(--color-accent); white-space: nowrap;">${scoreDisplay}</td>
+                <td style="text-align: center; color: var(--color-text-secondary); font-size: 0.82rem; white-space: nowrap;">${htDisplay}</td>
+                <td style="max-width: 75px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.note || m.status || ''}">${noteBadge}</td>
+                <td style="text-align: center; white-space: nowrap;">
+                    <div style="display: inline-flex; gap: 3px; justify-content: center; align-items: center;">
+                        <button class="btn-report-game" data-idx="${rawIndex}" title="Spielbericht erfassen" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            Bericht
                         </button>
-                        <button class="btn-delete-game" data-idx="${rawIndex}" style="background: #dc3545; color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                            Löschen
+                        <button class="btn-edit-game" data-idx="${rawIndex}" title="Spiel bearbeiten" style="background: rgba(0,0,0,0.04); color: var(--color-text-primary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                         </button>
-                        <button class="btn-report-game" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                            Spielbericht
+                        <button class="btn-delete-game" data-idx="${rawIndex}" title="Spiel löschen" style="background: rgba(220,53,69,0.08); color: #dc3545; border: 1px solid rgba(220,53,69,0.25); border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </button>
                     </div>
                 </td>
