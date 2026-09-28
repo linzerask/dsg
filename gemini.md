@@ -158,3 +158,11 @@ DSG Liga/
   3. **Forward Navigation:** When opening any new page or article link forward, immediately reset scroll position to `(top: 0, left: 0)` using `window.scrollTo({ top: 0, left: 0, behavior: 'instant' })` and remove `.nav-hidden` from the floating navigation bar.
   4. **Back/Forward Navigation (`popstate`):** When navigating back (browser back button / mobile swipe gesture), detect `isPopState = true`, retrieve the recorded scroll position `savedY` for that route, and restore `window.scrollTo({ top: savedY, left: 0, behavior: 'instant' })` through `requestAnimationFrame` once the DOM is stable.
 
+---
+
+## 13. Admin Data Grid Default Sort Orders
+* **The Rule:**
+  1. **Spieler Tab (`adminPlayers.js`):** Default sort order is set to **`Datum (älteste)` (`date-asc`)**, sorting by membership/registration date (`seit`) ascending from oldest to newest, with `# ID` ascending as the secondary tiebreaker.
+  2. **Spiele Tab (`adminGames.js`):** Default sort order is set to **`Datum (älteste)` (`date-asc`)**, ordering matches chronologically.
+
+
