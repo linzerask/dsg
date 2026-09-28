@@ -236,6 +236,76 @@ main {
   display: none;
 }
 
+/* Topspiel Match Banner */
+.upcoming-match {
+  margin-top: var(--space-xl);
+  text-align: center;
+  border-left: 4px solid var(--color-accent);
+}
+
+.topspiel-badge {
+  display: inline-block;
+  background: rgba(0, 179, 65, 0.12);
+  border: 1px solid rgba(0, 179, 65, 0.35);
+  color: var(--color-accent);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: var(--space-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.topspiel-teams {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-top: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.topspiel-team {
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.topspiel-vs {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--color-accent);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+
+.topspiel-meta {
+  margin-top: var(--space-sm);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  flex-wrap: wrap;
+}
+
+.topspiel-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topspiel-meta .meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* Utility */
 .accent-text {
   color: var(--color-accent);
@@ -293,6 +363,37 @@ main {
   }
   .stats-counter-section {
     padding: var(--space-md) var(--space-md) !important;
+  }
+
+  /* Topspiel Mobile Layout */
+  .topspiel-teams {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-top: 12px !important;
+  }
+  .topspiel-team {
+    font-size: 1.3rem !important;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .topspiel-vs {
+    font-size: 0.85rem !important;
+    padding: 3px 10px !important;
+    border-radius: 4px !important;
+    margin: 2px 0 !important;
+  }
+  .topspiel-meta {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-top: 12px !important;
+  }
+  .topspiel-meta-row {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 16px !important;
   }
 }
 

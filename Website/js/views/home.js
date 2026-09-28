@@ -189,20 +189,24 @@ export const viewHome = () => {
     const roundLabel = nextMatch.round || 'Kommendes Spiel';
     
     upcomingMatchHtml = `
-      <div class="upcoming-match banner glass-card stagger-item" style="margin-top: var(--space-xl); text-align: center; border-left: 4px solid var(--color-accent);">
-        <div style="display: inline-block; background: rgba(0, 179, 65, 0.12); border: 1px solid rgba(0, 179, 65, 0.35); color: var(--color-accent); font-weight: 700; font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; margin-bottom: var(--space-xs); text-transform: uppercase; letter-spacing: 0.5px;">
+      <div class="upcoming-match banner glass-card stagger-item">
+        <div class="topspiel-badge">
           ${roundLabel} &bull; Topspiel
         </div>
-        <div style="display: flex; justify-content: center; align-items: center; gap: var(--space-lg); margin-top: var(--space-sm); flex-wrap: wrap;">
-          <h3 style="font-size: clamp(1.2rem, 3vw, 1.7rem); font-weight: 700; margin: 0; color: var(--color-text-primary);">${nextMatch.home}</h3>
-          <span style="font-size: 1.1rem; font-weight: 900; color: var(--color-accent); background: rgba(0,0,0,0.04); padding: 4px 12px; border-radius: 6px;">VS</span>
-          <h3 style="font-size: clamp(1.2rem, 3vw, 1.7rem); font-weight: 700; margin: 0; color: var(--color-text-primary);">${nextMatch.away}</h3>
+        <div class="topspiel-teams">
+          <h3 class="topspiel-team home-team">${nextMatch.home}</h3>
+          <span class="topspiel-vs">VS</span>
+          <h3 class="topspiel-team away-team">${nextMatch.away}</h3>
         </div>
-        <p style="margin-top: var(--space-sm); color: var(--color-text-secondary); font-size: 0.95rem; font-weight: 500; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 16px;">
-          <span style="display: inline-flex; align-items: center; gap: 4px;">${renderIcon('calendar', { size: 15, color: 'var(--color-text-secondary)' })}${formattedDate}</span>
-          ${nextMatch.time ? `<span style="display: inline-flex; align-items: center; gap: 4px;">${renderIcon('clock', { size: 15, color: 'var(--color-text-secondary)' })}${nextMatch.time} Uhr</span>` : ''}
-          <span style="display: inline-flex; align-items: center; gap: 4px;">${renderIcon('pin', { size: 15, color: 'var(--color-text-secondary)' })}${loc}</span>
-        </p>
+        <div class="topspiel-meta">
+          <div class="topspiel-meta-row topspiel-datetime">
+            <span class="meta-item">${renderIcon('calendar', { size: 15, color: 'var(--color-text-secondary)' })}${formattedDate}</span>
+            ${nextMatch.time ? `<span class="meta-item">${renderIcon('clock', { size: 15, color: 'var(--color-text-secondary)' })}${nextMatch.time} Uhr</span>` : ''}
+          </div>
+          <div class="topspiel-meta-row topspiel-location">
+            <span class="meta-item">${renderIcon('pin', { size: 15, color: 'var(--color-text-secondary)' })}${loc}</span>
+          </div>
+        </div>
       </div>
     `;
   }
