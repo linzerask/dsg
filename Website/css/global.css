@@ -873,6 +873,116 @@ main {
     transform: scale(1.2);
 }
 
+/* Centered Round Header & Selector */
+.round-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: var(--space-lg);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.round-header .slider-btn {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: var(--glass-border);
+  color: var(--color-text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.round-header .slider-btn:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: scale(1.08);
+}
+
+.round-select-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: min(380px, calc(100% - 96px));
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.round-select-dropdown {
+  width: 100%;
+  background: rgba(142, 198, 63, 0.12);
+  border: 1px solid var(--color-accent);
+  padding: 8px 34px 8px 18px;
+  border-radius: var(--border-radius-pill);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: center;
+  text-align-last: center;
+  cursor: pointer;
+  font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(142, 198, 63, 0.08);
+  box-sizing: border-box;
+}
+
+.round-select-dropdown:hover,
+.round-select-dropdown:focus {
+  background: rgba(142, 198, 63, 0.2);
+  box-shadow: 0 0 12px rgba(142, 198, 63, 0.2);
+}
+
+.round-select-chevron {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .round-header {
+    gap: 8px;
+    margin-bottom: var(--space-md);
+  }
+  .round-header .slider-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+  .round-select-wrapper {
+    max-width: calc(100% - 84px);
+  }
+  .round-select-dropdown {
+    padding: 6px 28px 6px 12px;
+    font-size: clamp(0.78rem, 3.4vw, 0.88rem);
+  }
+  .round-select-chevron {
+    right: 9px;
+  }
+}
+
 
 .liga-tab-active::after {
     content: '';

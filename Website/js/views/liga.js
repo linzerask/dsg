@@ -401,20 +401,22 @@ export function viewLiga() {
 
     return `
       <div class="round-slide" data-index="${idx}" style="display: ${idx === initialRoundIdx ? 'block' : 'none'}; width: 100%;">
-        <div class="round-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg); gap: 10px;">
-           <button class="slider-btn prev-round glass-btn" style="cursor: pointer; padding: 6px 14px; font-size: 1rem; border-radius: 50px; background: var(--color-surface); border: var(--glass-border); color: var(--color-text-primary); transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center;" title="Vorherige Runde">
-             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <div class="round-header">
+           <button class="slider-btn prev-round glass-btn" title="Vorherige Runde" aria-label="Vorherige Runde">
+             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
            </button>
            
-           <div class="round-select-wrapper" style="position: relative; display: inline-block;">
-             <select class="round-select-dropdown" data-current-idx="${idx}" style="background: rgba(142, 198, 63, 0.15); border: 1px solid var(--color-accent); padding: var(--space-xs) var(--space-lg); border-radius: 50px; font-weight: bold; color: var(--color-text-primary); text-align: center; cursor: pointer; font-size: 0.95rem; outline: none; appearance: none; -webkit-appearance: none; padding-right: 32px;">
+           <div class="round-select-wrapper">
+             <select class="round-select-dropdown" data-current-idx="${idx}" aria-label="Spielrunde auswählen">
                ${roundKeys.map((rk, rIdx) => `<option value="${rIdx}" ${rIdx === idx ? 'selected' : ''}>${rk}</option>`).join('')}
              </select>
-             <svg style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--color-accent);" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+             <span class="round-select-chevron">
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+             </span>
            </div>
            
-           <button class="slider-btn next-round glass-btn" style="cursor: pointer; padding: 6px 14px; font-size: 1rem; border-radius: 50px; background: var(--color-surface); border: var(--glass-border); color: var(--color-text-primary); transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center;" title="Nächste Runde">
-             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+           <button class="slider-btn next-round glass-btn" title="Nächste Runde" aria-label="Nächste Runde">
+             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
            </button>
         </div>
         <div class="round-matches stagger-item">
