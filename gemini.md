@@ -147,3 +147,14 @@ DSG Liga/
             ├── adminNews.js   # News articles & rich text editor
             └── adminGallery.js# Photo albums & uploads
 ```
+
+---
+
+## 12. SPA Scroll Management & History Restoration Protocol
+* **The Pitfall:** In hash-based SPAs (`#/news`, `#/article/:id`), browsers may remember scroll positions globally or jump asynchronously to the previous route's scroll offset when opening a new page (e.g. starting in the middle of an article). Additionally, naive scroll listeners can accidentally overwrite saved scroll states with `0` while elements are being removed or rendered.
+* **The Rule:**
+  1. **Manual Scroll Restoration:** Set `history.scrollRestoration = 'manual'` in `Router.init()`.
+  2. **Dedicated Route Scroll Map:** Maintain a `scrollPositions = new Map()` on the `Router` object. Track scroll positions in real time via `window.addEventListener('scroll', ...)` only when `!this.isNavigating`.
+  3. **Forward Navigation:** When opening any new page or article link forward, immediately reset scroll position to `(top: 0, left: 0)` using `window.scrollTo({ top: 0, left: 0, behavior: 'instant' })` and remove `.nav-hidden` from the floating navigation bar.
+  4. **Back/Forward Navigation (`popstate`):** When navigating back (browser back button / mobile swipe gesture), detect `isPopState = true`, retrieve the recorded scroll position `savedY` for that route, and restore `window.scrollTo({ top: savedY, left: 0, behavior: 'instant' })` through `requestAnimationFrame` once the DOM is stable.
+
