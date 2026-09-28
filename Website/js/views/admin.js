@@ -26,6 +26,16 @@ const tabLabels = {
   'admin-gallery': 'Galerie verwalten'
 };
 
+const tabIcons = {
+  'admin-rounds': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
+  'admin-games': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>`,
+  'admin-players': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
+  'admin-teams': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
+  'admin-leagues': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path><path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>`,
+  'admin-news': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path><path d="M18 14h-8"></path><path d="M15 18h-5"></path><path d="M10 6h8v4h-8V6Z"></path></svg>`,
+  'admin-gallery': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`
+};
+
 export const viewAdmin = () => {
   try {
     const savedTab = sessionStorage.getItem('dsg_admin_tab');
@@ -34,45 +44,50 @@ export const viewAdmin = () => {
   const activeTab = currentAdminTab || 'admin-rounds';
   const isTabActive = (tabId) => activeTab === tabId;
   const currentLabel = tabLabels[activeTab] || 'Spielrunden';
+  const currentIcon = tabIcons[activeTab] || tabIcons['admin-rounds'];
 
   return `
-    <div class="admin-layout" style="display: grid; grid-template-columns: 250px 1fr; min-height: 80vh; gap: var(--space-lg);">
-      <aside class="glass-card stagger-item admin-sidebar" style="border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; height: 100%; border-left: none; padding: var(--space-md);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+    <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 0 var(--space-md); padding-top: var(--space-sm);">
+      <div class="admin-layout" style="display: grid; grid-template-columns: 260px 1fr; min-height: 80vh; gap: var(--space-lg);">
+        <aside class="glass-card stagger-item admin-sidebar" style="border-radius: var(--border-radius-md); height: fit-content; border: var(--glass-border); padding: var(--space-md);">
+        <div class="admin-sidebar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
           <h2 style="font-size: 1.4rem; color: var(--color-accent); margin: 0;">Admin Panel</h2>
-          <button id="admin-m-nav-toggle" class="admin-m-nav-toggle-btn">
-            <span id="admin-m-nav-current-label">${currentLabel}</span>
+          <button id="admin-m-nav-toggle" class="admin-m-nav-toggle-btn" aria-label="Menü öffnen">
+            <span id="admin-m-nav-current-label" style="display: inline-flex; align-items: center; justify-content: center;">
+              ${currentIcon}
+              <span>${currentLabel}</span>
+            </span>
             <svg class="admin-m-nav-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.25s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
         </div>
         <nav id="admin-nav-menu" class="admin-nav-accordion-content">
           <button class="admin-nav-btn ${isTabActive('admin-rounds') ? 'active' : ''}" data-target="admin-rounds">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            Spielrunden
+            ${tabIcons['admin-rounds']}
+            <span>Spielrunden</span>
           </button>
           <button class="admin-nav-btn ${isTabActive('admin-games') ? 'active' : ''}" data-target="admin-games">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
-            Spiele
+            ${tabIcons['admin-games']}
+            <span>Spiele</span>
           </button>
           <button class="admin-nav-btn ${isTabActive('admin-players') ? 'active' : ''}" data-target="admin-players">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            Spieler verwalten
+            ${tabIcons['admin-players']}
+            <span>Spieler verwalten</span>
           </button>
           <button class="admin-nav-btn ${isTabActive('admin-teams') ? 'active' : ''}" data-target="admin-teams">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            Teams verwalten
+            ${tabIcons['admin-teams']}
+            <span>Teams verwalten</span>
           </button>
           <button class="admin-nav-btn ${isTabActive('admin-leagues') ? 'active' : ''}" data-target="admin-leagues">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path><path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
-            Ligen verwalten
+            ${tabIcons['admin-leagues']}
+            <span>Ligen verwalten</span>
           </button>
           <button class="admin-nav-btn ${isTabActive('admin-news') ? 'active' : ''}" data-target="admin-news">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path><path d="M18 14h-8"></path><path d="M15 18h-5"></path><path d="M10 6h8v4h-8V6Z"></path></svg>
-            News verwalten
+            ${tabIcons['admin-news']}
+            <span>News verwalten</span>
           </button>
           <button class="admin-nav-btn ${isTabActive('admin-gallery') ? 'active' : ''}" data-target="admin-gallery">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            Galerie verwalten
+            ${tabIcons['admin-gallery']}
+            <span>Galerie verwalten</span>
           </button>
         </nav>
       </aside>
@@ -100,24 +115,70 @@ export const viewAdmin = () => {
         </div>
       </div>
     </div>
-    <style>
+  </div>
+  <style>
+      .admin-layout {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        min-height: 80vh;
+        gap: var(--space-lg);
+        width: 100%;
+        min-width: 0;
+      }
+      .admin-sidebar {
+        border-radius: var(--border-radius-md);
+        height: fit-content;
+        border: var(--glass-border);
+        padding: var(--space-md);
+        min-width: 0;
+      }
+      .admin-content {
+        min-width: 0;
+        padding: var(--space-md) var(--space-lg);
+      }
       .admin-m-nav-toggle-btn {
         display: none;
         align-items: center;
-        gap: 8px;
+        justify-content: center;
+        position: relative;
+        width: 100%;
         background: rgba(0, 150, 64, 0.08);
         border: 1px solid var(--color-accent);
-        color: var(--color-text-primary);
-        border-radius: 6px;
-        padding: 8px 14px;
+        color: var(--color-accent);
+        border-radius: 9999px;
+        padding: 10px 24px;
         font-weight: 700;
-        font-size: 0.92rem;
+        font-size: 0.95rem;
         cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 2px 8px rgba(0, 150, 64, 0.06);
+      }
+      .admin-m-nav-toggle-btn:active {
+        transform: scale(0.98);
+      }
+      #admin-m-nav-current-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-weight: 700;
+        color: var(--color-accent);
+      }
+      .admin-m-nav-toggle-btn .admin-m-nav-chevron {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: transform 0.25s ease;
+        color: var(--color-accent);
+      }
+      .admin-m-nav-toggle-btn.open .admin-m-nav-chevron {
+        transform: translateY(-50%) rotate(180deg);
       }
       .admin-nav-accordion-content {
         display: flex;
         flex-direction: column;
-        gap: var(--space-xs);
+        gap: 6px;
       }
       .admin-nav-btn {
         display: flex;
@@ -129,34 +190,71 @@ export const viewAdmin = () => {
         color: var(--color-text-secondary);
         background: transparent;
         border: none;
-        border-radius: 6px;
+        border-radius: 8px;
         cursor: pointer;
         transition: all 0.2s ease;
+        width: 100%;
       }
       .admin-nav-btn:hover {
-        background: rgba(0, 150, 64, 0.05);
+        background: rgba(0, 150, 64, 0.06);
         color: var(--color-accent);
       }
       .admin-nav-btn.active {
-        background: rgba(0, 150, 64, 0.1) !important;
+        background: rgba(0, 150, 64, 0.12) !important;
         color: var(--color-accent) !important;
         font-weight: 700;
       }
       @media (max-width: 768px) {
-        .admin-layout { grid-template-columns: 1fr !important; gap: var(--space-sm) !important; }
-        .admin-sidebar { border-radius: var(--border-radius-md) !important; border-left: var(--glass-border) !important; margin: 0 10px; }
-        .admin-sidebar > div:first-child { width: 100%; }
-        .admin-m-nav-toggle-btn { display: flex !important; width: 100%; justify-content: space-between; }
+        .admin-layout {
+          grid-template-columns: 1fr !important;
+          gap: var(--space-sm) !important;
+          width: 100% !important;
+        }
+        .admin-sidebar {
+          border-radius: var(--border-radius-md) !important;
+          border: var(--glass-border) !important;
+          margin: 0 auto 12px auto !important;
+          max-width: 500px !important;
+          width: 100% !important;
+          padding: 12px !important;
+          box-sizing: border-box;
+        }
+        .admin-sidebar-header {
+          margin-bottom: 0 !important;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .admin-sidebar h2 {
+          display: none !important;
+        }
+        .admin-m-nav-toggle-btn {
+          display: flex !important;
+        }
         .admin-nav-accordion-content {
           display: none !important;
-          margin-top: 10px;
+          margin-top: 12px;
           border-top: 1px solid var(--color-border);
-          padding-top: 10px;
+          padding-top: 12px;
+          gap: 8px;
         }
         .admin-nav-accordion-content.open {
           display: flex !important;
         }
-        .admin-sidebar h2 { display: none; }
+        .admin-nav-accordion-content .admin-nav-btn {
+          display: flex !important;
+          justify-content: center !important;
+          align-items: center !important;
+          text-align: center !important;
+          padding: 11px 16px !important;
+          border-radius: 9999px !important;
+          width: 100% !important;
+        }
+        .admin-content {
+          padding: 0 !important;
+          width: 100% !important;
+        }
       }
     </style>
   `;
@@ -175,17 +273,16 @@ export const bindAdmin = () => {
   // Mobile Accordion Toggle
   const toggleBtn = document.getElementById('admin-m-nav-toggle');
   const navMenu = document.getElementById('admin-nav-menu');
-  const chevron = toggleBtn?.querySelector('.admin-m-nav-chevron');
 
   if (toggleBtn && navMenu) {
     toggleBtn.addEventListener('click', () => {
       const isOpen = navMenu.classList.contains('open');
       if (isOpen) {
         navMenu.classList.remove('open');
-        if (chevron) chevron.style.transform = 'rotate(0deg)';
+        toggleBtn.classList.remove('open');
       } else {
         navMenu.classList.add('open');
-        if (chevron) chevron.style.transform = 'rotate(180deg)';
+        toggleBtn.classList.add('open');
       }
     });
   }
@@ -206,13 +303,13 @@ export const bindAdmin = () => {
       // Update mobile label
       const currentLabelEl = document.getElementById('admin-m-nav-current-label');
       if (currentLabelEl && tabLabels[targetId]) {
-        currentLabelEl.textContent = tabLabels[targetId];
+        currentLabelEl.innerHTML = `${tabIcons[targetId] || ''}<span>${tabLabels[targetId]}</span>`;
       }
 
       // Close mobile accordion menu on selection
       if (navMenu && window.innerWidth <= 768) {
         navMenu.classList.remove('open');
-        if (chevron) chevron.style.transform = 'rotate(0deg)';
+        toggleBtn?.classList.remove('open');
       }
 
       if (targetId === 'admin-rounds') initAdminRounds();
