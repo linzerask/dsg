@@ -14,8 +14,28 @@
   
   <!-- Anime.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <!-- Theme Initializer (Zero Flash) -->
+  <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('dsg_theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body>
+
+  <!-- Desktop Theme Switcher (Top Right) -->
+  <button id="theme-toggle-desktop" class="theme-toggle-btn" aria-label="Design umschalten" title="Design umschalten">
+    <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+  </button>
 
   <!-- Floating Pill Navigation -->
   <nav class="floating-nav">
@@ -53,6 +73,21 @@
     <a href="#/galerie" class="nav-link drawer-link">Galerie</a>
     <a href="#/organisation" class="nav-link drawer-link">Organisation</a>
     <a href="#/admin" class="nav-link drawer-link" style="color: var(--color-accent);">Verwaltung</a>
+
+    <!-- Mobile Drawer Theme Switcher -->
+    <div class="drawer-theme-switcher">
+      <span class="drawer-theme-label">Erscheinungsbild</span>
+      <div class="drawer-theme-buttons">
+        <button id="drawer-theme-light" class="drawer-theme-btn active" data-theme-val="light" aria-label="Heller Modus">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <span>Hell</span>
+        </button>
+        <button id="drawer-theme-dark" class="drawer-theme-btn" data-theme-val="dark" aria-label="Dunkler Modus">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          <span>Dunkel</span>
+        </button>
+      </div>
+    </div>
   </aside>
 
   <!-- Main Content Wrapper -->
@@ -90,6 +125,6 @@
     </div>
   </footer>
 
-  <script type="module" src="js/main.js?v=1790560000390"></script>
+  <script type="module" src="js/main.js?v=1790560000450"></script>
 </body>
 </html>

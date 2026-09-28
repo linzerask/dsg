@@ -43,3 +43,26 @@
   --transition-fast: 0.2s cubic-bezier(0.25, 1, 0.5, 1);
   --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+[data-theme="dark"] {
+  /* Core Palette (Deep Dark Slate Mode) */
+  --color-bg: #0b0f17;
+  --color-surface: #151c28;
+  --color-surface-hover: #1e2738;
+  --color-border: rgba(255, 255, 255, 0.1);
+  
+  /* Brand Accents */
+  --color-accent: #00c853;
+  --color-accent-glow: rgba(0, 200, 83, 0.35);
+  
+  /* Text */
+  --color-text-primary: #f0f4f8;
+  --color-text-secondary: #94a3b8;
+  --color-text-inverse: #0b0f17;
+
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(21, 28, 40, 0.82);
+  --glass-blur: blur(16px);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.5);
+}

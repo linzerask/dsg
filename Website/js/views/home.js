@@ -267,7 +267,7 @@ export const viewHome = () => {
     <div class="hero-section stagger-item">
       <div class="hero-overlay"></div>
       <div class="hero-content">
-        <h1 class="hero-title" style="color: var(--color-text-inverse);">DSG Fussball<span class="mobile-break">-<br></span>meisterschaft</h1>
+        <h1 class="hero-title" style="color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.6);">DSG Fussball<span class="mobile-break">-<br></span>meisterschaft</h1>
         <p class="hero-subtitle" style="color: rgba(255, 255, 255, 0.95); margin-top: var(--space-md); font-size: 1.2rem; max-width: 600px;">
           Willkommen auf der Homepage der DSG-Fussballmeisterschaft Oberösterreich.<br><br>
           Wir freuen uns, euch hier begrüßen zu dürfen.<br><br>

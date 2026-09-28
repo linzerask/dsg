@@ -400,7 +400,7 @@ main {
 /* Primary Button & Text Button */
 .primary-btn {
   background: var(--color-accent);
-  color: var(--color-text-inverse);
+  color: #ffffff !important;
   padding: var(--space-sm) var(--space-lg);
   border-radius: var(--border-radius-pill);
   font-weight: 700;
@@ -685,7 +685,7 @@ main {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  color: var(--color-text-inverse);
+  color: #ffffff;
 }
 
 .article-hero-content h1 {
@@ -2754,4 +2754,151 @@ main {
     .show-mobile {
         display: flex !important;
     }
+}
+
+/* ============================================================
+   LIGHT / DARK MODE SYSTEM & SWITCHES
+   ============================================================ */
+
+/* Desktop Floating Theme Switcher */
+.theme-toggle-btn {
+    position: fixed;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    z-index: 101;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.08) rotate(12deg);
+    border-color: var(--color-accent);
+}
+
+@media (max-width: 768px) {
+    .theme-toggle-btn {
+        display: none !important;
+    }
+}
+
+/* Mobile Drawer Theme Switcher */
+.drawer-theme-switcher {
+    margin-top: auto;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.drawer-theme-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-secondary);
+}
+
+.drawer-theme-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 4px;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--color-border);
+}
+
+[data-theme="dark"] .drawer-theme-buttons {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.drawer-theme-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.drawer-theme-btn.active {
+    background: var(--color-surface);
+    color: var(--color-accent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-weight: 700;
+}
+
+/* Dark Mode Overrides & Enhancements */
+[data-theme="dark"] .hero-overlay {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(11,15,23,0.3) 40%, rgba(11,15,23,0.1) 60%, rgba(11,15,23,0.85) 85%, #0b0f17 100%);
+}
+
+[data-theme="dark"] .floating-nav {
+    background: rgba(21, 28, 40, 0.88) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .floating-nav .brand::after {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+[data-theme="dark"] .admin-table th {
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .admin-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+[data-theme="dark"] .admin-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="dark"] .admin-layout aside nav .admin-nav-btn {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="dark"] .admin-m-chevron {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] select.admin-input option {
+    background: #151c28;
+    color: #f0f4f8;
+}
+
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+[data-theme="dark"] .marquee-content img,
+[data-theme="dark"] .marquee-partner-link img {
+    filter: grayscale(100%) brightness(1.6);
+}
+
+[data-theme="dark"] .marquee-content img:hover,
+[data-theme="dark"] .marquee-partner-link:hover img {
+    filter: grayscale(0%) brightness(1);
 }

@@ -69,6 +69,72 @@ const initApp = () => {
   window.addEventListener('hashchange', () => {
     floatingNav?.classList.remove('nav-hidden');
   });
+
+  // Theme Toggle Management
+  const themeToggleDesktop = document.getElementById('theme-toggle-desktop');
+  const themeIconSun = document.getElementById('theme-icon-sun');
+  const themeIconMoon = document.getElementById('theme-icon-moon');
+  const drawerThemeLight = document.getElementById('drawer-theme-light');
+  const drawerThemeDark = document.getElementById('drawer-theme-dark');
+
+  const updateThemeUI = (theme) => {
+    const isDark = theme === 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+    try {
+      localStorage.setItem('dsg_theme', theme);
+    } catch(e) {}
+
+    // Update Desktop Switcher Icons
+    if (themeIconSun && themeIconMoon) {
+      if (isDark) {
+        themeIconSun.style.display = 'block';
+        themeIconMoon.style.display = 'none';
+      } else {
+        themeIconSun.style.display = 'none';
+        themeIconMoon.style.display = 'block';
+      }
+    }
+
+    // Update Mobile Drawer Buttons
+    if (drawerThemeLight && drawerThemeDark) {
+      if (isDark) {
+        drawerThemeDark.classList.add('active');
+        drawerThemeLight.classList.remove('active');
+      } else {
+        drawerThemeLight.classList.add('active');
+        drawerThemeDark.classList.remove('active');
+      }
+    }
+  };
+
+  const getInitialTheme = () => {
+    try {
+      const saved = localStorage.getItem('dsg_theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+    } catch(e) {}
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  };
+
+  const initialTheme = document.documentElement.getAttribute('data-theme') || getInitialTheme();
+  updateThemeUI(initialTheme);
+
+  // Desktop Toggle Event
+  themeToggleDesktop?.addEventListener('click', () => {
+    const active = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    if (typeof anime !== 'undefined') {
+      anime({
+        targets: themeToggleDesktop,
+        rotate: '+=180deg',
+        duration: 400,
+        easing: 'easeInOutQuad'
+      });
+    }
+    updateThemeUI(active);
+  });
+
+  // Mobile Drawer Toggle Events
+  drawerThemeLight?.addEventListener('click', () => updateThemeUI('light'));
+  drawerThemeDark?.addEventListener('click', () => updateThemeUI('dark'));
 };
 
 if (document.readyState === 'loading') {
