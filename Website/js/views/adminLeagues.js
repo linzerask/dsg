@@ -77,8 +77,8 @@ export const renderAdminLeagues = () => {
         </div>
 
         <!-- Edit / Create League Modal -->
-        <div id="league-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
-            <div class="glass-card modal-content" style="background: var(--color-surface); max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: var(--glass-border);">
+        <div id="league-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+            <div class="glass-card modal-content" style="background: #ffffff; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 16px 40px rgba(0,0,0,0.3); border: var(--glass-border);">
                 <h3 id="modal-league-title" style="margin-bottom: var(--space-md);">Liga bearbeiten</h3>
                 <form id="league-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-league-id">
@@ -137,8 +137,8 @@ export const renderAdminLeagues = () => {
         </div>
 
         <!-- League Data Inspection Popup (Grid/Tables for Tabelle, Spielberichte, Karten, Tore) -->
-        <div id="league-data-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px);">
-            <div style="background: var(--color-surface); max-width: 900px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; border-radius: var(--border-radius-md); box-shadow: 0 15px 35px rgba(0,0,0,0.35); border: var(--glass-border); overflow: hidden;">
+        <div id="league-data-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100000; justify-content: center; align-items: center; padding: 20px;">
+            <div style="background: #ffffff; max-width: 900px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; border-radius: var(--border-radius-md); box-shadow: 0 16px 48px rgba(0,0,0,0.35); border: 1px solid var(--color-border); overflow: hidden;">
                 
                 <!-- Fixed Modal Top Header -->
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--color-border); background: rgba(0,0,0,0.02); flex-shrink: 0;">
@@ -180,9 +180,22 @@ export const renderAdminLeagues = () => {
     `;
 };
 
+const ensureModalsInBody = () => {
+    const leagueModal = document.getElementById('league-modal');
+    if (leagueModal && leagueModal.parentElement !== document.body) {
+        document.body.appendChild(leagueModal);
+    }
+    const leagueDataModal = document.getElementById('league-data-modal');
+    if (leagueDataModal && leagueDataModal.parentElement !== document.body) {
+        document.body.appendChild(leagueDataModal);
+    }
+};
+
 export const initAdminLeagues = async () => {
     const tbody = document.getElementById('leagues-table-body');
     if (!tbody) return;
+
+    ensureModalsInBody();
 
     if (leaguesData.length === 0) {
         leaguesData = await Store.getAdminLeagues();
@@ -398,6 +411,7 @@ const updateModalTabsUI = () => {
 };
 
 const openLeagueDataModal = (idx, tab = 'table') => {
+    ensureModalsInBody();
     if (idx === null || !leaguesData[idx]) return;
     selectedLeague = leaguesData[idx];
     currentModalTab = tab;
@@ -867,6 +881,7 @@ const renderLeagueTeamsCheckboxes = (filterText = '') => {
 };
 
 const openEditModal = async (idx = null) => {
+    ensureModalsInBody();
     const modal = document.getElementById('league-modal');
     const title = document.getElementById('modal-league-title');
     const nameLabel = document.getElementById('lbl-league-name');

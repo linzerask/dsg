@@ -2497,30 +2497,59 @@ main {
 /* ============================================================
    UNIVERSAL RESPONSIVE MODAL & ADMIN STYLES
    ============================================================ */
-[id$="-modal"], #game-modal, #report-modal, #round-modal, #player-modal, #team-modal, #league-modal {
+[id$="-modal"], #game-modal, #report-modal, #round-modal, #player-modal, #team-modal, #league-modal, #add-game-modal, #league-data-modal {
+    position: fixed !important;
+    inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
     box-sizing: border-box !important;
     padding: var(--space-sm) !important;
+    background: rgba(0, 0, 0, 0.65) !important;
+    z-index: 99999 !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 !important;
 }
 
-.modal-content, [id$="-modal"] > .glass-card, #game-modal > .glass-card, #report-modal > .glass-card, #round-modal > .glass-card, #player-modal > .glass-card, #team-modal > .glass-card, #league-modal > .glass-card {
+.modal-content, [id$="-modal"] > .glass-card, [id$="-modal"] > div, #game-modal > .glass-card, #report-modal > .glass-card, #round-modal > .glass-card, #player-modal > .glass-card, #team-modal > .glass-card, #league-modal > .glass-card, #add-game-modal > .glass-card {
+    position: relative !important;
+    z-index: 10 !important;
     box-sizing: border-box !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: var(--color-text-primary) !important;
     width: 100% !important;
     max-width: min(650px, calc(100vw - 20px)) !important;
     max-height: 90vh !important;
+    max-height: 90dvh !important;
+    overflow-y: auto !important;
     margin: auto !important;
     min-width: 0 !important;
     flex-shrink: 1 !important;
+    border-radius: var(--border-radius-md) !important;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.35) !important;
 }
 
-#report-modal > .glass-card {
+#report-modal > .glass-card, #league-data-modal > div {
     max-width: min(900px, calc(100vw - 20px)) !important;
 }
 
 @media (max-width: 768px) {
-    .modal-content, [id$="-modal"] > .glass-card, #game-modal > .glass-card, #report-modal > .glass-card, #round-modal > .glass-card, #player-modal > .glass-card, #team-modal > .glass-card, #league-modal > .glass-card {
+    [id$="-modal"], #game-modal, #report-modal, #round-modal, #player-modal, #team-modal, #league-modal, #add-game-modal, #league-data-modal {
+        padding: 12px !important;
+    }
+
+    .modal-content, [id$="-modal"] > .glass-card, [id$="-modal"] > div, #game-modal > .glass-card, #report-modal > .glass-card, #round-modal > .glass-card, #player-modal > .glass-card, #team-modal > .glass-card, #league-modal > .glass-card, #add-game-modal > .glass-card {
         padding: var(--space-md) !important;
         border-radius: var(--border-radius-sm) !important;
-        max-height: 94vh !important;
+        max-height: 92vh !important;
+        max-height: 92dvh !important;
         width: 100% !important;
         max-width: calc(100vw - 24px) !important;
         box-sizing: border-box !important;

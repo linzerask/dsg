@@ -78,8 +78,8 @@ export const renderAdminRounds = () => {
         </div>
 
         <!-- Modal 1: Runde anlegen / bearbeiten -->
-        <div id="round-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px);">
-            <div class="glass-card modal-content" style="width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+        <div id="round-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+            <div class="glass-card modal-content" style="width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.3);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
                     <h3 id="round-modal-title" style="margin: 0; font-size: 1.3rem;">Runde bearbeiten</h3>
                     <button type="button" class="btn-close-round-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
@@ -130,8 +130,8 @@ export const renderAdminRounds = () => {
         </div>
 
         <!-- Modal 2: Spiel hinzufügen -->
-        <div id="add-game-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px);">
-            <div class="glass-card modal-content" style="width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+        <div id="add-game-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+            <div class="glass-card modal-content" style="width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.3);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
                     <h3 style="margin: 0; font-size: 1.3rem;">Spiel hinzufügen</h3>
                     <button type="button" class="btn-close-game-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
@@ -442,7 +442,19 @@ const populateLeaguesDropdowns = () => {
     }
 };
 
+const ensureModalsInBody = () => {
+    const roundModal = document.getElementById('round-modal');
+    if (roundModal && roundModal.parentElement !== document.body) {
+        document.body.appendChild(roundModal);
+    }
+    const addGameModal = document.getElementById('add-game-modal');
+    if (addGameModal && addGameModal.parentElement !== document.body) {
+        document.body.appendChild(addGameModal);
+    }
+};
+
 const openEditRoundModal = (idx = null) => {
+    ensureModalsInBody();
     const modal = document.getElementById('round-modal');
     const title = document.getElementById('round-modal-title');
     const submitBtn = document.getElementById('btn-save-round');
@@ -500,6 +512,7 @@ const closeRoundModal = () => {
 };
 
 const openAddGameModal = (round = null) => {
+    ensureModalsInBody();
     const modal = document.getElementById('add-game-modal');
     if (!modal) return;
 
@@ -562,6 +575,7 @@ const deleteRound = (idx) => {
 let isEventsBound = false;
 
 export const initAdminRounds = async () => {
+    ensureModalsInBody();
     // Load data from Store
     try {
         [roundsData, leaguesData, teamsData] = await Promise.all([

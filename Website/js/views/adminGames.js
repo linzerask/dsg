@@ -90,8 +90,8 @@ export const renderAdminGames = () => {
         </div>
 
         <!-- Modal 1: Spiel anlegen / bearbeiten -->
-        <div id="game-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px);">
-            <div class="glass-card modal-content" style="width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+        <div id="game-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+            <div class="glass-card modal-content" style="width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.3);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
                     <h3 id="game-modal-title" style="margin: 0; font-size: 1.3rem;">Spiel hinzufügen</h3>
                     <button type="button" class="btn-close-game-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
@@ -158,8 +158,8 @@ export const renderAdminGames = () => {
         </div>
 
         <!-- Modal 2: Spielbericht eingeben -->
-        <div id="report-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; box-sizing: border-box; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px);">
-            <div class="glass-card modal-content" style="width: 100%; max-width: 900px; max-height: 92vh; overflow-y: auto; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 15px 50px rgba(0,0,0,0.35);">
+        <div id="report-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+            <div class="glass-card modal-content" style="width: 100%; max-width: 900px; max-height: 92vh; overflow-y: auto; background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 48px rgba(0,0,0,0.35);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
                     <h3 style="margin: 0; font-size: 1.4rem;">Spielbericht eingeben</h3>
                     <button type="button" class="btn-close-report-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
@@ -661,7 +661,19 @@ const populateFilterAndFormDropdowns = () => {
     if (modalAwaySelect) modalAwaySelect.innerHTML = teamOptions;
 };
 
+const ensureModalsInBody = () => {
+    const gameModal = document.getElementById('game-modal');
+    if (gameModal && gameModal.parentElement !== document.body) {
+        document.body.appendChild(gameModal);
+    }
+    const reportModal = document.getElementById('report-modal');
+    if (reportModal && reportModal.parentElement !== document.body) {
+        document.body.appendChild(reportModal);
+    }
+};
+
 const openAddGameModal = () => {
+    ensureModalsInBody();
     editingMatchId = null;
     const modal = document.getElementById('game-modal');
     const title = document.getElementById('game-modal-title');
@@ -686,6 +698,7 @@ const openAddGameModal = () => {
 };
 
 const openEditGameModal = (idx) => {
+    ensureModalsInBody();
     gamesData = Store.getMatches('2026/2027') || [];
     const match = gamesData[idx];
     if (!match) return;
@@ -811,6 +824,7 @@ const saveGameForm = (e) => {
 /* --- Spielbericht (Match Report) Logic --- */
 
 const openReportModal = (idx) => {
+    ensureModalsInBody();
     gamesData = Store.getMatches('2026/2027') || [];
     const match = gamesData[idx];
     if (!match) return;

@@ -5,7 +5,7 @@ import { viewArchiv } from './views/simpleViews.js?v=1790560000099';
 import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560000099';
 import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560000099';
 import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560000240';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560000280';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560000290';
 import { viewArticle, bindArticle } from './views/article.js?v=1790560000099';
 import { viewImpressum } from './views/impressum.js?v=1790560000099';
 import { viewDatenschutz } from './views/datenschutz.js?v=1790560000099';
@@ -113,6 +113,11 @@ export const Router = {
       app.innerHTML = route.render();
       if(route.bind) route.bind();
       
+      // Clean up any detached admin modals on body when leaving admin
+      if (path !== '/admin') {
+        document.querySelectorAll('#player-modal, #team-modal, #round-modal, #add-game-modal, #league-modal, #league-data-modal, #game-modal, #report-modal').forEach(m => m.remove());
+      }
+
       // Update nav active state
       document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.toggle('active', link.getAttribute('href') === '#' + (path === '/' ? '/' : path));

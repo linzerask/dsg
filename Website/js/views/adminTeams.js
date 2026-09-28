@@ -71,8 +71,8 @@ export const renderAdminTeams = () => {
         </div>
 
         <!-- Edit / Create Team Modal -->
-        <div id="team-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
-            <div class="glass-card modal-content" style="background: var(--color-surface); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <div id="team-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+            <div class="glass-card modal-content" style="background: #ffffff; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 16px 40px rgba(0,0,0,0.3);">
                 <h3 id="modal-team-title" style="margin-bottom: var(--space-md);">Mannschaft bearbeiten</h3>
                 <form id="team-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-team-id">
@@ -109,9 +109,19 @@ export const renderAdminTeams = () => {
     `;
 };
 
+const ensureModalInBody = () => {
+    const modal = document.getElementById('team-modal');
+    if (modal && modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+    return modal;
+};
+
 export const initAdminTeams = async () => {
     const tbody = document.getElementById('teams-table-body');
     if (!tbody) return;
+
+    ensureModalInBody();
 
     if (teamsData.length === 0) {
         const teams = await Store.getAdminTeams();
@@ -267,7 +277,7 @@ const formatDateForInput = (dateStr) => {
 };
 
 const openEditModal = (idx = null) => {
-    const modal = document.getElementById('team-modal');
+    const modal = ensureModalInBody();
     const title = document.getElementById('modal-team-title');
     const deleteBtn = document.getElementById('btn-delete-team');
     

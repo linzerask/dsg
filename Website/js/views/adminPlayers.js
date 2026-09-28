@@ -84,9 +84,9 @@ export const renderAdminPlayers = () => {
         </div>
 
         <!-- Edit / Create Modal matching original menu -->
-        <div id="player-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
-            <div class="glass-card modal-content" style="background: var(--color-surface); max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-                <h3 id="modal-player-title" style="margin-bottom: var(--space-md);">Spieler hinzufügen</h3>
+        <div id="player-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+            <div class="glass-card modal-content" style="background: #ffffff; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 16px 40px rgba(0,0,0,0.3);">
+                <h3 id="modal-player-title" style="margin-bottom: var(--space-md); color: var(--color-text-primary);">Spieler hinzufügen</h3>
                 <form id="player-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-player-id">
                     
@@ -158,9 +158,19 @@ export const renderAdminPlayers = () => {
     `;
 };
 
+const ensureModalInBody = () => {
+    const modal = document.getElementById('player-modal');
+    if (modal && modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+    return modal;
+};
+
 export const initAdminPlayers = async () => {
     const tbody = document.getElementById('players-table-body');
     if (!tbody) return;
+
+    ensureModalInBody();
 
     if (playersData.length === 0) {
         const [players, teams] = await Promise.all([
@@ -364,7 +374,7 @@ const formatDateForInput = (dateStr) => {
 };
 
 const openEditModal = (idx = null) => {
-    const modal = document.getElementById('player-modal');
+    const modal = ensureModalInBody();
     const title = document.getElementById('modal-player-title');
     const deleteBtn = document.getElementById('btn-delete-player');
     const submitBtn = document.getElementById('btn-submit-player');

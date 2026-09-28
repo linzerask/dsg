@@ -51,19 +51,24 @@ The frontend implements aggressive client-side caching across `localStorage` and
 
 ## 5. Modal Viewport Centering & Outside-Click Dismissal
 * **The Rule:**
-  1. **Centering:** All dialog modals (`#player-modal`, `#game-modal`, `#round-modal`, `#team-modal`, `#league-modal`, `#league-data-modal`, `#report-modal`) must be fixed and centered in the active viewport:
+  1. **Direct Body Attachment (CRITICAL):** All dialog modals (`#player-modal`, `#game-modal`, `#round-modal`, `#team-modal`, `#league-modal`, `#league-data-modal`, `#report-modal`, `#add-game-modal`) MUST be attached directly to `document.body` on initialization/open (via `if (modal && modal.parentElement !== document.body) document.body.appendChild(modal);`). This prevents `position: fixed` from becoming trapped inside parent containers animated by Anime.js or styled with CSS `transform` (which resets the containing block coordinate space).
+  2. **Centering:** All dialog modals must be fixed and centered in the active viewport:
      ```css
-     position: fixed;
-     inset: 0;
+     position: fixed !important;
+     inset: 0 !important;
+     top: 0 !important;
+     left: 0 !important;
+     width: 100vw !important;
+     height: 100vh !important;
+     height: 100dvh !important;
      display: flex;
      justify-content: center;
      align-items: center;
-     z-index: 9999;
+     z-index: 99999;
      background: rgba(0, 0, 0, 0.65);
-     backdrop-filter: blur(4px);
      ```
-  2. **Outside-Click Dismissal:** Clicking anywhere on the darkened backdrop outside the modal content container must automatically close the modal.
-  3. **Mobile Bounds:** Modal cards must have `max-width: calc(100vw - 24px)` and `max-height: 90vh` with smooth internal scrolling (`overflow-y: auto`).
+  3. **Outside-Click Dismissal:** Clicking anywhere on the darkened backdrop outside the modal content container must automatically close the modal.
+  4. **Mobile Bounds:** Modal cards must have `max-width: calc(100vw - 24px)` and `max-height: 92vh` with smooth internal scrolling (`overflow-y: auto`).
 
 ---
 
