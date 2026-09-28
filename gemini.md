@@ -34,9 +34,14 @@ The frontend implements aggressive client-side caching across `localStorage` and
 ## 4. Mobile Responsiveness & Layout Architecture (No Horizontal Slider Chaos)
 * **The Pitfall:** Forcing horizontal scrollbars on mobile (`<= 768px`) for tab menus or complex data tables creates a poor user experience.
 * **The Rule:**
-  1. **Admin Tab Navigation:** On mobile screens, the admin navigation transforms into an **Accordion / Collapsible Dropdown Drawer**. The toggle button displays the current active tab name and an animated SVG chevron that rotates on open/close. Selecting any tab switches the view and collapses the menu automatically.
-  2. **Mobile Data Cards (`.admin-m-card`):** Complex desktop tables switch to touch-friendly card accordions on screens `<= 768px`.
-  3. **Fluid Typography & Containers:** Use `clamp()`, `word-break: break-word`, and `hyphens: auto` for long German compound words (e.g., *Meisterschaftsbestimmungen*, *Datenschutzerklärung*). Grids must collapse to single columns (`grid-template-columns: 1fr`).
+  1. **Floating Pill Navigation & Mobile Hamburger Drawer:** 
+     - The floating navigation pill expands to full screen width on mobile (`calc(100% - 28px)`), displays the DSG logo + bold green `DSG LIGA` branding text (`.brand-mobile-text`, `color: var(--color-accent)`) on the left, and features the crisp SVG hamburger button (`#open-drawer`) on the right.
+     - On desktop (`> 768px`), `.brand-mobile-text` is hidden (`display: none;`) to maintain the clean pill aesthetic.
+     - Never add inline `style="display: none"` directly into `#open-drawer` HTML tags, as inline styles override responsive `@media (max-width: 768px)` stylesheet rules.
+     - Opening the mobile drawer activates `#drawer-overlay` with backdrop blur, and tapping anywhere outside the drawer or selecting any nav link automatically closes the drawer with Anime.js spring animations.
+  2. **Admin Tab Navigation:** On mobile screens, the admin navigation transforms into an **Accordion / Collapsible Dropdown Drawer**. The toggle button displays the current active tab name and an animated SVG chevron that rotates on open/close. Selecting any tab switches the view and collapses the menu automatically.
+  3. **Mobile Data Cards (`.admin-m-card`):** Complex desktop tables switch to touch-friendly card accordions on screens `<= 768px`.
+  4. **Fluid Typography & Containers:** Use `clamp()`, `word-break: break-word`, and `hyphens: auto` for long German compound words (e.g., *Meisterschaftsbestimmungen*, *Datenschutzerklärung*). Grids must collapse to single columns (`grid-template-columns: 1fr`).
 
 ---
 
