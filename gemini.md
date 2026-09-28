@@ -35,7 +35,7 @@ The frontend implements aggressive client-side caching across `localStorage` and
 * **The Pitfall:** Forcing horizontal scrollbars on mobile (`<= 768px`) for tab menus or complex data tables creates a poor user experience.
 * **The Rule:**
   1. **Floating Pill Navigation & Mobile Hamburger Drawer:** 
-     - On mobile screens (`<= 768px`), the navigation renders as an ultra-compact **Dynamic Island Floating Capsule** centered at the top (`width: auto; max-width: max-content; left: 50%; transform: translateX(-50%); position: fixed; top: 14px;`). It contains the clean DSG logo on the left, an elegant subtle 1px divider, and the crisp SVG hamburger button (`#open-drawer`) on the right.
+     - On mobile screens (`<= 768px`), the navigation renders as an ultra-compact **Dynamic Island Floating Capsule** centered at the top (`width: auto; max-width: max-content; left: 50%; transform: translateX(-50%); position: fixed; top: 24px;`). It contains the clean DSG logo on the left, an elegant subtle 1px divider, and the crisp SVG hamburger button (`#open-drawer`) on the right.
      - **Smart Dynamic Auto-Hiding on Scroll:** When scrolling down (> 60px), the floating nav smoothly slides up and hides (`.nav-hidden { transform: translate(-50%, -170%); opacity: 0; }`). When scrolling back up or reaching the top of the page (<= 20px), the nav smoothly slides back in (`transform: translateX(-50%); opacity: 1;`).
      - Never stretch the mobile pill edge-to-edge with redundant title text, as the Hero section below already displays the main brand heading.
      - Never add inline `style="display: none"` directly into `#open-drawer` HTML tags, as inline styles override responsive `@media (max-width: 768px)` stylesheet rules.
