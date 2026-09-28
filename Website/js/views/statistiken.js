@@ -297,6 +297,53 @@ export const renderScorersTableRows = (pageScorers) => {
   }).join('');
 };
 
+export const renderScorersMobileCards = (pageScorers) => {
+  if (!pageScorers || pageScorers.length === 0) {
+    return `<div style="text-align: center; padding: 24px; color: var(--color-text-secondary);">Keine Torschützen gefunden.</div>`;
+  }
+
+  return pageScorers.map((s) => {
+    let rankBadgeColor = 'var(--color-text-secondary)';
+    let rankBg = 'rgba(0,0,0,0.03)';
+    let icon = '';
+    if (s.rank === 1) {
+      rankBadgeColor = '#f59e0b';
+      rankBg = 'rgba(245, 158, 11, 0.12)';
+      icon = `${renderIcon('crown', { size: 14, color: '#f59e0b', style: 'margin-right: 2px;' })}`;
+    } else if (s.rank === 2) {
+      rankBadgeColor = '#94a3b8';
+      rankBg = 'rgba(148, 163, 184, 0.15)';
+      icon = `${renderIcon('medal', { size: 14, color: '#94a3b8', style: 'margin-right: 2px;' })}`;
+    } else if (s.rank === 3) {
+      rankBadgeColor = '#b45309';
+      rankBg = 'rgba(180, 83, 9, 0.12)';
+      icon = `${renderIcon('medal', { size: 14, color: '#b45309', style: 'margin-right: 2px;' })}`;
+    }
+
+    return `
+      <div class="glass-card" style="padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; border: 1px solid var(--color-border); gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; min-width: 0; flex: 1;">
+          <div style="min-width: 32px; height: 32px; border-radius: 6px; background: ${rankBg}; color: ${rankBadgeColor}; font-weight: 800; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            ${icon}${s.rank}
+          </div>
+          <div style="display: flex; flex-direction: column; min-width: 0; overflow: hidden;">
+            <strong style="color: var(--color-text-primary); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.name}</strong>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              <span style="overflow: hidden; text-overflow: ellipsis;">${s.teams.join(', ') || '-'}</span>
+              <span>&bull;</span>
+              <span style="flex-shrink: 0;">${s.seasonsCount} ${s.seasonsCount === 1 ? 'Saison' : 'Saisons'}</span>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: right; flex-shrink: 0;">
+          <span style="font-weight: 900; font-size: 1.15rem; color: var(--color-accent); line-height: 1;">${s.goals}</span>
+          <span style="font-size: 0.72rem; color: var(--color-accent); font-weight: 700; display: block; text-transform: uppercase;">Tore</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+};
+
 export const renderScorerPagination = (totalScorers, currentPage, perPage = SCORERS_PER_PAGE) => {
   const totalPages = Math.ceil(totalScorers / perPage) || 1;
   if (totalScorers === 0) return '';
@@ -566,10 +613,10 @@ export const viewStatistiken = () => {
               <h3 style="margin: 0; font-size: 1.3rem;">Ewige Torschützenliste</h3>
               <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--color-text-secondary);">Alle Torschützen der DSG-Liga seit der Saison 2021/2022</p>
             </div>
-            <input type="text" id="stats-scorer-search" class="admin-input" placeholder="Spieler oder Verein suchen..." value="${scorerSearchQuery}" style="width: 250px; font-size: 0.9rem;">
+            <input type="text" id="stats-scorer-search" class="admin-input" placeholder="Spieler oder Verein suchen..." value="${scorerSearchQuery}" style="width: 100%; max-width: 280px; font-size: 0.9rem;">
           </div>
 
-          <div class="table-container" style="overflow-x: auto;">
+          <div class="table-container hide-mobile" style="overflow-x: auto;">
             <table class="league-table" style="width: 100%; border-collapse: collapse; text-align: left;">
               <thead>
                 <tr style="border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); font-size: 0.85rem;">
@@ -584,6 +631,11 @@ export const viewStatistiken = () => {
                 ${renderScorersTableRows(pageScorers)}
               </tbody>
             </table>
+          </div>
+
+          <!-- Mobile Cards for Scorers -->
+          <div id="stats-scorers-mobile-cards" class="show-mobile" style="flex-direction: column; gap: 8px;">
+            ${renderScorersMobileCards(pageScorers)}
           </div>
 
           <!-- Pagination Controls Container -->
@@ -603,7 +655,7 @@ export const viewStatistiken = () => {
               <h3 style="margin: 0; font-size: 1.3rem;">Ewige Vereinstabelle</h3>
               <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--color-text-secondary);">Gesamtbilanz aller Vereine aus allen Meisterschaftsspielen</p>
             </div>
-            <input type="text" id="stats-club-search" class="admin-input" placeholder="Verein suchen..." value="${clubSearchQuery}" style="width: 250px; font-size: 0.9rem;">
+            <input type="text" id="stats-club-search" class="admin-input" placeholder="Verein suchen..." value="${clubSearchQuery}" style="width: 100%; max-width: 280px; font-size: 0.9rem;">
           </div>
 
           <div class="table-container" style="overflow-x: auto;">
@@ -824,8 +876,10 @@ export const bindStatistiken = () => {
     const pageScorers = filtered.slice(startIndex, endIndex);
 
     const tbody = document.getElementById('stats-scorers-tbody');
+    const mobileContainer = document.getElementById('stats-scorers-mobile-cards');
     const pagContainer = document.getElementById('stats-scorers-pagination');
     if (tbody) tbody.innerHTML = renderScorersTableRows(pageScorers);
+    if (mobileContainer) mobileContainer.innerHTML = renderScorersMobileCards(pageScorers);
     if (pagContainer) {
       pagContainer.innerHTML = renderScorerPagination(filtered.length, scorerPage, SCORERS_PER_PAGE);
       bindPaginationButtons();
