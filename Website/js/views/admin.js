@@ -1,12 +1,27 @@
 import { Store } from '../store.js?v=1790560000100';
 
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560000290';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560000290';
-import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560000290';
-import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560000290';
-import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560000290';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560000300';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560000300';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560000300';
+import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560000300';
+import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560000300';
 import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790560000100';
 import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1790560000100';
+
+export const ensureAllAdminModalsInBody = () => {
+  const modalIds = [
+    'round-modal', 'add-game-modal',
+    'game-modal', 'report-modal',
+    'player-modal', 'team-modal',
+    'league-modal', 'league-data-modal'
+  ];
+  modalIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.parentElement !== document.body) {
+      document.body.appendChild(el);
+    }
+  });
+};
 
 
 
@@ -261,6 +276,8 @@ export const viewAdmin = () => {
 };
 
 export const bindAdmin = () => {
+  ensureAllAdminModalsInBody();
+
   const activeTab = currentAdminTab || 'admin-rounds';
   if (activeTab === 'admin-rounds') initAdminRounds();
   else if (activeTab === 'admin-games') initAdminGames();
@@ -311,6 +328,8 @@ export const bindAdmin = () => {
         navMenu.classList.remove('open');
         toggleBtn?.classList.remove('open');
       }
+
+      ensureAllAdminModalsInBody();
 
       if (targetId === 'admin-rounds') initAdminRounds();
       if (targetId === 'admin-games') initAdminGames();

@@ -695,6 +695,8 @@ const openAddGameModal = () => {
     document.getElementById('input-game-away').value = '';
 
     modal.style.display = 'flex';
+    const content = modal.querySelector('.modal-content') || modal.firstElementChild;
+    if (content) content.scrollTop = 0;
 };
 
 const openEditGameModal = (idx) => {
@@ -749,6 +751,8 @@ const openEditGameModal = (idx) => {
     document.getElementById('input-game-status').value = match.status || 'Upcoming';
 
     modal.style.display = 'flex';
+    const content = modal.querySelector('.modal-content') || modal.firstElementChild;
+    if (content) content.scrollTop = 0;
 };
 
 const closeGameModal = () => {
@@ -915,6 +919,8 @@ const openReportModal = (idx) => {
 
     renderReportLists();
     modal.style.display = 'flex';
+    const content = modal.querySelector('.modal-content') || modal.firstElementChild;
+    if (content) content.scrollTop = 0;
 };
 
 const closeReportModal = () => {

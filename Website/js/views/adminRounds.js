@@ -78,8 +78,8 @@ export const renderAdminRounds = () => {
         </div>
 
         <!-- Modal 1: Runde anlegen / bearbeiten -->
-        <div id="round-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
-            <div class="glass-card modal-content" style="width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.3);">
+        <div id="round-modal" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; height: 100dvh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 16px; margin: 0;">
+            <div class="glass-card modal-content" style="width: 100%; max-width: 600px; max-height: 90vh; max-height: 90dvh; overflow-y: auto; background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.3); margin: auto;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
                     <h3 id="round-modal-title" style="margin: 0; font-size: 1.3rem;">Runde bearbeiten</h3>
                     <button type="button" class="btn-close-round-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
@@ -130,8 +130,8 @@ export const renderAdminRounds = () => {
         </div>
 
         <!-- Modal 2: Spiel hinzufügen -->
-        <div id="add-game-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
-            <div class="glass-card modal-content" style="width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.3);">
+        <div id="add-game-modal" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; height: 100dvh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 16px; margin: 0;">
+            <div class="glass-card modal-content" style="width: 100%; max-width: 650px; max-height: 90vh; max-height: 90dvh; overflow-y: auto; background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.3); margin: auto;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
                     <h3 style="margin: 0; font-size: 1.3rem;">Spiel hinzufügen</h3>
                     <button type="button" class="btn-close-game-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
@@ -503,6 +503,8 @@ const openEditRoundModal = (idx = null) => {
     }
 
     modal.style.display = 'flex';
+    const content = modal.querySelector('.modal-content') || modal.firstElementChild;
+    if (content) content.scrollTop = 0;
 };
 
 const closeRoundModal = () => {
@@ -553,6 +555,8 @@ const openAddGameModal = (round = null) => {
     document.getElementById('modal-game-note').value = '';
 
     modal.style.display = 'flex';
+    const content = modal.querySelector('.modal-content') || modal.firstElementChild;
+    if (content) content.scrollTop = 0;
 };
 
 const closeAddGameModal = () => {

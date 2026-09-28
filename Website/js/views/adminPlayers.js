@@ -84,8 +84,8 @@ export const renderAdminPlayers = () => {
         </div>
 
         <!-- Edit / Create Modal matching original menu -->
-        <div id="player-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
-            <div class="glass-card modal-content" style="background: #ffffff; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 16px 40px rgba(0,0,0,0.3);">
+        <div id="player-modal" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; height: 100dvh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 16px; margin: 0;">
+            <div class="glass-card modal-content" style="background: #ffffff; max-width: 520px; width: 100%; max-height: 90vh; max-height: 90dvh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 16px 40px rgba(0,0,0,0.3); margin: auto;">
                 <h3 id="modal-player-title" style="margin-bottom: var(--space-md); color: var(--color-text-primary);">Spieler hinzufügen</h3>
                 <form id="player-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-player-id">
@@ -410,6 +410,8 @@ const openEditModal = (idx = null) => {
 
     populateModalTeamDropdown(currentTeam);
     modal.style.display = 'flex';
+    const content = modal.querySelector('.modal-content') || modal.firstElementChild;
+    if (content) content.scrollTop = 0;
 };
 
 const closeEditModal = () => {

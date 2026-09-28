@@ -77,8 +77,8 @@ export const renderAdminLeagues = () => {
         </div>
 
         <!-- Edit / Create League Modal -->
-        <div id="league-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
-            <div class="glass-card modal-content" style="background: #ffffff; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 16px 40px rgba(0,0,0,0.3); border: var(--glass-border);">
+        <div id="league-modal" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; height: 100dvh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 16px; margin: 0;">
+            <div class="glass-card modal-content" style="background: #ffffff; max-width: 520px; width: 100%; max-height: 90vh; max-height: 90dvh; overflow-y: auto; padding: var(--space-lg); border-radius: var(--border-radius-md); box-shadow: 0 16px 40px rgba(0,0,0,0.3); border: var(--glass-border); margin: auto;">
                 <h3 id="modal-league-title" style="margin-bottom: var(--space-md);">Liga bearbeiten</h3>
                 <form id="league-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-league-id">
@@ -137,8 +137,8 @@ export const renderAdminLeagues = () => {
         </div>
 
         <!-- League Data Inspection Popup (Grid/Tables for Tabelle, Spielberichte, Karten, Tore) -->
-        <div id="league-data-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100000; justify-content: center; align-items: center; padding: 20px;">
-            <div style="background: #ffffff; max-width: 900px; width: 100%; max-height: 90vh; display: flex; flex-direction: column; border-radius: var(--border-radius-md); box-shadow: 0 16px 48px rgba(0,0,0,0.35); border: 1px solid var(--color-border); overflow: hidden;">
+        <div id="league-data-modal" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; height: 100dvh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 100000; justify-content: center; align-items: center; padding: 16px; margin: 0;">
+            <div style="background: #ffffff; max-width: 900px; width: 100%; max-height: 90vh; max-height: 90dvh; display: flex; flex-direction: column; border-radius: var(--border-radius-md); box-shadow: 0 16px 48px rgba(0,0,0,0.35); border: 1px solid var(--color-border); overflow: hidden; margin: auto;">
                 
                 <!-- Fixed Modal Top Header -->
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--color-border); background: rgba(0,0,0,0.02); flex-shrink: 0;">
@@ -429,7 +429,11 @@ const openLeagueDataModal = (idx, tab = 'table') => {
 
     updateModalTabsUI();
     renderModalContent();
-    if (modal) modal.style.display = 'flex';
+    if (modal) {
+        modal.style.display = 'flex';
+        const content = modal.querySelector('div') || modal.firstElementChild;
+        if (content) content.scrollTop = 0;
+    }
 };
 
 const getMatchGoals = (m) => {
@@ -936,6 +940,8 @@ const openEditModal = async (idx = null) => {
     }
 
     modal.style.display = 'flex';
+    const content = modal.querySelector('.modal-content') || modal.firstElementChild;
+    if (content) content.scrollTop = 0;
 };
 
 const closeEditModal = () => {
