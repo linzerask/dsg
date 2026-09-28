@@ -255,13 +255,13 @@ export const viewHome = () => {
     <div class="container">
       <!-- Count-Up Stats Section -->
       <div class="stats-counter-section stagger-item glass-card" style="margin-top: var(--space-xl); padding: var(--space-lg) var(--space-xl); border-top: 3px solid var(--color-accent);">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-lg);">
+        <div class="stats-header-row" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-lg);">
           <div>
             <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.5px;">DSG Liga in Zahlen</div>
             <h2 style="font-size: 1.6rem; margin: 4px 0 0 0; color: var(--color-text-primary);">Statistiken & Rekorde</h2>
           </div>
-          <a href="#/statistiken" class="primary-btn" style="padding: 9px 20px; font-size: 0.9rem; text-decoration: none;">
-            Zur gesamten Statistik & Hall of Fame &rarr;
+          <a href="#/statistiken" class="primary-btn stats-header-btn" style="padding: 9px 20px; font-size: 0.9rem; text-decoration: none;">
+            Zur Statistik &rarr;
           </a>
         </div>
 
@@ -293,6 +293,12 @@ export const viewHome = () => {
             <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Saisons</div>
             <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Digital dokumentiert</div>
           </div>
+        </div>
+
+        <div class="stats-mobile-footer-btn" style="margin-top: var(--space-lg); text-align: center;">
+          <a href="#/statistiken" class="primary-btn" style="padding: 10px 24px; font-size: 0.95rem; text-decoration: none;">
+            Zur gesamten Statistik &rarr;
+          </a>
         </div>
 
         <div style="margin-top: var(--space-md); text-align: center; font-size: 0.78rem; color: var(--color-text-secondary); opacity: 0.85;">

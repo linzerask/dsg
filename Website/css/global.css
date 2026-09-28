@@ -227,6 +227,15 @@ main {
   border-color: rgba(255, 255, 255, 0.15);
 }
 
+/* Stats Counter Section Button Positioning */
+.stats-header-btn {
+  display: inline-flex;
+}
+
+.stats-mobile-footer-btn {
+  display: none;
+}
+
 /* Utility */
 .accent-text {
   color: var(--color-accent);
@@ -268,6 +277,22 @@ main {
   .mobile-menu-btn {
     display: flex !important;
     padding: 4px !important;
+  }
+  .stats-header-btn {
+    display: none !important;
+  }
+  .stats-mobile-footer-btn {
+    display: flex !important;
+    justify-content: center;
+    width: 100%;
+  }
+  .stats-mobile-footer-btn .primary-btn {
+    width: 100%;
+    max-width: 320px;
+    justify-content: center;
+  }
+  .stats-counter-section {
+    padding: var(--space-md) var(--space-md) !important;
   }
 }
 

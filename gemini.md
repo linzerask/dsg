@@ -43,6 +43,7 @@ The frontend implements aggressive client-side caching across `localStorage` and
   2. **Admin Tab Navigation:** On mobile screens, the admin navigation transforms into an **Accordion / Collapsible Dropdown Drawer**. The toggle button displays the current active tab name and an animated SVG chevron that rotates on open/close. Selecting any tab switches the view and collapses the menu automatically.
   3. **Mobile Data Cards (`.admin-m-card`):** Complex desktop tables switch to touch-friendly card accordions on screens `<= 768px`.
   4. **Fluid Typography & Containers:** Use `clamp()`, `word-break: break-word`, and `hyphens: auto` for long German compound words (e.g., *Meisterschaftsbestimmungen*, *Datenschutzerklärung*). Grids must collapse to single columns (`grid-template-columns: 1fr`).
+  5. **Stats Section Action Buttons:** On desktop, action buttons remain aligned with section headings (`.stats-header-btn`). On mobile (`<= 768px`), header buttons are hidden and placed cleanly beneath the data card grid (`.stats-mobile-footer-btn`) with concise text ("Zur gesamten Statistik &rarr;") to prevent multi-line button wrapping.
 
 ---
 
