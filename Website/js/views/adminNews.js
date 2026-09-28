@@ -635,27 +635,27 @@ export const initAdminNews = () => {
       const hasGallery = a.gallery && a.gallery.length > 0;
 
       return `
-        <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm) var(--space-md); gap: var(--space-md);">
-          <div style="display: flex; align-items: center; gap: var(--space-md); min-width: 0;">
+        <div class="admin-item-card glass-card">
+          <div class="admin-item-main">
             ${a.image ? `
-              <img src="${a.image}" alt="Cover" style="width: 55px; height: 55px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.1); flex-shrink: 0;">
+              <img src="${a.image}" alt="Cover" class="admin-item-thumb">
             ` : ''}
-            <div style="min-width: 0;">
-              <strong style="font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${a.title}</strong>
-              <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">
-                <span style="display: inline-flex; align-items: center; gap: 3px;">${renderIcon('calendar', { size: 13, color: 'var(--color-text-secondary)' })} ${a.date || 'Kein Datum'}</span>
-                ${a.author ? ` &bull; <span style="display: inline-flex; align-items: center; gap: 3px;">${renderIcon('edit', { size: 13, color: 'var(--color-text-secondary)' })} ${a.author}</span>` : ''}
-                ${hasGallery ? ` &bull; <span style="display: inline-flex; align-items: center; gap: 3px; color: var(--color-accent); font-weight: 700;">${renderIcon('camera', { size: 13, color: 'var(--color-accent)' })} +${a.gallery.length} Fotos</span>` : ''}
+            <div class="admin-item-info">
+              <strong class="admin-item-title">${a.title}</strong>
+              <div class="admin-item-meta">
+                <span class="admin-item-meta-entry">${renderIcon('calendar', { size: 13, color: 'var(--color-text-secondary)' })} ${a.date || 'Kein Datum'}</span>
+                ${a.author ? `<span class="admin-item-meta-entry">&bull; ${renderIcon('edit', { size: 13, color: 'var(--color-text-secondary)' })} ${a.author}</span>` : ''}
+                ${hasGallery ? `<span class="admin-item-meta-entry" style="color: var(--color-accent); font-weight: 700;">&bull; ${renderIcon('camera', { size: 13, color: 'var(--color-accent)' })} +${a.gallery.length} Fotos</span>` : ''}
               </div>
-              <div style="font-size: 0.8rem; color: var(--color-text-secondary); opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;">
+              <div class="admin-item-preview">
                 ${previewText}...
               </div>
             </div>
           </div>
-          <div style="display: flex; gap: 6px; flex-shrink: 0;">
-            <a href="#/article/${a.id}" target="_blank" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;" title="Artikel ansehen">${renderIcon('eye', { size: 14 })} Ansehen</a>
-            <button class="btn btn-outline edit-news-btn" data-id="${a.id}" style="padding: 6px 12px; font-size: 0.8rem;">Bearbeiten</button>
-            <button class="btn delete-news-btn" data-id="${a.id}" style="padding: 6px 12px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">Löschen</button>
+          <div class="admin-item-actions">
+            <a href="#/article/${a.id}" target="_blank" class="btn btn-outline admin-item-btn" title="Artikel ansehen">${renderIcon('eye', { size: 14 })} Ansehen</a>
+            <button class="btn btn-outline edit-news-btn admin-item-btn" data-id="${a.id}">${renderIcon('edit', { size: 14 })} Bearbeiten</button>
+            <button class="btn delete-news-btn admin-item-btn btn-danger" data-id="${a.id}">${renderIcon('trash', { size: 14 })} Löschen</button>
           </div>
         </div>
       `;

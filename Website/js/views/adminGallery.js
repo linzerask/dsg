@@ -431,26 +431,26 @@ export const initAdminGallery = () => {
       const coverUrl = a.image || (a.images && a.images[0]?.url) || 'stadion.png';
 
       return `
-        <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm) var(--space-md); gap: var(--space-md);">
-          <div style="display: flex; align-items: center; gap: var(--space-md); min-width: 0;">
-            <img src="${coverUrl}" alt="Cover" onerror="this.onerror=null; this.src='stadion.png';" style="width: 55px; height: 55px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.1); flex-shrink: 0;">
-            <div style="min-width: 0;">
-              <strong style="font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${a.title}</strong>
-              <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">
-                <span style="display: inline-flex; align-items: center; gap: 3px;">${renderIcon('calendar', { size: 13, color: 'var(--color-text-secondary)' })} ${a.date || 'Kein Datum'}</span>
-                &bull; <span style="display: inline-flex; align-items: center; gap: 3px; color: var(--color-accent); font-weight: 700;">${renderIcon('camera', { size: 13, color: 'var(--color-accent)' })} ${photosCount} ${photosCount === 1 ? 'Foto' : 'Fotos'}</span>
+        <div class="admin-item-card glass-card">
+          <div class="admin-item-main">
+            <img src="${coverUrl}" alt="Cover" onerror="this.onerror=null; this.src='stadion.png';" class="admin-item-thumb">
+            <div class="admin-item-info">
+              <strong class="admin-item-title">${a.title}</strong>
+              <div class="admin-item-meta">
+                <span class="admin-item-meta-entry">${renderIcon('calendar', { size: 13, color: 'var(--color-text-secondary)' })} ${a.date || 'Kein Datum'}</span>
+                <span class="admin-item-meta-entry" style="color: var(--color-accent); font-weight: 700;">&bull; ${renderIcon('camera', { size: 13, color: 'var(--color-accent)' })} ${photosCount} ${photosCount === 1 ? 'Foto' : 'Fotos'}</span>
               </div>
               ${a.excerpt ? `
-                <div style="font-size: 0.8rem; color: var(--color-text-secondary); opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;">
+                <div class="admin-item-preview">
                   ${a.excerpt}
                 </div>
               ` : ''}
             </div>
           </div>
-          <div style="display: flex; gap: 6px; flex-shrink: 0;">
-            <a href="#/galerie" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;" title="Galerie ansehen">${renderIcon('eye', { size: 14 })} Ansehen</a>
-            <button class="btn btn-outline edit-gal-btn" data-id="${a.id}" style="padding: 6px 12px; font-size: 0.8rem;">Bearbeiten</button>
-            <button class="btn delete-gal-btn" data-id="${a.id}" style="padding: 6px 12px; font-size: 0.8rem; background: #e74c3c; border: none; color: white;">Löschen</button>
+          <div class="admin-item-actions">
+            <a href="#/galerie" class="btn btn-outline admin-item-btn" title="Galerie ansehen">${renderIcon('eye', { size: 14 })} Ansehen</a>
+            <button class="btn btn-outline edit-gal-btn admin-item-btn" data-id="${a.id}">${renderIcon('edit', { size: 14 })} Bearbeiten</button>
+            <button class="btn delete-gal-btn admin-item-btn btn-danger" data-id="${a.id}">${renderIcon('trash', { size: 14 })} Löschen</button>
           </div>
         </div>
       `;

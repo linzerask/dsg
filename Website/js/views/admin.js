@@ -1,12 +1,12 @@
 import { Store } from '../store.js?v=1790560000100';
 
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560000370';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560000370';
-import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560000370';
-import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560000370';
-import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560000370';
-import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790560000100';
-import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1790560000100';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560000380';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560000380';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560000380';
+import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560000380';
+import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560000380';
+import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790560000380';
+import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1790560000380';
 
 export const ensureAllAdminModalsInBody = () => {
   const modalIds = [
