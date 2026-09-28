@@ -1396,6 +1396,100 @@ main {
     color: var(--color-text-primary);
 }
 
+/* ============================================================
+   STATS PAGE SEGMENTED CONTROL
+   ============================================================ */
+.stats-tabs-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-xl);
+  width: 100%;
+}
+
+.stats-segmented-control {
+  display: inline-flex;
+  align-items: center;
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  padding: 6px;
+  border-radius: var(--border-radius-pill);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  gap: 6px;
+  max-width: 100%;
+}
+
+.stats-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 24px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-pill);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.stats-pill-btn svg {
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.stats-pill-btn:hover {
+  color: var(--color-text-primary);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.stats-pill-btn.active {
+  background: var(--color-accent);
+  color: #ffffff;
+  box-shadow: 0 2px 10px var(--color-accent-glow);
+}
+
+.stats-pill-btn.active svg {
+  color: #ffffff !important;
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .stats-tabs-wrapper {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .stats-segmented-control {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    border-radius: var(--border-radius-md);
+    padding: 6px;
+    gap: 6px;
+  }
+  
+  .stats-pill-btn {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    border-radius: var(--border-radius-sm);
+    gap: 6px;
+  }
+}
+
+@media (max-width: 380px) {
+  .stats-pill-btn {
+    font-size: 0.82rem;
+    padding: 8px 6px;
+    gap: 5px;
+  }
+}
+
 
 .show-mobile {
     display: none;

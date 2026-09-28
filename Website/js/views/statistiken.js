@@ -478,20 +478,26 @@ export const viewStatistiken = () => {
 
       </div>
 
-      <!-- Navigation Tabs for Statistics Sub-Pages -->
-      <div class="stagger-item" style="display: flex; gap: var(--space-xs); flex-wrap: wrap; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm); margin-bottom: var(--space-xl);">
-        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'scorers' ? 'active' : ''}" data-tab="scorers" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'scorers' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'scorers' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 8px;">
-          ${renderIcon('crown', { size: 18, color: activeStatsTab === 'scorers' ? 'var(--color-accent)' : 'currentColor' })} Ewige Torjägerliste
-        </button>
-        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'clubs' ? 'active' : ''}" data-tab="clubs" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'clubs' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'clubs' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 8px;">
-          ${renderIcon('shield', { size: 18, color: activeStatsTab === 'clubs' ? 'var(--color-accent)' : 'currentColor' })} Ewige Vereinstabelle
-        </button>
-        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'champions' ? 'active' : ''}" data-tab="champions" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'champions' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'champions' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 8px;">
-          ${renderIcon('trophy', { size: 18, color: activeStatsTab === 'champions' ? 'var(--color-accent)' : 'currentColor' })} Ehrentafel der Meister
-        </button>
-        <button class="tab-btn stats-tab-btn ${activeStatsTab === 'records' ? 'active' : ''}" data-tab="records" style="padding: 10px 18px; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: ${activeStatsTab === 'records' ? 'rgba(142, 198, 63, 0.15)' : 'none'}; color: ${activeStatsTab === 'records' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: flex; align-items: center; gap: 8px;">
-          ${renderIcon('star', { size: 18, color: activeStatsTab === 'records' ? 'var(--color-accent)' : 'currentColor' })} Rekorde & Meilensteine
-        </button>
+      <!-- Navigation Tabs for Statistics Sub-Pages (Segmented Control) -->
+      <div class="stats-tabs-wrapper stagger-item">
+        <div class="stats-segmented-control">
+          <button class="stats-pill-btn ${activeStatsTab === 'scorers' ? 'active' : ''}" data-tab="scorers">
+            ${renderIcon('crown', { size: 16, color: 'currentColor' })}
+            <span>Torjäger</span>
+          </button>
+          <button class="stats-pill-btn ${activeStatsTab === 'clubs' ? 'active' : ''}" data-tab="clubs">
+            ${renderIcon('shield', { size: 16, color: 'currentColor' })}
+            <span>Vereine</span>
+          </button>
+          <button class="stats-pill-btn ${activeStatsTab === 'champions' ? 'active' : ''}" data-tab="champions">
+            ${renderIcon('trophy', { size: 16, color: 'currentColor' })}
+            <span>Meister</span>
+          </button>
+          <button class="stats-pill-btn ${activeStatsTab === 'records' ? 'active' : ''}" data-tab="records">
+            ${renderIcon('star', { size: 16, color: 'currentColor' })}
+            <span>Rekorde</span>
+          </button>
+        </div>
       </div>
 
       <!-- TAB 1: EWIGE TORJÄGERLISTE (HALL OF FAME) -->
@@ -766,21 +772,15 @@ export const bindStatistiken = () => {
     }
   });
 
-  // Tab Switching
-  const tabBtns = document.querySelectorAll('.stats-tab-btn');
+  // Tab Switching (Segmented Control)
+  const tabBtns = document.querySelectorAll('.stats-pill-btn');
   tabBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', () => {
       const tab = btn.getAttribute('data-tab');
       activeStatsTab = tab;
 
-      tabBtns.forEach(b => {
-        b.classList.remove('active');
-        b.style.background = 'none';
-        b.style.color = 'var(--color-text-secondary)';
-      });
+      tabBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      btn.style.background = 'rgba(142, 198, 63, 0.15)';
-      btn.style.color = 'var(--color-accent)';
 
       document.querySelectorAll('.stats-section').forEach(sec => sec.style.display = 'none');
       const targetSec = document.getElementById(`stats-section-${tab}`);
