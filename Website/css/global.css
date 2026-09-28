@@ -96,8 +96,37 @@ h2 {
 /* Mobile Menu Button */
 .mobile-menu-btn {
   display: none;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
   color: var(--color-text-primary);
-  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+}
+
+.mobile-menu-btn:hover {
+  background: rgba(0, 150, 64, 0.08);
+}
+
+/* Drawer Backdrop Overlay */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 9998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.drawer-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Drawer */
@@ -105,22 +134,37 @@ h2 {
   position: fixed;
   top: 0;
   right: -100%;
-  width: 100%;
-  max-width: 400px;
+  width: 85%;
+  max-width: 320px;
   height: 100vh;
-  background: var(--color-bg);
+  background: var(--color-surface);
   border-left: var(--glass-border);
-  z-index: 200;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.25);
+  z-index: 10000;
   padding: var(--space-xl) var(--space-lg);
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-md);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .drawer-close {
   align-self: flex-end;
+  background: transparent;
+  border: none;
   color: var(--color-text-primary);
-  font-size: 2rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.drawer-close:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .drawer-link {
@@ -171,11 +215,18 @@ main {
 }
 
 @media (max-width: 768px) {
+  .floating-nav {
+    width: calc(100% - 28px) !important;
+    max-width: 480px !important;
+    justify-content: space-between !important;
+    padding: 6px 14px !important;
+    top: 12px !important;
+  }
   .floating-nav .nav-links {
-    display: none;
+    display: none !important;
   }
   .mobile-menu-btn {
-    display: block;
+    display: flex !important;
   }
 }
 
