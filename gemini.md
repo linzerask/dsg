@@ -224,14 +224,21 @@ DSG Liga/
   2. **Clean Status Badges & Scores:** Displays match date, kickoff time, status badges (`Beendet`, `Ausstehend`, `Abgesagt`, `Verschoben`), score pill, home and away clubs with responsive mobile flex layouts, and match location.
   3. **Empty State:** If no games are registered for that round, renders a clean SVG calendar empty state advising that matches can be scheduled in the **Spiele** tab.
 
----
-
 ## 20. GitHub Pages Deployment Protocol (Website Subtree Root)
 * **The Pitfall:** Pushing the full repository branch `main` directly to `gh-pages` places repository root files (like `README.md`, `scraper/`, `scripts/`) at the web root, causing GitHub Pages / Jekyll to serve the markdown documentation instead of the single-page application.
 * **The Rule:**
   1. Always deploy to `gh-pages` using the **`Website` subdirectory subtree**:
      `git subtree push --prefix Website origin gh-pages` or `git push origin $(git subtree split --prefix Website main):gh-pages --force`.
   2. This ensures `Website/index.html` sits directly at `/` on `https://linzerask.github.io/dsg/`.
+
+---
+
+## 21. Fresh Database State & Master Roster Protection Mandate
+* **The Operational Directive:** When resetting competitions, leagues, matchday rounds, scores, and disciplinary records to allow pristine entry from scratch:
+  1. **Strictly Protected Master Rosters:** `Website/data/players.json` (4,386+ players) and `Website/data/teams.json` (54 teams) are canonical foundational databases and must NEVER be wiped, modified, or truncated during season/match resets.
+  2. **Clean Slate Stores:** `Website/data/leagues.json` resets to `[]`, `Website/data/rounds.json` resets to `[]`, and `Website/data/liga.json` resets to `{\n  "seasons": {}\n}`.
+  3. **Multi-Tiered Cache & Cloud Sync:** Both client-side storage (`localStorage` keys: `dsg_data_v52`, `dsg_admin_rounds_v13`, `dsg_admin_leagues_v10`) and remote Firestore documents (`system/leagues_data`, `system/rounds_data`, `system/liga_data`) must be synchronized to the clean state simultaneously to prevent stale remote collections from re-populating on subsequent browser sessions.
+
 
 
 
