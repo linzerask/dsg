@@ -3817,179 +3817,31 @@
         ],
         "cards": [
           {
-            "name": "Stefan Amering",
-            "player": "Stefan Amering",
-            "team": "FC Hinzenbach",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Robert Mitter",
-            "player": "Robert Mitter",
-            "team": "FC Hinzenbach",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Daniel Leeb",
-            "player": "Daniel Leeb",
-            "team": "FC U. Schleißheim",
-            "yellow": 2,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Gerard Pührer",
-            "player": "Gerard Pührer",
-            "team": "FC U. Schleißheim",
-            "yellow": 2,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Clemens Rössler",
-            "player": "Clemens Rössler",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 2,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Peter Furtner",
-            "player": "Peter Furtner",
-            "team": "Union Geboltskirchen",
-            "yellow": 2,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Lukas Alexander Wimmer",
-            "player": "Lukas Alexander Wimmer",
-            "team": "Union Geboltskirchen",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Simon Penninger",
-            "player": "Simon Penninger",
-            "team": "Union Heiligenberg",
-            "yellow": 2,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Jürgen Thaller",
-            "player": "Jürgen Thaller",
-            "team": "FC U. Schleißheim",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Haris Balihodzic",
-            "player": "Haris Balihodzic",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Anton Krajina",
-            "player": "Anton Krajina",
-            "team": "SV Croatia Linz",
-            "yellow": 2,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Valentin Vejic",
-            "player": "Valentin Vejic",
-            "team": "SV Croatia Linz",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
             "name": "Igor Vidovic",
             "player": "Igor Vidovic",
             "team": "SV Croatia Linz",
+            "yellow": 3,
+            "red": 1
+          },
+          {
+            "name": "Dominik Wittinghofer",
+            "player": "Dominik Wittinghofer",
+            "team": "DSG St. Josef/Oed FC",
             "yellow": 1,
-            "yellowRed": 1,
-            "red": 0
+            "red": 1
+          },
+          {
+            "name": "Ramadan Karakaya",
+            "player": "Ramadan Karakaya",
+            "team": "DSG UKJ Froschberg",
+            "yellow": 0,
+            "red": 1
           },
           {
             "name": "Josip Zuljevic",
             "player": "Josip Zuljevic",
             "team": "SV Croatia Linz",
             "yellow": 3,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Florian Trefflinger",
-            "player": "Florian Trefflinger",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Jetlir Bytyci",
-            "player": "Jetlir Bytyci",
-            "team": "Union Goldwörth",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Alexander Gruber",
-            "player": "Alexander Gruber",
-            "team": "Union Geboltskirchen",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Michael Hofmair",
-            "player": "Michael Hofmair",
-            "team": "FC U. Schleißheim",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Benedict Humer",
-            "player": "Benedict Humer",
-            "team": "Union Heiligenberg",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Gregor Mair",
-            "player": "Gregor Mair",
-            "team": "Union Heiligenberg",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Florian Staudinger",
-            "player": "Florian Staudinger",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Manuel Märzinger",
-            "player": "Manuel Märzinger",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 2,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -3997,31 +3849,55 @@
             "player": "Stefan Woschitz",
             "team": "DSG St. Josef/Oed FC",
             "yellow": 3,
-            "yellowRed": 0,
             "red": 0
           },
           {
-            "name": "Dominik Wittinghofer",
-            "player": "Dominik Wittinghofer",
+            "name": "Daniel Leeb",
+            "player": "Daniel Leeb",
+            "team": "FC U. Schleißheim",
+            "yellow": 2,
+            "red": 0
+          },
+          {
+            "name": "Gerard Pührer",
+            "player": "Gerard Pührer",
+            "team": "FC U. Schleißheim",
+            "yellow": 2,
+            "red": 0
+          },
+          {
+            "name": "Clemens Rössler",
+            "player": "Clemens Rössler",
             "team": "DSG St. Josef/Oed FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 1
-          },
-          {
-            "name": "Michael Ahammer",
-            "player": "Michael Ahammer",
-            "team": "FC Hinzenbach",
-            "yellow": 1,
-            "yellowRed": 0,
+            "yellow": 2,
             "red": 0
           },
           {
-            "name": "Florian Berger",
-            "player": "Florian Berger",
-            "team": "FC Hinzenbach",
-            "yellow": 1,
-            "yellowRed": 0,
+            "name": "Peter Furtner",
+            "player": "Peter Furtner",
+            "team": "Union Geboltskirchen",
+            "yellow": 2,
+            "red": 0
+          },
+          {
+            "name": "Simon Penninger",
+            "player": "Simon Penninger",
+            "team": "Union Heiligenberg",
+            "yellow": 2,
+            "red": 0
+          },
+          {
+            "name": "Anton Krajina",
+            "player": "Anton Krajina",
+            "team": "SV Croatia Linz",
+            "yellow": 2,
+            "red": 0
+          },
+          {
+            "name": "Manuel Märzinger",
+            "player": "Manuel Märzinger",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 2,
             "red": 0
           },
           {
@@ -4029,15 +3905,6 @@
             "player": "Christian Fröstl",
             "team": "DSG UKJ Froschberg",
             "yellow": 2,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Vasile Calini",
-            "player": "Vasile Calini",
-            "team": "DSG UKJ Froschberg",
-            "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4045,71 +3912,6 @@
             "player": "Dominik Steiner",
             "team": "DSG UKJ Froschberg",
             "yellow": 2,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Andreas Glatz",
-            "player": "Andreas Glatz",
-            "team": "Union Goldwörth",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Michael Haslehner",
-            "player": "Michael Haslehner",
-            "team": "Union Heiligenberg",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Samuel Jenner",
-            "player": "Samuel Jenner",
-            "team": "Union Heiligenberg",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Erwin Reisenberger",
-            "player": "Erwin Reisenberger",
-            "team": "Union Goldwörth",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Martin Gubo",
-            "player": "Martin Gubo",
-            "team": "FC Hinzenbach",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Stefan Niederwimmer",
-            "player": "Stefan Niederwimmer",
-            "team": "FC U. Schleißheim",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Günter Weiss",
-            "player": "Günter Weiss",
-            "team": "FC U. Schleißheim",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Salih Cömlek",
-            "player": "Salih Cömlek",
-            "team": "FC U. Schleißheim",
-            "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4117,7 +3919,6 @@
             "player": "Markus Diesenberger",
             "team": "Union Geboltskirchen",
             "yellow": 2,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4125,15 +3926,6 @@
             "player": "Daniel Dobner",
             "team": "Union Geboltskirchen",
             "yellow": 2,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Roman Reisinger",
-            "player": "Roman Reisinger",
-            "team": "FC U. Schleißheim",
-            "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4141,23 +3933,188 @@
             "player": "Philipp Geiblinger",
             "team": "DSG UKJ Froschberg",
             "yellow": 2,
-            "yellowRed": 0,
             "red": 0
           },
           {
-            "name": "Ramadan Karakaya",
-            "player": "Ramadan Karakaya",
+            "name": "Stefan Amering",
+            "player": "Stefan Amering",
+            "team": "FC Hinzenbach",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Robert Mitter",
+            "player": "Robert Mitter",
+            "team": "FC Hinzenbach",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Lukas Alexander Wimmer",
+            "player": "Lukas Alexander Wimmer",
+            "team": "Union Geboltskirchen",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Jürgen Thaller",
+            "player": "Jürgen Thaller",
+            "team": "FC U. Schleißheim",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Valentin Vejic",
+            "player": "Valentin Vejic",
+            "team": "SV Croatia Linz",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Haris Balihodzic",
+            "player": "Haris Balihodzic",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Florian Trefflinger",
+            "player": "Florian Trefflinger",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Jetlir Bytyci",
+            "player": "Jetlir Bytyci",
+            "team": "Union Goldwörth",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Alexander Gruber",
+            "player": "Alexander Gruber",
+            "team": "Union Geboltskirchen",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Michael Hofmair",
+            "player": "Michael Hofmair",
+            "team": "FC U. Schleißheim",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Benedict Humer",
+            "player": "Benedict Humer",
+            "team": "Union Heiligenberg",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Gregor Mair",
+            "player": "Gregor Mair",
+            "team": "Union Heiligenberg",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Florian Staudinger",
+            "player": "Florian Staudinger",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Michael Ahammer",
+            "player": "Michael Ahammer",
+            "team": "FC Hinzenbach",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Florian Berger",
+            "player": "Florian Berger",
+            "team": "FC Hinzenbach",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Vasile Calini",
+            "player": "Vasile Calini",
             "team": "DSG UKJ Froschberg",
-            "yellow": 0,
-            "yellowRed": 0,
-            "red": 1
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Andreas Glatz",
+            "player": "Andreas Glatz",
+            "team": "Union Goldwörth",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Michael Haslehner",
+            "player": "Michael Haslehner",
+            "team": "Union Heiligenberg",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Samuel Jenner",
+            "player": "Samuel Jenner",
+            "team": "Union Heiligenberg",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Erwin Reisenberger",
+            "player": "Erwin Reisenberger",
+            "team": "Union Goldwörth",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Martin Gubo",
+            "player": "Martin Gubo",
+            "team": "FC Hinzenbach",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Stefan Niederwimmer",
+            "player": "Stefan Niederwimmer",
+            "team": "FC U. Schleißheim",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Günter Weiss",
+            "player": "Günter Weiss",
+            "team": "FC U. Schleißheim",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Roman Reisinger",
+            "player": "Roman Reisinger",
+            "team": "FC U. Schleißheim",
+            "yellow": 1,
+            "red": 0
+          },
+          {
+            "name": "Salih Cömlek",
+            "player": "Salih Cömlek",
+            "team": "FC U. Schleißheim",
+            "yellow": 1,
+            "red": 0
           },
           {
             "name": "Martin Huemer",
             "player": "Martin Huemer",
             "team": "Union Goldwörth",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4165,7 +4122,6 @@
             "player": "Ante Zuljevic",
             "team": "SV Croatia Linz",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4173,7 +4129,6 @@
             "player": "David Wimmer",
             "team": "Union Geboltskirchen",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4181,7 +4136,6 @@
             "player": "Florian Norbert Wiesinger",
             "team": "Union Geboltskirchen",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4189,7 +4143,6 @@
             "player": "Kevin Tiepelt",
             "team": "DSG St. Josef/Oed FC",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4197,7 +4150,6 @@
             "player": "Ivan Andjelic",
             "team": "SV Croatia Linz",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4205,7 +4157,6 @@
             "player": "Tomislav Zuljevic",
             "team": "SV Croatia Linz",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4213,7 +4164,6 @@
             "player": "Milos Jelic",
             "team": "DSG UKJ Froschberg",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4221,15 +4171,6 @@
             "player": "Michael Kaimberger",
             "team": "FC Hinzenbach",
             "yellow": 1,
-            "yellowRed": 0,
-            "red": 0
-          },
-          {
-            "name": "Philipp Zwickl",
-            "player": "Philipp Zwickl",
-            "team": "FC U. Schleißheim",
-            "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4237,7 +4178,13 @@
             "player": "Jakob Bötscher",
             "team": "Union Goldwörth",
             "yellow": 1,
-            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Philipp Zwickl",
+            "player": "Philipp Zwickl",
+            "team": "FC U. Schleißheim",
+            "yellow": 1,
             "red": 0
           },
           {
@@ -4245,7 +4192,6 @@
             "player": "Thomas Paulmair",
             "team": "DSG St. Josef/Oed FC",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4253,7 +4199,6 @@
             "player": "Wolfgang Lehner",
             "team": "Union Heiligenberg",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4261,7 +4206,6 @@
             "player": "Christian Greifeneder",
             "team": "Union Geboltskirchen",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4269,7 +4213,6 @@
             "player": "Ahmed Basic",
             "team": "DSG UKJ Froschberg",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           },
           {
@@ -4277,7 +4220,6 @@
             "player": "Murat Yildiz",
             "team": "DSG UKJ Froschberg",
             "yellow": 1,
-            "yellowRed": 0,
             "red": 0
           }
         ]
@@ -4646,179 +4588,31 @@
       ],
       "cards": [
         {
-          "name": "Stefan Amering",
-          "player": "Stefan Amering",
-          "team": "FC Hinzenbach",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Robert Mitter",
-          "player": "Robert Mitter",
-          "team": "FC Hinzenbach",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Daniel Leeb",
-          "player": "Daniel Leeb",
-          "team": "FC U. Schleißheim",
-          "yellow": 2,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Gerard Pührer",
-          "player": "Gerard Pührer",
-          "team": "FC U. Schleißheim",
-          "yellow": 2,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Clemens Rössler",
-          "player": "Clemens Rössler",
-          "team": "DSG St. Josef/Oed FC",
-          "yellow": 2,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Peter Furtner",
-          "player": "Peter Furtner",
-          "team": "Union Geboltskirchen",
-          "yellow": 2,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Lukas Alexander Wimmer",
-          "player": "Lukas Alexander Wimmer",
-          "team": "Union Geboltskirchen",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Simon Penninger",
-          "player": "Simon Penninger",
-          "team": "Union Heiligenberg",
-          "yellow": 2,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Jürgen Thaller",
-          "player": "Jürgen Thaller",
-          "team": "FC U. Schleißheim",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Haris Balihodzic",
-          "player": "Haris Balihodzic",
-          "team": "DSG St. Josef/Oed FC",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Anton Krajina",
-          "player": "Anton Krajina",
-          "team": "SV Croatia Linz",
-          "yellow": 2,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Valentin Vejic",
-          "player": "Valentin Vejic",
-          "team": "SV Croatia Linz",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
           "name": "Igor Vidovic",
           "player": "Igor Vidovic",
           "team": "SV Croatia Linz",
+          "yellow": 3,
+          "red": 1
+        },
+        {
+          "name": "Dominik Wittinghofer",
+          "player": "Dominik Wittinghofer",
+          "team": "DSG St. Josef/Oed FC",
           "yellow": 1,
-          "yellowRed": 1,
-          "red": 0
+          "red": 1
+        },
+        {
+          "name": "Ramadan Karakaya",
+          "player": "Ramadan Karakaya",
+          "team": "DSG UKJ Froschberg",
+          "yellow": 0,
+          "red": 1
         },
         {
           "name": "Josip Zuljevic",
           "player": "Josip Zuljevic",
           "team": "SV Croatia Linz",
           "yellow": 3,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Florian Trefflinger",
-          "player": "Florian Trefflinger",
-          "team": "DSG St. Josef/Oed FC",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Jetlir Bytyci",
-          "player": "Jetlir Bytyci",
-          "team": "Union Goldwörth",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Alexander Gruber",
-          "player": "Alexander Gruber",
-          "team": "Union Geboltskirchen",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Michael Hofmair",
-          "player": "Michael Hofmair",
-          "team": "FC U. Schleißheim",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Benedict Humer",
-          "player": "Benedict Humer",
-          "team": "Union Heiligenberg",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Gregor Mair",
-          "player": "Gregor Mair",
-          "team": "Union Heiligenberg",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Florian Staudinger",
-          "player": "Florian Staudinger",
-          "team": "DSG St. Josef/Oed FC",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Manuel Märzinger",
-          "player": "Manuel Märzinger",
-          "team": "DSG St. Josef/Oed FC",
-          "yellow": 2,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -4826,31 +4620,55 @@
           "player": "Stefan Woschitz",
           "team": "DSG St. Josef/Oed FC",
           "yellow": 3,
-          "yellowRed": 0,
           "red": 0
         },
         {
-          "name": "Dominik Wittinghofer",
-          "player": "Dominik Wittinghofer",
+          "name": "Daniel Leeb",
+          "player": "Daniel Leeb",
+          "team": "FC U. Schleißheim",
+          "yellow": 2,
+          "red": 0
+        },
+        {
+          "name": "Gerard Pührer",
+          "player": "Gerard Pührer",
+          "team": "FC U. Schleißheim",
+          "yellow": 2,
+          "red": 0
+        },
+        {
+          "name": "Clemens Rössler",
+          "player": "Clemens Rössler",
           "team": "DSG St. Josef/Oed FC",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 1
-        },
-        {
-          "name": "Michael Ahammer",
-          "player": "Michael Ahammer",
-          "team": "FC Hinzenbach",
-          "yellow": 1,
-          "yellowRed": 0,
+          "yellow": 2,
           "red": 0
         },
         {
-          "name": "Florian Berger",
-          "player": "Florian Berger",
-          "team": "FC Hinzenbach",
-          "yellow": 1,
-          "yellowRed": 0,
+          "name": "Peter Furtner",
+          "player": "Peter Furtner",
+          "team": "Union Geboltskirchen",
+          "yellow": 2,
+          "red": 0
+        },
+        {
+          "name": "Simon Penninger",
+          "player": "Simon Penninger",
+          "team": "Union Heiligenberg",
+          "yellow": 2,
+          "red": 0
+        },
+        {
+          "name": "Anton Krajina",
+          "player": "Anton Krajina",
+          "team": "SV Croatia Linz",
+          "yellow": 2,
+          "red": 0
+        },
+        {
+          "name": "Manuel Märzinger",
+          "player": "Manuel Märzinger",
+          "team": "DSG St. Josef/Oed FC",
+          "yellow": 2,
           "red": 0
         },
         {
@@ -4858,15 +4676,6 @@
           "player": "Christian Fröstl",
           "team": "DSG UKJ Froschberg",
           "yellow": 2,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Vasile Calini",
-          "player": "Vasile Calini",
-          "team": "DSG UKJ Froschberg",
-          "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -4874,71 +4683,6 @@
           "player": "Dominik Steiner",
           "team": "DSG UKJ Froschberg",
           "yellow": 2,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Andreas Glatz",
-          "player": "Andreas Glatz",
-          "team": "Union Goldwörth",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Michael Haslehner",
-          "player": "Michael Haslehner",
-          "team": "Union Heiligenberg",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Samuel Jenner",
-          "player": "Samuel Jenner",
-          "team": "Union Heiligenberg",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Erwin Reisenberger",
-          "player": "Erwin Reisenberger",
-          "team": "Union Goldwörth",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Martin Gubo",
-          "player": "Martin Gubo",
-          "team": "FC Hinzenbach",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Stefan Niederwimmer",
-          "player": "Stefan Niederwimmer",
-          "team": "FC U. Schleißheim",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Günter Weiss",
-          "player": "Günter Weiss",
-          "team": "FC U. Schleißheim",
-          "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Salih Cömlek",
-          "player": "Salih Cömlek",
-          "team": "FC U. Schleißheim",
-          "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -4946,7 +4690,6 @@
           "player": "Markus Diesenberger",
           "team": "Union Geboltskirchen",
           "yellow": 2,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -4954,15 +4697,6 @@
           "player": "Daniel Dobner",
           "team": "Union Geboltskirchen",
           "yellow": 2,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Roman Reisinger",
-          "player": "Roman Reisinger",
-          "team": "FC U. Schleißheim",
-          "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -4970,23 +4704,188 @@
           "player": "Philipp Geiblinger",
           "team": "DSG UKJ Froschberg",
           "yellow": 2,
-          "yellowRed": 0,
           "red": 0
         },
         {
-          "name": "Ramadan Karakaya",
-          "player": "Ramadan Karakaya",
+          "name": "Stefan Amering",
+          "player": "Stefan Amering",
+          "team": "FC Hinzenbach",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Robert Mitter",
+          "player": "Robert Mitter",
+          "team": "FC Hinzenbach",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Lukas Alexander Wimmer",
+          "player": "Lukas Alexander Wimmer",
+          "team": "Union Geboltskirchen",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Jürgen Thaller",
+          "player": "Jürgen Thaller",
+          "team": "FC U. Schleißheim",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Valentin Vejic",
+          "player": "Valentin Vejic",
+          "team": "SV Croatia Linz",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Haris Balihodzic",
+          "player": "Haris Balihodzic",
+          "team": "DSG St. Josef/Oed FC",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Florian Trefflinger",
+          "player": "Florian Trefflinger",
+          "team": "DSG St. Josef/Oed FC",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Jetlir Bytyci",
+          "player": "Jetlir Bytyci",
+          "team": "Union Goldwörth",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Alexander Gruber",
+          "player": "Alexander Gruber",
+          "team": "Union Geboltskirchen",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Michael Hofmair",
+          "player": "Michael Hofmair",
+          "team": "FC U. Schleißheim",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Benedict Humer",
+          "player": "Benedict Humer",
+          "team": "Union Heiligenberg",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Gregor Mair",
+          "player": "Gregor Mair",
+          "team": "Union Heiligenberg",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Florian Staudinger",
+          "player": "Florian Staudinger",
+          "team": "DSG St. Josef/Oed FC",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Michael Ahammer",
+          "player": "Michael Ahammer",
+          "team": "FC Hinzenbach",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Florian Berger",
+          "player": "Florian Berger",
+          "team": "FC Hinzenbach",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Vasile Calini",
+          "player": "Vasile Calini",
           "team": "DSG UKJ Froschberg",
-          "yellow": 0,
-          "yellowRed": 0,
-          "red": 1
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Andreas Glatz",
+          "player": "Andreas Glatz",
+          "team": "Union Goldwörth",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Michael Haslehner",
+          "player": "Michael Haslehner",
+          "team": "Union Heiligenberg",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Samuel Jenner",
+          "player": "Samuel Jenner",
+          "team": "Union Heiligenberg",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Erwin Reisenberger",
+          "player": "Erwin Reisenberger",
+          "team": "Union Goldwörth",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Martin Gubo",
+          "player": "Martin Gubo",
+          "team": "FC Hinzenbach",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Stefan Niederwimmer",
+          "player": "Stefan Niederwimmer",
+          "team": "FC U. Schleißheim",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Günter Weiss",
+          "player": "Günter Weiss",
+          "team": "FC U. Schleißheim",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Roman Reisinger",
+          "player": "Roman Reisinger",
+          "team": "FC U. Schleißheim",
+          "yellow": 1,
+          "red": 0
+        },
+        {
+          "name": "Salih Cömlek",
+          "player": "Salih Cömlek",
+          "team": "FC U. Schleißheim",
+          "yellow": 1,
+          "red": 0
         },
         {
           "name": "Martin Huemer",
           "player": "Martin Huemer",
           "team": "Union Goldwörth",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -4994,7 +4893,6 @@
           "player": "Ante Zuljevic",
           "team": "SV Croatia Linz",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5002,7 +4900,6 @@
           "player": "David Wimmer",
           "team": "Union Geboltskirchen",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5010,7 +4907,6 @@
           "player": "Florian Norbert Wiesinger",
           "team": "Union Geboltskirchen",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5018,7 +4914,6 @@
           "player": "Kevin Tiepelt",
           "team": "DSG St. Josef/Oed FC",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5026,7 +4921,6 @@
           "player": "Ivan Andjelic",
           "team": "SV Croatia Linz",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5034,7 +4928,6 @@
           "player": "Tomislav Zuljevic",
           "team": "SV Croatia Linz",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5042,7 +4935,6 @@
           "player": "Milos Jelic",
           "team": "DSG UKJ Froschberg",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5050,15 +4942,6 @@
           "player": "Michael Kaimberger",
           "team": "FC Hinzenbach",
           "yellow": 1,
-          "yellowRed": 0,
-          "red": 0
-        },
-        {
-          "name": "Philipp Zwickl",
-          "player": "Philipp Zwickl",
-          "team": "FC U. Schleißheim",
-          "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5066,7 +4949,13 @@
           "player": "Jakob Bötscher",
           "team": "Union Goldwörth",
           "yellow": 1,
-          "yellowRed": 0,
+          "red": 0
+        },
+        {
+          "name": "Philipp Zwickl",
+          "player": "Philipp Zwickl",
+          "team": "FC U. Schleißheim",
+          "yellow": 1,
           "red": 0
         },
         {
@@ -5074,7 +4963,6 @@
           "player": "Thomas Paulmair",
           "team": "DSG St. Josef/Oed FC",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5082,7 +4970,6 @@
           "player": "Wolfgang Lehner",
           "team": "Union Heiligenberg",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5090,7 +4977,6 @@
           "player": "Christian Greifeneder",
           "team": "Union Geboltskirchen",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5098,7 +4984,6 @@
           "player": "Ahmed Basic",
           "team": "DSG UKJ Froschberg",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         },
         {
@@ -5106,7 +4991,6 @@
           "player": "Murat Yildiz",
           "team": "DSG UKJ Froschberg",
           "yellow": 1,
-          "yellowRed": 0,
           "red": 0
         }
       ]

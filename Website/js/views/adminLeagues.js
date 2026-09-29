@@ -862,8 +862,8 @@ const renderModalContent = () => {
         }
 
         const sortedCards = [...cardsList].sort((a, b) => {
-            const ptsB = (b.red || 0) * 5 + (b.yellowRed || 0) * 3 + (b.yellow || 0);
-            const ptsA = (a.red || 0) * 5 + (a.yellowRed || 0) * 3 + (a.yellow || 0);
+            const ptsB = (b.red || 0) * 3 + (b.yellow || 0);
+            const ptsA = (a.red || 0) * 3 + (a.yellow || 0);
             if (ptsB !== ptsA) return ptsB - ptsA;
             if ((b.red || 0) !== (a.red || 0)) return (b.red || 0) - (a.red || 0);
             return (b.yellow || 0) - (a.yellow || 0);
@@ -884,10 +884,6 @@ const renderModalContent = () => {
                             <div style="display: flex; align-items: center; gap: 4px;" title="Gelbe Karten">
                                 <span style="display:inline-block;width:9px;height:13px;background:#f1c40f;border-radius:2px;"></span>
                                 <span style="font-weight: 700; font-size: 0.9rem;">${c.yellow || 0}</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 4px;" title="Gelb-Rote Karten">
-                                <span style="display:inline-flex;gap:1px;"><span style="display:inline-block;width:7px;height:13px;background:#f1c40f;border-radius:1px;"></span><span style="display:inline-block;width:7px;height:13px;background:#e74c3c;border-radius:1px;"></span></span>
-                                <span style="font-weight: 700; font-size: 0.9rem; color: #f39c12;">${c.yellowRed || 0}</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 4px;" title="Rote Karten">
                                 <span style="display:inline-block;width:9px;height:13px;background:#e74c3c;border-radius:2px;"></span>

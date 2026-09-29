@@ -250,7 +250,6 @@ export function viewLiga() {
 
   const cardsHTML = {
     gelb: generateCardsHTML('yellow', 'card-icon-yellow', '<div class="card-icon card-icon-yellow"></div>'),
-    gelbrot: generateCardsHTML('yellowRed', 'card-icon-yellow-red', '<div class="card-icon-yellow-red"></div>'),
     rot: generateCardsHTML('red', 'card-icon-red', '<div class="card-icon card-icon-red"></div>')
   };
 
@@ -699,12 +698,10 @@ export function viewLiga() {
         <div id="stats-karten" style="display: none;" class="stagger-item">
             <div class="karten-sub-toggle">
                 <button class="karten-sub-btn active" data-karten="gelb">Gelb</button>
-                <button class="karten-sub-btn" data-karten="gelbrot">Gelb-Rot</button>
                 <button class="karten-sub-btn" data-karten="rot">Rot</button>
             </div>
             
             <div id="karten-gelb">${cardsHTML.gelb}</div>
-            <div id="karten-gelbrot" style="display: none;">${cardsHTML.gelbrot}</div>
             <div id="karten-rot" style="display: none;">${cardsHTML.rot}</div>
         </div>
       </div>
@@ -899,20 +896,26 @@ export function bindLigaTabs() {
       statsBtns.forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       
-      document.getElementById('stats-tore').style.display = 'none';
-      document.getElementById('stats-karten').style.display = 'none';
+      const elTore = document.getElementById('stats-tore');
+      const elKarten = document.getElementById('stats-karten');
+      if (elTore) elTore.style.display = 'none';
+      if (elKarten) elKarten.style.display = 'none';
       
       const target = document.getElementById('stats-' + e.target.dataset.stats);
-      target.style.display = 'block';
-      
-      anime({
-        targets: target.children,
-        opacity: [0, 1],
-        translateY: [10, 0],
-        delay: anime.stagger(50),
-        duration: 500,
-        easing: 'easeOutCubic'
-      });
+      if (target) {
+        target.style.display = 'block';
+        const cards = target.querySelectorAll('.glass-card');
+        cards.forEach(c => { c.style.opacity = '1'; c.style.transform = 'none'; });
+        anime.remove(cards);
+        anime({
+          targets: cards,
+          opacity: [0, 1],
+          translateY: [10, 0],
+          delay: anime.stagger(40),
+          duration: 400,
+          easing: 'easeOutCubic'
+        });
+      }
     });
   });
 
@@ -923,26 +926,31 @@ export function bindLigaTabs() {
       kartenBtns.forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
       
-      document.getElementById('karten-gelb').style.display = 'none';
-      document.getElementById('karten-gelbrot').style.display = 'none';
-      document.getElementById('karten-rot').style.display = 'none';
+      const elGelb = document.getElementById('karten-gelb');
+      const elRot = document.getElementById('karten-rot');
+      if (elGelb) elGelb.style.display = 'none';
+      if (elRot) elRot.style.display = 'none';
       
       const target = document.getElementById('karten-' + e.target.dataset.karten);
-      target.style.display = 'block';
-      
-      anime({
-        targets: target.children,
-        opacity: [0, 1],
-        translateY: [10, 0],
-        delay: anime.stagger(50),
-        duration: 500,
-        easing: 'easeOutCubic'
-      });
+      if (target) {
+        target.style.display = 'block';
+        const cards = target.querySelectorAll('.glass-card');
+        cards.forEach(c => { c.style.opacity = '1'; c.style.transform = 'none'; });
+        anime.remove(cards);
+        anime({
+          targets: cards,
+          opacity: [0, 1],
+          translateY: [10, 0],
+          delay: anime.stagger(40),
+          duration: 400,
+          easing: 'easeOutCubic'
+        });
+      }
     });
   });
 
   // Karten Alle anschauen buttons
-  ['yellow', 'yellowRed', 'red'].forEach(type => {
+  ['yellow', 'red'].forEach(type => {
     const btn = document.getElementById('btn-show-all-' + type);
     if (btn) {
       btn.addEventListener('click', () => {

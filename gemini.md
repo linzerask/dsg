@@ -233,11 +233,18 @@ DSG Liga/
 
 ---
 
-## 21. Fresh Database State & Master Roster Protection Mandate
-* **The Operational Directive:** When resetting competitions, leagues, matchday rounds, scores, and disciplinary records to allow pristine entry from scratch:
-  1. **Strictly Protected Master Rosters:** `Website/data/players.json` (4,386+ players) and `Website/data/teams.json` (54 teams) are canonical foundational databases and must NEVER be wiped, modified, or truncated during season/match resets.
-  2. **Clean Slate Stores:** `Website/data/leagues.json` resets to `[]`, `Website/data/rounds.json` resets to `[]`, and `Website/data/liga.json` resets to `{\n  "seasons": {}\n}`.
-  3. **Multi-Tiered Cache & Cloud Sync:** Both client-side storage (`localStorage` keys: `dsg_data_v52`, `dsg_admin_rounds_v13`, `dsg_admin_leagues_v10`) and remote Firestore documents (`system/leagues_data`, `system/rounds_data`, `system/liga_data`) must be synchronized to the clean state simultaneously to prevent stale remote collections from re-populating on subsequent browser sessions.
+## 22. Disciplinary Card Model & Unified Two-Category Tables
+* **The Rule:**
+  1. **Only Two Card Categories:** Across the entire web application (both public views and admin inspector modals), disciplinary card statistics are strictly consolidated into **two categories**:
+     - **Gelbe Karten (Yellow Cards)** (🟨)
+     - **Rote Karten (Red Cards / Dismissals)** (🟥)
+  2. **Card Calculation Logic:**
+     - A standard Yellow Card event adds **+1 Yellow**.
+     - A Yellow-Red dismissal event (2nd yellow sending-off) adds **+2 Yellows** and **+1 Red** to the player's season totals.
+     - A direct Straight Red Card event adds **+1 Red**.
+  3. **Visual Match Card Indicators:**
+     - On match cards, any dismissal (Yellow-Red or direct Red) renders a Sofascore-style red card badge adjacent to the team name (`[Home] [🟥]` and `[🟥] [Away]`).
+
 
 
 

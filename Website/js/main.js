@@ -1,5 +1,7 @@
-import { Router } from './router.js?v=1790560002000';
-import { Store } from './store.js?v=1790560002000';
+import { Router } from './router.js?v=1790560002500';
+import { Store } from './store.js?v=1790560002500';
+
+window.Store = Store;
 
 const initApp = () => {
   Store.init();

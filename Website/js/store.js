@@ -257,7 +257,7 @@ export const Store = {
     // Clear all obsolete cache versions
     try {
       for (let i = 1; i <= 100; i++) {
-        if (i !== 62) localStorage.removeItem(`dsg_data_v${i}`);
+        if (i !== 63) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 37) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 26) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 12) localStorage.removeItem(`dsg_admin_players_v${i}`);
@@ -268,7 +268,7 @@ export const Store = {
     } catch(e) {}
 
     // Eagerly load synchronous local memory into shared singleton
-    state.memoryData = loadLocal('dsg_data', 62) || { currentSeason: "", seasons: {} };
+    state.memoryData = loadLocal('dsg_data', 63) || { currentSeason: "", seasons: {} };
     state.memoryNews = loadLocal('dsg_articles', 37) || sortArticles([...(INITIAL_DATA.news || [])]);
     state.memoryGallery = loadLocal('dsg_gallery', 26) || INITIAL_DATA.gallery || [];
 
@@ -316,18 +316,18 @@ export const Store = {
       if (dataSnap.exists() && dataSnap.data()?.data) {
         const fbData = dataSnap.data().data;
         const fbTime = dataSnap.data().lastUpdated || fbData.lastUpdated || 0;
-        const localData = loadLocal('dsg_data', 62);
+        const localData = loadLocal('dsg_data', 63);
         const localTime = localData?.lastUpdated || 0;
         if (localTime >= fbTime && localData) {
           state.memoryData = localData;
           needsMigration = (localTime > fbTime);
         } else {
           state.memoryData = fbData;
-          trySetLocal('dsg_data_v62', JSON.stringify(fbData));
+          trySetLocal('dsg_data_v63', JSON.stringify(fbData));
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 62) || { currentSeason: "", seasons: {} };
+        let legacyData = loadLocal('dsg_data', 63) || { currentSeason: "", seasons: {} };
         state.memoryData = legacyData;
         needsMigration = true;
       }
@@ -433,7 +433,7 @@ export const Store = {
         await setDoc(galleryRef, { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v62', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_data_v63', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v37', JSON.stringify(state.memoryNews));
       trySetLocal('dsg_gallery_v26', JSON.stringify(state.memoryGallery));
 
@@ -455,7 +455,7 @@ export const Store = {
     const now = Date.now();
     data.lastUpdated = now;
     state.memoryData = data;
-    trySetLocal('dsg_data_v62', JSON.stringify(data));
+    trySetLocal('dsg_data_v63', JSON.stringify(data));
     setDoc(doc(db, 'system', 'liga_data'), { data, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
@@ -680,12 +680,15 @@ export const Store = {
         if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red') && ev.player) {
           let cardEntry = stats.cards.find(c => c.name === ev.player && c.team === ev.team);
           if (!cardEntry) {
-            cardEntry = { name: ev.player, team: ev.team, yellow: 0, yellowRed: 0, red: 0 };
+            cardEntry = { name: ev.player, player: ev.player, team: ev.team, yellow: 0, red: 0 };
             stats.cards.push(cardEntry);
           }
-          if (ev.type === 'yellow') cardEntry.yellow += 1;
-          if (ev.type === 'yellowRed') cardEntry.yellowRed += 1;
-          if (ev.type === 'red') cardEntry.red += 1;
+          if (ev.type === 'yellow') cardEntry.yellow += (parseInt(ev.count) || 1);
+          if (ev.type === 'yellowRed') {
+            cardEntry.yellow += 2;
+            cardEntry.red += 1;
+          }
+          if (ev.type === 'red') cardEntry.red += (parseInt(ev.count) || 1);
         }
       });
       stats.topScorers.sort((a, b) => b.goals - a.goals);
@@ -759,14 +762,17 @@ export const Store = {
         if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red') && ev.player) {
           let cardEntry = stats.cards.find(c => c.name === ev.player && c.team === ev.team);
           if (cardEntry) {
-            if (ev.type === 'yellow') cardEntry.yellow = Math.max(0, cardEntry.yellow - 1);
-            if (ev.type === 'yellowRed') cardEntry.yellowRed = Math.max(0, cardEntry.yellowRed - 1);
-            if (ev.type === 'red') cardEntry.red = Math.max(0, cardEntry.red - 1);
+            if (ev.type === 'yellow') cardEntry.yellow = Math.max(0, cardEntry.yellow - (parseInt(ev.count) || 1));
+            if (ev.type === 'yellowRed') {
+              cardEntry.yellow = Math.max(0, cardEntry.yellow - 2);
+              cardEntry.red = Math.max(0, cardEntry.red - 1);
+            }
+            if (ev.type === 'red') cardEntry.red = Math.max(0, cardEntry.red - (parseInt(ev.count) || 1));
           }
         }
       });
       stats.topScorers = stats.topScorers.filter(s => s.goals > 0);
-      stats.cards = stats.cards.filter(c => (c.yellow > 0 || c.yellowRed > 0 || c.red > 0));
+      stats.cards = stats.cards.filter(c => (c.yellow > 0 || c.red > 0));
     }
   },
 
