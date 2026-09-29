@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560000900';
-import { showToast } from './admin.js?v=1790560000900';
+import { Store } from '../store.js?v=1790560001200';
+import { showToast } from './admin.js?v=1790560001200';
 
 let roundsData = [];
 let leaguesData = [];
@@ -10,7 +10,6 @@ const rowsPerPage = 15;
 let currentSort = { column: 'id', asc: false };
 
 let editingRoundId = null;
-let preselectedRoundForMatch = null;
 
 export const renderAdminRounds = () => {
     return `
@@ -130,59 +129,20 @@ export const renderAdminRounds = () => {
             </div>
         </div>
 
-        <!-- Modal 2: Spiel hinzufügen -->
-        <div id="add-game-modal" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; height: 100dvh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 16px; margin: 0;">
-            <div class="glass-card modal-content" style="width: 100%; max-width: 650px; max-height: 90vh; max-height: 90dvh; overflow-y: auto; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.3); margin: auto;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm);">
-                    <h3 style="margin: 0; font-size: 1.3rem; color: var(--color-text-primary);">Spiel hinzufügen</h3>
-                    <button type="button" class="btn-close-game-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
+        <!-- Modal 2: Spiele der Runde ansehen -->
+        <div id="round-games-modal" style="display:none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; height: 100dvh; box-sizing: border-box; background: rgba(0,0,0,0.65); z-index: 99999; justify-content: center; align-items: center; padding: 16px; margin: 0;">
+            <div class="glass-card modal-content" style="width: 100%; max-width: 720px; max-height: 90vh; max-height: 90dvh; overflow-y: auto; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.3); margin: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-sm); gap: 12px;">
+                    <div>
+                        <h3 id="round-games-modal-title" style="margin: 0; font-size: 1.3rem; color: var(--color-text-primary);">Spiele der Runde</h3>
+                        <p id="round-games-modal-subtitle" style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--color-text-secondary);"></p>
+                    </div>
+                    <button type="button" class="btn-close-round-games-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer; flex-shrink: 0;">Schließen</button>
                 </div>
                 
-                <form id="game-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
-                    <div>
-                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Datum & Uhrzeit</label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm);">
-                            <input type="date" id="modal-game-date" class="admin-input" required>
-                            <input type="time" id="modal-game-time" class="admin-input" value="18:00" required>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Ort</label>
-                        <input type="text" id="modal-game-location" class="admin-input" value="DSG-Platz" placeholder="z.B. Sportplatz Traun, DSG-Platz" style="width: 100%;" required>
-                    </div>
-
-                    <div>
-                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Runde</label>
-                        <select id="modal-game-round" class="admin-input" style="width: 100%;" required>
-                            <!-- Populated with active rounds -->
-                        </select>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
-                        <div>
-                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Heimmannschaft</label>
-                            <select id="modal-game-home" class="admin-input" style="width: 100%;" required>
-                                <option value="">-- Team wählen --</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Auswärtsmannschaft</label>
-                            <select id="modal-game-away" class="admin-input" style="width: 100%;" required>
-                                <option value="">-- Team wählen --</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Sonstiges</label>
-                        <input type="text" id="modal-game-note" class="admin-input" placeholder="Sonstiges (optional)..." style="width: 100%;">
-                    </div>
-
-                    <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
-                        <button type="submit" class="primary-btn" style="flex: 1; padding: 10px; font-weight: 700; background: var(--color-accent); color: #fff; border: none; border-radius: 4px; cursor: pointer;">Erstellen</button>
-                    </div>
-                </form>
+                <div id="round-games-list-container">
+                    <!-- Populated dynamically -->
+                </div>
             </div>
         </div>
     </div>
@@ -316,9 +276,9 @@ const renderTable = () => {
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                             Löschen
                         </button>
-                        <button class="btn-add-game-to-round" data-idx="${rawIndex}" ${!isActive ? 'disabled style="opacity: 0.5; cursor: not-allowed; background: #6c757d; color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"' : 'style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;"'}>
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                            Spiel anlegen
+                        <button class="btn-view-round-games" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            Spiele ansehen
                         </button>
                     </div>
                 </td>
@@ -361,9 +321,9 @@ const renderTable = () => {
                                 </div>
                             </div>
                             <div class="admin-m-actions">
-                                <button class="btn-add-game-to-round full-width" data-idx="${rawIndex}" ${!isActive ? 'disabled style="opacity: 0.5; cursor: not-allowed; background: #6c757d; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;"' : 'style="background: var(--color-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;"'}>
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                                    Spiel anlegen
+                                <button class="btn-view-round-games full-width" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                    Spiele ansehen
                                 </button>
                                 <button class="btn-edit-round" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
@@ -408,14 +368,11 @@ const renderTable = () => {
             };
         });
 
-        container.querySelectorAll('.btn-add-game-to-round').forEach(btn => {
+        container.querySelectorAll('.btn-view-round-games').forEach(btn => {
             btn.onclick = (e) => {
                 e.stopPropagation();
                 const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-                const round = roundsData[idx];
-                if (round) {
-                    openAddGameModal(round);
-                }
+                openViewRoundGamesModal(idx);
             };
         });
     }
@@ -450,7 +407,7 @@ const populateLeaguesDropdowns = () => {
 };
 
 const ensureModalsInBody = () => {
-    ['round-modal', 'add-game-modal'].forEach(id => {
+    ['round-modal', 'round-games-modal'].forEach(id => {
         const allMatching = Array.from(document.querySelectorAll('#' + id));
         if (allMatching.length > 1) {
             const freshModal = allMatching.find(el => el.parentElement !== document.body) || allMatching[allMatching.length - 1];
@@ -528,107 +485,117 @@ const closeRoundModal = () => {
     editingRoundId = null;
 };
 
-const openAddGameModal = (round = null) => {
+const openViewRoundGamesModal = (idx) => {
     ensureModalsInBody();
-    const modal = document.getElementById('add-game-modal');
-    if (!modal) return;
+    const modal = document.getElementById('round-games-modal');
+    const titleEl = document.getElementById('round-games-modal-title');
+    const subTitleEl = document.getElementById('round-games-modal-subtitle');
+    const listContainer = document.getElementById('round-games-list-container');
+    if (!modal || !listContainer) return;
 
-    preselectedRoundForMatch = round;
+    const round = roundsData[idx];
+    if (!round) return;
 
-    const homeSelect = document.getElementById('modal-game-home');
-    const awaySelect = document.getElementById('modal-game-away');
-    const roundSelect = document.getElementById('modal-game-round');
-
-    // Determine selectable rounds (all active leagues' rounds, or all rounds if empty)
-    const isRoundActive = (r) => {
-        if (!r) return false;
-        if (r.seasonKey === '2026/2027') return true;
-        if (r.liga && (r.liga.includes('26/27') || r.liga.includes('2026/2027'))) return true;
-        const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
-        return activeLeagues.some(l => 
-            (l.seasonKey && l.seasonKey === r.seasonKey) || 
-            (l.name && r.liga && r.liga.toLowerCase().includes(l.name.toLowerCase()))
-        );
-    };
-
-    let selectableRounds = (roundsData || []).filter(r => isRoundActive(r));
-    if (selectableRounds.length === 0) selectableRounds = [...(roundsData || [])];
-
-    // Ensure the specifically clicked round is in the list
-    if (round && !selectableRounds.some(r => String(r.id) === String(round.id) || (r.seasonKey === round.seasonKey && r.runde === round.runde && r.saison === round.saison))) {
-        selectableRounds.unshift(round);
+    if (titleEl) {
+        titleEl.innerText = `${round.runde ? round.runde + '. ' : ''}Runde — Spiele`;
+    }
+    if (subTitleEl) {
+        const dateRange = (round.datumVon || round.datumBis) ? ` • ${round.datumVon || ''} bis ${round.datumBis || ''}` : '';
+        subTitleEl.innerText = `${round.liga || 'DSG Liga'} (${round.saison || ''} ${round.jahr || ''})${dateRange}`;
     }
 
-    if (roundSelect) {
-        roundSelect.innerHTML = selectableRounds.map(r => {
-            const isSelected = round && (String(round.id) === String(r.id) || (round.seasonKey === r.seasonKey && String(round.runde) === String(r.runde) && round.saison === r.saison));
-            const roundLabel = `${r.liga ? r.liga + ' ' : ''}${r.saison || ''} ${r.jahr || ''} Runde ${r.runde}`.trim();
-            const val = `${r.runde}. Runde`;
-            return `
-                <option value="${val}" data-round-id="${r.id || ''}" data-season-key="${r.seasonKey || ''}" data-liga="${r.liga || ''}" ${isSelected ? 'selected' : ''}>
-                    ${roundLabel}
-                </option>
-            `;
-        }).join('');
+    const targetSeasonKey = round.seasonKey || '2026/2027';
+    let allSeasonMatches = Store.getMatches(targetSeasonKey) || [];
+
+    // Fallback: If no matches in targetSeasonKey, search across all seasons
+    if (allSeasonMatches.length === 0) {
+        const fullData = Store.getData();
+        if (fullData && fullData.seasons) {
+            for (let sKey in fullData.seasons) {
+                if (fullData.seasons[sKey]?.matches) {
+                    allSeasonMatches = allSeasonMatches.concat(fullData.seasons[sKey].matches);
+                }
+            }
+        }
     }
 
-    // Dynamic team population based on selected round's league
-    const updateTeamsForSelectedRound = () => {
-        const selectedOpt = roundSelect?.selectedOptions[0];
-        const sKey = selectedOpt?.getAttribute('data-season-key') || round?.seasonKey || '2026/2027';
-        
-        const seasonTeams = Store.getLiga(sKey);
-        let teamsToDisplay = [];
-        if (seasonTeams && seasonTeams.length > 0) {
-            teamsToDisplay = seasonTeams.map(t => ({ name: t.name }));
-        } else {
-            teamsToDisplay = (teamsData || []).filter(t => t.Status === 'Aktiv' || t.status === 'Aktiv');
-        }
-        if (teamsToDisplay.length === 0) {
-            teamsToDisplay = teamsData || [];
-        }
+    const roundNumStr = String(round.runde || '').trim();
+    const roundMatches = allSeasonMatches.filter(m => {
+        if (!m) return false;
+        const mRound = String(m.round || m.roundNr || '').trim();
+        if (!mRound) return false;
+        return mRound === `${roundNumStr}. Runde` || 
+               mRound === `Runde ${roundNumStr}` || 
+               mRound === roundNumStr ||
+               mRound.startsWith(`${roundNumStr}.`) ||
+               mRound.includes(`Runde ${roundNumStr}`);
+    });
 
-        const teamOptions = '<option value="">-- Team wählen --</option>' + 
-            teamsToDisplay.map(t => `<option value="${t.Name || t.name}">${t.Name || t.name}</option>`).join('');
-
-        if (homeSelect) {
-            const prevHome = homeSelect.value;
-            homeSelect.innerHTML = teamOptions;
-            if (prevHome) homeSelect.value = prevHome;
-        }
-        if (awaySelect) {
-            const prevAway = awaySelect.value;
-            awaySelect.innerHTML = teamOptions;
-            if (prevAway) awaySelect.value = prevAway;
-        }
-    };
-
-    if (roundSelect) {
-        roundSelect.onchange = updateTeamsForSelectedRound;
-    }
-    updateTeamsForSelectedRound();
-
-    // Prefill date with round's datumVon
-    if (round && round.datumVon) {
-        document.getElementById('modal-game-date').value = round.datumVon;
+    if (roundMatches.length === 0) {
+        listContainer.innerHTML = `
+            <div style="text-align: center; padding: 2.5rem 1rem; color: var(--color-text-secondary);">
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.45; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; color: var(--color-text-primary);">Keine Spiele eingetragen</div>
+                <p style="font-size: 0.88rem; margin: 0; max-width: 380px; margin-left: auto; margin-right: auto; line-height: 1.45; color: var(--color-text-secondary);">
+                    Für diese Spielrunde sind noch keine Spiele hinterlegt. Neue Spiele können im Tab <strong>„Spiele“</strong> angelegt werden.
+                </p>
+            </div>
+        `;
     } else {
-        document.getElementById('modal-game-date').value = new Date().toISOString().split('T')[0];
-    }
+        listContainer.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+                ${roundMatches.map(m => {
+                    const isFinished = m.status === 'Beendet' || m.status === 'Played' || m.status === 'Gespielt';
+                    let statusBadge = '<span class="badge badge-secondary" style="font-size: 0.72rem;">Ausstehend</span>';
+                    if (isFinished) {
+                        statusBadge = '<span class="badge badge-success" style="font-size: 0.72rem;">Beendet</span>';
+                    } else if (m.status && m.status.includes('Abgesagt')) {
+                        statusBadge = `<span class="badge badge-danger" style="font-size: 0.72rem; background: #dc3545; color: #fff;">${m.status}</span>`;
+                    } else if (m.status && m.status.includes('Verschoben')) {
+                        statusBadge = '<span class="badge badge-warning" style="font-size: 0.72rem; background: #ffc107; color: #000;">Verschoben</span>';
+                    }
 
-    document.getElementById('modal-game-time').value = '18:00';
-    document.getElementById('modal-game-location').value = 'DSG-Platz';
-    document.getElementById('modal-game-note').value = '';
+                    return `
+                        <div class="glass-card" style="padding: 14px 18px; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); display: flex; flex-direction: column; gap: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 6px;">
+                                <div style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--color-text-secondary);">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <span>${m.date || '-'} • ${m.time || '-'}</span>
+                                </div>
+                                <div>${statusBadge}</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 0;">
+                                <div style="flex: 1; text-align: right; font-weight: 700; font-size: 0.92rem; color: var(--color-text-primary); word-break: break-word;">${m.home || 'Heim'}</div>
+                                <div style="text-align: center; font-weight: 800; font-size: 1.1rem; color: var(--color-accent); background: rgba(0,150,64,0.08); padding: 4px 12px; border-radius: 6px; min-width: 60px; flex-shrink: 0;">${m.score || '-:-'}</div>
+                                <div style="flex: 1; text-align: left; font-weight: 700; font-size: 0.92rem; color: var(--color-text-primary); word-break: break-word;">${m.away || 'Gast'}</div>
+                            </div>
+                            ${m.location ? `
+                                <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 2px;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <span>${m.location}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
 
     modal.style.display = 'flex';
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
     if (content) content.scrollTop = 0;
 };
 
-const closeAddGameModal = () => {
-    document.querySelectorAll('#add-game-modal').forEach(m => {
+const closeRoundGamesModal = () => {
+    document.querySelectorAll('#round-games-modal').forEach(m => {
         m.style.display = 'none';
     });
-    preselectedRoundForMatch = null;
 };
 
 const deleteRound = (idx) => {
@@ -679,8 +646,8 @@ export const initAdminRounds = async () => {
         btn.onclick = closeRoundModal;
     });
 
-    document.querySelectorAll('.btn-close-game-modal').forEach(btn => {
-        btn.onclick = closeAddGameModal;
+    document.querySelectorAll('.btn-close-round-games-modal').forEach(btn => {
+        btn.onclick = closeRoundGamesModal;
     });
 
     const searchInput = document.getElementById('round-search');
@@ -715,10 +682,10 @@ export const initAdminRounds = async () => {
         };
     }
 
-    const addGameModal = document.getElementById('add-game-modal');
-    if (addGameModal) {
-        addGameModal.onclick = (e) => {
-            if (e.target === addGameModal) closeAddGameModal();
+    const roundGamesModal = document.getElementById('round-games-modal');
+    if (roundGamesModal) {
+        roundGamesModal.onclick = (e) => {
+            if (e.target === roundGamesModal) closeRoundGamesModal();
         };
     }
 
@@ -812,70 +779,6 @@ export const initAdminRounds = async () => {
             closeRoundModal();
             renderTable();
             showToast(wasEditing ? 'Spielrunde erfolgreich aktualisiert!' : 'Spielrunde erfolgreich erstellt!');
-        };
-    }
-
-    // Add Game Form Submit
-    const gameForm = document.getElementById('game-form');
-    if (gameForm) {
-        gameForm.onsubmit = (e) => {
-            e.preventDefault();
-
-            const date = document.getElementById('modal-game-date').value;
-            const time = document.getElementById('modal-game-time').value;
-            const location = document.getElementById('modal-game-location').value;
-            const round = document.getElementById('modal-game-round').value;
-            const home = document.getElementById('modal-game-home').value;
-            const away = document.getElementById('modal-game-away').value;
-            const note = document.getElementById('modal-game-note').value;
-
-            if (!home || !away) {
-                showToast('Bitte wählen Sie sowohl ein Heim- als auch ein Auswärtsteam aus.', true);
-                return;
-            }
-
-            if (home === away) {
-                showToast('Heim- und Auswärtsteam dürfen nicht identisch sein.', true);
-                return;
-            }
-
-            const newMatch = {
-                id: `game_${Date.now()}`,
-                round: round,
-                date: date,
-                time: time,
-                location: location,
-                home: home,
-                away: away,
-                score: "-:-",
-                ht: "",
-                status: "Upcoming",
-                note: note || '',
-                events: [],
-                scorers: [],
-                cards: []
-            };
-
-            const selectedOpt = document.getElementById('modal-game-round')?.selectedOptions[0];
-            const roundId = selectedOpt?.getAttribute('data-round-id');
-            let targetSeasonKey = selectedOpt?.getAttribute('data-season-key');
-
-            if (!targetSeasonKey && preselectedRoundForMatch) {
-                targetSeasonKey = preselectedRoundForMatch.seasonKey;
-            }
-            if (!targetSeasonKey && roundId) {
-                const foundRound = roundsData.find(r => String(r.id) === String(roundId));
-                targetSeasonKey = foundRound?.seasonKey;
-            }
-            if (!targetSeasonKey) {
-                targetSeasonKey = '2026/2027';
-            }
-
-            Store.saveMatch(targetSeasonKey, newMatch);
-            Store.recalculateSeason(targetSeasonKey);
-
-            closeAddGameModal();
-            showToast(`Spiel erfolgreich angelegt: ${home} vs. ${away}`);
         };
     }
 };

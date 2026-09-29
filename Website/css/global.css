@@ -2704,7 +2704,7 @@ main {
 /* ============================================================
    UNIVERSAL RESPONSIVE MODAL & ADMIN STYLES
    ============================================================ */
-#game-modal, #report-modal, #round-modal, #player-modal, #team-modal, #league-modal, #add-game-modal, #league-data-modal {
+#game-modal, #report-modal, #round-modal, #player-modal, #team-modal, #league-modal, #add-game-modal, #round-games-modal, #league-data-modal {
     position: fixed !important;
     inset: 0 !important;
     top: 0 !important;
@@ -2723,7 +2723,7 @@ main {
     margin: 0 !important;
 }
 
-.modal-content, #game-modal > .glass-card, #report-modal > .glass-card, #round-modal > .glass-card, #player-modal > .glass-card, #team-modal > .glass-card, #league-modal > .glass-card, #add-game-modal > .glass-card, #league-data-modal > div {
+.modal-content, #game-modal > .glass-card, #report-modal > .glass-card, #round-modal > .glass-card, #player-modal > .glass-card, #team-modal > .glass-card, #league-modal > .glass-card, #add-game-modal > .glass-card, #round-games-modal > .glass-card, #league-data-modal > div {
     position: relative !important;
     z-index: 10 !important;
     box-sizing: border-box !important;
@@ -2744,16 +2744,16 @@ main {
     box-shadow: 0 16px 48px rgba(0,0,0,0.35) !important;
 }
 
-#report-modal > .glass-card, #league-data-modal > div {
+#report-modal > .glass-card, #round-games-modal > .glass-card, #league-data-modal > div {
     max-width: min(900px, calc(100vw - 20px)) !important;
 }
 
 @media (max-width: 768px) {
-    #game-modal, #report-modal, #round-modal, #player-modal, #team-modal, #league-modal, #add-game-modal, #league-data-modal {
+    #game-modal, #report-modal, #round-modal, #player-modal, #team-modal, #league-modal, #add-game-modal, #round-games-modal, #league-data-modal {
         padding: 12px !important;
     }
 
-    .modal-content, #game-modal > .glass-card, #report-modal > .glass-card, #round-modal > .glass-card, #player-modal > .glass-card, #team-modal > .glass-card, #league-modal > .glass-card, #add-game-modal > .glass-card {
+    .modal-content, #game-modal > .glass-card, #report-modal > .glass-card, #round-modal > .glass-card, #player-modal > .glass-card, #team-modal > .glass-card, #league-modal > .glass-card, #add-game-modal > .glass-card, #round-games-modal > .glass-card {
         padding: var(--space-md) !important;
         border-radius: var(--border-radius-sm) !important;
         max-height: 92vh !important;

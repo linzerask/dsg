@@ -196,3 +196,33 @@ DSG Liga/
   2. **Preserve `seasonKey` on Edit:** When editing an existing league in `adminLeagues.js`, always preserve `existingLeague.seasonKey` so that updating names or status never alters the underlying dataset key.
   3. **Multi-Strategy Fallback Lookup:** `renderModalContent()` in `adminLeagues.js` must resolve season data using: (1) exact `seasonKey`, (2) computed key via `getSeasonKey()`, (3) year string matching, and (4) 4-digit prefix matching before falling back to empty state.
   4. **Auto-Healing in `Store.init()`:** `Store.init()` must always verify that canonical seasons in `INITIAL_DATA.seasons` exist and are populated with their teams and matches in memory data, preventing stale empty local storage keys from masking the database.
+
+---
+
+## 17. Dynamic Round Dropdown & Season Key Match Resolution
+* **The Pitfall:** When creating a match from a specific round row in `adminRounds.js` (`+ Spiel anlegen`), filtering round options with a hardcoded season check (e.g. `r.seasonKey === '2026/2027'`) causes rounds from newly created leagues or other seasons to disappear from the dropdown, falling back to an unrelated round and saving the match to the wrong season key.
+* **The Rule:**
+  1. **Dynamic Round Ingestion:** `openAddGameModal()` in `adminRounds.js` must populate all active rounds and always guarantee that the round passed as context is included and preselected in `#modal-game-round`.
+  2. **Dynamic Team Loading:** Selecting a round in `#modal-game-round` must instantly update the team selection options (`#modal-game-home`, `#modal-game-away`) to reflect the teams belonging to that round's specific league.
+  3. **Dynamic Season Key Routing:** Matches created via both `adminRounds.js` and `adminGames.js` must read the target season key from the selected round (`data-season-key`) and save/recalculate via `Store.saveMatch(targetSeasonKey, match)` and `Store.recalculateSeason(targetSeasonKey)`.
+
+---
+
+## 18. Multi-League Dashboard Aggregation & Dynamic Match Management
+* **The Pitfall:** In `adminGames.js`, hardcoding the match loader to `gamesData = Store.getMatches('2026/2027')` caused matches created in newly added leagues (e.g. `TEST LIGA 2030/2031`) to only appear on the public frontend while remaining completely invisible and un-editable in the admin Spiele dashboard.
+* **The Rule:**
+  1. **All-Season Aggregation:** `adminGames.js` (`loadDataAndRender`) must iterate through all active/existing seasons in `Store.getData().seasons` and aggregate all matches into `gamesData`, attaching `seasonKey` to each match item.
+  2. **League Filter Dropdown:** `renderAdminGames()` and `populateFilterAndFormDropdowns()` must provide a `#game-league-filter` dropdown containing `Alle Ligen` and all configured leagues, preserving the user's selected league filter on re-renders.
+  3. **Multi-League CRUD & Match Reports:** Editing, deleting, and filing match reports in `adminGames.js` (`openEditGameModal`, `deleteGame`, `openReportModal`, `saveReportForm`) must always read and write directly to `match.seasonKey`, ensuring instant recalculations and real-time state synchronization across both dashboard and website.
+
+---
+
+## 19. Dedicated Round Inspection Modal in Spielrunden
+* **The Architectural Decision:** Match creation is unified exclusively in the **Spiele** tab (`adminGames.js`), eliminating duplicate forms and divergent state. On the **Spielrunden** tab (`adminRounds.js`), each round row and mobile accordion card provides a **`Spiele ansehen`** action button with an inline eye SVG icon.
+* **The Rule:**
+  1. **Dynamic Round Match Resolution:** Clicking `Spiele ansehen` opens `#round-games-modal`, resolving matches from `Store.getMatches(round.seasonKey)` (with cross-season fallback) filtered by round number (`${round.runde}. Runde`, `Runde ${round.runde}`, etc.).
+  2. **Clean Status Badges & Scores:** Displays match date, kickoff time, status badges (`Beendet`, `Ausstehend`, `Abgesagt`, `Verschoben`), score pill, home and away clubs with responsive mobile flex layouts, and match location.
+  3. **Empty State:** If no games are registered for that round, renders a clean SVG calendar empty state advising that matches can be scheduled in the **Spiele** tab.
+
+
+

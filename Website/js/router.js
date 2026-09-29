@@ -1,14 +1,14 @@
-import { viewHome, bindHome } from './views/home.js?v=1790560001100';
-import { viewNews, bindNews } from './views/news.js?v=1790560001100';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560001100';
-import { viewArchiv } from './views/simpleViews.js?v=1790560001100';
-import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560001100';
-import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560001100';
-import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560001100';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560001100';
-import { viewArticle, bindArticle } from './views/article.js?v=1790560001100';
-import { viewImpressum } from './views/impressum.js?v=1790560001100';
-import { viewDatenschutz } from './views/datenschutz.js?v=1790560001100';
+import { viewHome, bindHome } from './views/home.js?v=1790560001200';
+import { viewNews, bindNews } from './views/news.js?v=1790560001200';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560001200';
+import { viewArchiv } from './views/simpleViews.js?v=1790560001200';
+import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560001200';
+import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560001200';
+import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560001200';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560001200';
+import { viewArticle, bindArticle } from './views/article.js?v=1790560001200';
+import { viewImpressum } from './views/impressum.js?v=1790560001200';
+import { viewDatenschutz } from './views/datenschutz.js?v=1790560001200';
 
 const routes = {
   '/': { render: () => viewHome(), bind: () => bindHome() },
@@ -115,7 +115,7 @@ export const Router = {
       
       // Clean up any detached admin modals on body when leaving admin
       if (path !== '/admin') {
-        document.querySelectorAll('#player-modal, #team-modal, #round-modal, #add-game-modal, #league-modal, #league-data-modal, #game-modal, #report-modal').forEach(m => m.remove());
+        document.querySelectorAll('#player-modal, #team-modal, #round-modal, #add-game-modal, #round-games-modal, #league-modal, #league-data-modal, #game-modal, #report-modal').forEach(m => m.remove());
       }
 
       // Update nav active state
