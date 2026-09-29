@@ -1,4 +1,5 @@
-import { Store } from '../store.js?v=1790560000600';
+import { Store } from '../store.js?v=1790560000800';
+import { showToast } from './admin.js?v=1790560000800';
 
 let playersData = [];
 let teamsData = [];
@@ -164,6 +165,14 @@ export const renderAdminPlayers = () => {
 };
 
 const ensureModalInBody = () => {
+    const allMatching = Array.from(document.querySelectorAll('#player-modal'));
+    if (allMatching.length > 1) {
+        const bodyModal = allMatching.find(el => el.parentElement === document.body);
+        if (bodyModal) {
+            allMatching.filter(el => el !== bodyModal).forEach(el => el.remove());
+            return bodyModal;
+        }
+    }
     const modal = document.getElementById('player-modal');
     if (modal && modal.parentElement !== document.body) {
         document.body.appendChild(modal);
@@ -420,8 +429,9 @@ const openEditModal = (idx = null) => {
 };
 
 const closeEditModal = () => {
-    const modal = document.getElementById('player-modal');
-    if (modal) modal.style.display = 'none';
+    document.querySelectorAll('#player-modal').forEach(m => {
+        m.style.display = 'none';
+    });
 };
 
 const applyFilters = () => {
@@ -587,6 +597,7 @@ const bindEvents = () => {
                     Store.saveAdminPlayers(playersData);
                     closeEditModal();
                     applyFilters();
+                    showToast('Spieler gelöscht.');
                 }
             }
         };
@@ -596,9 +607,21 @@ const bindEvents = () => {
         form.onsubmit = (e) => {
             e.preventDefault();
             const idVal = document.getElementById('edit-player-id').value;
+            const vornameInput = document.getElementById('edit-vorname');
+            const nachnameInput = document.getElementById('edit-nachname');
+            const vorname = vornameInput ? vornameInput.value.trim() : '';
+            const nachname = nachnameInput ? nachnameInput.value.trim() : '';
+
+            if (!vorname || !nachname) {
+                showToast('Bitte Vorname und Nachname eingeben!', true);
+                if (!vorname && vornameInput) vornameInput.focus();
+                else if (!nachname && nachnameInput) nachnameInput.focus();
+                return;
+            }
+
             const updatedPlayer = {
-                Vorname: document.getElementById('edit-vorname').value.trim(),
-                Nachname: document.getElementById('edit-nachname').value.trim(),
+                Vorname: vorname,
+                Nachname: nachname,
                 Geburtsdatum: document.getElementById('edit-geburt').value,
                 Mitglied: document.getElementById('edit-mitglied').value,
                 seit: document.getElementById('edit-seit').value || new Date().toISOString().split('T')[0],
@@ -608,7 +631,8 @@ const bindEvents = () => {
                 Team: document.getElementById('edit-team').value
             };
 
-            if (idVal === 'new') {
+            const isNew = (idVal === 'new');
+            if (isNew) {
                 // Generate next sequential numeric ID
                 const validIds = playersData
                     .map(p => parseInt(p['#']) || 0)
@@ -625,6 +649,7 @@ const bindEvents = () => {
             closeEditModal();
             populateFilterTeamDropdown();
             applyFilters();
+            showToast(isNew ? 'Spieler erfolgreich erstellt!' : 'Spieler erfolgreich aktualisiert!');
         };
     }
 

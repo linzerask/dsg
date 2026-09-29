@@ -1,4 +1,5 @@
-import { Store } from '../store.js?v=1790560000700';
+import { Store } from '../store.js?v=1790560000800';
+import { showToast } from './admin.js?v=1790560000800';
 
 let roundsData = [];
 let leaguesData = [];
@@ -444,14 +445,21 @@ const populateLeaguesDropdowns = () => {
 };
 
 const ensureModalsInBody = () => {
-    const roundModal = document.getElementById('round-modal');
-    if (roundModal && roundModal.parentElement !== document.body) {
-        document.body.appendChild(roundModal);
-    }
-    const addGameModal = document.getElementById('add-game-modal');
-    if (addGameModal && addGameModal.parentElement !== document.body) {
-        document.body.appendChild(addGameModal);
-    }
+    ['round-modal', 'add-game-modal'].forEach(id => {
+        const allMatching = Array.from(document.querySelectorAll('#' + id));
+        if (allMatching.length > 1) {
+            const freshModal = allMatching.find(el => el.parentElement !== document.body) || allMatching[allMatching.length - 1];
+            allMatching.filter(el => el !== freshModal).forEach(el => el.remove());
+            if (freshModal && freshModal.parentElement !== document.body) {
+                document.body.appendChild(freshModal);
+            }
+        } else if (allMatching.length === 1) {
+            const el = allMatching[0];
+            if (el.parentElement !== document.body) {
+                document.body.appendChild(el);
+            }
+        }
+    });
 };
 
 const openEditRoundModal = (idx = null) => {
@@ -509,8 +517,9 @@ const openEditRoundModal = (idx = null) => {
 };
 
 const closeRoundModal = () => {
-    const modal = document.getElementById('round-modal');
-    if (modal) modal.style.display = 'none';
+    document.querySelectorAll('#round-modal').forEach(m => {
+        m.style.display = 'none';
+    });
     editingRoundId = null;
 };
 
@@ -564,8 +573,9 @@ const openAddGameModal = (round = null) => {
 };
 
 const closeAddGameModal = () => {
-    const modal = document.getElementById('add-game-modal');
-    if (modal) modal.style.display = 'none';
+    document.querySelectorAll('#add-game-modal').forEach(m => {
+        m.style.display = 'none';
+    });
     preselectedRoundForMatch = null;
 };
 
@@ -578,6 +588,7 @@ const deleteRound = (idx) => {
         roundsData = roundsData.filter(item => (roundId !== undefined && roundId !== null ? String(item.id) !== String(roundId) : item !== r));
         Store.saveAdminRounds(roundsData);
         renderTable();
+        showToast('Spielrunde gelöscht.');
     }
 };
 
@@ -745,9 +756,11 @@ export const initAdminRounds = async () => {
                 });
             }
 
+            const wasEditing = (editingRoundId !== null && editingRoundId !== undefined);
             Store.saveAdminRounds(roundsData);
             closeRoundModal();
             renderTable();
+            showToast(wasEditing ? 'Spielrunde erfolgreich aktualisiert!' : 'Spielrunde erfolgreich erstellt!');
         };
     }
 
@@ -766,12 +779,12 @@ export const initAdminRounds = async () => {
             const note = document.getElementById('modal-game-note').value;
 
             if (!home || !away) {
-                alert('Bitte wählen Sie sowohl ein Heim- als auch ein Auswärtsteam aus.');
+                showToast('Bitte wählen Sie sowohl ein Heim- als auch ein Auswärtsteam aus.', true);
                 return;
             }
 
             if (home === away) {
-                alert('Heim- und Auswärtsteam dürfen nicht identisch sein.');
+                showToast('Heim- und Auswärtsteam dürfen nicht identisch sein.', true);
                 return;
             }
 
@@ -795,8 +808,8 @@ export const initAdminRounds = async () => {
             const activeSeasonKey = '2026/2027';
             Store.saveMatch(activeSeasonKey, newMatch);
 
-            alert(`Spiel erfolgreich angelegt:\n${home} vs. ${away} (${round})`);
             closeAddGameModal();
+            showToast(`Spiel erfolgreich angelegt: ${home} vs. ${away}`);
         };
     }
 };

@@ -26737,6 +26737,65 @@ export const Store = {
     this.saveData(data);
   },
 
+  ensureLeagueSeason(league) {
+    if (!league) return;
+    const data = this.getData();
+    if (!data.seasons) data.seasons = {};
+    const sKey = league.seasonKey || league.name || '2026/2027';
+    if (!data.seasons[sKey]) {
+      data.seasons[sKey] = {
+        name: league.name || sKey,
+        year: league.year || 2026,
+        teams: [],
+        matches: [],
+        scorers: [],
+        cards: []
+      };
+      this.saveData(data);
+    }
+  },
+
+  setLeagueSeasonTeams(seasonKey, teamNames) {
+    if (!seasonKey) return;
+    const data = this.getData();
+    if (!data.seasons) data.seasons = {};
+    if (!data.seasons[seasonKey]) {
+      data.seasons[seasonKey] = {
+        name: seasonKey,
+        teams: [],
+        matches: [],
+        scorers: [],
+        cards: []
+      };
+    }
+    const currentTeams = data.seasons[seasonKey].teams || [];
+    const teamMap = new Map();
+    currentTeams.forEach(t => {
+      if (t && t.name) teamMap.set(t.name.trim().toLowerCase(), t);
+    });
+
+    data.seasons[seasonKey].teams = (teamNames || []).map((name, idx) => {
+      const existing = teamMap.get(name.trim().toLowerCase());
+      if (existing) {
+        return { ...existing, rank: idx + 1 };
+      }
+      return {
+        rank: idx + 1,
+        name: name,
+        played: 0,
+        won: 0,
+        draw: 0,
+        lost: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        goalDiff: 0,
+        diff: "0:0",
+        points: 0
+      };
+    });
+    this.saveData(data);
+  },
+
   getAdminRoundsSync(seasonName = null) {
     const local = loadLocal('dsg_admin_rounds', 12);
     if (local && Array.isArray(local) && local.length > 0) {

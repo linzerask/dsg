@@ -1,4 +1,5 @@
-import { Store } from '../store.js?v=1790560000600';
+import { Store } from '../store.js?v=1790560000800';
+import { showToast } from './admin.js?v=1790560000800';
 
 let teamsData = [];
 let filteredData = [];
@@ -112,6 +113,14 @@ export const renderAdminTeams = () => {
 };
 
 const ensureModalInBody = () => {
+    const allMatching = Array.from(document.querySelectorAll('#team-modal'));
+    if (allMatching.length > 1) {
+        const bodyModal = allMatching.find(el => el.parentElement === document.body);
+        if (bodyModal) {
+            allMatching.filter(el => el !== bodyModal).forEach(el => el.remove());
+            return bodyModal;
+        }
+    }
     const modal = document.getElementById('team-modal');
     if (modal && modal.parentElement !== document.body) {
         document.body.appendChild(modal);
@@ -310,8 +319,9 @@ const openEditModal = (idx = null) => {
 };
 
 const closeEditModal = () => {
-    const modal = document.getElementById('team-modal');
-    if (modal) modal.style.display = 'none';
+    document.querySelectorAll('#team-modal').forEach(m => {
+        m.style.display = 'none';
+    });
 };
 
 const applyFilters = () => {
@@ -419,6 +429,7 @@ const bindEvents = () => {
                     Store.saveAdminTeams(teamsData);
                     closeEditModal();
                     applyFilters();
+                    showToast('Mannschaft gelöscht.');
                 }
             }
         };
@@ -428,14 +439,24 @@ const bindEvents = () => {
         form.onsubmit = (e) => {
             e.preventDefault();
             const idVal = document.getElementById('edit-team-id').value;
+            const nameInput = document.getElementById('edit-team-name');
+            const nameVal = nameInput ? nameInput.value.trim() : '';
+
+            if (!nameVal) {
+                showToast('Bitte geben Sie einen Mannschaftsnamen ein!', true);
+                if (nameInput) nameInput.focus();
+                return;
+            }
+
             const updatedTeam = {
-                Name: document.getElementById('edit-team-name').value.trim(),
+                Name: nameVal,
                 "Aktiv seit": document.getElementById('edit-team-aktiv-seit').value,
                 "Inaktiv seit": document.getElementById('edit-team-inaktiv-seit').value,
                 Status: document.getElementById('edit-team-status').value
             };
 
-            if (idVal === 'new') {
+            const isNew = (idVal === 'new');
+            if (isNew) {
                 const validIds = teamsData
                     .map(t => parseInt(t.ID || t.id) || 0)
                     .filter(n => n > 0 && n < 100000);
@@ -453,6 +474,7 @@ const bindEvents = () => {
             Store.saveAdminTeams(teamsData);
             closeEditModal();
             applyFilters();
+            showToast(isNew ? 'Mannschaft erfolgreich erstellt!' : 'Mannschaft erfolgreich aktualisiert!');
         };
     }
 

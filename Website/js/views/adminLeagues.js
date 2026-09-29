@@ -1,4 +1,5 @@
-import { Store } from '../store.js?v=1790560000600';
+import { Store } from '../store.js?v=1790560000800';
+import { showToast } from './admin.js?v=1790560000800';
 
 let leaguesData = [];
 let filteredData = [];
@@ -181,14 +182,21 @@ export const renderAdminLeagues = () => {
 };
 
 const ensureModalsInBody = () => {
-    const leagueModal = document.getElementById('league-modal');
-    if (leagueModal && leagueModal.parentElement !== document.body) {
-        document.body.appendChild(leagueModal);
-    }
-    const leagueDataModal = document.getElementById('league-data-modal');
-    if (leagueDataModal && leagueDataModal.parentElement !== document.body) {
-        document.body.appendChild(leagueDataModal);
-    }
+    ['league-modal', 'league-data-modal'].forEach(id => {
+        const allMatching = Array.from(document.querySelectorAll('#' + id));
+        if (allMatching.length > 1) {
+            const freshModal = allMatching.find(el => el.parentElement !== document.body) || allMatching[allMatching.length - 1];
+            allMatching.filter(el => el !== freshModal).forEach(el => el.remove());
+            if (freshModal && freshModal.parentElement !== document.body) {
+                document.body.appendChild(freshModal);
+            }
+        } else if (allMatching.length === 1) {
+            const el = allMatching[0];
+            if (el.parentElement !== document.body) {
+                document.body.appendChild(el);
+            }
+        }
+    });
 };
 
 export const initAdminLeagues = async () => {
@@ -871,11 +879,6 @@ const renderModalContent = () => {
     }
 };
 
-const closeLeagueDataModal = () => {
-    const modal = document.getElementById('league-data-modal');
-    if (modal) modal.style.display = 'none';
-};
-
 let assignedTeamNames = new Set();
 let cachedActiveTeams = [];
 
@@ -974,8 +977,16 @@ const openEditModal = async (idx = null) => {
 };
 
 const closeEditModal = () => {
-    const modal = document.getElementById('league-modal');
-    if (modal) modal.style.display = 'none';
+    document.querySelectorAll('#league-modal').forEach(m => {
+        m.style.display = 'none';
+    });
+};
+
+const closeLeagueDataModal = () => {
+    document.querySelectorAll('#league-data-modal').forEach(m => {
+        m.style.display = 'none';
+    });
+    selectedLeague = null;
 };
 
 const applyFilters = () => {
@@ -1144,6 +1155,7 @@ const bindEvents = () => {
                     Store.deleteLeagueSeason(deletedLeague);
                     closeEditModal();
                     applyFilters();
+                    showToast('Liga gelöscht.');
                 }
             }
         };
@@ -1153,10 +1165,26 @@ const bindEvents = () => {
         form.onsubmit = (e) => {
             e.preventDefault();
             const idVal = document.getElementById('edit-league-id').value;
+            const nameInput = document.getElementById('edit-league-name');
+            const yearInput = document.getElementById('edit-league-year');
+            const nameVal = nameInput ? nameInput.value.trim() : '';
+            const yearVal = yearInput ? parseInt(yearInput.value) : 0;
+
+            if (!nameVal) {
+                showToast('Bitte geben Sie einen Namen für die Liga ein!', true);
+                if (nameInput) nameInput.focus();
+                return;
+            }
+            if (!yearVal || isNaN(yearVal) || yearVal < 1900 || yearVal > 2100) {
+                showToast('Bitte geben Sie ein gültiges Jahr ein (z.B. 2026)!', true);
+                if (yearInput) yearInput.focus();
+                return;
+            }
+
             const existingLeague = (idVal !== 'new' && leaguesData[parseInt(idVal)]) ? leaguesData[parseInt(idVal)] : null;
             const updatedLeague = {
-                name: document.getElementById('edit-league-name').value.trim(),
-                year: parseInt(document.getElementById('edit-league-year').value) || new Date().getFullYear(),
+                name: nameVal,
+                year: yearVal,
                 status: document.getElementById('edit-league-status').value,
                 showOnHomepage: document.getElementById('edit-league-show-homepage').checked,
                 seasonKey: existingLeague?.seasonKey || undefined
@@ -1165,7 +1193,8 @@ const bindEvents = () => {
             const sKey = getSeasonKey(updatedLeague);
             updatedLeague.seasonKey = sKey;
 
-            if (idVal === 'new') {
+            const isNew = (idVal === 'new');
+            if (isNew) {
                 const validIds = leaguesData
                     .map(l => parseInt(l.id) || 0)
                     .filter(n => n > 0 && n < 100000);
@@ -1188,6 +1217,7 @@ const bindEvents = () => {
 
             closeEditModal();
             applyFilters();
+            showToast(isNew ? 'Liga erfolgreich erstellt!' : 'Liga erfolgreich aktualisiert!');
         };
     }
 

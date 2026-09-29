@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790560000700';
+import { Store } from '../store.js?v=1790560000800';
 
 
 let currentViewSeason = null;

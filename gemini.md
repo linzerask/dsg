@@ -173,4 +173,16 @@ DSG Liga/
   1. **Spieler Tab (`adminPlayers.js`):** Default sort order is set to **`Datum (neueste)` (`date-desc`)**, sorting by membership/registration date (`seit`) descending from newest to oldest, with `# ID` descending as the secondary tiebreaker.
   2. **Spiele Tab (`adminGames.js`):** Default sort order is set to **`Datum (älteste)` (`date-asc`)**, ordering matches chronologically.
 
+---
 
+## 14. Admin Spielrunden Lifecycle & Cache Synchronization
+* **The Pitfall:** Adding, editing, or deleting a round in `adminRounds.js` was getting overwritten on reload due to: (1) obsolete cleanup loops in `Store.init()` clearing active cache versions, (2) `Store.getAdminRounds()` fetching seed JSON before checking Firebase Firestore, (3) strict type equality (`===`) failing between number and string IDs in round updates, and (4) rounds needing scheduled matches to populate the public matchday sliders.
+---
+
+## 15. Admin Modal Form Submission, DOM Lifecycle, & Toast Feedback
+* **The Pitfall:** When modals are moved to `document.body` for viewport centering, re-rendering admin views can leave stale modal elements in `document.body`. If the cleanup logic incorrectly discards the newly rendered modal in favor of the stale body modal, form submit event listeners become disconnected, causing the modal to fail to close and feedback toasts to not trigger.
+* **The Rule:**
+  1. **Fresh Modal Promotion (`ensureAllAdminModalsInBody`):** Whenever ensuring modals in `document.body`, always search for the fresh modal in `#admin-content` (`el.parentElement !== document.body`), remove all older stale modal nodes from `document.body`, and append the fresh modal.
+  2. **Multi-Element Modal Closure:** Modal close functions (`closeEditModal`, `closeGameModal`, `closeReportModal`, `closeRoundModal`) must always query `document.querySelectorAll('#' + modalId).forEach(m => m.style.display = 'none')` to ensure all instances are dismissed.
+  3. **Toast Notifications:** All successful creations, edits, and deletions across all admin tabs (Ligen, Teams, Spieler, Spiele, Spielrunden) must trigger `showToast(message)` with crisp SVG icons.
+  4. **Form Validation Feedback:** Form submissions must validate required fields in JavaScript before saving and display error toasts (`showToast('Bitte füllen Sie...', true)`) to guide the user.

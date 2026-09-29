@@ -1,4 +1,5 @@
-import { Store } from '../store.js?v=1790560000700';
+import { Store } from '../store.js?v=1790560000800';
+import { showToast } from './admin.js?v=1790560000800';
 
 let gamesData = [];
 let roundsData = [];
@@ -662,14 +663,21 @@ const populateFilterAndFormDropdowns = () => {
 };
 
 const ensureModalsInBody = () => {
-    const gameModal = document.getElementById('game-modal');
-    if (gameModal && gameModal.parentElement !== document.body) {
-        document.body.appendChild(gameModal);
-    }
-    const reportModal = document.getElementById('report-modal');
-    if (reportModal && reportModal.parentElement !== document.body) {
-        document.body.appendChild(reportModal);
-    }
+    ['game-modal', 'report-modal'].forEach(id => {
+        const allMatching = Array.from(document.querySelectorAll('#' + id));
+        if (allMatching.length > 1) {
+            const freshModal = allMatching.find(el => el.parentElement !== document.body) || allMatching[allMatching.length - 1];
+            allMatching.filter(el => el !== freshModal).forEach(el => el.remove());
+            if (freshModal && freshModal.parentElement !== document.body) {
+                document.body.appendChild(freshModal);
+            }
+        } else if (allMatching.length === 1) {
+            const el = allMatching[0];
+            if (el.parentElement !== document.body) {
+                document.body.appendChild(el);
+            }
+        }
+    });
 };
 
 const openAddGameModal = () => {
@@ -756,8 +764,17 @@ const openEditGameModal = (idx) => {
 };
 
 const closeGameModal = () => {
-    const modal = document.getElementById('game-modal');
-    if (modal) modal.style.display = 'none';
+    document.querySelectorAll('#game-modal').forEach(m => {
+        m.style.display = 'none';
+    });
+    editingMatchId = null;
+};
+
+const closeReportModal = () => {
+    document.querySelectorAll('#report-modal').forEach(m => {
+        m.style.display = 'none';
+    });
+    currentReportMatch = null;
 };
 
 const deleteGame = (idx) => {
@@ -768,6 +785,7 @@ const deleteGame = (idx) => {
     if (confirm(`Möchten Sie das Spiel "${match.home} vs. ${match.away}" wirklich löschen?`)) {
         Store.deleteMatch('2026/2027', match.id);
         loadDataAndRender();
+        showToast('Spiel gelöscht.');
     }
 };
 
@@ -820,9 +838,11 @@ const saveGameForm = (e) => {
         events: existingMatch ? (existingMatch.events || []) : []
     };
 
+    const isEditing = (editingMatchId !== null);
     Store.saveMatch('2026/2027', matchData);
     closeGameModal();
     loadDataAndRender();
+    showToast(isEditing ? 'Spiel erfolgreich aktualisiert!' : 'Spiel erfolgreich erstellt!');
 };
 
 /* --- Spielbericht (Match Report) Logic --- */
@@ -921,12 +941,6 @@ const openReportModal = (idx) => {
     modal.style.display = 'flex';
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
     if (content) content.scrollTop = 0;
-};
-
-const closeReportModal = () => {
-    const modal = document.getElementById('report-modal');
-    if (modal) modal.style.display = 'none';
-    currentReportMatch = null;
 };
 
 const renderReportLists = () => {
@@ -1095,6 +1109,7 @@ const saveReportForm = (e) => {
     Store.saveMatch('2026/2027', updatedMatch);
     closeReportModal();
     loadDataAndRender();
+    showToast('Spielbericht erfolgreich gespeichert!');
 };
 
 const setupEventHandlers = () => {

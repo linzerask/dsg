@@ -2478,6 +2478,7 @@ main {
     opacity: 0;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
+    box-sizing: border-box;
 }
 .dsg-toast.show {
     transform: translateY(0);
@@ -2485,6 +2486,19 @@ main {
 }
 .dsg-toast.error {
     border-left-color: #ef4444;
+}
+@media (max-width: 768px) {
+    .dsg-toast {
+        left: 50% !important;
+        right: auto !important;
+        bottom: 24px !important;
+        transform: translate(-50%, 20px) !important;
+        max-width: calc(100vw - 32px) !important;
+        width: max-content !important;
+    }
+    .dsg-toast.show {
+        transform: translate(-50%, 0) !important;
+    }
 }
 
 /* DRAG & DROP MEDIA UPLOADER */
