@@ -224,5 +224,15 @@ DSG Liga/
   2. **Clean Status Badges & Scores:** Displays match date, kickoff time, status badges (`Beendet`, `Ausstehend`, `Abgesagt`, `Verschoben`), score pill, home and away clubs with responsive mobile flex layouts, and match location.
   3. **Empty State:** If no games are registered for that round, renders a clean SVG calendar empty state advising that matches can be scheduled in the **Spiele** tab.
 
+---
+
+## 20. GitHub Pages Deployment Protocol (Website Subtree Root)
+* **The Pitfall:** Pushing the full repository branch `main` directly to `gh-pages` places repository root files (like `README.md`, `scraper/`, `scripts/`) at the web root, causing GitHub Pages / Jekyll to serve the markdown documentation instead of the single-page application.
+* **The Rule:**
+  1. Always deploy to `gh-pages` using the **`Website` subdirectory subtree**:
+     `git subtree push --prefix Website origin gh-pages` or `git push origin $(git subtree split --prefix Website main):gh-pages --force`.
+  2. This ensures `Website/index.html` sits directly at `/` on `https://linzerask.github.io/dsg/`.
+
+
 
 
