@@ -928,13 +928,27 @@ main {
 }
 
 /* Mobile Responsive */
+.table-accordion {
+  display: none;
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+@media (min-width: 769px) {
+  .table-accordion {
+    display: none !important;
+  }
+}
+
 @media (max-width: 768px) {
   .hide-mobile {
     display: none !important;
   }
   
   .liga-row, .liga-header {
-    grid-template-columns: 25px 1fr 75px 40px !important;
+    grid-template-columns: 24px 1fr 75px 36px !important;
+    gap: 8px;
+    align-items: center;
   }
 }
 

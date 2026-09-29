@@ -145,14 +145,14 @@ export function viewLiga() {
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${diffStr}</span>
         <span class="accent-text" style="font-weight: 900; text-align: right; font-size: 1.2rem;">${t.points || 0}</span>
         
-        <div class="table-accordion show-mobile" style="grid-column: 1 / -1; display: none; margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--color-border); font-size: 0.85rem; color: var(--color-text-secondary);">
-           <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; text-align: center;">
-             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Spiele</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.played || 0}</div></div>
-             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Siege</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.won || 0}</div></div>
-             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Unent.</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.drawn || 0}</div></div>
-             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Nied.</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${t.lost || 0}</div></div>
-             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Tore</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${gf}:${ga}</div></div>
-             <div><div style="font-size: 0.65rem; text-transform: uppercase;">Diff</div><div style="font-weight: bold; color: var(--color-text-primary); font-size: 1rem;">${diffStr}</div></div>
+        <div class="table-accordion" style="grid-column: 1 / -1; display: none; margin-top: 10px; padding: 12px 6px 4px; border-top: 1px dashed var(--color-border); font-size: 0.85rem; color: var(--color-text-secondary); width: 100%;">
+           <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; justify-items: center; align-items: center; width: 100%;">
+             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Spiele</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${t.played || 0}</div></div>
+             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Siege</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${t.won || 0}</div></div>
+             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Unent.</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${t.drawn || 0}</div></div>
+             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Nied.</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${t.lost || 0}</div></div>
+             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Tore</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${gf}:${ga}</div></div>
+             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Diff</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${diffStr}</div></div>
            </div>
         </div>
       </div>
@@ -440,8 +440,10 @@ export function viewLiga() {
           }
           if (type === 'yellow') {
             const cardCount = Math.max(1, parseInt(count) || 1);
-            const cards = Array(cardCount).fill('<span class="match-card-badge-card badge-yellow" title="Gelbe Karte"></span>').join('');
-            return `<span class="event-icon-wrapper" style="gap: 3px;">${cards}</span>`;
+            if (cardCount >= 2) {
+              return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte (2. Gelbe)"></span>`;
+            }
+            return `<span class="match-card-badge-card badge-yellow" title="Gelbe Karte"></span>`;
           }
           if (type === 'yellowRed') {
             return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte"></span>`;
@@ -785,16 +787,28 @@ export function bindLigaTabs() {
   const tableCards = document.querySelectorAll('.has-table-accordion');
   tableCards.forEach(card => {
     card.addEventListener('click', () => {
-      // Only do this on mobile (where .show-mobile is not display:none anyway)
       if (window.innerWidth > 768) return; 
       const accordion = card.querySelector('.table-accordion');
-      if (accordion.style.display === 'none') {
+      if (!accordion) return;
+      const isCurrentlyOpen = accordion.style.display === 'block';
+      
+      // Close all other row accordions
+      tableCards.forEach(otherCard => {
+        const otherAcc = otherCard.querySelector('.table-accordion');
+        if (otherAcc && otherAcc !== accordion) {
+          otherAcc.style.display = 'none';
+        }
+      });
+
+      if (!isCurrentlyOpen) {
         accordion.style.display = 'block';
+        accordion.style.opacity = '0';
+        accordion.style.transform = 'translateY(-6px)';
         anime({
           targets: accordion,
           opacity: [0, 1],
-          translateY: [-10, 0],
-          duration: 300,
+          translateY: [-6, 0],
+          duration: 250,
           easing: 'easeOutQuad'
         });
       } else {
