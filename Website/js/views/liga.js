@@ -434,11 +434,14 @@ export function viewLiga() {
 
         const renderBadge = (type, count) => {
           if (type === 'goal') {
-            const multiplier = count > 1 ? `<span class="event-multiplier">×${count}</span>` : '';
-            return `<span class="event-icon-wrapper" title="${count > 1 ? count + ' Tore' : 'Tor'}">${soccerBallSvg}${multiplier}</span>`;
+            const ballCount = Math.max(1, parseInt(count) || 1);
+            const balls = Array(ballCount).fill(soccerBallSvg).join('');
+            return `<span class="event-icon-wrapper" title="${ballCount > 1 ? ballCount + ' Tore' : 'Tor'}">${balls}</span>`;
           }
           if (type === 'yellow') {
-            return `<span class="match-card-badge-card badge-yellow" title="Gelbe Karte"></span>`;
+            const cardCount = Math.max(1, parseInt(count) || 1);
+            const cards = Array(cardCount).fill('<span class="match-card-badge-card badge-yellow" title="Gelbe Karte"></span>').join('');
+            return `<span class="event-icon-wrapper" style="gap: 3px;">${cards}</span>`;
           }
           if (type === 'yellowRed') {
             return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte"></span>`;

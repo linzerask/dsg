@@ -1,6 +1,6 @@
 import { viewHome, bindHome } from './views/home.js?v=1790560002000';
 import { viewNews, bindNews } from './views/news.js?v=1790560002000';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560002000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560002100';
 import { viewArchiv } from './views/simpleViews.js?v=1790560002000';
 import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560002000';
 import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560002000';
