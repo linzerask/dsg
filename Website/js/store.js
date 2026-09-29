@@ -26737,6 +26737,15 @@ export const Store = {
     this.saveData(data);
   },
 
+  getAdminRoundsSync(seasonName = null) {
+    const local = loadLocal('dsg_admin_rounds', 12);
+    if (local && Array.isArray(local) && local.length > 0) {
+      if (!seasonName) return local;
+      return local.filter(r => r.seasonKey === seasonName || (seasonName === '2026/2027' && (!r.seasonKey || r.seasonKey === '2026/2027' || (r.liga && r.liga.includes('26/27')))));
+    }
+    return [];
+  },
+
   async getAdminRounds(seasonName = '2026/2027') {
     const local = loadLocal('dsg_admin_rounds', 12);
     if (local && local.length > 0) return local;

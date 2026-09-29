@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790560000600';
+import { Store } from '../store.js?v=1790560000700';
 
 
 let currentViewSeason = null;
@@ -268,35 +268,97 @@ export function viewLiga() {
     ${topScorers.length > 10 ? '<div class="btn-container"><button id="btn-show-all-scorers" class="link-btn">Alle anschauen</button></div>' : ''}
   ` : '<div style="color: var(--color-text-secondary); font-size: 0.9rem; padding: var(--space-md) 0;">Keine Torschützen erfasst.</div>';
 
-  // Group matches by round
-  const rounds = {};
-  matches.forEach(m => {
-    if(!rounds[m.round]) rounds[m.round] = [];
-    rounds[m.round].push(m);
-  });
-  
   const parseRoundNumber = (str) => {
     if (!str) return 0;
-    const m = str.match(/^\d+/) || str.match(/(\d+)\.\s*Runde/i) || str.match(/Runde\s*(\d+)/i);
+    const m = String(str).match(/^\d+/) || String(str).match(/(\d+)\.\s*Runde/i) || String(str).match(/Runde\s*(\d+)/i);
     if (m) return parseInt(m[1] || m[0]) || 0;
     return parseInt(str) || 0;
   };
 
-  const roundKeys = Object.keys(rounds).sort((a, b) => {
-    return parseRoundNumber(a) - parseRoundNumber(b);
+  // Group matches by unified round number
+  const roundMap = new Map(); // roundNr -> { roundNr, label, matches: [] }
+
+  // 1. Register all rounds known in store for this season
+  const seasonRounds = (Store.getAdminRoundsSync ? Store.getAdminRoundsSync(currentSeason) : []) || [];
+  seasonRounds.forEach(r => {
+    const nr = parseInt(r.runde) || 0;
+    if (nr > 0) {
+      let dateRange = '';
+      if (r.datumVon && r.datumBis) {
+        const fmtD = (dStr) => {
+          if (!dStr) return '';
+          if (dStr.includes('-')) {
+            const p = dStr.split('-');
+            if (p.length === 3) return `${p[2]}.${p[1]}.`;
+          }
+          return dStr;
+        };
+        const von = fmtD(r.datumVon);
+        let bis = fmtD(r.datumBis);
+        if (r.datumBis && r.datumBis.includes('-')) {
+          const p = r.datumBis.split('-');
+          if (p.length === 3) bis = `${p[2]}.${p[1]}.${p[0]}`;
+        }
+        dateRange = ` (${von} - ${bis})`;
+      }
+      roundMap.set(nr, {
+        roundNr: nr,
+        label: `${nr}. Runde${dateRange}`,
+        matches: []
+      });
+    }
   });
-  const maxRoundIdx = roundKeys.length - 1;
-  
+
+  // 2. Put each match into its matching round number
+  matches.forEach(m => {
+    const nr = parseRoundNumber(m.round);
+    if (nr > 0) {
+      if (!roundMap.has(nr)) {
+        let label = `${nr}. Runde`;
+        if (m.round && m.round.includes('(')) {
+          label = m.round;
+        }
+        roundMap.set(nr, {
+          roundNr: nr,
+          label: label,
+          matches: []
+        });
+      }
+      roundMap.get(nr).matches.push(m);
+    } else {
+      const fallbackNr = 999;
+      if (!roundMap.has(fallbackNr)) {
+        roundMap.set(fallbackNr, {
+          roundNr: fallbackNr,
+          label: m.round || 'Spiele',
+          matches: []
+        });
+      }
+      roundMap.get(fallbackNr).matches.push(m);
+    }
+  });
+
+  const sortedRounds = Array.from(roundMap.values()).sort((a, b) => a.roundNr - b.roundNr);
+  const maxRoundIdx = sortedRounds.length - 1;
+
   let initialRoundIdx = 0;
   for (let i = 0; i <= maxRoundIdx; i++) {
-     const roundMatches = rounds[roundKeys[i]];
-     if (roundMatches.some(m => m.status === 'Played' || (!m.status && m.score && m.score !== '- : -'))) {
+     const roundMatches = sortedRounds[i].matches;
+     if (roundMatches && roundMatches.some(m => m.status === 'Played' || (!m.status && m.score && m.score !== '- : -' && m.score !== '-:-'))) {
         initialRoundIdx = i;
      }
   }
 
-  const spieleSlider = roundKeys.map((round, idx) => {
-    const roundMatches = rounds[round].map(m => {
+  const spieleSlider = sortedRounds.map((roundObj, idx) => {
+    let roundMatchesHtml = '';
+    if (!roundObj.matches || roundObj.matches.length === 0) {
+      roundMatchesHtml = `
+        <div class="glass-card" style="text-align: center; padding: 2.5rem 1rem; color: var(--color-text-secondary); margin-top: var(--space-sm);">
+          <p style="margin: 0; font-size: 1rem;">Noch keine Spiele für die ${roundObj.roundNr}. Runde angesetzt.</p>
+        </div>
+      `;
+    } else {
+      roundMatchesHtml = roundObj.matches.map(m => {
       const isAbgesagtStatus = m.status === 'Abgesagt 3:0' || m.status === 'Abgesagt 0:3';
       const isAbgesagt = isAbgesagtStatus || (m.score && m.score.includes('Abgesagt'));
       const isUpcoming = m.status === 'Upcoming';
@@ -466,7 +528,8 @@ export function viewLiga() {
 
         ${eventsHtml}
       </div>`;
-    }).join('');
+      }).join('');
+    }
 
     return `
       <div class="round-slide" data-index="${idx}" style="display: ${idx === initialRoundIdx ? 'block' : 'none'}; width: 100%;">
@@ -477,7 +540,7 @@ export function viewLiga() {
            
            <div class="round-select-wrapper">
              <select class="round-select-dropdown" data-current-idx="${idx}" aria-label="Spielrunde auswählen">
-               ${roundKeys.map((rk, rIdx) => `<option value="${rIdx}" ${rIdx === idx ? 'selected' : ''}>${rk}</option>`).join('')}
+               ${sortedRounds.map((rk, rIdx) => `<option value="${rIdx}" ${rIdx === idx ? 'selected' : ''}>${rk.label}</option>`).join('')}
              </select>
              <span class="round-select-chevron">
                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -489,7 +552,7 @@ export function viewLiga() {
            </button>
         </div>
         <div class="round-matches stagger-item">
-          ${roundMatches}
+          ${roundMatchesHtml}
         </div>
       </div>
     `;
