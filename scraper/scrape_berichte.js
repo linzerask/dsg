@@ -19,12 +19,12 @@ const askQuestion = (query) => new Promise(resolve => rl.question(query, resolve
     
     const pages = await browser.pages();
     const page = pages[0] || await browser.newPage();
-    await page.goto('https://customer.js-hosting.at/dsgfussball/login', { waitUntil: 'domcontentloaded' });
+    await page.goto('https://customer.js-hosting.at/dsgfussball/berichte/1', { waitUntil: 'domcontentloaded' }).catch(() => {});
     
     console.log('\n========================================================================');
     console.log('✅ Browser geöffnet!');
-    console.log('👉 SCHRITT 1: Bitte im Browser einloggen.');
-    console.log('👉 SCHRITT 2: Gehe auf "Liga" und klicke auf "Spielberichte" einer Saison.');
+    console.log('👉 SCHRITT 1: Bitte im Browser einloggen (falls erforderlich).');
+    console.log('👉 SCHRITT 2: Gehe auf https://customer.js-hosting.at/dsgfussball/berichte/1');
     console.log('========================================================================\n');
     
     let scrapeCount = 0;

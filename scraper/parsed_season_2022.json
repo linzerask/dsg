@@ -1,0 +1,1953 @@
+{
+  "season": "2022/2023 Herbst",
+  "total_rounds": 7,
+  "total_matches": 29,
+  "total_goals": 159,
+  "rounds": [
+    {
+      "name": "1. Runde (24.08. -31.08.2022)",
+      "matches": [
+        {
+          "date": "Mi, 24.08.22",
+          "venue_time": "Sportplatz Wörth 18:30",
+          "home_team": "FC Hinzenbach",
+          "away_team": "FC U. Schleißheim",
+          "score": "1:2 (1:1)",
+          "home_goals": 1,
+          "away_goals": 2,
+          "halftime": "1:1",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Roland Meindlhumer",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Michael Hofmair",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Stefan Amering",
+            "Robert Mitter"
+          ],
+          "away_yellows": [
+            "Daniel Leeb",
+            "Gerard Pührer"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 1,
+          "away_scorer_sum": 1
+        },
+        {
+          "date": "Sa, 27.08.22",
+          "venue_time": "DSG-Platz Linz 15:00",
+          "home_team": "DSG St. Josef/Oed FC",
+          "away_team": "DSG UKJ Froschberg",
+          "score": "0:2 (0:0)",
+          "home_goals": 0,
+          "away_goals": 2,
+          "halftime": "0:0",
+          "status": "Beendet",
+          "home_scorers": [],
+          "away_scorers": [
+            {
+              "player": "Emre Karakaya",
+              "goals": 1
+            },
+            {
+              "player": "Klemens Leitner",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Clemens Rössler"
+          ],
+          "away_yellows": [],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 0,
+          "away_scorer_sum": 2
+        },
+        {
+          "date": "Sa, 27.08.22",
+          "venue_time": "Sportplatz Geboltskirchen 17:00",
+          "home_team": "Union Geboltskirchen",
+          "away_team": "Union Heiligenberg",
+          "score": "1:7 (0:3)",
+          "home_goals": 1,
+          "away_goals": 7,
+          "halftime": "0:3",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Michael Dickinger",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Ernst Zahrer",
+              "goals": 3
+            },
+            {
+              "player": "Dominik Penninger",
+              "goals": 2
+            },
+            {
+              "player": "Michael Haslehner",
+              "goals": 2
+            }
+          ],
+          "home_yellows": [
+            "Peter Furtner",
+            "Lukas Alexander Wimmer"
+          ],
+          "away_yellows": [
+            "Simon Penninger"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 1,
+          "away_scorer_sum": 7
+        },
+        {
+          "date": "Mi, 31.08.22",
+          "venue_time": "Sportanlage Auwiesen 20:00",
+          "home_team": "SV Croatia Linz",
+          "away_team": "Union Goldwörth",
+          "score": "4:0 (2:0)",
+          "home_goals": 4,
+          "away_goals": 0,
+          "halftime": "2:0",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Ante Zuljevic",
+              "goals": 2
+            },
+            {
+              "player": "Anton Krajina",
+              "goals": 1
+            },
+            {
+              "player": "Leonardo Glavas",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [],
+          "home_yellows": [],
+          "away_yellows": [],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 4,
+          "away_scorer_sum": 0
+        },
+        {
+          "date": "Sa, 04.05.24",
+          "venue_time": "Sportplatz Heiligenberg 19:00",
+          "home_team": "Union Heiligenberg",
+          "away_team": "SV Croatia Linz",
+          "score": ": (:)",
+          "home_goals": null,
+          "away_goals": null,
+          "halftime": "",
+          "status": "Ausstehend",
+          "home_scorers": [],
+          "away_scorers": [],
+          "home_yellows": [],
+          "away_yellows": [],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 0,
+          "away_scorer_sum": 0
+        }
+      ]
+    },
+    {
+      "name": "2. Runde (02.09. -25.10.2022)",
+      "matches": [
+        {
+          "date": "Fr, 02.09.22",
+          "venue_time": "Sportplatz Schleißheim 18:30",
+          "home_team": "FC U. Schleißheim",
+          "away_team": "DSG UKJ Froschberg",
+          "score": "5:0 (2:0)",
+          "home_goals": 5,
+          "away_goals": 0,
+          "halftime": "2:0",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Philipp Zwickl",
+              "goals": 3
+            },
+            {
+              "player": "Salih Cömlek",
+              "goals": 1
+            },
+            {
+              "player": "Marijo Sipura",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [],
+          "home_yellows": [
+            "Jürgen Thaller"
+          ],
+          "away_yellows": [],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 5,
+          "away_scorer_sum": 0
+        },
+        {
+          "date": "Sa, 03.09.22",
+          "venue_time": "DSG-Platz Linz 17:00",
+          "home_team": "SV Croatia Linz",
+          "away_team": "DSG St. Josef/Oed FC",
+          "score": "2:3 (2:1)",
+          "home_goals": 2,
+          "away_goals": 3,
+          "halftime": "2:1",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Leonardo Glavas",
+              "goals": 1
+            },
+            {
+              "player": "Slaven Steko",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Thomas Paulmair",
+              "goals": 2
+            },
+            {
+              "player": "Haris Balihodzic",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Anton Krajina",
+            "Valentin Vejic",
+            "Igor Vidovic",
+            "Josip Zuljevic"
+          ],
+          "away_yellows": [
+            "Haris Balihodzic",
+            "Florian Trefflinger"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 2,
+          "away_scorer_sum": 3
+        },
+        {
+          "date": "Fr, 21.10.22",
+          "venue_time": "Sportplatz Goldwörth 19:00",
+          "home_team": "Union Goldwörth",
+          "away_team": "Union Geboltskirchen",
+          "score": "3:4 (0:2)",
+          "home_goals": 3,
+          "away_goals": 4,
+          "halftime": "0:2",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Fabian Michael Ott",
+              "goals": 2
+            },
+            {
+              "player": "Martin Huemer",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Peter Furtner",
+              "goals": 2
+            },
+            {
+              "player": "Michael Dickinger",
+              "goals": 2
+            }
+          ],
+          "home_yellows": [
+            "Jetlir Bytyci"
+          ],
+          "away_yellows": [
+            "Peter Furtner",
+            "Alexander Gruber"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 3,
+          "away_scorer_sum": 4
+        },
+        {
+          "date": "Di, 25.10.22",
+          "venue_time": "Sportplatz Heiligenberg 20:00",
+          "home_team": "Union Heiligenberg",
+          "away_team": "FC Hinzenbach",
+          "score": "8:2 (5:1)",
+          "home_goals": 8,
+          "away_goals": 2,
+          "halftime": "5:1",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Michael Haslehner",
+              "goals": 4
+            },
+            {
+              "player": "Gregor Mair",
+              "goals": 2
+            },
+            {
+              "player": "Paul Steininger",
+              "goals": 1
+            },
+            {
+              "player": "Ernst Zahrer",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Michael Ahammer",
+              "goals": 2
+            }
+          ],
+          "home_yellows": [],
+          "away_yellows": [],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 8,
+          "away_scorer_sum": 2
+        }
+      ]
+    },
+    {
+      "name": "3. Runde (14.09. -06.06.2023)",
+      "matches": [
+        {
+          "date": "Mi, 14.09.22",
+          "venue_time": "Sportplatz Schleißheim 19:00",
+          "home_team": "FC U. Schleißheim",
+          "away_team": "Union Heiligenberg",
+          "score": "2:2 (0:0)",
+          "home_goals": 2,
+          "away_goals": 2,
+          "halftime": "0:0",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Michael Hofmair",
+              "goals": 1
+            },
+            {
+              "player": "Salih Cömlek",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Simon Penninger",
+              "goals": 1
+            },
+            {
+              "player": "Michael Haslehner",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Michael Hofmair"
+          ],
+          "away_yellows": [
+            "Benedict Humer",
+            "Gregor Mair"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 2,
+          "away_scorer_sum": 2
+        },
+        {
+          "date": "Fr, 16.09.22",
+          "venue_time": "DSG-Platz Linz 17:00",
+          "home_team": "DSG St. Josef/Oed FC",
+          "away_team": "FC Hinzenbach",
+          "score": "3:6 (1:2)",
+          "home_goals": 3,
+          "away_goals": 6,
+          "halftime": "1:2",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Thomas Paulmair",
+              "goals": 2
+            },
+            {
+              "player": "Matthias Binder",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Roland Meindlhumer",
+              "goals": 2
+            },
+            {
+              "player": "Bernhard Meindlhumer",
+              "goals": 2
+            },
+            {
+              "player": "Tobias Pointner",
+              "goals": 1
+            },
+            {
+              "player": "Martin Gubo",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Florian Staudinger",
+            "Manuel Märzinger",
+            "Stefan Woschitz"
+          ],
+          "away_yellows": [
+            "Michael Ahammer",
+            "Florian Berger"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [
+            "Dominik Wittinghofer"
+          ],
+          "away_reds": [],
+          "home_scorer_sum": 3,
+          "away_scorer_sum": 6
+        },
+        {
+          "date": "Di, 11.10.22",
+          "venue_time": "Sportplatz Geboltskirchen 19:00",
+          "home_team": "Union Geboltskirchen",
+          "away_team": "SV Croatia Linz",
+          "score": "5:2 (1:1)",
+          "home_goals": 5,
+          "away_goals": 2,
+          "halftime": "1:1",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Flavius-Samuel Petrean",
+              "goals": 3
+            },
+            {
+              "player": "Michael Dickinger",
+              "goals": 1
+            },
+            {
+              "player": "Narcis-Benjamin Petrean",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Leonardo Glavas",
+              "goals": 1
+            },
+            {
+              "player": "Slaven Steko",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [],
+          "away_yellows": [
+            "Josip Zuljevic"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 5,
+          "away_scorer_sum": 2
+        },
+        {
+          "date": "Di, 06.06.23",
+          "venue_time": "Seminarplatz Linz 18:00",
+          "home_team": "DSG UKJ Froschberg",
+          "away_team": "Union Goldwörth",
+          "score": "4:2 (1:0)",
+          "home_goals": 4,
+          "away_goals": 2,
+          "halftime": "1:0",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Nicolaus Steurer",
+              "goals": 2
+            },
+            {
+              "player": "Christian Fröstl",
+              "goals": 1
+            },
+            {
+              "player": "Patrick Wöckinger",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Fabian Grünberger",
+              "goals": 1
+            },
+            {
+              "player": "Florian Kubouschek",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Christian Fröstl",
+            "Vasile Calini",
+            "Dominik Steiner"
+          ],
+          "away_yellows": [
+            "Andreas Glatz"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 4,
+          "away_scorer_sum": 2
+        }
+      ]
+    },
+    {
+      "name": "4. Runde (23.09. -22.10.2022)",
+      "matches": [
+        {
+          "date": "Fr, 23.09.22",
+          "venue_time": "Sportplatz Heiligenberg 20:00",
+          "home_team": "Union Heiligenberg",
+          "away_team": "SV Croatia Linz",
+          "score": "2:1 (1:0)",
+          "home_goals": 2,
+          "away_goals": 1,
+          "halftime": "1:0",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Paul Steininger",
+              "goals": 1
+            },
+            {
+              "player": "Michael Haslehner",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Slaven Steko",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Simon Penninger",
+            "Michael Haslehner",
+            "Samuel Jenner"
+          ],
+          "away_yellows": [],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 2,
+          "away_scorer_sum": 1
+        },
+        {
+          "date": "Sa, 24.09.22",
+          "venue_time": "Seminarplatz Linz 14:00",
+          "home_team": "DSG UKJ Froschberg",
+          "away_team": "Union Geboltskirchen",
+          "score": "3:0 (:)",
+          "home_goals": 3,
+          "away_goals": 0,
+          "halftime": ":",
+          "status": "Abgesagt 3:0",
+          "home_scorers": [],
+          "away_scorers": [],
+          "home_yellows": [],
+          "away_yellows": [],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 0,
+          "away_scorer_sum": 0
+        },
+        {
+          "date": "Sa, 24.09.22",
+          "venue_time": "Sportplatz Goldwörth 17:00",
+          "home_team": "Union Goldwörth",
+          "away_team": "FC Hinzenbach",
+          "score": "2:13 (1:6)",
+          "home_goals": 2,
+          "away_goals": 13,
+          "halftime": "1:6",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Robert Priglinger",
+              "goals": 1
+            },
+            {
+              "player": "Martin Huemer",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Roland Meindlhumer",
+              "goals": 7
+            },
+            {
+              "player": "Markus Jungreithmayr",
+              "goals": 3
+            },
+            {
+              "player": "Bernhard Meindlhumer",
+              "goals": 3
+            }
+          ],
+          "home_yellows": [
+            "Erwin Reisenberger"
+          ],
+          "away_yellows": [
+            "Martin Gubo"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 2,
+          "away_scorer_sum": 13
+        },
+        {
+          "date": "Sa, 22.10.22",
+          "venue_time": "Sportplatz Schleißheim 16:00",
+          "home_team": "FC U. Schleißheim",
+          "away_team": "DSG St. Josef/Oed FC",
+          "score": "1:2 (1:0)",
+          "home_goals": 1,
+          "away_goals": 2,
+          "halftime": "1:0",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Philipp Zwickl",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Jörg Fuhrmann",
+              "goals": 1
+            },
+            {
+              "player": "Thomas Paulmair",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Stefan Niederwimmer",
+            "Günter Weiss"
+          ],
+          "away_yellows": [
+            "Stefan Woschitz",
+            "Dominik Wittinghofer",
+            "Clemens Rössler"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 1,
+          "away_scorer_sum": 2
+        }
+      ]
+    },
+    {
+      "name": "5. Runde (30.09. -22.10.2022)",
+      "matches": [
+        {
+          "date": "Fr, 30.09.22",
+          "venue_time": "Sportplatz Geboltskirchen 19:00",
+          "home_team": "Union Geboltskirchen",
+          "away_team": "FC U. Schleißheim",
+          "score": "4:6 (3:2)",
+          "home_goals": 4,
+          "away_goals": 6,
+          "halftime": "3:2",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Michael Dickinger",
+              "goals": 2
+            },
+            {
+              "player": "Narcis-Benjamin Petrean",
+              "goals": 1
+            },
+            {
+              "player": "David Wimmer",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Philipp Zwickl",
+              "goals": 2
+            },
+            {
+              "player": "Severin Kreilhuber",
+              "goals": 1
+            },
+            {
+              "player": "Herbert Fürnschuß",
+              "goals": 1
+            },
+            {
+              "player": "Michael Hofmair",
+              "goals": 1
+            },
+            {
+              "player": "Salih Cömlek",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Markus Diesenberger",
+            "Daniel Dobner"
+          ],
+          "away_yellows": [
+            "Daniel Leeb",
+            "Roman Reisinger",
+            "Salih Cömlek"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 4,
+          "away_scorer_sum": 6
+        },
+        {
+          "date": "Sa, 01.10.22",
+          "venue_time": "Seminarplatz Linz 13:00",
+          "home_team": "DSG UKJ Froschberg",
+          "away_team": "Union Heiligenberg",
+          "score": "2:2 (1:1)",
+          "home_goals": 2,
+          "away_goals": 2,
+          "halftime": "1:1",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Kenan Basic",
+              "goals": 1
+            },
+            {
+              "player": "Ahmed Basic",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Michael Haslehner",
+              "goals": 2
+            }
+          ],
+          "home_yellows": [
+            "Philipp Geiblinger",
+            "Christian Fröstl"
+          ],
+          "away_yellows": [],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [
+            "Ramadan Karakaya"
+          ],
+          "away_reds": [],
+          "home_scorer_sum": 2,
+          "away_scorer_sum": 2
+        },
+        {
+          "date": "Sa, 01.10.22",
+          "venue_time": "Seminarplatz Linz 15:00",
+          "home_team": "DSG St. Josef/Oed FC",
+          "away_team": "Union Goldwörth",
+          "score": "4:3 (0:1)",
+          "home_goals": 4,
+          "away_goals": 3,
+          "halftime": "0:1",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Thomas Paulmair",
+              "goals": 2
+            },
+            {
+              "player": "Manuel Märzinger",
+              "goals": 1
+            },
+            {
+              "player": "Clemens Rössler",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Andreas Glatz",
+              "goals": 1
+            },
+            {
+              "player": "Thomas Außerwöger",
+              "goals": 1
+            },
+            {
+              "player": "Lukas Lackner",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Manuel Märzinger"
+          ],
+          "away_yellows": [
+            "Martin Huemer"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 4,
+          "away_scorer_sum": 3
+        },
+        {
+          "date": "Sa, 22.10.22",
+          "venue_time": "Sportplatz Wörth 15:30",
+          "home_team": "FC Hinzenbach",
+          "away_team": "SV Croatia Linz",
+          "score": "5:2 (3:2)",
+          "home_goals": 5,
+          "away_goals": 2,
+          "halftime": "3:2",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Roland Meindlhumer",
+              "goals": 3
+            },
+            {
+              "player": "Michael Ahammer",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Valentin Vejic",
+              "goals": 2
+            }
+          ],
+          "home_yellows": [],
+          "away_yellows": [
+            "Josip Zuljevic",
+            "Ante Zuljevic"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [
+            "Igor Vidovic"
+          ],
+          "home_reds": [],
+          "away_reds": [
+            "Igor Vidovic"
+          ],
+          "home_scorer_sum": 4,
+          "away_scorer_sum": 2
+        }
+      ]
+    },
+    {
+      "name": "6. Runde (05.10. -08.10.2022)",
+      "matches": [
+        {
+          "date": "Mi, 05.10.22",
+          "venue_time": "Sportplatz Geboltskirchen 19:00",
+          "home_team": "Union Geboltskirchen",
+          "away_team": "DSG St. Josef/Oed FC",
+          "score": "2:4 (1:1)",
+          "home_goals": 2,
+          "away_goals": 4,
+          "halftime": "1:1",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Narcis-Benjamin Petrean",
+              "goals": 1
+            },
+            {
+              "player": "Michael Dickinger",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Thomas Paulmair",
+              "goals": 4
+            }
+          ],
+          "home_yellows": [
+            "David Wimmer",
+            "Florian Norbert Wiesinger"
+          ],
+          "away_yellows": [
+            "Stefan Woschitz",
+            "Kevin Tiepelt"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 2,
+          "away_scorer_sum": 4
+        },
+        {
+          "date": "Fr, 07.10.22",
+          "venue_time": "Sportplatz Schleißheim 19:00",
+          "home_team": "FC U. Schleißheim",
+          "away_team": "SV Croatia Linz",
+          "score": "1:1 (1:0)",
+          "home_goals": 1,
+          "away_goals": 1,
+          "halftime": "1:0",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Herbert Fürnschuß",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Ivan Puljic",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [],
+          "away_yellows": [
+            "Ivan Andjelic",
+            "Tomislav Zuljevic"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 1,
+          "away_scorer_sum": 1
+        },
+        {
+          "date": "Sa, 08.10.22",
+          "venue_time": "Seminarplatz Linz 14:00",
+          "home_team": "DSG UKJ Froschberg",
+          "away_team": "FC Hinzenbach",
+          "score": "2:0 (0:0)",
+          "home_goals": 2,
+          "away_goals": 0,
+          "halftime": "0:0",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Philipp Geiblinger",
+              "goals": 1
+            },
+            {
+              "player": "Murat Yildiz",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [],
+          "home_yellows": [
+            "Dominik Steiner",
+            "Milos Jelic"
+          ],
+          "away_yellows": [
+            "Michael Kaimberger"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 2,
+          "away_scorer_sum": 0
+        },
+        {
+          "date": "Sa, 08.10.22",
+          "venue_time": "Sportplatz Heiligenberg 19:00",
+          "home_team": "Union Heiligenberg",
+          "away_team": "Union Goldwörth",
+          "score": "3:0 (:)",
+          "home_goals": 3,
+          "away_goals": 0,
+          "halftime": ":",
+          "status": "Abgesagt 3:0",
+          "home_scorers": [],
+          "away_scorers": [],
+          "home_yellows": [],
+          "away_yellows": [],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 0,
+          "away_scorer_sum": 0
+        }
+      ]
+    },
+    {
+      "name": "7. Runde (14.10. -05.11.2022)",
+      "matches": [
+        {
+          "date": "Fr, 14.10.22",
+          "venue_time": "Sportplatz Goldwörth 19:00",
+          "home_team": "Union Goldwörth",
+          "away_team": "FC U. Schleißheim",
+          "score": "2:5 (1:3)",
+          "home_goals": 2,
+          "away_goals": 5,
+          "halftime": "1:3",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Florian Bötscher",
+              "goals": 1
+            },
+            {
+              "player": "Martin Huemer",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Roman Reisinger",
+              "goals": 2
+            },
+            {
+              "player": "Philipp Zwickl",
+              "goals": 1
+            },
+            {
+              "player": "Gerard Pührer",
+              "goals": 1
+            },
+            {
+              "player": "Herbert Fürnschuß",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Jakob Bötscher"
+          ],
+          "away_yellows": [
+            "Gerard Pührer",
+            "Philipp Zwickl"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 2,
+          "away_scorer_sum": 5
+        },
+        {
+          "date": "Sa, 15.10.22",
+          "venue_time": "Sportanlage Auwiesen 15:00",
+          "home_team": "DSG St. Josef/Oed FC",
+          "away_team": "Union Heiligenberg",
+          "score": "3:5 (1:2)",
+          "home_goals": 3,
+          "away_goals": 5,
+          "halftime": "1:2",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Jörg Fuhrmann",
+              "goals": 1
+            },
+            {
+              "player": "Florian Staudinger",
+              "goals": 1
+            },
+            {
+              "player": "Thomas Paulmair",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Gregor Mair",
+              "goals": 2
+            },
+            {
+              "player": "Michael Haslehner",
+              "goals": 2
+            },
+            {
+              "player": "Dominik Penninger",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Thomas Paulmair"
+          ],
+          "away_yellows": [
+            "Wolfgang Lehner"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 3,
+          "away_scorer_sum": 5
+        },
+        {
+          "date": "Sa, 15.10.22",
+          "venue_time": "Sportplatz Wörth 16:00",
+          "home_team": "FC Hinzenbach",
+          "away_team": "Union Geboltskirchen",
+          "score": "2:2 (1:0)",
+          "home_goals": 2,
+          "away_goals": 2,
+          "halftime": "1:0",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Bernhard Meindlhumer",
+              "goals": 1
+            },
+            {
+              "player": "Stefan Amering",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Daniel Dobner",
+              "goals": 1
+            },
+            {
+              "player": "Peter Furtner",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [],
+          "away_yellows": [
+            "Christian Greifeneder",
+            "Daniel Dobner",
+            "Markus Diesenberger"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 2,
+          "away_scorer_sum": 2
+        },
+        {
+          "date": "Sa, 05.11.22",
+          "venue_time": "DSG-Platz Linz 14:00",
+          "home_team": "SV Croatia Linz",
+          "away_team": "DSG UKJ Froschberg",
+          "score": "4:1 (1:0)",
+          "home_goals": 4,
+          "away_goals": 1,
+          "halftime": "1:0",
+          "status": "Beendet",
+          "home_scorers": [
+            {
+              "player": "Ante Zuljevic",
+              "goals": 2
+            },
+            {
+              "player": "Stjepan Jerkovic",
+              "goals": 1
+            },
+            {
+              "player": "Slaven Steko",
+              "goals": 1
+            }
+          ],
+          "away_scorers": [
+            {
+              "player": "Almir Suvalic",
+              "goals": 1
+            }
+          ],
+          "home_yellows": [
+            "Anton Krajina"
+          ],
+          "away_yellows": [
+            "Ahmed Basic",
+            "Philipp Geiblinger",
+            "Murat Yildiz"
+          ],
+          "home_yellow_reds": [],
+          "away_yellow_reds": [],
+          "home_reds": [],
+          "away_reds": [],
+          "home_scorer_sum": 4,
+          "away_scorer_sum": 1
+        }
+      ]
+    }
+  ],
+  "standings": [
+    {
+      "rank": 1,
+      "team": "Union Heiligenberg",
+      "p": 7,
+      "w": 5,
+      "d": 2,
+      "l": 0,
+      "gf": 29,
+      "ga": 11,
+      "pts": 17,
+      "diff": 18
+    },
+    {
+      "rank": 2,
+      "team": "FC U. Schleißheim",
+      "p": 7,
+      "w": 4,
+      "d": 2,
+      "l": 1,
+      "gf": 22,
+      "ga": 12,
+      "pts": 14,
+      "diff": 10
+    },
+    {
+      "rank": 3,
+      "team": "DSG UKJ Froschberg",
+      "p": 7,
+      "w": 4,
+      "d": 1,
+      "l": 2,
+      "gf": 14,
+      "ga": 13,
+      "pts": 13,
+      "diff": 1
+    },
+    {
+      "rank": 4,
+      "team": "DSG St. Josef/Oed FC",
+      "p": 7,
+      "w": 4,
+      "d": 0,
+      "l": 3,
+      "gf": 19,
+      "ga": 21,
+      "pts": 12,
+      "diff": -2
+    },
+    {
+      "rank": 5,
+      "team": "FC Hinzenbach",
+      "p": 7,
+      "w": 3,
+      "d": 1,
+      "l": 3,
+      "gf": 29,
+      "ga": 21,
+      "pts": 10,
+      "diff": 8
+    },
+    {
+      "rank": 6,
+      "team": "SV Croatia Linz",
+      "p": 7,
+      "w": 2,
+      "d": 1,
+      "l": 4,
+      "gf": 16,
+      "ga": 17,
+      "pts": 7,
+      "diff": -1
+    },
+    {
+      "rank": 7,
+      "team": "Union Geboltskirchen",
+      "p": 7,
+      "w": 2,
+      "d": 1,
+      "l": 4,
+      "gf": 18,
+      "ga": 27,
+      "pts": 7,
+      "diff": -9
+    },
+    {
+      "rank": 8,
+      "team": "Union Goldwörth",
+      "p": 7,
+      "w": 0,
+      "d": 0,
+      "l": 7,
+      "gf": 12,
+      "ga": 37,
+      "pts": 0,
+      "diff": -25
+    }
+  ],
+  "top_scorers": [
+    {
+      "rank": 1,
+      "player": "Roland Meindlhumer",
+      "team": "FC Hinzenbach",
+      "goals": 13
+    },
+    {
+      "rank": 2,
+      "player": "Michael Haslehner",
+      "team": "Union Heiligenberg",
+      "goals": 12
+    },
+    {
+      "rank": 3,
+      "player": "Thomas Paulmair",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": 12
+    },
+    {
+      "rank": 4,
+      "player": "Michael Dickinger",
+      "team": "Union Geboltskirchen",
+      "goals": 7
+    },
+    {
+      "rank": 5,
+      "player": "Philipp Zwickl",
+      "team": "FC U. Schleißheim",
+      "goals": 7
+    },
+    {
+      "rank": 6,
+      "player": "Bernhard Meindlhumer",
+      "team": "FC Hinzenbach",
+      "goals": 6
+    },
+    {
+      "rank": 7,
+      "player": "Ernst Zahrer",
+      "team": "Union Heiligenberg",
+      "goals": 4
+    },
+    {
+      "rank": 8,
+      "player": "Ante Zuljevic",
+      "team": "SV Croatia Linz",
+      "goals": 4
+    },
+    {
+      "rank": 9,
+      "player": "Slaven Steko",
+      "team": "SV Croatia Linz",
+      "goals": 4
+    },
+    {
+      "rank": 10,
+      "player": "Gregor Mair",
+      "team": "Union Heiligenberg",
+      "goals": 4
+    },
+    {
+      "rank": 11,
+      "player": "Michael Hofmair",
+      "team": "FC U. Schleißheim",
+      "goals": 3
+    },
+    {
+      "rank": 12,
+      "player": "Dominik Penninger",
+      "team": "Union Heiligenberg",
+      "goals": 3
+    },
+    {
+      "rank": 13,
+      "player": "Leonardo Glavas",
+      "team": "SV Croatia Linz",
+      "goals": 3
+    },
+    {
+      "rank": 14,
+      "player": "Salih Cömlek",
+      "team": "FC U. Schleißheim",
+      "goals": 3
+    },
+    {
+      "rank": 15,
+      "player": "Martin Huemer",
+      "team": "Union Goldwörth",
+      "goals": 3
+    },
+    {
+      "rank": 16,
+      "player": "Peter Furtner",
+      "team": "Union Geboltskirchen",
+      "goals": 3
+    },
+    {
+      "rank": 17,
+      "player": "Michael Ahammer",
+      "team": "FC Hinzenbach",
+      "goals": 3
+    },
+    {
+      "rank": 18,
+      "player": "Flavius-Samuel Petrean",
+      "team": "Union Geboltskirchen",
+      "goals": 3
+    },
+    {
+      "rank": 19,
+      "player": "Narcis-Benjamin Petrean",
+      "team": "Union Geboltskirchen",
+      "goals": 3
+    },
+    {
+      "rank": 20,
+      "player": "Markus Jungreithmayr",
+      "team": "FC Hinzenbach",
+      "goals": 3
+    },
+    {
+      "rank": 21,
+      "player": "Herbert Fürnschuß",
+      "team": "FC U. Schleißheim",
+      "goals": 3
+    },
+    {
+      "rank": 22,
+      "player": "Fabian Michael Ott",
+      "team": "Union Goldwörth",
+      "goals": 2
+    },
+    {
+      "rank": 23,
+      "player": "Paul Steininger",
+      "team": "Union Heiligenberg",
+      "goals": 2
+    },
+    {
+      "rank": 24,
+      "player": "Nicolaus Steurer",
+      "team": "DSG UKJ Froschberg",
+      "goals": 2
+    },
+    {
+      "rank": 25,
+      "player": "Jörg Fuhrmann",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": 2
+    },
+    {
+      "rank": 26,
+      "player": "Valentin Vejic",
+      "team": "SV Croatia Linz",
+      "goals": 2
+    },
+    {
+      "rank": 27,
+      "player": "Roman Reisinger",
+      "team": "FC U. Schleißheim",
+      "goals": 2
+    },
+    {
+      "rank": 28,
+      "player": "Emre Karakaya",
+      "team": "DSG UKJ Froschberg",
+      "goals": 1
+    },
+    {
+      "rank": 29,
+      "player": "Klemens Leitner",
+      "team": "DSG UKJ Froschberg",
+      "goals": 1
+    },
+    {
+      "rank": 30,
+      "player": "Anton Krajina",
+      "team": "SV Croatia Linz",
+      "goals": 1
+    },
+    {
+      "rank": 31,
+      "player": "Marijo Sipura",
+      "team": "FC U. Schleißheim",
+      "goals": 1
+    },
+    {
+      "rank": 32,
+      "player": "Haris Balihodzic",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": 1
+    },
+    {
+      "rank": 33,
+      "player": "Simon Penninger",
+      "team": "Union Heiligenberg",
+      "goals": 1
+    },
+    {
+      "rank": 34,
+      "player": "Matthias Binder",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": 1
+    },
+    {
+      "rank": 35,
+      "player": "Tobias Pointner",
+      "team": "FC Hinzenbach",
+      "goals": 1
+    },
+    {
+      "rank": 36,
+      "player": "Martin Gubo",
+      "team": "FC Hinzenbach",
+      "goals": 1
+    },
+    {
+      "rank": 37,
+      "player": "Christian Fröstl",
+      "team": "DSG UKJ Froschberg",
+      "goals": 1
+    },
+    {
+      "rank": 38,
+      "player": "Patrick Wöckinger",
+      "team": "DSG UKJ Froschberg",
+      "goals": 1
+    },
+    {
+      "rank": 39,
+      "player": "Fabian Grünberger",
+      "team": "Union Goldwörth",
+      "goals": 1
+    },
+    {
+      "rank": 40,
+      "player": "Florian Kubouschek",
+      "team": "Union Goldwörth",
+      "goals": 1
+    },
+    {
+      "rank": 41,
+      "player": "Robert Priglinger",
+      "team": "Union Goldwörth",
+      "goals": 1
+    },
+    {
+      "rank": 42,
+      "player": "David Wimmer",
+      "team": "Union Geboltskirchen",
+      "goals": 1
+    },
+    {
+      "rank": 43,
+      "player": "Severin Kreilhuber",
+      "team": "FC U. Schleißheim",
+      "goals": 1
+    },
+    {
+      "rank": 44,
+      "player": "Kenan Basic",
+      "team": "DSG UKJ Froschberg",
+      "goals": 1
+    },
+    {
+      "rank": 45,
+      "player": "Ahmed Basic",
+      "team": "DSG UKJ Froschberg",
+      "goals": 1
+    },
+    {
+      "rank": 46,
+      "player": "Manuel Märzinger",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": 1
+    },
+    {
+      "rank": 47,
+      "player": "Clemens Rössler",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": 1
+    },
+    {
+      "rank": 48,
+      "player": "Andreas Glatz",
+      "team": "Union Goldwörth",
+      "goals": 1
+    },
+    {
+      "rank": 49,
+      "player": "Thomas Außerwöger",
+      "team": "Union Goldwörth",
+      "goals": 1
+    },
+    {
+      "rank": 50,
+      "player": "Lukas Lackner",
+      "team": "Union Goldwörth",
+      "goals": 1
+    },
+    {
+      "rank": 51,
+      "player": "Ivan Puljic",
+      "team": "SV Croatia Linz",
+      "goals": 1
+    },
+    {
+      "rank": 52,
+      "player": "Philipp Geiblinger",
+      "team": "DSG UKJ Froschberg",
+      "goals": 1
+    },
+    {
+      "rank": 53,
+      "player": "Murat Yildiz",
+      "team": "DSG UKJ Froschberg",
+      "goals": 1
+    },
+    {
+      "rank": 54,
+      "player": "Florian Bötscher",
+      "team": "Union Goldwörth",
+      "goals": 1
+    },
+    {
+      "rank": 55,
+      "player": "Gerard Pührer",
+      "team": "FC U. Schleißheim",
+      "goals": 1
+    },
+    {
+      "rank": 56,
+      "player": "Florian Staudinger",
+      "team": "DSG St. Josef/Oed FC",
+      "goals": 1
+    },
+    {
+      "rank": 57,
+      "player": "Stefan Amering",
+      "team": "FC Hinzenbach",
+      "goals": 1
+    },
+    {
+      "rank": 58,
+      "player": "Daniel Dobner",
+      "team": "Union Geboltskirchen",
+      "goals": 1
+    },
+    {
+      "rank": 59,
+      "player": "Stjepan Jerkovic",
+      "team": "SV Croatia Linz",
+      "goals": 1
+    },
+    {
+      "rank": 60,
+      "player": "Almir Suvalic",
+      "team": "DSG UKJ Froschberg",
+      "goals": 1
+    }
+  ],
+  "cards": {
+    "yellow": [
+      {
+        "player": "Josip Zuljevic",
+        "count": 3
+      },
+      {
+        "player": "Stefan Woschitz",
+        "count": 3
+      },
+      {
+        "player": "Daniel Leeb",
+        "count": 2
+      },
+      {
+        "player": "Gerard Pührer",
+        "count": 2
+      },
+      {
+        "player": "Clemens Rössler",
+        "count": 2
+      },
+      {
+        "player": "Peter Furtner",
+        "count": 2
+      },
+      {
+        "player": "Simon Penninger",
+        "count": 2
+      },
+      {
+        "player": "Anton Krajina",
+        "count": 2
+      },
+      {
+        "player": "Manuel Märzinger",
+        "count": 2
+      },
+      {
+        "player": "Christian Fröstl",
+        "count": 2
+      },
+      {
+        "player": "Dominik Steiner",
+        "count": 2
+      },
+      {
+        "player": "Markus Diesenberger",
+        "count": 2
+      },
+      {
+        "player": "Daniel Dobner",
+        "count": 2
+      },
+      {
+        "player": "Philipp Geiblinger",
+        "count": 2
+      },
+      {
+        "player": "Stefan Amering",
+        "count": 1
+      },
+      {
+        "player": "Robert Mitter",
+        "count": 1
+      },
+      {
+        "player": "Lukas Alexander Wimmer",
+        "count": 1
+      },
+      {
+        "player": "Jürgen Thaller",
+        "count": 1
+      },
+      {
+        "player": "Valentin Vejic",
+        "count": 1
+      },
+      {
+        "player": "Igor Vidovic",
+        "count": 1
+      },
+      {
+        "player": "Haris Balihodzic",
+        "count": 1
+      },
+      {
+        "player": "Florian Trefflinger",
+        "count": 1
+      },
+      {
+        "player": "Jetlir Bytyci",
+        "count": 1
+      },
+      {
+        "player": "Alexander Gruber",
+        "count": 1
+      },
+      {
+        "player": "Michael Hofmair",
+        "count": 1
+      },
+      {
+        "player": "Benedict Humer",
+        "count": 1
+      },
+      {
+        "player": "Gregor Mair",
+        "count": 1
+      },
+      {
+        "player": "Florian Staudinger",
+        "count": 1
+      },
+      {
+        "player": "Michael Ahammer",
+        "count": 1
+      },
+      {
+        "player": "Florian Berger",
+        "count": 1
+      },
+      {
+        "player": "Vasile Calini",
+        "count": 1
+      },
+      {
+        "player": "Andreas Glatz",
+        "count": 1
+      },
+      {
+        "player": "Michael Haslehner",
+        "count": 1
+      },
+      {
+        "player": "Samuel Jenner",
+        "count": 1
+      },
+      {
+        "player": "Erwin Reisenberger",
+        "count": 1
+      },
+      {
+        "player": "Martin Gubo",
+        "count": 1
+      },
+      {
+        "player": "Stefan Niederwimmer",
+        "count": 1
+      },
+      {
+        "player": "Günter Weiss",
+        "count": 1
+      },
+      {
+        "player": "Dominik Wittinghofer",
+        "count": 1
+      },
+      {
+        "player": "Roman Reisinger",
+        "count": 1
+      },
+      {
+        "player": "Salih Cömlek",
+        "count": 1
+      },
+      {
+        "player": "Martin Huemer",
+        "count": 1
+      },
+      {
+        "player": "Ante Zuljevic",
+        "count": 1
+      },
+      {
+        "player": "David Wimmer",
+        "count": 1
+      },
+      {
+        "player": "Florian Norbert Wiesinger",
+        "count": 1
+      },
+      {
+        "player": "Kevin Tiepelt",
+        "count": 1
+      },
+      {
+        "player": "Ivan Andjelic",
+        "count": 1
+      },
+      {
+        "player": "Tomislav Zuljevic",
+        "count": 1
+      },
+      {
+        "player": "Milos Jelic",
+        "count": 1
+      },
+      {
+        "player": "Michael Kaimberger",
+        "count": 1
+      },
+      {
+        "player": "Jakob Bötscher",
+        "count": 1
+      },
+      {
+        "player": "Philipp Zwickl",
+        "count": 1
+      },
+      {
+        "player": "Thomas Paulmair",
+        "count": 1
+      },
+      {
+        "player": "Wolfgang Lehner",
+        "count": 1
+      },
+      {
+        "player": "Christian Greifeneder",
+        "count": 1
+      },
+      {
+        "player": "Ahmed Basic",
+        "count": 1
+      },
+      {
+        "player": "Murat Yildiz",
+        "count": 1
+      }
+    ],
+    "yellow_red": [
+      {
+        "player": "Igor Vidovic",
+        "count": 1
+      }
+    ],
+    "red": [
+      {
+        "player": "Dominik Wittinghofer",
+        "count": 1
+      },
+      {
+        "player": "Ramadan Karakaya",
+        "count": 1
+      },
+      {
+        "player": "Igor Vidovic",
+        "count": 1
+      }
+    ]
+  }
+}
