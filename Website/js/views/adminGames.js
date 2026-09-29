@@ -619,16 +619,16 @@ const populateFilterAndFormDropdowns = () => {
     // Unique rounds from matches and roundsData
     const allRoundsList = [];
     roundsData.forEach(r => {
-        const label = `${r.saison || ''} ${r.jahr || ''} Runde ${r.runde || ''}`.trim() || `Runde ${r.runde}`;
+        const label = `${r.liga ? r.liga + ' ' : ''}${r.saison || ''} ${r.jahr || ''} Runde ${r.runde || ''}`.trim() || `Runde ${r.runde}`;
         if (!allRoundsList.some(item => item.label === label)) {
-            allRoundsList.push({ label, roundNr: r.runde, full: `${r.runde}. Runde` });
+            allRoundsList.push({ label, roundNr: r.runde, full: `${r.runde}. Runde`, seasonKey: r.seasonKey || '2026/2027', id: r.id });
         }
     });
 
     // Also include rounds from gamesData if any missing
     gamesData.forEach(g => {
         if (g.round && !allRoundsList.some(item => item.label === g.round || item.full === g.round)) {
-            allRoundsList.push({ label: g.round, roundNr: g.roundNr, full: g.round });
+            allRoundsList.push({ label: g.round, roundNr: g.roundNr, full: g.round, seasonKey: '2026/2027' });
         }
     });
 
@@ -639,7 +639,7 @@ const populateFilterAndFormDropdowns = () => {
 
     if (modalRoundSelect) {
         modalRoundSelect.innerHTML = allRoundsList.map(r => `
-            <option value="${r.full}">${r.label || r.full}</option>
+            <option value="${r.full}" data-season-key="${r.seasonKey || '2026/2027'}" data-round-id="${r.id || ''}">${r.label || r.full}</option>
         `).join('');
     }
 
@@ -818,7 +818,14 @@ const saveGameForm = (e) => {
         formattedDate = `${d}.${m}.${y.slice(-2)}`;
     }
 
-    let existingMatch = editingMatchId !== null ? Store.getMatch('2026/2027', editingMatchId) : null;
+    const roundSelect = document.getElementById('input-game-round');
+    const selectedRoundOpt = roundSelect?.selectedOptions[0];
+    const targetSeasonKey = selectedRoundOpt?.getAttribute('data-season-key') || '2026/2027';
+
+    let existingMatch = editingMatchId !== null ? Store.getMatch(targetSeasonKey, editingMatchId) : null;
+    if (!existingMatch && editingMatchId !== null) {
+        existingMatch = Store.getMatch('2026/2027', editingMatchId);
+    }
 
     const matchData = {
         id: editingMatchId !== null ? editingMatchId : Date.now(),
@@ -839,7 +846,8 @@ const saveGameForm = (e) => {
     };
 
     const isEditing = (editingMatchId !== null);
-    Store.saveMatch('2026/2027', matchData);
+    Store.saveMatch(targetSeasonKey, matchData);
+    Store.recalculateSeason(targetSeasonKey);
     closeGameModal();
     loadDataAndRender();
     showToast(isEditing ? 'Spiel erfolgreich aktualisiert!' : 'Spiel erfolgreich erstellt!');

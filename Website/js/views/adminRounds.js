@@ -530,31 +530,78 @@ const openAddGameModal = (round = null) => {
 
     preselectedRoundForMatch = round;
 
-    // Filter only ACTIVE teams as explicitly requested
-    const activeTeams = teamsData.filter(t => t.Status === 'Aktiv' || t.status === 'Aktiv');
-
     const homeSelect = document.getElementById('modal-game-home');
     const awaySelect = document.getElementById('modal-game-away');
     const roundSelect = document.getElementById('modal-game-round');
 
-    const teamOptions = '<option value="">-- Team wählen --</option>' + 
-        activeTeams.map(t => `<option value="${t.Name || t.name}">${t.Name || t.name}</option>`).join('');
+    // Determine selectable rounds (all active leagues' rounds, or all rounds if empty)
+    const isRoundActive = (r) => {
+        if (!r) return false;
+        if (r.seasonKey === '2026/2027') return true;
+        if (r.liga && (r.liga.includes('26/27') || r.liga.includes('2026/2027'))) return true;
+        const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
+        return activeLeagues.some(l => 
+            (l.seasonKey && l.seasonKey === r.seasonKey) || 
+            (l.name && r.liga && r.liga.toLowerCase().includes(l.name.toLowerCase()))
+        );
+    };
 
-    if (homeSelect) homeSelect.innerHTML = teamOptions;
-    if (awaySelect) awaySelect.innerHTML = teamOptions;
+    let selectableRounds = (roundsData || []).filter(r => isRoundActive(r));
+    if (selectableRounds.length === 0) selectableRounds = [...(roundsData || [])];
 
-    // Populate active rounds
-    const activeRounds = roundsData.filter(r => r.seasonKey === '2026/2027' || (r.liga && r.liga.includes('26/27')));
-    if (roundSelect) {
-        roundSelect.innerHTML = activeRounds.map(r => `
-            <option value="${r.runde}. Runde" ${round && String(round.runde) === String(r.runde) ? 'selected' : ''}>
-                ${r.liga || 'Liga 26/27 2026'} ${r.saison || 'Herbst'} Runde ${r.runde}
-            </option>
-        `).join('');
-        if (round && round.runde) {
-            roundSelect.value = `${round.runde}. Runde`;
-        }
+    // Ensure the specifically clicked round is in the list
+    if (round && !selectableRounds.some(r => String(r.id) === String(round.id) || (r.seasonKey === round.seasonKey && r.runde === round.runde && r.saison === round.saison))) {
+        selectableRounds.unshift(round);
     }
+
+    if (roundSelect) {
+        roundSelect.innerHTML = selectableRounds.map(r => {
+            const isSelected = round && (String(round.id) === String(r.id) || (round.seasonKey === r.seasonKey && String(round.runde) === String(r.runde) && round.saison === r.saison));
+            const roundLabel = `${r.liga ? r.liga + ' ' : ''}${r.saison || ''} ${r.jahr || ''} Runde ${r.runde}`.trim();
+            const val = `${r.runde}. Runde`;
+            return `
+                <option value="${val}" data-round-id="${r.id || ''}" data-season-key="${r.seasonKey || ''}" data-liga="${r.liga || ''}" ${isSelected ? 'selected' : ''}>
+                    ${roundLabel}
+                </option>
+            `;
+        }).join('');
+    }
+
+    // Dynamic team population based on selected round's league
+    const updateTeamsForSelectedRound = () => {
+        const selectedOpt = roundSelect?.selectedOptions[0];
+        const sKey = selectedOpt?.getAttribute('data-season-key') || round?.seasonKey || '2026/2027';
+        
+        const seasonTeams = Store.getLiga(sKey);
+        let teamsToDisplay = [];
+        if (seasonTeams && seasonTeams.length > 0) {
+            teamsToDisplay = seasonTeams.map(t => ({ name: t.name }));
+        } else {
+            teamsToDisplay = (teamsData || []).filter(t => t.Status === 'Aktiv' || t.status === 'Aktiv');
+        }
+        if (teamsToDisplay.length === 0) {
+            teamsToDisplay = teamsData || [];
+        }
+
+        const teamOptions = '<option value="">-- Team wählen --</option>' + 
+            teamsToDisplay.map(t => `<option value="${t.Name || t.name}">${t.Name || t.name}</option>`).join('');
+
+        if (homeSelect) {
+            const prevHome = homeSelect.value;
+            homeSelect.innerHTML = teamOptions;
+            if (prevHome) homeSelect.value = prevHome;
+        }
+        if (awaySelect) {
+            const prevAway = awaySelect.value;
+            awaySelect.innerHTML = teamOptions;
+            if (prevAway) awaySelect.value = prevAway;
+        }
+    };
+
+    if (roundSelect) {
+        roundSelect.onchange = updateTeamsForSelectedRound;
+    }
+    updateTeamsForSelectedRound();
 
     // Prefill date with round's datumVon
     if (round && round.datumVon) {
@@ -714,10 +761,9 @@ export const initAdminRounds = async () => {
             const runde = parseInt(document.getElementById('modal-round-nr').value) || 1;
             const datumVon = document.getElementById('modal-round-date-from').value;
             const datumBis = document.getElementById('modal-round-date-to').value;
-            const liga = document.getElementById('modal-round-liga').value;
-
-            const activeLeague = leaguesData.find(l => l.name === liga || l.name === (liga && liga.split(' ')[0]));
-            const seasonKey = activeLeague ? (activeLeague.seasonKey || '2026/2027') : '2026/2027';
+            const ligaSelect = document.getElementById('modal-round-liga');
+            const liga = ligaSelect ? ligaSelect.value : '';
+            const seasonKey = ligaSelect?.selectedOptions[0]?.getAttribute('data-season') || '2026/2027';
 
             if (editingRoundId !== null && editingRoundId !== undefined) {
                 const index = roundsData.findIndex(r => String(r.id) === String(editingRoundId));
@@ -805,8 +851,23 @@ export const initAdminRounds = async () => {
                 cards: []
             };
 
-            const activeSeasonKey = '2026/2027';
-            Store.saveMatch(activeSeasonKey, newMatch);
+            const selectedOpt = document.getElementById('modal-game-round')?.selectedOptions[0];
+            const roundId = selectedOpt?.getAttribute('data-round-id');
+            let targetSeasonKey = selectedOpt?.getAttribute('data-season-key');
+
+            if (!targetSeasonKey && preselectedRoundForMatch) {
+                targetSeasonKey = preselectedRoundForMatch.seasonKey;
+            }
+            if (!targetSeasonKey && roundId) {
+                const foundRound = roundsData.find(r => String(r.id) === String(roundId));
+                targetSeasonKey = foundRound?.seasonKey;
+            }
+            if (!targetSeasonKey) {
+                targetSeasonKey = '2026/2027';
+            }
+
+            Store.saveMatch(targetSeasonKey, newMatch);
+            Store.recalculateSeason(targetSeasonKey);
 
             closeAddGameModal();
             showToast(`Spiel erfolgreich angelegt: ${home} vs. ${away}`);
