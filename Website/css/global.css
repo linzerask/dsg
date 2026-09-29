@@ -1191,6 +1191,7 @@ main {
   display: flex;
   align-items: center;
   min-width: 0;
+  gap: 6px;
 }
 
 .match-team-home {
@@ -1201,6 +1202,24 @@ main {
 .match-team-away {
   justify-content: flex-start;
   text-align: left;
+}
+
+.team-red-cards {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.5px;
+  flex-shrink: 0;
+}
+
+.team-red-card-badge {
+  display: inline-block;
+  width: 7px;
+  height: 11px;
+  background: #e74c3c;
+  border-radius: 1.5px;
+  box-shadow: 0 1px 3px rgba(231, 76, 60, 0.45);
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
 .match-team .team-name {

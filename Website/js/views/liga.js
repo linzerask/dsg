@@ -478,6 +478,54 @@ export function viewLiga() {
         `;
       }
 
+      let homeReds = 0;
+      let awayReds = 0;
+      if (hasEvents) {
+        const norm = (s) => (s || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').replace(/\s+/g, '').trim();
+        const homeNorm = norm(m.home);
+        const awayNorm = norm(m.away);
+
+        let combinedEvents = (m.events && m.events.length > 0) ? [...m.events] : [];
+        if (combinedEvents.length === 0) {
+          (m.cards || []).forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1 }));
+        }
+
+        const isHome = (e) => {
+          const t = String(e.team || '');
+          return t === String(m.home) || (homeNorm && norm(t) === homeNorm);
+        };
+        const isAway = (e) => {
+          const t = String(e.team || '');
+          return t === String(m.away) || (awayNorm && norm(t) === awayNorm);
+        };
+
+        const countReds = (evList) => {
+          const map = new Map();
+          evList.forEach(e => {
+            const p = (e.player || e.name || '').trim();
+            if (!p) return;
+            const t = e.type || 'yellow';
+            const k = `${p}___${t}`;
+            map.set(k, (map.get(k) || 0) + (parseInt(e.count) || 1));
+          });
+          let reds = 0;
+          map.forEach((cnt, k) => {
+            if (k.endsWith('___red') || k.endsWith('___yellowRed')) reds += cnt;
+            else if (k.endsWith('___yellow') && cnt >= 2) reds += 1;
+          });
+          return reds;
+        };
+
+        homeReds = countReds(combinedEvents.filter(isHome));
+        awayReds = countReds(combinedEvents.filter(isAway));
+      }
+
+      const renderTeamReds = (count) => {
+        if (!count || count <= 0) return '';
+        const cards = Array(count).fill('<span class="team-red-card-badge" title="Rote Karte / Platzverweis"></span>').join('');
+        return `<span class="team-red-cards" title="${count > 1 ? count + ' Platzverweise' : 'Platzverweis'}">${cards}</span>`;
+      };
+
       return `
       <div class="match-card glass-card ${hasEvents ? 'has-events-accordion' : ''}">
         <div class="match-card-meta">
@@ -511,6 +559,7 @@ export function viewLiga() {
         <div class="match-card-body">
           <div class="match-team match-team-home">
             <span class="team-name">${m.home}</span>
+            ${renderTeamReds(homeReds)}
           </div>
           
           <div class="match-score-center">
@@ -521,6 +570,7 @@ export function viewLiga() {
           </div>
           
           <div class="match-team match-team-away">
+            ${renderTeamReds(awayReds)}
             <span class="team-name">${m.away}</span>
           </div>
         </div>
