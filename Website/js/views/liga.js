@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790560001300';
+import { Store } from '../store.js?v=1790560002000';
 
 
 let currentViewSeason = null;
@@ -31,30 +31,24 @@ export function viewLiga() {
         }
         return { key, label: name };
       });
-    } else if (data && data.seasons) {
+    } else if (data && data.seasons && Object.keys(data.seasons).length > 0) {
       visibleItems = Object.keys(data.seasons).map(s => ({
         key: s,
         label: s.includes('2026/2027') ? 'Liga 2026/2027' : (s.startsWith('Saison') || s.startsWith('Liga') ? s : `Saison ${s}`)
       }));
     } else {
-      visibleItems = [
-        { key: "2026/2027", label: "Liga 2026/2027" },
-        { key: "2025/2026", label: "Saison 2025/2026" },
-        { key: "2024/2025", label: "Saison 2024/2025" },
-        { key: "2023/2024", label: "Saison 2023/2024" },
-        { key: "2022/2023", label: "Saison 2022/2023" }
-      ];
+      visibleItems = [];
     }
   }
 
   const visibleSeasonKeys = visibleItems.map(i => i.key);
   if (!currentViewSeason || !visibleSeasonKeys.includes(currentViewSeason)) {
-    currentViewSeason = defaultSeason;
+    currentViewSeason = visibleSeasonKeys[0] || defaultSeason || "";
   }
   const currentSeason = currentViewSeason;
   const currentItem = visibleItems.find(i => i.key === currentSeason) || {
     key: currentSeason,
-    label: currentSeason.startsWith('Saison') || currentSeason.startsWith('Liga') ? currentSeason : `Saison ${currentSeason}`
+    label: currentSeason ? (currentSeason.startsWith('Saison') || currentSeason.startsWith('Liga') ? currentSeason : `Saison ${currentSeason}`) : "Keine Liga angelegt"
   };
   
   const rawTeams = Store.getLiga(currentSeason) || [];

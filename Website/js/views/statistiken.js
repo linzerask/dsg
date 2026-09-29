@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560001300';
-import { renderIcon } from '../icons.js?v=1790560001300';
+import { Store } from '../store.js?v=1790560002000';
+import { renderIcon } from '../icons.js?v=1790560002000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -248,7 +248,7 @@ export const computeAllTimeStats = () => {
     goalsPerMatch,
     uniquePlayersCount: allTimeScorers.length,
     uniqueClubsCount: allTimeClubs.length,
-    seasonsCount: mainSeasons.length,
+    seasonsCount: seasonKeys.filter(k => seasons[k] && ((seasons[k].teams && seasons[k].teams.length > 0) || (seasons[k].matches && seasons[k].matches.length > 0))).length,
     allTimeScorers,
     allTimeClubs,
     seasonHonors,

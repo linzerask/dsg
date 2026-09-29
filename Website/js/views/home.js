@@ -1,6 +1,6 @@
-import { Store } from '../store.js?v=1790560001300';
-import { computeAllTimeStats } from './statistiken.js?v=1790560001300';
-import { renderIcon } from '../icons.js?v=1790560001300';
+import { Store } from '../store.js?v=1790560002000';
+import { computeAllTimeStats } from './statistiken.js?v=1790560002000';
+import { renderIcon } from '../icons.js?v=1790560002000';
 
 export const viewHome = () => {
   const data = Store.getData();
@@ -134,7 +134,7 @@ export const viewHome = () => {
   const recentResults = sortedPlayedMatches.slice(0, 4);
 
   // Render Top 5 Teams
-  const teamRows = teams.map((t, index) => {
+  const teamRows = teams.length > 0 ? teams.map((t, index) => {
     const gf = Number(t.gf !== undefined ? t.gf : (t.goalsFor || 0));
     const ga = Number(t.ga !== undefined ? t.ga : (t.goalsAgainst || 0));
     const diff = t.diff !== undefined ? Number(t.diff) : (t.goalDiff !== undefined ? Number(t.goalDiff) : (gf - ga));
@@ -161,13 +161,13 @@ export const viewHome = () => {
       </div>
     </div>
   `;
-  }).join('');
+  }).join('') : '<p style="color: var(--color-text-secondary); font-size: 0.9rem; padding: 12px 0; text-align: center;">Noch keine Tabellendaten vorhanden.</p>';
 
   // Render Top Scorers
   let currentRankHome = 1;
   let prevGoalsHome = -1;
   
-  const scorerRows = scorers.map((s, index) => {
+  const scorerRows = scorers.length > 0 ? scorers.map((s, index) => {
     let displayRank = '';
     if (s.goals !== prevGoalsHome) {
       if (prevGoalsHome !== -1) currentRankHome++;
@@ -185,7 +185,7 @@ export const viewHome = () => {
       <span class="goals" style="font-weight: 700; color: var(--color-accent);">${s.goals} Tore</span>
     </div>
   `;
-  }).join('');
+  }).join('') : '<p style="color: var(--color-text-secondary); font-size: 0.9rem; padding: 12px 0; text-align: center;">Noch keine Torschützen vorhanden.</p>';
 
   // Render News
   const newsCards = news.map(n => `
