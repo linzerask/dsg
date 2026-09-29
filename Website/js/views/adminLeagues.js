@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560000800';
-import { showToast } from './admin.js?v=1790560000800';
+import { Store } from '../store.js?v=1790560000900';
+import { showToast } from './admin.js?v=1790560000900';
 
 let leaguesData = [];
 let filteredData = [];
@@ -216,13 +216,46 @@ export const initAdminLeagues = async () => {
 };
 
 const getSeasonKey = (league) => {
-    if (league.seasonKey) return league.seasonKey;
-    if (league.name && league.name.includes('26/27')) return '2026/2027';
-    if (league.name && league.name.includes('25/26')) return '2025/2026';
-    if (league.name && league.year && !league.name.includes(String(league.year))) {
-        return `${league.name} ${league.year}`;
+    if (!league) return '2026/2027';
+    if (league.seasonKey && typeof league.seasonKey === 'string' && league.seasonKey !== 'undefined') {
+        const sk = league.seasonKey.trim();
+        if (sk === '2026/2027' || sk === '2025/2026' || sk === '2024/2025' || sk === '2024/2025_oberes' || sk === '2024/2025_unteres' || sk === '2023/2024' || sk === '2022/2023' || sk === '2022/2023_1klasse' || sk === '2021/2022' || sk === '2021/2022_1klasse') {
+            return sk;
+        }
     }
-    return league.name;
+    
+    const yrStr = String(league.year || '').trim();
+    const nameStr = String(league.name || '').trim();
+    
+    if (yrStr.includes('2026') || nameStr.includes('26/27') || yrStr.includes('26/27')) {
+        if (!nameStr.toLowerCase().includes('sommer') && !nameStr.toLowerCase().includes('cup')) {
+            return '2026/2027';
+        }
+    }
+    if (yrStr.includes('2025') || nameStr.includes('25/26') || yrStr.includes('25/26')) {
+        return '2025/2026';
+    }
+    if (yrStr.includes('2024') || nameStr.includes('24/25') || yrStr.includes('24/25')) {
+        if (nameStr.toLowerCase().includes('oberes')) return '2024/2025_oberes';
+        if (nameStr.toLowerCase().includes('unteres')) return '2024/2025_unteres';
+        return '2024/2025';
+    }
+    if (yrStr.includes('2023') || nameStr.includes('23/24') || yrStr.includes('23/24')) {
+        return '2023/2024';
+    }
+    if (yrStr.includes('2022') || nameStr.includes('22/23') || yrStr.includes('22/23')) {
+        if (nameStr.toLowerCase().includes('1. klasse') || nameStr.toLowerCase().includes('1klasse')) return '2022/2023_1klasse';
+        return '2022/2023';
+    }
+    if (yrStr.includes('2021') || nameStr.includes('21/22') || yrStr.includes('21/22')) {
+        if (nameStr.toLowerCase().includes('1. klasse') || nameStr.toLowerCase().includes('1klasse')) return '2021/2022_1klasse';
+        return '2021/2022';
+    }
+    
+    if (nameStr && yrStr && !nameStr.includes(yrStr)) {
+        return `${nameStr} ${yrStr}`;
+    }
+    return nameStr || yrStr || '2026/2027';
 };
 
 const renderTable = () => {
@@ -484,7 +517,21 @@ const renderModalContent = () => {
 
     const seasonKey = getSeasonKey(selectedLeague);
     const storeData = Store.getData();
-    const seasonData = storeData.seasons ? storeData.seasons[seasonKey] : null;
+    let seasonData = storeData.seasons ? (storeData.seasons[seasonKey] || storeData.seasons[selectedLeague.seasonKey] || storeData.seasons[selectedLeague.year] || storeData.seasons[selectedLeague.name]) : null;
+
+    // Fallback: search keys in seasons
+    if (!seasonData && storeData && storeData.seasons) {
+        const yrStr = String(selectedLeague.year || '').replace(/\D/g, '');
+        if (yrStr.length >= 4) {
+            const yrPrefix = yrStr.slice(0, 4);
+            for (const k of Object.keys(storeData.seasons)) {
+                if (k.includes(yrPrefix)) {
+                    seasonData = storeData.seasons[k];
+                    break;
+                }
+            }
+        }
+    }
 
     if (!seasonData) {
         container.innerHTML = `
@@ -943,7 +990,8 @@ const openEditModal = async (idx = null) => {
         deleteBtn.style.display = 'block';
 
         const sKey = getSeasonKey(l);
-        const season = Store.getData().seasons ? Store.getData().seasons[sKey] : null;
+        const storeData = Store.getData();
+        const season = storeData.seasons ? (storeData.seasons[sKey] || storeData.seasons[l.seasonKey] || storeData.seasons[l.year] || storeData.seasons[l.name]) : null;
         if (season && season.teams && Array.isArray(season.teams)) {
             season.teams.forEach(t => {
                 if (t && t.name) assignedTeamNames.add(t.name.trim().toLowerCase());

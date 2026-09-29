@@ -25971,24 +25971,30 @@ export const Store = {
 
     // Clear all obsolete cache versions
     try {
-      for (let i = 1; i <= 60; i++) {
-        if (i !== 50) localStorage.removeItem(`dsg_data_v${i}`);
+      for (let i = 1; i <= 70; i++) {
+        if (i !== 51) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 37) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 26) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 12) localStorage.removeItem(`dsg_admin_players_v${i}`);
         if (i !== 12) localStorage.removeItem(`dsg_admin_teams_v${i}`);
         if (i !== 12) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
-        if (i !== 8) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
+        if (i !== 9) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
       }
     } catch(e) {}
 
     // Eagerly load synchronous local memory into shared singleton
-    state.memoryData = loadLocal('dsg_data', 50) || INITIAL_DATA;
+    state.memoryData = loadLocal('dsg_data', 51) || INITIAL_DATA;
     state.memoryNews = loadLocal('dsg_articles', 37) || sortArticles([...(INITIAL_DATA.news || [])]);
     state.memoryGallery = loadLocal('dsg_gallery', 26) || [];
 
     // Ensure all leagues have an initialized season object in memoryData
     if (!state.memoryData.seasons) state.memoryData.seasons = {};
+    for (let s in INITIAL_DATA.seasons) {
+      if (!state.memoryData.seasons[s] || !state.memoryData.seasons[s].teams || state.memoryData.seasons[s].teams.length === 0) {
+        state.memoryData.seasons[s] = JSON.parse(JSON.stringify(INITIAL_DATA.seasons[s]));
+      }
+    }
+
     const initialLeagues = this.getAdminLeaguesSync();
     initialLeagues.forEach(l => {
       let sKey = l.seasonKey;
@@ -26029,18 +26035,18 @@ export const Store = {
       if (dataSnap.exists() && dataSnap.data()?.data) {
         const fbData = dataSnap.data().data;
         const fbTime = dataSnap.data().lastUpdated || fbData.lastUpdated || 0;
-        const localData = loadLocal('dsg_data', 50);
+        const localData = loadLocal('dsg_data', 51);
         const localTime = localData?.lastUpdated || 0;
         if (localTime >= fbTime && localData) {
           state.memoryData = localData;
           needsMigration = (localTime > fbTime);
         } else {
           state.memoryData = fbData;
-          trySetLocal('dsg_data_v50', JSON.stringify(fbData));
+          trySetLocal('dsg_data_v51', JSON.stringify(fbData));
           hasUpdates = true;
         }
       } else {
-        let legacyData = loadLocal('dsg_data', 50) || INITIAL_DATA;
+        let legacyData = loadLocal('dsg_data', 51) || INITIAL_DATA;
         state.memoryData = legacyData;
         needsMigration = true;
       }
@@ -26179,7 +26185,7 @@ export const Store = {
         await setDoc(galleryRef, { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v50', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_data_v51', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v37', JSON.stringify(state.memoryNews));
       trySetLocal('dsg_gallery_v26', JSON.stringify(state.memoryGallery));
 
@@ -26201,7 +26207,7 @@ export const Store = {
     const now = Date.now();
     data.lastUpdated = now;
     state.memoryData = data;
-    trySetLocal('dsg_data_v50', JSON.stringify(data));
+    trySetLocal('dsg_data_v51', JSON.stringify(data));
     setDoc(doc(db, 'system', 'liga_data'), { data, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
@@ -26676,36 +26682,61 @@ export const Store = {
   },
 
   getAdminLeaguesSync() {
-    const local = loadLocal('dsg_admin_leagues', 8);
+    const local = loadLocal('dsg_admin_leagues', 9);
     if (local && local.length > 0) return local;
 
     return [
-      { id: 1, name: 'Liga 2026/2027', year: 2026, seasonKey: '2026/2027', status: 'Aktiv', description: 'Aktuelle DSG Meisterschaft 2026/2027', isCurrent: true, teamsCount: 8 },
-      { id: 2, name: 'Saison 2025/2026', year: 2025, seasonKey: '2025/2026', status: 'Beendet', description: 'DSG Meisterschaft 2025/2026', isCurrent: false, teamsCount: 8 },
-      { id: 3, name: 'Saison 2024/2025', year: 2024, seasonKey: '2024/2025', status: 'Beendet', description: 'DSG Meisterschaft 2024/2025', isCurrent: false, teamsCount: 8 },
-      { id: 4, name: 'Saison 2023/2024', year: 2023, seasonKey: '2023/2024', status: 'Beendet', description: 'DSG Meisterschaft 2023/2024', isCurrent: false, teamsCount: 8 },
-      { id: 5, name: 'Saison 2022/2023', year: 2022, seasonKey: '2022/2023', status: 'Beendet', description: 'DSG Meisterschaft 2022/2023', isCurrent: false, teamsCount: 8 }
+      { id: 14, name: 'Saison', year: '2026/2027', status: 'Aktiv', seasonKey: '2026/2027', showOnHomepage: true },
+      { id: 13, name: 'Saison', year: '2025/2026', status: 'Inaktiv', seasonKey: '2025/2026', showOnHomepage: true },
+      { id: 6, name: 'Saison', year: '2024/2025', status: 'Inaktiv', seasonKey: '2024/2025', showOnHomepage: true },
+      { id: 11, name: 'Oberes Playoff', year: '2024/2025', status: 'Inaktiv', seasonKey: '2024/2025_oberes', showOnHomepage: true },
+      { id: 12, name: 'Unteres Playoff', year: '2024/2025', status: 'Inaktiv', seasonKey: '2024/2025_unteres', showOnHomepage: true },
+      { id: 5, name: 'Saison', year: '2023/2024', status: 'Inaktiv', seasonKey: '2023/2024', showOnHomepage: true },
+      { id: 3, name: 'Saison', year: '2022/2023', status: 'Inaktiv', seasonKey: '2022/2023', showOnHomepage: true },
+      { id: 4, name: '1. Klasse', year: '2022/2023', status: 'Inaktiv', seasonKey: '2022/2023_1klasse', showOnHomepage: true },
+      { id: 1, name: 'Saison', year: '2021/2022', status: 'Inaktiv', seasonKey: '2021/2022', showOnHomepage: true },
+      { id: 2, name: '1. Klasse', year: '2021/2022', status: 'Inaktiv', seasonKey: '2021/2022_1klasse', showOnHomepage: true }
     ];
   },
 
   async getAdminLeagues() {
-    const local = this.getAdminLeaguesSync();
+    const local = loadLocal('dsg_admin_leagues', 9);
+    if (local && local.length > 0) return local;
+
     try {
       const leaguesSnap = await getDoc(doc(db, 'system', 'leagues_data'));
       if (leaguesSnap.exists() && leaguesSnap.data()?.data) {
         let fbLeagues = leaguesSnap.data().data;
-        fbLeagues = fbLeagues.filter(l => {
-          const sKey = l.seasonKey || l.name;
-          const n = (l.name || '').toLowerCase();
-          return sKey !== '2026_sommer' && sKey !== 'DSG Sommercup 2026' && !n.includes('sommercup') && sKey !== 'Liga 26/27 2026';
-        });
-        trySetLocal('dsg_admin_leagues_v8', JSON.stringify(fbLeagues));
-        return fbLeagues;
+        if (Array.isArray(fbLeagues) && fbLeagues.length > 0) {
+          fbLeagues = fbLeagues.filter(l => {
+            const sKey = l.seasonKey || l.name;
+            const n = (l.name || '').toLowerCase();
+            return sKey !== '2026_sommer' && sKey !== 'DSG Sommercup 2026' && !n.includes('sommercup') && sKey !== 'Liga 26/27 2026';
+          });
+          trySetLocal('dsg_admin_leagues_v9', JSON.stringify(fbLeagues));
+          return fbLeagues;
+        }
       }
     } catch(e) {
       console.warn("Could not fetch leagues from Firebase:", e);
     }
-    return local;
+
+    try {
+      const res = await fetch('data/leagues.json');
+      if (res.ok) {
+        const fileLeagues = await res.json();
+        if (fileLeagues && fileLeagues.length > 0) {
+          trySetLocal('dsg_admin_leagues_v9', JSON.stringify(fileLeagues));
+          setDoc(doc(db, 'system', 'leagues_data'), { data: fileLeagues, lastUpdated: Date.now() })
+            .catch(e => console.error("Firebase save error (leagues initial):", e));
+          return fileLeagues;
+        }
+      }
+    } catch(e) {
+      console.warn("Could not fetch data/leagues.json:", e);
+    }
+
+    return this.getAdminLeaguesSync();
   },
 
   saveAdminLeagues(leagues) {
@@ -26715,7 +26746,7 @@ export const Store = {
       return sKey !== '2026_sommer' && sKey !== 'DSG Sommercup 2026' && !n.includes('sommercup') && sKey !== 'Liga 26/27 2026';
     });
 
-    trySetLocal('dsg_admin_leagues_v8', JSON.stringify(cleanLeagues));
+    trySetLocal('dsg_admin_leagues_v9', JSON.stringify(cleanLeagues));
     setDoc(doc(db, 'system', 'leagues_data'), { data: cleanLeagues, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (leagues):", e));
     window.dispatchEvent(new CustomEvent('leagues-updated'));

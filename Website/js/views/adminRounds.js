@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560000800';
-import { showToast } from './admin.js?v=1790560000800';
+import { Store } from '../store.js?v=1790560000900';
+import { showToast } from './admin.js?v=1790560000900';
 
 let roundsData = [];
 let leaguesData = [];

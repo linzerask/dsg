@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560000800';
-import { renderIcon } from '../icons.js?v=1790560000800';
+import { Store } from '../store.js?v=1790560000900';
+import { renderIcon } from '../icons.js?v=1790560000900';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
