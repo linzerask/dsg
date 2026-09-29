@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790560000100';
+import { Store } from '../store.js?v=1790560000600';
 
 let roundsData = [];
 let leaguesData = [];
@@ -194,13 +194,14 @@ const filterAndSortData = () => {
     const statusFilter = document.getElementById('round-status-filter')?.value || 'all';
     const sortVal = document.getElementById('round-sort-select')?.value || 'runde-asc';
 
-    const activeLeagues = leaguesData.filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
     const isLeagueActive = (r) => {
-        if (!r.liga && !r.seasonKey) return false;
+        if (!r) return false;
+        if (r.seasonKey === '2026/2027') return true;
+        if (r.liga && (r.liga.includes('26/27') || r.liga.includes('2026/2027'))) return true;
+        const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
         return activeLeagues.some(l => 
             (l.seasonKey && l.seasonKey === r.seasonKey) || 
-            (l.name && r.liga && r.liga.toLowerCase().includes(l.name.toLowerCase())) ||
-            (r.seasonKey === '2026/2027')
+            (l.name && r.liga && r.liga.toLowerCase().includes(l.name.toLowerCase()))
         );
     };
 
@@ -278,14 +279,14 @@ const renderTable = () => {
         return;
     }
 
-    // Check which leagues are active
-    const activeLeagues = leaguesData.filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
     const isLeagueActive = (r) => {
-        if (!r.liga && !r.seasonKey) return false;
+        if (!r) return false;
+        if (r.seasonKey === '2026/2027') return true;
+        if (r.liga && (r.liga.includes('26/27') || r.liga.includes('2026/2027'))) return true;
+        const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
         return activeLeagues.some(l => 
             (l.seasonKey && l.seasonKey === r.seasonKey) || 
-            (l.name && r.liga && r.liga.toLowerCase().includes(l.name.toLowerCase())) ||
-            (r.seasonKey === '2026/2027')
+            (l.name && r.liga && r.liga.toLowerCase().includes(l.name.toLowerCase()))
         );
     };
 
@@ -537,10 +538,13 @@ const openAddGameModal = (round = null) => {
     const activeRounds = roundsData.filter(r => r.seasonKey === '2026/2027' || (r.liga && r.liga.includes('26/27')));
     if (roundSelect) {
         roundSelect.innerHTML = activeRounds.map(r => `
-            <option value="${r.runde}. Runde" ${round && round.runde === r.runde ? 'selected' : ''}>
+            <option value="${r.runde}. Runde" ${round && String(round.runde) === String(r.runde) ? 'selected' : ''}>
                 ${r.liga || 'Liga 26/27 2026'} ${r.saison || 'Herbst'} Runde ${r.runde}
             </option>
         `).join('');
+        if (round && round.runde) {
+            roundSelect.value = `${round.runde}. Runde`;
+        }
     }
 
     // Prefill date with round's datumVon
@@ -570,7 +574,8 @@ const deleteRound = (idx) => {
     if (!r) return;
 
     if (confirm(`Möchten Sie die Runde "${r.saison} ${r.jahr} - Runde ${r.runde}" wirklich löschen?`)) {
-        roundsData.splice(idx, 1);
+        const roundId = r.id;
+        roundsData = roundsData.filter(item => (roundId !== undefined && roundId !== null ? String(item.id) !== String(roundId) : item !== r));
         Store.saveAdminRounds(roundsData);
         renderTable();
     }
@@ -703,8 +708,8 @@ export const initAdminRounds = async () => {
             const activeLeague = leaguesData.find(l => l.name === liga || l.name === (liga && liga.split(' ')[0]));
             const seasonKey = activeLeague ? (activeLeague.seasonKey || '2026/2027') : '2026/2027';
 
-            if (editingRoundId !== null) {
-                const index = roundsData.findIndex(r => r.id === editingRoundId);
+            if (editingRoundId !== null && editingRoundId !== undefined) {
+                const index = roundsData.findIndex(r => String(r.id) === String(editingRoundId));
                 if (index !== -1) {
                     roundsData[index] = {
                         ...roundsData[index],

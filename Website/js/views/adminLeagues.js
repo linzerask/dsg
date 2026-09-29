@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790560000100';
+import { Store } from '../store.js?v=1790560000600';
 
 let leaguesData = [];
 let filteredData = [];
