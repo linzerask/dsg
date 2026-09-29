@@ -26522,6 +26522,12 @@ export const Store = {
     }
   },
 
+  getMatch(season, id) {
+    if (!season || id === undefined || id === null) return null;
+    const matches = this.getMatches(season);
+    return matches.find(m => String(m.id) === String(id) || (typeof m.id === 'number' && m.id === parseInt(id))) || null;
+  },
+
   saveMatch(season, matchData) {
     if (!matchData) return;
     const data = this.getData();

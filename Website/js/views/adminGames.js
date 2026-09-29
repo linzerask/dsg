@@ -3,6 +3,7 @@ import { showToast } from './admin.js?v=1790560000900';
 
 let gamesData = [];
 let roundsData = [];
+let leaguesData = [];
 let teamsData = [];
 let playersData = [];
 let filteredData = [];
@@ -35,6 +36,9 @@ export const renderAdminGames = () => {
             </button>
             <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;">
                 <input type="text" id="game-search" class="admin-input" placeholder="Team / Ort / Runde..." style="width: 170px;">
+                <select id="game-league-filter" class="admin-input" style="width: 140px;">
+                    <option value="all">Alle Ligen</option>
+                </select>
                 <select id="game-round-filter" class="admin-input" style="width: 140px;">
                     <option value="all">Alle Runden</option>
                 </select>
@@ -338,6 +342,7 @@ const formatDisplayDate = (dateStr, timeStr) => {
 
 const filterAndSortGames = () => {
     const searchVal = (document.getElementById('game-search')?.value || '').toLowerCase().trim();
+    const leagueFilter = document.getElementById('game-league-filter')?.value || 'all';
     const roundFilter = document.getElementById('game-round-filter')?.value || 'all';
     const statusFilter = document.getElementById('game-status-filter')?.value || 'all';
     const sortVal = document.getElementById('game-sort-select')?.value || 'date-asc';
@@ -351,7 +356,9 @@ const filterAndSortGames = () => {
             (m.round && m.round.toLowerCase().includes(searchVal)) ||
             (m.date && m.date.toLowerCase().includes(searchVal));
 
-        const matchesRound = roundFilter === 'all' || m.round === roundFilter || String(m.roundNr) === roundFilter;
+        const matchesLeague = leagueFilter === 'all' || m.seasonKey === leagueFilter || (leagueFilter === '2026/2027' && (!m.seasonKey || m.seasonKey === '2026/2027'));
+
+        const matchesRound = roundFilter === 'all' || m.round === roundFilter || String(m.roundNr) === roundFilter || (m.round && m.round.includes(roundFilter));
 
         let matchesStatus = true;
         const isPlayed = (m.score && m.score !== '-:-' && m.score !== ':' && m.score.trim() !== '') || m.status === 'Played' || m.status === 'Gespielt';
@@ -366,7 +373,7 @@ const filterAndSortGames = () => {
             matchesStatus = isCanceledOrPostponed;
         }
 
-        return matchesSearch && matchesRound && matchesStatus;
+        return matchesSearch && matchesLeague && matchesRound && matchesStatus;
     });
 
     // Handle sortVal
@@ -610,15 +617,61 @@ const renderGamesTable = () => {
     }
 };
 
+const updateTeamsForSelectedRound = () => {
+    const roundSelect = document.getElementById('input-game-round');
+    const homeSelect = document.getElementById('input-game-home');
+    const awaySelect = document.getElementById('input-game-away');
+    const selectedOpt = roundSelect?.selectedOptions[0];
+    const sKey = selectedOpt?.getAttribute('data-season-key') || '2026/2027';
+
+    const seasonTeams = Store.getLiga(sKey);
+    let teamsToDisplay = [];
+    if (seasonTeams && seasonTeams.length > 0) {
+        teamsToDisplay = seasonTeams.map(t => ({ name: t.name }));
+    } else {
+        teamsToDisplay = (teamsData || []).filter(t => t.Status === 'Aktiv' || t.status === 'Aktiv');
+    }
+    if (teamsToDisplay.length === 0) {
+        teamsToDisplay = teamsData || [];
+    }
+
+    const teamOptions = '<option value="">-- Team wählen --</option>' + 
+        teamsToDisplay.map(t => `<option value="${t.Name || t.name}">${t.Name || t.name}</option>`).join('');
+
+    if (homeSelect) {
+        const prevHome = homeSelect.value;
+        homeSelect.innerHTML = teamOptions;
+        if (prevHome) homeSelect.value = prevHome;
+    }
+    if (awaySelect) {
+        const prevAway = awaySelect.value;
+        awaySelect.innerHTML = teamOptions;
+        if (prevAway) awaySelect.value = prevAway;
+    }
+};
+
 const populateFilterAndFormDropdowns = () => {
+    const leagueFilterSelect = document.getElementById('game-league-filter');
     const roundFilterSelect = document.getElementById('game-round-filter');
     const modalRoundSelect = document.getElementById('input-game-round');
-    const modalHomeSelect = document.getElementById('input-game-home');
-    const modalAwaySelect = document.getElementById('input-game-away');
+
+    // Populate League filter dropdown
+    if (leagueFilterSelect) {
+        const prevVal = leagueFilterSelect.value || 'all';
+        const leagueOptions = (leaguesData || []).map(l => {
+            const key = l.seasonKey || l.name;
+            const label = l.name && l.year ? `${l.name} ${l.year}` : (l.name || key);
+            return `<option value="${key}">${label}</option>`;
+        }).join('');
+        leagueFilterSelect.innerHTML = '<option value="all">Alle Ligen</option>' + leagueOptions;
+        if (prevVal && Array.from(leagueFilterSelect.options).some(o => o.value === prevVal)) {
+            leagueFilterSelect.value = prevVal;
+        }
+    }
 
     // Unique rounds from matches and roundsData
     const allRoundsList = [];
-    roundsData.forEach(r => {
+    (roundsData || []).forEach(r => {
         const label = `${r.liga ? r.liga + ' ' : ''}${r.saison || ''} ${r.jahr || ''} Runde ${r.runde || ''}`.trim() || `Runde ${r.runde}`;
         if (!allRoundsList.some(item => item.label === label)) {
             allRoundsList.push({ label, roundNr: r.runde, full: `${r.runde}. Runde`, seasonKey: r.seasonKey || '2026/2027', id: r.id });
@@ -626,40 +679,29 @@ const populateFilterAndFormDropdowns = () => {
     });
 
     // Also include rounds from gamesData if any missing
-    gamesData.forEach(g => {
+    (gamesData || []).forEach(g => {
         if (g.round && !allRoundsList.some(item => item.label === g.round || item.full === g.round)) {
-            allRoundsList.push({ label: g.round, roundNr: g.roundNr, full: g.round, seasonKey: '2026/2027' });
+            allRoundsList.push({ label: g.round, roundNr: g.roundNr, full: g.round, seasonKey: g.seasonKey || '2026/2027' });
         }
     });
 
     if (roundFilterSelect) {
+        const prevRound = roundFilterSelect.value || 'all';
         roundFilterSelect.innerHTML = '<option value="all">Alle Runden</option>' + 
-            allRoundsList.map(r => `<option value="${r.full}">${r.full}</option>`).join('');
+            allRoundsList.map(r => `<option value="${r.full}">${r.label || r.full}</option>`).join('');
+        if (prevRound && Array.from(roundFilterSelect.options).some(o => o.value === prevRound)) {
+            roundFilterSelect.value = prevRound;
+        }
     }
 
     if (modalRoundSelect) {
         modalRoundSelect.innerHTML = allRoundsList.map(r => `
             <option value="${r.full}" data-season-key="${r.seasonKey || '2026/2027'}" data-round-id="${r.id || ''}">${r.label || r.full}</option>
         `).join('');
+        modalRoundSelect.onchange = updateTeamsForSelectedRound;
     }
 
-    // Active Teams
-    const activeTeams = teamsData.filter(t => t.Status === 'Aktiv' || t.status === 'Aktiv');
-    const teamsToShow = activeTeams.length > 0 ? activeTeams : [
-        { Name: 'SV Croatia Linz' },
-        { Name: 'DSG St. Josef/Oed FC' },
-        { Name: 'Union Heiligenberg' },
-        { Name: 'Walker FC' },
-        { Name: 'FC Gornjak' },
-        { Name: 'DSG Union Traun' },
-        { Name: 'Etehad Linz' }
-    ];
-
-    const teamOptions = '<option value="">-- Team wählen --</option>' + 
-        teamsToShow.map(t => `<option value="${t.Name || t.name}">${t.Name || t.name}</option>`).join('');
-
-    if (modalHomeSelect) modalHomeSelect.innerHTML = teamOptions;
-    if (modalAwaySelect) modalAwaySelect.innerHTML = teamOptions;
+    updateTeamsForSelectedRound();
 };
 
 const ensureModalsInBody = () => {
@@ -709,11 +751,10 @@ const openAddGameModal = () => {
 
 const openEditGameModal = (idx) => {
     ensureModalsInBody();
-    gamesData = Store.getMatches('2026/2027') || [];
     const match = gamesData[idx];
     if (!match) return;
 
-    editingMatchId = match.id || idx;
+    editingMatchId = match.id !== undefined ? match.id : idx;
     const modal = document.getElementById('game-modal');
     const title = document.getElementById('game-modal-title');
     const statusWrapper = document.getElementById('game-status-wrapper');
@@ -740,19 +781,29 @@ const openEditGameModal = (idx) => {
     document.getElementById('input-game-location').value = match.venue || match.location || 'DSG-Platz';
     document.getElementById('input-game-note').value = match.note || '';
 
-    // Match round
+    // Match round & Season Key
     const roundSelect = document.getElementById('input-game-round');
     if (roundSelect) {
-        if (!Array.from(roundSelect.options).some(o => o.value === match.round)) {
+        let matchOpt = Array.from(roundSelect.options).find(o => 
+            (o.value === match.round || o.text.includes(match.round)) && 
+            (o.getAttribute('data-season-key') === match.seasonKey || !match.seasonKey)
+        );
+        if (!matchOpt) {
+            matchOpt = Array.from(roundSelect.options).find(o => o.value === match.round);
+        }
+        if (matchOpt) {
+            matchOpt.selected = true;
+        } else {
             const opt = document.createElement('option');
             opt.value = match.round;
             opt.text = match.round;
+            opt.setAttribute('data-season-key', match.seasonKey || '2026/2027');
             opt.selected = true;
             roundSelect.appendChild(opt);
-        } else {
-            roundSelect.value = match.round;
         }
     }
+
+    updateTeamsForSelectedRound();
 
     document.getElementById('input-game-home').value = match.home || '';
     document.getElementById('input-game-away').value = match.away || '';
@@ -778,12 +829,13 @@ const closeReportModal = () => {
 };
 
 const deleteGame = (idx) => {
-    gamesData = Store.getMatches('2026/2027') || [];
     const match = gamesData[idx];
     if (!match) return;
+    const targetSeasonKey = match.seasonKey || '2026/2027';
 
     if (confirm(`Möchten Sie das Spiel "${match.home} vs. ${match.away}" wirklich löschen?`)) {
-        Store.deleteMatch('2026/2027', match.id);
+        Store.deleteMatch(targetSeasonKey, match.id);
+        Store.recalculateSeason(targetSeasonKey);
         loadDataAndRender();
         showToast('Spiel gelöscht.');
     }
@@ -857,7 +909,6 @@ const saveGameForm = (e) => {
 
 const openReportModal = (idx) => {
     ensureModalsInBody();
-    gamesData = Store.getMatches('2026/2027') || [];
     const match = gamesData[idx];
     if (!match) return;
 
@@ -1114,7 +1165,9 @@ const saveReportForm = (e) => {
         events: events
     };
 
-    Store.saveMatch('2026/2027', updatedMatch);
+    const targetSeasonKey = currentReportMatch.seasonKey || '2026/2027';
+    Store.saveMatch(targetSeasonKey, updatedMatch);
+    Store.recalculateSeason(targetSeasonKey);
     closeReportModal();
     loadDataAndRender();
     showToast('Spielbericht erfolgreich gespeichert!');
@@ -1127,6 +1180,12 @@ const setupEventHandlers = () => {
 
     const searchInput = document.getElementById('game-search');
     if (searchInput) searchInput.oninput = () => {
+        currentPage = 1;
+        renderGamesTable();
+    };
+
+    const leagueFilter = document.getElementById('game-league-filter');
+    if (leagueFilter) leagueFilter.onchange = () => {
         currentPage = 1;
         renderGamesTable();
     };
@@ -1278,10 +1337,26 @@ const setupEventHandlers = () => {
 
 const loadDataAndRender = async () => {
     try {
-        gamesData = Store.getMatches('2026/2027') || [];
+        leaguesData = await Store.getAdminLeagues() || [];
         roundsData = await Store.getAdminRounds() || [];
         teamsData = await Store.getAdminTeams() || [];
         playersData = await Store.getAdminPlayers() || [];
+
+        const seasons = Store.getData()?.seasons || {};
+        let allMatches = [];
+
+        // Collect matches from all active/existing seasons
+        Object.keys(seasons).forEach(sKey => {
+            const sMatches = seasons[sKey]?.matches || [];
+            sMatches.forEach(m => {
+                allMatches.push({
+                    ...m,
+                    seasonKey: m.seasonKey || sKey
+                });
+            });
+        });
+
+        gamesData = allMatches;
 
         populateFilterAndFormDropdowns();
         renderGamesTable();

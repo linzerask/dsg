@@ -425,6 +425,11 @@ const populateLeaguesDropdowns = () => {
     const filterSelect = document.getElementById('round-league-filter');
     const modalSelect = document.getElementById('modal-round-liga');
 
+    const freshLeagues = Store.getAdminLeaguesSync();
+    if (freshLeagues && freshLeagues.length > 0) {
+        leaguesData = freshLeagues;
+    }
+
     const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
 
     if (filterSelect) {
