@@ -55,9 +55,26 @@ export const viewArticle = (id) => {
         <div class="article-share stagger-item">
           <h3>Diesen Artikel teilen</h3>
           <div class="share-buttons">
-            <button class="share-btn" onclick="window.open('https://wa.me/?text=Check out this article: ' + window.location.href)">WhatsApp</button>
-            <button class="share-btn" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + window.location.href)">Facebook</button>
-            <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href); alert('Link kopiert!')">Link kopieren</button>
+            <button class="share-btn share-btn-whatsapp" id="share-whatsapp-btn" title="Auf WhatsApp teilen">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"></path>
+                <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"></path>
+              </svg>
+              <span>WhatsApp</span>
+            </button>
+            <button class="share-btn share-btn-facebook" id="share-facebook-btn" title="Auf Facebook teilen">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+              </svg>
+              <span>Facebook</span>
+            </button>
+            <button class="share-btn share-btn-copy" id="share-copy-btn" title="Link in Zwischenablage kopieren">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+              <span>Link kopieren</span>
+            </button>
           </div>
         </div>
 
@@ -71,7 +88,7 @@ export const viewArticle = (id) => {
               </a>
             `).join('')}
           </div>
-          <a href="#/news" class="btn" style="margin-top: 30px; display: inline-block;">Zurück zur Übersicht</a>
+          <a href="#/news" class="btn btn-outline" style="margin-top: 30px; display: inline-flex; align-items: center; gap: 6px;">&larr; Zurück zur Übersicht</a>
         </div>
       </div>
     </article>
@@ -87,6 +104,40 @@ export const bindArticle = () => {
     const progressBar = document.getElementById("reading-progress");
     if (progressBar) progressBar.style.width = scrolled + "%";
   });
+
+  // Share buttons handlers
+  const waBtn = document.getElementById('share-whatsapp-btn');
+  if (waBtn) {
+    waBtn.addEventListener('click', () => {
+      window.open('https://wa.me/?text=' + encodeURIComponent(document.title + ' ' + window.location.href), '_blank');
+    });
+  }
+
+  const fbBtn = document.getElementById('share-facebook-btn');
+  if (fbBtn) {
+    fbBtn.addEventListener('click', () => {
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank');
+    });
+  }
+
+  const copyBtn = document.getElementById('share-copy-btn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        const originalHTML = copyBtn.innerHTML;
+        copyBtn.innerHTML = `
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent);"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span style="color: var(--color-accent); font-weight: 700;">Link kopiert!</span>
+        `;
+        setTimeout(() => {
+          if (copyBtn) copyBtn.innerHTML = originalHTML;
+        }, 2500);
+      } catch (err) {
+        prompt('Link zum Kopieren:', window.location.href);
+      }
+    });
+  }
 
   // Lightbox logic
   const lightbox = document.getElementById('article-lightbox');
