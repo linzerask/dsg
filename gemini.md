@@ -186,3 +186,13 @@ DSG Liga/
   2. **Multi-Element Modal Closure:** Modal close functions (`closeEditModal`, `closeGameModal`, `closeReportModal`, `closeRoundModal`) must always query `document.querySelectorAll('#' + modalId).forEach(m => m.style.display = 'none')` to ensure all instances are dismissed.
   3. **Toast Notifications:** All successful creations, edits, and deletions across all admin tabs (Ligen, Teams, Spieler, Spiele, Spielrunden) must trigger `showToast(message)` with crisp SVG icons.
   4. **Form Validation Feedback:** Form submissions must validate required fields in JavaScript before saving and display error toasts (`showToast('Bitte füllen Sie...', true)`) to guide the user.
+
+---
+
+## 16. Canonical Season Keys & League Inspection Data Mapping
+* **The Pitfall:** If `getSeasonKey(league)` in `adminLeagues.js` prepends `"Saison "` to a season whose year is `"2026/2027"` (e.g. producing `"Saison 2026/2027"` instead of the canonical key `"2026/2027"` stored in `liga.json`), inspecting the league data modal will look up an empty/non-existent key and falsely appear as though all season data was deleted.
+* **The Rule:**
+  1. **Canonical Season Keys:** All standard seasons in `liga.json` and `leagues.json` use format `YYYY/YYYY` (e.g. `'2026/2027'`, `'2025/2026'`, `'2024/2025'`, `'2023/2024'`, `'2022/2023'`, `'2021/2022'`), or playoff suffix variants (e.g. `'2024/2025_oberes'`, `'2022/2023_1klasse'`).
+  2. **Preserve `seasonKey` on Edit:** When editing an existing league in `adminLeagues.js`, always preserve `existingLeague.seasonKey` so that updating names or status never alters the underlying dataset key.
+  3. **Multi-Strategy Fallback Lookup:** `renderModalContent()` in `adminLeagues.js` must resolve season data using: (1) exact `seasonKey`, (2) computed key via `getSeasonKey()`, (3) year string matching, and (4) 4-digit prefix matching before falling back to empty state.
+  4. **Auto-Healing in `Store.init()`:** `Store.init()` must always verify that canonical seasons in `INITIAL_DATA.seasons` exist and are populated with their teams and matches in memory data, preventing stale empty local storage keys from masking the database.
