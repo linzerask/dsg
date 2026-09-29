@@ -2559,12 +2559,6 @@
               "player": "Igor Vidovic",
               "team": "SV Croatia Linz",
               "type": "yellowRed"
-            },
-            {
-              "name": "Igor Vidovic",
-              "player": "Igor Vidovic",
-              "team": "SV Croatia Linz",
-              "type": "red"
             }
           ],
           "events": [
@@ -2618,12 +2612,6 @@
             },
             {
               "type": "yellowRed",
-              "player": "Igor Vidovic",
-              "name": "Igor Vidovic",
-              "team": "SV Croatia Linz"
-            },
-            {
-              "type": "red",
               "player": "Igor Vidovic",
               "name": "Igor Vidovic",
               "team": "SV Croatia Linz"

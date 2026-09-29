@@ -403,18 +403,34 @@ export function viewLiga() {
 
         // Group events by player & type to avoid repeating names
         const groupEvents = (eventsList) => {
-          const map = new Map();
+          const playerEvents = new Map();
           eventsList.forEach(e => {
             const player = (e.player || e.name || '').trim();
             if (!player) return;
             const type = e.type || 'goal';
-            const key = `${player}___${type}`;
-            if (!map.has(key)) {
-              map.set(key, { player, type, count: 0 });
-            }
-            map.get(key).count += parseInt(e.count) || 1;
+            if (!playerEvents.has(player)) playerEvents.set(player, []);
+            playerEvents.get(player).push({ type, count: parseInt(e.count) || 1 });
           });
-          return Array.from(map.values());
+
+          const results = [];
+          playerEvents.forEach((types, player) => {
+            const hasYellowRed = types.some(t => t.type === 'yellowRed');
+            const hasRed = types.some(t => t.type === 'red');
+            const yellowCount = types.filter(t => t.type === 'yellow').reduce((sum, t) => sum + t.count, 0);
+            const goalCount = types.filter(t => t.type === 'goal').reduce((sum, t) => sum + t.count, 0);
+
+            if (goalCount > 0) {
+              results.push({ player, type: 'goal', count: goalCount });
+            }
+            if (hasYellowRed || (hasRed && yellowCount > 0) || yellowCount >= 2) {
+              results.push({ player, type: 'yellowRed', count: 1 });
+            } else if (hasRed) {
+              results.push({ player, type: 'red', count: 1 });
+            } else if (yellowCount > 0) {
+              results.push({ player, type: 'yellow', count: yellowCount });
+            }
+          });
+          return results;
         };
 
         const homeGrouped = groupEvents(combinedEvents.filter(isHomeEvent));
@@ -500,20 +516,27 @@ export function viewLiga() {
         };
 
         const countReds = (evList) => {
-          const map = new Map();
+          const dismissedPlayers = new Set();
           evList.forEach(e => {
             const p = (e.player || e.name || '').trim();
             if (!p) return;
             const t = e.type || 'yellow';
-            const k = `${p}___${t}`;
-            map.set(k, (map.get(k) || 0) + (parseInt(e.count) || 1));
+            if (t === 'red' || t === 'yellowRed') {
+              dismissedPlayers.add(p);
+            }
           });
-          let reds = 0;
-          map.forEach((cnt, k) => {
-            if (k.endsWith('___red') || k.endsWith('___yellowRed')) reds += cnt;
-            else if (k.endsWith('___yellow') && cnt >= 2) reds += 1;
+          const yellowCounts = new Map();
+          evList.forEach(e => {
+            const p = (e.player || e.name || '').trim();
+            if (!p) return;
+            if (e.type === 'yellow') {
+              yellowCounts.set(p, (yellowCounts.get(p) || 0) + (parseInt(e.count) || 1));
+            }
           });
-          return reds;
+          yellowCounts.forEach((cnt, p) => {
+            if (cnt >= 2) dismissedPlayers.add(p);
+          });
+          return dismissedPlayers.size;
         };
 
         homeReds = countReds(combinedEvents.filter(isHome));
