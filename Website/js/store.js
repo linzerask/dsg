@@ -262,7 +262,7 @@ export const Store = {
         if (i !== 26) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 12) localStorage.removeItem(`dsg_admin_players_v${i}`);
         if (i !== 12) localStorage.removeItem(`dsg_admin_teams_v${i}`);
-        if (i !== 22) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
+        if (i !== 23) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
         if (i !== 22) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
       }
     } catch(e) {}
