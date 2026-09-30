@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560003500';
-import { showToast } from './admin.js?v=1790560003500';
+import { Store } from '../store.js?v=1790560003600';
+import { showToast } from './admin.js?v=1790560003600';
 
 let gamesData = [];
 let roundsData = [];
@@ -379,8 +379,7 @@ const getDisplayLeagueName = (m) => {
     if (!m) return 'DSG Liga';
     if (m.leagueName) return m.leagueName;
     const sKey = m.seasonKey || '';
-    if (sKey === '2026/2027') return '1. Klasse 2026/2027';
-    return sKey ? `DSG Liga ${sKey}` : 'DSG Liga';
+    return sKey ? (sKey.startsWith('DSG') || sKey.startsWith('1.') || sKey.startsWith('Saison') || sKey.startsWith('Liga') ? sKey : `DSG Liga ${sKey}`) : 'DSG Liga';
 };
 
 const formatDisplayDate = (dateStr, timeStr) => {
@@ -422,7 +421,7 @@ const filterAndSortGames = () => {
             dispDate.includes(searchVal) ||
             dispLeague.includes(searchVal);
 
-        const matchesLeague = leagueFilter === 'all' || m.seasonKey === leagueFilter || (leagueFilter === '2026/2027' && (!m.seasonKey || m.seasonKey === '2026/2027')) || dispLeague === leagueFilter.toLowerCase();
+        const matchesLeague = leagueFilter === 'all' || m.seasonKey === leagueFilter || dispLeague === leagueFilter.toLowerCase();
 
         const matchesRound = roundFilter === 'all' || m.round === roundFilter || String(m.roundNr) === roundFilter || (m.round && m.round.includes(roundFilter));
 
@@ -725,7 +724,7 @@ const updateTeamsForSelectedRound = () => {
     const homeSelect = document.getElementById('input-game-home');
     const awaySelect = document.getElementById('input-game-away');
     const selectedOpt = roundSelect?.selectedOptions[0];
-    const sKey = selectedOpt?.getAttribute('data-season-key') || '2026/2027';
+    const sKey = selectedOpt?.getAttribute('data-season-key') || (Store.getData()?.currentSeason || '2022/2023');
 
     const seasonTeams = Store.getLiga(sKey);
     let teamsToDisplay = [];
@@ -777,14 +776,14 @@ const populateFilterAndFormDropdowns = () => {
     (roundsData || []).forEach(r => {
         const label = `${r.liga ? r.liga + ' ' : ''}${r.saison || ''} ${r.jahr || ''} Runde ${r.runde || ''}`.trim() || `Runde ${r.runde}`;
         if (!allRoundsList.some(item => item.label === label)) {
-            allRoundsList.push({ label, roundNr: r.runde, full: `${r.runde}. Runde`, seasonKey: r.seasonKey || '2026/2027', id: r.id });
+            allRoundsList.push({ label, roundNr: r.runde, full: `${r.runde}. Runde`, seasonKey: r.seasonKey || (Store.getData()?.currentSeason || '2022/2023'), id: r.id });
         }
     });
 
     // Also include rounds from gamesData if any missing
     (gamesData || []).forEach(g => {
         if (g.round && !allRoundsList.some(item => item.label === g.round || item.full === g.round)) {
-            allRoundsList.push({ label: g.round, roundNr: g.roundNr, full: g.round, seasonKey: g.seasonKey || '2026/2027' });
+            allRoundsList.push({ label: g.round, roundNr: g.roundNr, full: g.round, seasonKey: g.seasonKey || (Store.getData()?.currentSeason || '2022/2023') });
         }
     });
 
@@ -799,7 +798,7 @@ const populateFilterAndFormDropdowns = () => {
 
     if (modalRoundSelect) {
         modalRoundSelect.innerHTML = allRoundsList.map(r => `
-            <option value="${r.full}" data-season-key="${r.seasonKey || '2026/2027'}" data-round-id="${r.id || ''}">${r.label || r.full}</option>
+            <option value="${r.full}" data-season-key="${r.seasonKey || (Store.getData()?.currentSeason || '2022/2023')}" data-round-id="${r.id || ''}">${r.label || r.full}</option>
         `).join('');
         modalRoundSelect.onchange = updateTeamsForSelectedRound;
     }
@@ -934,7 +933,7 @@ const closeReportModal = () => {
 const deleteGame = (idx) => {
     const match = gamesData[idx];
     if (!match) return;
-    const targetSeasonKey = match.seasonKey || '2026/2027';
+    const targetSeasonKey = match.seasonKey || (Store.getData()?.currentSeason || '2022/2023');
 
     if (confirm(`Möchten Sie das Spiel "${match.home} vs. ${match.away}" wirklich löschen?`)) {
         Store.deleteMatch(targetSeasonKey, match.id);
@@ -975,11 +974,11 @@ const saveGameForm = (e) => {
 
     const roundSelect = document.getElementById('input-game-round');
     const selectedRoundOpt = roundSelect?.selectedOptions[0];
-    const targetSeasonKey = selectedRoundOpt?.getAttribute('data-season-key') || '2026/2027';
+    const targetSeasonKey = selectedRoundOpt?.getAttribute('data-season-key') || (Store.getData()?.currentSeason || '2022/2023');
 
     let existingMatch = editingMatchId !== null ? Store.getMatch(targetSeasonKey, editingMatchId) : null;
     if (!existingMatch && editingMatchId !== null) {
-        existingMatch = Store.getMatch('2026/2027', editingMatchId);
+        existingMatch = Store.getMatch(Store.getData()?.currentSeason || '2022/2023', editingMatchId);
     }
 
     const matchData = {
@@ -1268,7 +1267,7 @@ const saveReportForm = (e) => {
         events: events
     };
 
-    const targetSeasonKey = currentReportMatch.seasonKey || '2026/2027';
+    const targetSeasonKey = currentReportMatch.seasonKey || (Store.getData()?.currentSeason || '2022/2023');
     Store.saveMatch(targetSeasonKey, updatedMatch);
     Store.recalculateSeason(targetSeasonKey);
     closeReportModal();

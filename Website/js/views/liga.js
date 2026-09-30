@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790560003400';
+import { Store } from '../store.js?v=1790560003600';
 
 
 let currentViewSeason = null;
@@ -7,7 +7,7 @@ export function viewLiga() {
   const data = Store.getData();
   const leagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
   const currentLeague = leagues.find(l => l.isCurrent) || leagues[0];
-  const defaultSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : "2026/2027";
+  const defaultSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : (data.currentSeason || "2022/2023");
 
   let visibleItems = Store.getVisibleSeasonItems ? Store.getVisibleSeasonItems() : [];
   if (!visibleItems || visibleItems.length === 0) {
@@ -34,7 +34,7 @@ export function viewLiga() {
     } else if (data && data.seasons && Object.keys(data.seasons).length > 0) {
       visibleItems = Object.keys(data.seasons).map(s => ({
         key: s,
-        label: s.includes('2026/2027') ? 'Liga 2026/2027' : (s.startsWith('Saison') || s.startsWith('Liga') ? s : `Saison ${s}`)
+        label: s.startsWith('DSG') || s.startsWith('1.') || s.startsWith('Saison') || s.startsWith('Liga') ? s : `DSG Liga ${s}`
       }));
     } else {
       visibleItems = [];

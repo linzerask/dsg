@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790560002000';
+import { Store } from '../store.js?v=1790560003600';
 import { storage } from '../firebase.js';
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-storage.js";
 import { renderIcon } from '../icons.js';

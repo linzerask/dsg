@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560003400';
-import { showToast } from './admin.js?v=1790560003400';
+import { Store } from '../store.js?v=1790560003600';
+import { showToast } from './admin.js?v=1790560003600';
 
 let roundsData = [];
 let leaguesData = [];
@@ -230,8 +230,6 @@ const filterAndSortData = () => {
 
     const isLeagueActive = (r) => {
         if (!r) return false;
-        if (r.seasonKey === '2026/2027') return true;
-        if (r.liga && (r.liga.includes('26/27') || r.liga.includes('2026/2027'))) return true;
         const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
         return activeLeagues.some(l => 
             (l.seasonKey && l.seasonKey === r.seasonKey) || 
@@ -356,8 +354,6 @@ const renderTable = () => {
 
     const isLeagueActive = (r) => {
         if (!r) return false;
-        if (r.seasonKey === '2026/2027') return true;
-        if (r.liga && (r.liga.includes('26/27') || r.liga.includes('2026/2027'))) return true;
         const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
         return activeLeagues.some(l => 
             (l.seasonKey && l.seasonKey === r.seasonKey) || 
@@ -519,12 +515,12 @@ const populateLeaguesDropdowns = () => {
 
     if (modalSelect) {
         const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
-        const leaguesToShow = activeLeagues.length > 0 ? activeLeagues : (leaguesData && leaguesData.length > 0 ? leaguesData : [{ name: 'DSG Liga', year: '2026/2027', seasonKey: '2026/2027' }]);
+        const leaguesToShow = activeLeagues.length > 0 ? activeLeagues : (leaguesData && leaguesData.length > 0 ? leaguesData : [{ name: 'DSG Liga', year: '2022/2023', seasonKey: '2022/2023' }]);
         
         modalSelect.innerHTML = leaguesToShow.map(l => {
             const leagueName = l.name || 'DSG Liga';
             const yearDisplay = l.year ? ` (${l.year})` : (l.seasonKey ? ` (${l.seasonKey})` : '');
-            const seasonKey = l.seasonKey || l.year || '2026/2027';
+            const seasonKey = l.seasonKey || l.year || (Store.getData()?.currentSeason || '2022/2023');
             return `<option value="${leagueName}" data-season="${seasonKey}" data-year="${l.year || seasonKey}">${leagueName}${yearDisplay}</option>`;
         }).join('');
     }
@@ -537,7 +533,7 @@ const updateSuggestedRoundNumber = () => {
     if (!ligaSelect || !roundNrInput) return;
 
     const selectedOpt = ligaSelect.selectedOptions[0];
-    const seasonKey = selectedOpt?.getAttribute('data-season') || '2026/2027';
+    const seasonKey = selectedOpt?.getAttribute('data-season') || (Store.getData()?.currentSeason || '2022/2023');
     const ligaName = ligaSelect.value;
 
     const matchingRounds = roundsData.filter(r => 
@@ -599,8 +595,8 @@ const openEditRoundModal = (idx = null) => {
                 const opt = document.createElement('option');
                 opt.value = r.liga || 'DSG Liga';
                 opt.text = `${r.liga || 'DSG Liga'}${r.jahr ? ` (${r.jahr})` : ''}`;
-                opt.setAttribute('data-season', r.seasonKey || '2026/2027');
-                opt.setAttribute('data-year', r.jahr || r.seasonKey || '2026');
+                opt.setAttribute('data-season', r.seasonKey || (Store.getData()?.currentSeason || '2022/2023'));
+                opt.setAttribute('data-year', r.jahr || r.seasonKey || '2022/2023');
                 ligaSelect.appendChild(opt);
                 ligaSelect.value = opt.value;
             } else {
@@ -654,7 +650,7 @@ const openViewRoundGamesModal = (idx) => {
         subTitleEl.innerText = `${getDisplayLeagueName(round)} (${getDisplaySeason(round)})${dateRange}`;
     }
 
-    const targetSeasonKey = round.seasonKey || '2026/2027';
+    const targetSeasonKey = round.seasonKey || (Store.getData()?.currentSeason || '2022/2023');
     let allSeasonMatches = Store.getMatches(targetSeasonKey) || [];
 
     // Fallback: If no matches in targetSeasonKey, search across all seasons
@@ -881,7 +877,7 @@ export const initAdminRounds = async () => {
             const ligaSelect = document.getElementById('modal-round-liga');
             const selectedOpt = ligaSelect?.selectedOptions[0];
             const liga = ligaSelect ? ligaSelect.value : 'DSG Liga';
-            const seasonKey = selectedOpt?.getAttribute('data-season') || '2026/2027';
+            const seasonKey = selectedOpt?.getAttribute('data-season') || (Store.getData()?.currentSeason || '2022/2023');
             const jahr = selectedOpt?.getAttribute('data-year') || seasonKey;
             const saison = liga;
 

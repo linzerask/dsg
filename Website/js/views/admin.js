@@ -1,11 +1,11 @@
-import { Store } from '../store.js?v=1790560003500';
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560003500';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560003500';
-import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560003500';
-import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560003500';
-import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560003500';
-import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790560003500';
-import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1790560003500';
+import { Store } from '../store.js?v=1790560003600';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560003600';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560003600';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560003600';
+import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560003600';
+import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560003600';
+import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790560003600';
+import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1790560003600';
 
 export const showToast = (message, isError = false) => {
   let toast = document.getElementById('dsg-admin-toast');
@@ -382,18 +382,19 @@ export const bindAdmin = () => {
 
   // Populate Teams & Seasons
   const data = Store.getData();
-  const seasons = Object.keys(data.seasons || {}).filter(s => s !== "2025/2026");
+  const seasons = Object.keys(data.seasons || {});
+  const activeSeason = data.currentSeason || seasons[0] || "2022/2023";
   const matchSeasonSelect = document.getElementById('match-season');
   const matchListSeasonSelect = document.getElementById('match-list-season');
   const teamSeasonSelect = document.getElementById('team-season-select');
   if (matchSeasonSelect) {
-    matchSeasonSelect.innerHTML = seasons.map(s => `<option value="${s}" ${s === "2026/2027" ? 'selected' : ''}>${s}</option>`).join('');
+    matchSeasonSelect.innerHTML = seasons.map(s => `<option value="${s}" ${s === activeSeason ? 'selected' : ''}>${s}</option>`).join('');
   }
   if (matchListSeasonSelect) {
-    matchListSeasonSelect.innerHTML = seasons.map(s => `<option value="${s}" ${s === "2026/2027" ? 'selected' : ''}>${s}</option>`).join('');
+    matchListSeasonSelect.innerHTML = seasons.map(s => `<option value="${s}" ${s === activeSeason ? 'selected' : ''}>${s}</option>`).join('');
   }
   if (teamSeasonSelect) {
-    teamSeasonSelect.innerHTML = seasons.map(s => `<option value="${s}" ${s === "2026/2027" ? 'selected' : ''}>${s}</option>`).join('');
+    teamSeasonSelect.innerHTML = seasons.map(s => `<option value="${s}" ${s === activeSeason ? 'selected' : ''}>${s}</option>`).join('');
   }
 
   const populateTeamsDropdown = (season) => {

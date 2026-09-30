@@ -1,12 +1,12 @@
-import { Store } from '../store.js?v=1790560002000';
-import { computeAllTimeStats } from './statistiken.js?v=1790560002000';
-import { renderIcon } from '../icons.js?v=1790560002000';
+import { Store } from '../store.js?v=1790560003600';
+import { computeAllTimeStats } from './statistiken.js?v=1790560003600';
+import { renderIcon } from '../icons.js?v=1790560003600';
 
 export const viewHome = () => {
   const data = Store.getData();
   const leagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
   const currentLeague = leagues.find(l => l.isCurrent) || leagues[0];
-  const defaultHomeSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : (data.currentSeason || "2026/2027");
+  const defaultHomeSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : (data.currentSeason || "2022/2023");
 
   const rawTeams = Store.getLiga(defaultHomeSeason) || [];
   const sortedTeams = [...rawTeams].sort((a, b) => {

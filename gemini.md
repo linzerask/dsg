@@ -168,10 +168,20 @@ DSG Liga/
 
 ---
 
-## 13. Admin Data Grid Default Sort Orders
+## 13. Admin Data Grid Default Sort Orders & Nomenclature
 * **The Rule:**
   1. **Spieler Tab (`adminPlayers.js`):** Default sort order is set to **`Datum (neueste)` (`date-desc`)**, sorting by membership/registration date (`seit`) descending from newest to oldest, with `# ID` descending as the secondary tiebreaker.
-  2. **Spiele Tab (`adminGames.js`):** Default sort order is set to **`Datum (älteste)` (`date-asc`)**, ordering matches chronologically.
+  2. **Spiele Tab (`adminGames.js`):** Default sort order is set to **`Datum (älteste)` (`date-asc`)**, ordering matches chronologically. Sorting options are:
+     - `Saison (neueste)` (`season-desc`): sorts by season year descending, with ascending match round and date as tiebreaker.
+     - `Saison (älteste)` (`season-asc`): sorts by season year ascending, with ascending match round and date as tiebreaker.
+     - `Datum (neueste)` (`date-desc`): sorts by match epoch timestamp descending (accounting for time `HH:MM`).
+     - `Datum (älteste)` (`date-asc`): sorts by match epoch timestamp ascending.
+     - `Runde (1 → ..)` (`round-asc`): sorts by round number ascending, with newest season as tiebreaker.
+     - `Runde (.. → 1)` (`round-desc`): sorts by round number descending, with newest season as tiebreaker.
+     - `Liga (A–Z)` (`league-asc`): sorts by league/season name alphabetically.
+     - `Heim (A–Z)` (`home-asc`): sorts by Home team name.
+     - `Auswärts (A–Z)` (`away-asc`): sorts by Away team name.
+     - **Date Formatting:** Match dates are normalized to 4-digit Austrian format `DD.MM.YYYY HH:MM`.
   3. **Spielrunden Tab (`adminRounds.js`):** Default sort order is **`Saison (neueste)` (`season-desc`)** with ascending round tiebreaker. Sorting options are:
      - `Saison (neueste)` (`season-desc`)
      - `Saison (älteste)` (`season-asc`)
@@ -262,3 +272,12 @@ DSG Liga/
   2. **Top-Level League Chooser:** The **Liga** selector sits at the very top of the form and is dynamically populated from active leagues configured in the **Ligen verwalten** tab (`Store.getAdminLeaguesSync()`).
   3. **Auto-Inherited Properties:** Selecting a league automatically assigns `liga`, `seasonKey`, `jahr`, and `saison` to the round.
   4. **Smart Auto-Round Increment:** Selecting a league automatically computes and suggests the next round number based on existing rounds in that league.
+
+---
+
+## 24. Canonical Database Initialization & Zero Hardcoded Season Fallbacks
+* **The Pitfall:** Hardcoding `"2026/2027"` as fallback season in `store.js`, `liga.js`, `home.js`, `adminGames.js`, and `adminRounds.js` caused uninitialized or reset state to fabricate empty future seasons (`1. Klasse 2026/2027`, `DSG Liga 2026/2027`) and save them to Firestore and local storage, overwriting real scraped historical seasons.
+* **The Rule:**
+  1. **Dynamic Season Fallbacks:** Always resolve the default season via `(Store.getData()?.currentSeason || "2022/2023")` or `(currentLeague.seasonKey || currentLeague.name)`. Never hardcode speculative future season years.
+  2. **Canonical Data Protection:** On cache invalidation (`dsg_data_v64`, `dsg_admin_leagues_v22`, `dsg_admin_rounds_v22`), `store.js` eagerly seeds from `data/leagues.json`, `data/rounds.json`, and `data/liga.json` to guarantee that the single canonical league (`#1 DSG Liga 2022/2023`), its 8 teams, and its 7 matchday rounds are intact and immediately synchronized to Firestore.
+
