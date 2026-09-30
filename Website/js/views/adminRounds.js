@@ -35,11 +35,14 @@ export const renderAdminRounds = () => {
                     <option value="active">Nur Aktiv</option>
                     <option value="inactive">Nur Inaktiv</option>
                 </select>
-                <select id="round-sort-select" class="admin-input" style="width: 160px;">
-                    <option value="runde-asc">Runde (1-14)</option>
-                    <option value="runde-desc">Runde (14-1)</option>
-                    <option value="jahr-desc">Jahr (neueste)</option>
-                    <option value="date-asc">Datum von</option>
+                <select id="round-sort-select" class="admin-input" style="width: 175px;">
+                    <option value="season-desc">Saison (neueste)</option>
+                    <option value="season-asc">Saison (älteste)</option>
+                    <option value="date-desc">Datum (neueste)</option>
+                    <option value="date-asc">Datum (älteste)</option>
+                    <option value="runde-asc">Runde (1 → ..)</option>
+                    <option value="runde-desc">Runde (.. → 1)</option>
+                    <option value="league-asc">Liga (A–Z)</option>
                 </select>
             </div>
         </div>
@@ -149,11 +152,45 @@ export const renderAdminRounds = () => {
     `;
 };
 
+const parseRoundDate = (dateStr) => {
+    if (!dateStr) return 0;
+    const str = String(dateStr).trim();
+    if (str.includes('-')) {
+        const parts = str.split('-');
+        if (parts.length === 3) {
+            return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])).getTime() || 0;
+        }
+    }
+    if (str.includes('.')) {
+        const parts = str.split('.');
+        if (parts.length === 3) {
+            let year = parseInt(parts[2]);
+            if (year < 100) year += 2000;
+            return new Date(year, parseInt(parts[1]) - 1, parseInt(parts[0])).getTime() || 0;
+        }
+    }
+    const t = Date.parse(str);
+    return isNaN(t) ? 0 : t;
+};
+
+const extractSeasonYear = (r) => {
+    if (!r) return 0;
+    const yrStr = String(r.seasonKey || r.jahr || r.year || '').replace(/\D/g, '');
+    if (yrStr.length >= 4) return parseInt(yrStr.slice(0, 4)) || 0;
+    return 0;
+};
+
+const extractRoundNumber = (r) => {
+    if (!r) return 0;
+    const m = String(r.runde || '').match(/\d+/);
+    return m ? parseInt(m[0]) || 0 : 0;
+};
+
 const filterAndSortData = () => {
     const searchVal = (document.getElementById('round-search')?.value || '').toLowerCase().trim();
     const leagueFilter = document.getElementById('round-league-filter')?.value || 'all';
     const statusFilter = document.getElementById('round-status-filter')?.value || 'all';
-    const sortVal = document.getElementById('round-sort-select')?.value || 'runde-asc';
+    const sortVal = document.getElementById('round-sort-select')?.value || 'season-desc';
 
     const isLeagueActive = (r) => {
         if (!r) return false;
@@ -183,21 +220,62 @@ const filterAndSortData = () => {
         return matchesSearch && matchesLeague && matchesStatus;
     });
 
-    // Handle sortVal
-    if (sortVal === 'runde-asc') {
-        currentSort = { column: 'runde', asc: true };
-    } else if (sortVal === 'runde-desc') {
-        currentSort = { column: 'runde', asc: false };
-    } else if (sortVal === 'jahr-desc') {
-        currentSort = { column: 'jahr', asc: false };
-    } else if (sortVal === 'date-asc') {
-        currentSort = { column: 'datumVon', asc: true };
-    }
-
-    // Sorting
+    // Multi-tier sorting
     filteredData.sort((a, b) => {
+        if (sortVal === 'season-desc') {
+            const diffYear = extractSeasonYear(b) - extractSeasonYear(a);
+            if (diffYear !== 0) return diffYear;
+            return extractRoundNumber(a) - extractRoundNumber(b);
+        }
+        if (sortVal === 'season-asc') {
+            const diffYear = extractSeasonYear(a) - extractSeasonYear(b);
+            if (diffYear !== 0) return diffYear;
+            return extractRoundNumber(a) - extractRoundNumber(b);
+        }
+        if (sortVal === 'date-desc') {
+            const dateA = parseRoundDate(a.datumVon || a.datumBis);
+            const dateB = parseRoundDate(b.datumVon || b.datumBis);
+            if (dateB !== dateA) return dateB - dateA;
+            return extractRoundNumber(b) - extractRoundNumber(a);
+        }
+        if (sortVal === 'date-asc') {
+            const dateA = parseRoundDate(a.datumVon || a.datumBis);
+            const dateB = parseRoundDate(b.datumVon || b.datumBis);
+            if (dateA !== dateB) return dateA - dateB;
+            return extractRoundNumber(a) - extractRoundNumber(b);
+        }
+        if (sortVal === 'runde-asc') {
+            const diffRunde = extractRoundNumber(a) - extractRoundNumber(b);
+            if (diffRunde !== 0) return diffRunde;
+            return extractSeasonYear(b) - extractSeasonYear(a);
+        }
+        if (sortVal === 'runde-desc') {
+            const diffRunde = extractRoundNumber(b) - extractRoundNumber(a);
+            if (diffRunde !== 0) return diffRunde;
+            return extractSeasonYear(b) - extractSeasonYear(a);
+        }
+        if (sortVal === 'league-asc') {
+            const nameA = String(a.liga || '').toLowerCase();
+            const nameB = String(b.liga || '').toLowerCase();
+            const cmp = nameA.localeCompare(nameB);
+            if (cmp !== 0) return cmp;
+            return extractRoundNumber(a) - extractRoundNumber(b);
+        }
+
+        // Fallback for direct column header sorting
         let valA = a[currentSort.column];
         let valB = b[currentSort.column];
+
+        if (currentSort.column === 'datumVon' || currentSort.column === 'datumBis') {
+            valA = parseRoundDate(valA);
+            valB = parseRoundDate(valB);
+        } else if (currentSort.column === 'runde') {
+            valA = extractRoundNumber(a);
+            valB = extractRoundNumber(b);
+        } else if (currentSort.column === 'jahr' || currentSort.column === 'saison') {
+            valA = extractSeasonYear(a);
+            valB = extractSeasonYear(b);
+        }
 
         if (typeof valA === 'number' && typeof valB === 'number') {
             return currentSort.asc ? valA - valB : valB - valA;
