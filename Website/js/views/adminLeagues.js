@@ -692,174 +692,236 @@ const renderModalContent = () => {
             return numA - numB;
         });
 
+        const soccerBallSvg = `
+          <svg class="goal-svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; flex-shrink: 0;">
+            <circle cx="12" cy="12" r="10" stroke-width="1.8"></circle>
+            <path d="M12 7.5L15.8 10.2L14.4 15H9.6L8.2 10.2L12 7.5Z" fill="currentColor" fill-opacity="0.25" stroke-width="1.8"></path>
+            <path d="M12 2v5.5"></path>
+            <path d="M21.5 8.5l-5.7 1.7"></path>
+            <path d="M18 20.3l-3.6-5.3"></path>
+            <path d="M6 20.3l3.6-5.3"></path>
+            <path d="M2.5 8.5l5.7 1.7"></path>
+          </svg>
+        `;
+
+        const renderBadge = (type, count) => {
+          if (type === 'goal') {
+            const ballCount = Math.max(1, parseInt(count) || 1);
+            const balls = Array(ballCount).fill(soccerBallSvg).join('');
+            return `<span class="event-icon-wrapper" title="${ballCount > 1 ? ballCount + ' Tore' : 'Tor'}">${balls}</span>`;
+          }
+          if (type === 'yellow') {
+            const cardCount = Math.max(1, parseInt(count) || 1);
+            if (cardCount >= 2) {
+              return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte (2. Gelbe)"></span>`;
+            }
+            return `<span class="match-card-badge-card badge-yellow" title="Gelbe Karte"></span>`;
+          }
+          if (type === 'yellowRed') {
+            return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte"></span>`;
+          }
+          if (type === 'red') {
+            return `<span class="match-card-badge-card badge-red" title="Rote Karte"></span>`;
+          }
+          return '';
+        };
+
+        const renderTeamReds = (count) => {
+          if (!count || count <= 0) return '';
+          const cards = Array(count).fill('<span class="team-red-card-badge" title="Rote Karte / Platzverweis"></span>').join('');
+          return `<span class="team-red-cards" title="${count > 1 ? count + ' Platzverweise' : 'Platzverweis'}">${cards}</span>`;
+        };
+
         container.innerHTML = `
             <div style="display: flex; flex-direction: column; gap: 24px;">
                 ${roundKeys.map(rKey => `
                     <div>
-                        <h4 style="color: var(--color-accent); font-size: 1.1rem; margin-bottom: 12px; border-bottom: 2px solid rgba(0,179,65,0.2); padding-bottom: 6px;">${rKey}</h4>
+                        <h4 style="color: var(--color-accent); font-size: 1.05rem; font-weight: 800; margin-bottom: 12px; border-bottom: 2px solid rgba(0,179,65,0.2); padding-bottom: 6px;">${rKey}</h4>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
-                            ${roundsMap[rKey].map((m, mIdx) => {
-                                const matchId = `m-${rKey.replace(/\s+/g, '')}-${mIdx}`;
-                                const isCanceled = (m.status || '').toLowerCase().includes('abgesagt');
-                                const isPostponed = (m.status || '').toLowerCase().includes('verschoben');
-                                let statusBadge = '';
-                                if (isCanceled) statusBadge = `<span class="badge" style="background: #e74c3c; color: white; font-size: 0.7rem;">${m.status}</span>`;
-                                else if (isPostponed) statusBadge = `<span class="badge" style="background: #f39c12; color: white; font-size: 0.7rem;">Verschoben</span>`;
+                            ${roundsMap[rKey].map(m => {
+                                const isAbgesagtStatus = m.status === 'Abgesagt 3:0' || m.status === 'Abgesagt 0:3';
+                                const isAbgesagt = isAbgesagtStatus || (m.score && m.score.includes('Abgesagt')) || (m.status || '').toLowerCase().includes('abgesagt');
+                                const isUpcoming = m.status === 'Upcoming';
+                                const hasEvents = (m.events && m.events.length > 0) || (m.scorers && m.scorers.length > 0) || (m.cards && m.cards.length > 0);
 
-                                const isTeamMatch = (itemTeam, targetTeam) => {
-                                    if (!itemTeam || !targetTeam) return false;
-                                    const clean = s => s.toLowerCase().replace(/[^a-z0-9]/g, '').replace(/^(fc|sc|sv|union|dsg|ask|askoe|st|sankt)/g, '');
-                                    const a = clean(itemTeam);
-                                    const b = clean(targetTeam);
-                                    return itemTeam.toLowerCase().trim() === targetTeam.toLowerCase().trim() ||
-                                           (a.length > 2 && b.length > 2 && (a.includes(b) || b.includes(a)));
-                                };
+                                let displayScore = m.score || "-:-";
+                                if (m.status === 'Abgesagt 3:0') displayScore = "Abges. 3:0";
+                                else if (m.status === 'Abgesagt 0:3') displayScore = "Abges. 0:3";
+                                else if (m.status === 'Postponed' || (m.status || '').toLowerCase().includes('verschoben')) displayScore = "Verschoben";
+
+                                let scoreBadgeClass = 'score-normal';
+                                if (isAbgesagtStatus || isAbgesagt) {
+                                  scoreBadgeClass = 'score-abgesagt';
+                                } else if (isUpcoming || displayScore === '- : -' || displayScore === '-:-') {
+                                  scoreBadgeClass = 'score-upcoming';
+                                }
+
+                                const dateParts = m.date ? m.date.split('.') : [];
+                                let weekdayStr = '';
+                                if (dateParts.length === 3) {
+                                  let year = parseInt(dateParts[2]); if (year < 100) year += 2000; const d = new Date(year, dateParts[1] - 1, dateParts[0]);
+                                  const days = ['SO', 'MO', 'DI', 'MI', 'DO', 'FR', 'SA'];
+                                  if (!isNaN(d.getDay())) {
+                                    weekdayStr = `<span style="font-weight: 700; margin-right: 4px;">${days[d.getDay()]}</span>`;
+                                  }
+                                }
 
                                 const homeName = m.home || m.homeTeam || 'Heim';
                                 const awayName = m.away || m.awayTeam || 'Gast';
 
-                                const goals = getMatchGoals(m);
-                                const cards = getMatchCards(m);
+                                const norm = (s) => (s || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').replace(/\s+/g, '').trim();
+                                const homeNorm = norm(homeName);
+                                const awayNorm = norm(awayName);
 
-                                const homeGoals = goals.filter(g => isTeamMatch(g.team, homeName));
-                                const awayGoals = goals.filter(g => !isTeamMatch(g.team, homeName) && (isTeamMatch(g.team, awayName) || !isTeamMatch(g.team, homeName)));
+                                let combinedEvents = (m.events && m.events.length > 0) ? [...m.events] : [];
+                                if (combinedEvents.length === 0) {
+                                  (m.scorers || []).forEach(s => combinedEvents.push({ type: 'goal', player: s.name || s.player, team: s.team, count: s.count || 1 }));
+                                  (m.cards || []).forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1 }));
+                                }
 
-                                const homeCards = cards.filter(c => isTeamMatch(c.team, homeName));
-                                const awayCards = cards.filter(c => !isTeamMatch(c.team, homeName) && (isTeamMatch(c.team, awayName) || !isTeamMatch(c.team, homeName)));
-
-                                const renderTeamGoals = (teamGoals) => {
-                                    if (!teamGoals || teamGoals.length === 0) {
-                                        return '<p style="color: var(--color-text-secondary); font-size: 0.8rem; margin: 0; font-style: italic; padding: 4px 8px;">Keine Tore</p>';
-                                    }
-                                    return `
-                                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                                            ${teamGoals.map(g => `
-                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 0.85rem;">
-                                                    <span style="font-weight: 600; color: var(--color-text-primary);">${g.name} ${g.count > 1 ? `<span style="color: var(--color-accent); font-weight: 700;">(${g.count}x)</span>` : ''}</span>
-                                                    <span style="font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600;">${g.minute ? `${g.minute}'` : ''}</span>
-                                                </div>
-                                            `).join('')}
-                                        </div>
-                                    `;
+                                const isHomeEvent = (e) => {
+                                  const t = String(e.team || '');
+                                  return t === String(homeName) || (homeNorm && norm(t) === homeNorm);
+                                };
+                                const isAwayEvent = (e) => {
+                                  const t = String(e.team || '');
+                                  return t === String(awayName) || (awayNorm && norm(t) === awayNorm);
                                 };
 
-                                const renderTeamCards = (teamCards) => {
-                                    if (!teamCards || teamCards.length === 0) {
-                                        return '<p style="color: var(--color-text-secondary); font-size: 0.8rem; margin: 0; font-style: italic; padding: 4px 8px;">Keine Karten</p>';
+                                const groupEvents = (eventsList) => {
+                                  const playerEvents = new Map();
+                                  eventsList.forEach(e => {
+                                    const player = (e.player || e.name || '').trim();
+                                    if (!player) return;
+                                    const type = e.type || 'goal';
+                                    if (!playerEvents.has(player)) playerEvents.set(player, []);
+                                    playerEvents.get(player).push({ type, count: parseInt(e.count) || 1 });
+                                  });
+
+                                  const results = [];
+                                  playerEvents.forEach((types, player) => {
+                                    const hasYellowRed = types.some(t => t.type === 'yellowRed');
+                                    const hasRed = types.some(t => t.type === 'red');
+                                    const yellowCount = types.filter(t => t.type === 'yellow').reduce((sum, t) => sum + t.count, 0);
+                                    const goalCount = types.filter(t => t.type === 'goal').reduce((sum, t) => sum + t.count, 0);
+
+                                    if (goalCount > 0) {
+                                      results.push({ player, type: 'goal', count: goalCount });
                                     }
-                                    return `
-                                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                                            ${teamCards.map(c => {
-                                                let cardBadge = '<span style="display:inline-block;width:10px;height:14px;background:#f1c40f;border-radius:2px;"></span>';
-                                                let cardColor = 'var(--color-text-primary)';
-                                                if (c.type === 'yellowRed') {
-                                                    cardBadge = '<span style="display:inline-flex;gap:2px;"><span style="display:inline-block;width:8px;height:14px;background:#f1c40f;border-radius:1px;"></span><span style="display:inline-block;width:8px;height:14px;background:#e74c3c;border-radius:1px;"></span></span>';
-                                                    cardColor = '#f39c12';
-                                                } else if (c.type === 'red') {
-                                                    cardBadge = '<span style="display:inline-block;width:10px;height:14px;background:#e74c3c;border-radius:2px;"></span>';
-                                                    cardColor = '#e74c3c';
-                                                }
-                                                return `
-                                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: rgba(0,0,0,0.03); border-radius: 4px; font-size: 0.85rem;">
-                                                        <div style="display: flex; align-items: center; gap: 6px;">
-                                                            ${cardBadge}
-                                                            <span style="font-weight: 600; color: ${cardColor};">${c.name}</span>
-                                                        </div>
-                                                        <span style="font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600;">${c.minute ? `${c.minute}'` : ''}</span>
-                                                    </div>
-                                                `;
-                                            }).join('')}
-                                        </div>
-                                    `;
+                                    if (hasYellowRed || (hasRed && yellowCount > 0) || yellowCount >= 2) {
+                                      results.push({ player, type: 'yellowRed', count: 1 });
+                                    } else if (hasRed) {
+                                      results.push({ player, type: 'red', count: 1 });
+                                    } else if (yellowCount > 0) {
+                                      results.push({ player, type: 'yellow', count: yellowCount });
+                                    }
+                                  });
+                                  return results;
                                 };
+
+                                const homeGrouped = groupEvents(combinedEvents.filter(isHomeEvent));
+                                const awayGrouped = groupEvents(combinedEvents.filter(isAwayEvent));
+
+                                const countReds = (evList) => {
+                                  const dismissedPlayers = new Set();
+                                  evList.forEach(e => {
+                                    const p = (e.player || e.name || '').trim();
+                                    if (!p) return;
+                                    const t = e.type || 'yellow';
+                                    if (t === 'red' || t === 'yellowRed') {
+                                      dismissedPlayers.add(p);
+                                    }
+                                  });
+                                  const yellowCounts = new Map();
+                                  evList.forEach(e => {
+                                    const p = (e.player || e.name || '').trim();
+                                    if (!p) return;
+                                    if (e.type === 'yellow') {
+                                      yellowCounts.set(p, (yellowCounts.get(p) || 0) + (parseInt(e.count) || 1));
+                                    }
+                                  });
+                                  yellowCounts.forEach((cnt, p) => {
+                                    if (cnt >= 2) dismissedPlayers.add(p);
+                                  });
+                                  return dismissedPlayers.size;
+                                };
+
+                                const homeReds = countReds(combinedEvents.filter(isHomeEvent));
+                                const awayReds = countReds(combinedEvents.filter(isAwayEvent));
+
+                                const venueLocation = m.venue || m.location;
 
                                 return `
-                                    <div class="match-item-card" style="border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); overflow: hidden; transition: border-color 0.2s;">
-                                        <!-- Main Compact Header (Clickable for dropdown) -->
-                                        <div class="match-toggle-header" data-target="${matchId}" style="padding: 12px 16px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; user-select: none;">
-                                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--color-text-secondary);">
-                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                    <div class="match-card glass-card ${hasEvents ? 'has-events-accordion' : ''}" style="border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface); margin-bottom: 0; cursor: ${hasEvents ? 'pointer' : 'default'};">
+                                        <div class="match-card-meta">
+                                            <div class="match-meta-left">
+                                                <span class="match-meta-item">
                                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                                    ${m.date || ''} ${m.time ? `• ${m.time} Uhr` : ''}
+                                                    ${weekdayStr}${m.date || ''}${m.time ? ' • ' + m.time + ' Uhr' : ''}
                                                 </span>
-                                                ${m.location ? `
-                                                    <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                ${venueLocation ? `
+                                                    <span class="match-meta-item hide-mobile">
                                                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                                                        ${m.location}
+                                                        ${venueLocation}
                                                     </span>
                                                 ` : ''}
                                             </div>
-                                            <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;">
-                                                <div style="text-align: right; font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">${homeName}</div>
-                                                <div style="text-align: center; min-width: 90px; display: flex; flex-direction: column; align-items: center;">
-                                                    <span style="font-size: 1.15rem; font-weight: 900; color: ${isCanceled ? '#e74c3c' : 'var(--color-accent)'};">${m.score || '-:-'}</span>
-                                                    ${m.ht ? `<span style="font-size: 0.75rem; color: var(--color-text-secondary);">(HT ${m.ht})</span>` : (m.halftime ? `<span style="font-size: 0.75rem; color: var(--color-text-secondary);">(HT ${m.halftime})</span>` : '')}
-                                                    ${statusBadge}
-                                                </div>
-                                                <div style="text-align: left; font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">${awayName}</div>
+                                            <div class="match-meta-right">
+                                                ${venueLocation ? `
+                                                    <span class="match-meta-item show-mobile" style="opacity: 0.85;">
+                                                        ${venueLocation}
+                                                    </span>
+                                                ` : ''}
+                                                ${hasEvents ? `
+                                                    <span class="match-details-indicator">
+                                                        <span>Details</span>
+                                                        <svg class="details-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                    </span>
+                                                ` : ''}
                                             </div>
-                                            <div style="display: flex; justify-content: center; align-items: center; margin-top: 2px;">
-                                                <span class="accordion-hint" style="font-size: 0.75rem; color: var(--color-accent); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
-                                                    <span class="hint-text">Details anzeigen</span>
-                                                    <svg class="hint-arrow-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        </div>
+
+                                        <div class="match-card-body">
+                                            <div class="match-team match-team-home">
+                                                <span class="team-name">${homeName}</span>
+                                                ${renderTeamReds(homeReds)}
+                                            </div>
+                                            
+                                            <div class="match-score-center">
+                                                <span class="match-score-badge ${scoreBadgeClass}">
+                                                    ${displayScore}
                                                 </span>
+                                                ${(m.ht && !isAbgesagtStatus) ? `<span class="match-ht-badge">HT ${m.ht}</span>` : (m.halftime && !isAbgesagtStatus ? `<span class="match-ht-badge">HT ${m.halftime}</span>` : '')}
+                                            </div>
+                                            
+                                            <div class="match-team match-team-away">
+                                                ${renderTeamReds(awayReds)}
+                                                <span class="team-name">${awayName}</span>
                                             </div>
                                         </div>
 
-                                        <!-- Collapsible Event Details (Grouped by Team: Home on Left, Away on Right) -->
-                                        <div id="${matchId}" class="match-details-body" style="display: none; padding: 16px; border-top: 1px solid var(--color-border); background: rgba(0,0,0,0.015);">
-                                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-                                                
-                                                <!-- Home Team Events (Left) -->
-                                                <div style="display: flex; flex-direction: column; gap: 12px; border-right: 1px solid var(--color-border); padding-right: 16px;">
-                                                    <div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem; border-bottom: 2px solid rgba(0,179,65,0.4); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
-                                                        <span style="color: var(--color-text-primary); font-weight: 800;">${homeName}</span>
-                                                        <span style="font-size: 0.7rem; color: var(--color-accent); font-weight: 700; background: rgba(0,179,65,0.1); padding: 2px 6px; border-radius: 4px;">HEIM</span>
+                                        ${hasEvents ? `
+                                            <div class="events-accordion" style="display: none;">
+                                                <div class="events-container">
+                                                    <div class="events-col-home">
+                                                        ${homeGrouped.length > 0 ? homeGrouped.map(e => `
+                                                            <div class="match-event-row match-event-home">
+                                                                <span class="match-event-player">${e.player}</span>
+                                                                <div class="match-event-badges">${renderBadge(e.type, e.count)}</div>
+                                                            </div>
+                                                        `).join('') : '<span style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0.5;">-</span>'}
                                                     </div>
-                                                    
-                                                    <div>
-                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
-                                                            Tore (${homeGoals.reduce((sum, g) => sum + (g.count || 1), 0)})
-                                                        </div>
-                                                        ${renderTeamGoals(homeGoals)}
-                                                    </div>
-
-                                                    <div>
-                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                                            <span style="display:inline-block;width:10px;height:13px;background:#f1c40f;border-radius:2px;"></span>
-                                                            Karten (${homeCards.length})
-                                                        </div>
-                                                        ${renderTeamCards(homeCards)}
+                                                    <div class="events-col-away">
+                                                        ${awayGrouped.length > 0 ? awayGrouped.map(e => `
+                                                            <div class="match-event-row match-event-away">
+                                                                <div class="match-event-badges">${renderBadge(e.type, e.count)}</div>
+                                                                <span class="match-event-player">${e.player}</span>
+                                                            </div>
+                                                        `).join('') : '<span style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0.5;">-</span>'}
                                                     </div>
                                                 </div>
-
-                                                <!-- Away Team Events (Right) -->
-                                                <div style="display: flex; flex-direction: column; gap: 12px; padding-left: 4px;">
-                                                    <div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem; border-bottom: 2px solid rgba(0,179,65,0.4); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
-                                                        <span style="color: var(--color-text-primary); font-weight: 800;">${awayName}</span>
-                                                        <span style="font-size: 0.7rem; color: var(--color-accent); font-weight: 700; background: rgba(0,179,65,0.1); padding: 2px 6px; border-radius: 4px;">GAST</span>
-                                                    </div>
-                                                    
-                                                    <div>
-                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg>
-                                                            Tore (${awayGoals.reduce((sum, g) => sum + (g.count || 1), 0)})
-                                                        </div>
-                                                        ${renderTeamGoals(awayGoals)}
-                                                    </div>
-
-                                                    <div>
-                                                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                                            <span style="display:inline-block;width:10px;height:13px;background:#f1c40f;border-radius:2px;"></span>
-                                                            Karten (${awayCards.length})
-                                                        </div>
-                                                        ${renderTeamCards(awayCards)}
-                                                    </div>
-                                                </div>
-
                                             </div>
-                                        </div>
+                                        ` : ''}
                                     </div>
                                 `;
                             }).join('')}
@@ -870,18 +932,26 @@ const renderModalContent = () => {
         `;
 
         // Bind match accordion toggles
-        container.querySelectorAll('.match-toggle-header').forEach(header => {
-            header.onclick = (e) => {
-                const targetId = header.getAttribute('data-target');
-                const targetBody = document.getElementById(targetId);
-                const hintText = header.querySelector('.hint-text');
-                const hintSvg = header.querySelector('.hint-arrow-svg');
-
-                if (targetBody) {
-                    const isVisible = targetBody.style.display === 'block';
-                    targetBody.style.display = isVisible ? 'none' : 'block';
-                    if (hintText) hintText.innerText = isVisible ? 'Details anzeigen' : 'Details ausblenden';
-                    if (hintSvg) hintSvg.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+        container.querySelectorAll('.has-events-accordion').forEach(card => {
+            card.onclick = () => {
+                const accordion = card.querySelector('.events-accordion');
+                if (!accordion) return;
+                const isHidden = accordion.style.display === 'none' || !accordion.style.display;
+                if (isHidden) {
+                    accordion.style.display = 'block';
+                    card.classList.add('accordion-open');
+                    if (window.anime) {
+                        anime({
+                            targets: accordion,
+                            opacity: [0, 1],
+                            translateY: [-6, 0],
+                            duration: 250,
+                            easing: 'easeOutQuad'
+                        });
+                    }
+                } else {
+                    accordion.style.display = 'none';
+                    card.classList.remove('accordion-open');
                 }
             };
         });
