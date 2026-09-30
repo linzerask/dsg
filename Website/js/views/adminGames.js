@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560002000';
-import { showToast } from './admin.js?v=1790560002000';
+import { Store } from '../store.js?v=1790560003500';
+import { showToast } from './admin.js?v=1790560003500';
 
 let gamesData = [];
 let roundsData = [];
@@ -9,7 +9,7 @@ let playersData = [];
 let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 15;
-let currentSort = { column: 'date', asc: true };
+let currentSort = { column: null, asc: true };
 
 let editingMatchId = null;
 let currentReportMatch = null;
@@ -48,13 +48,16 @@ export const renderAdminGames = () => {
                     <option value="unplayed">Nur Ausstehend</option>
                     <option value="canceled">Abgesagt/Verschoben</option>
                 </select>
-                <select id="game-sort-select" class="admin-input" style="width: 170px;">
-                    <option value="date-asc" selected>Datum (älteste)</option>
+                <select id="game-sort-select" class="admin-input" style="width: 175px;">
+                    <option value="season-desc">Saison (neueste)</option>
+                    <option value="season-asc">Saison (älteste)</option>
                     <option value="date-desc">Datum (neueste)</option>
-                    <option value="round-asc">Runde (1-14)</option>
-                    <option value="round-desc">Runde (14-1)</option>
-                    <option value="home-asc">Heim (A-Z)</option>
-                    <option value="away-asc">Auswärts (A-Z)</option>
+                    <option value="date-asc" selected>Datum (älteste)</option>
+                    <option value="round-asc">Runde (1 → ..)</option>
+                    <option value="round-desc">Runde (.. → 1)</option>
+                    <option value="league-asc">Liga (A–Z)</option>
+                    <option value="home-asc">Heim (A–Z)</option>
+                    <option value="away-asc">Auswärts (A–Z)</option>
                 </select>
             </div>
         </div>
@@ -329,15 +332,74 @@ const getTeamPlayersList = (teamName) => {
     }).filter(Boolean).sort();
 };
 
+const parseGameDate = (dateStr, timeStr) => {
+    if (!dateStr) return 0;
+    const str = String(dateStr).trim();
+    let year = 1970, month = 0, day = 1;
+    if (str.includes('-')) {
+        const parts = str.split('-');
+        if (parts.length === 3) {
+            year = parseInt(parts[0]) || 1970;
+            month = (parseInt(parts[1]) || 1) - 1;
+            day = parseInt(parts[2]) || 1;
+        }
+    } else if (str.includes('.')) {
+        const parts = str.split('.');
+        if (parts.length === 3) {
+            day = parseInt(parts[0]) || 1;
+            month = (parseInt(parts[1]) || 1) - 1;
+            year = parseInt(parts[2]) || 1970;
+            if (year < 100) year += 2000;
+        }
+    }
+    let hours = 0, minutes = 0;
+    if (timeStr && String(timeStr).includes(':')) {
+        const tParts = String(timeStr).split(':');
+        hours = parseInt(tParts[0]) || 0;
+        minutes = parseInt(tParts[1]) || 0;
+    }
+    return new Date(year, month, day, hours, minutes).getTime() || 0;
+};
+
+const extractSeasonYear = (m) => {
+    if (!m) return 0;
+    const yrStr = String(m.seasonKey || m.season || m.jahr || '').replace(/\D/g, '');
+    if (yrStr.length >= 4) return parseInt(yrStr.slice(0, 4)) || 0;
+    return 0;
+};
+
+const extractRoundNumber = (m) => {
+    if (!m) return 0;
+    const str = String(m.round || m.roundNr || '');
+    const match = str.match(/\d+/);
+    return match ? parseInt(match[0]) || 0 : 0;
+};
+
+const getDisplayLeagueName = (m) => {
+    if (!m) return 'DSG Liga';
+    if (m.leagueName) return m.leagueName;
+    const sKey = m.seasonKey || '';
+    if (sKey === '2026/2027') return '1. Klasse 2026/2027';
+    return sKey ? `DSG Liga ${sKey}` : 'DSG Liga';
+};
+
 const formatDisplayDate = (dateStr, timeStr) => {
     if (!dateStr) return '-';
-    let d = dateStr;
-    // convert from YYYY-MM-DD or DD.MM.YY to standard readable
-    if (d.includes('-')) {
-        const parts = d.split('-');
-        if (parts.length === 3) d = `${parts[2]}.${parts[1]}.${parts[0]}`;
+    let str = String(dateStr).trim();
+    if (str.includes('-')) {
+        const parts = str.split('-');
+        if (parts.length === 3) {
+            str = `${parts[2].padStart(2, '0')}.${parts[1].padStart(2, '0')}.${parts[0]}`;
+        }
+    } else if (str.includes('.')) {
+        const parts = str.split('.');
+        if (parts.length === 3) {
+            let yr = parts[2];
+            if (yr.length === 2) yr = '20' + yr;
+            str = `${parts[0].padStart(2, '0')}.${parts[1].padStart(2, '0')}.${yr}`;
+        }
     }
-    return `${d} ${timeStr || ''}`.trim();
+    return `${str} ${timeStr || ''}`.trim();
 };
 
 const filterAndSortGames = () => {
@@ -348,15 +410,19 @@ const filterAndSortGames = () => {
     const sortVal = document.getElementById('game-sort-select')?.value || 'date-asc';
 
     filteredData = gamesData.filter(m => {
+        const dispDate = formatDisplayDate(m.date, m.time).toLowerCase();
+        const dispLeague = getDisplayLeagueName(m).toLowerCase();
         const matchesSearch = !searchVal || 
             (m.home && m.home.toLowerCase().includes(searchVal)) ||
             (m.away && m.away.toLowerCase().includes(searchVal)) ||
             (m.venue && m.venue.toLowerCase().includes(searchVal)) ||
             (m.location && m.location.toLowerCase().includes(searchVal)) ||
             (m.round && m.round.toLowerCase().includes(searchVal)) ||
-            (m.date && m.date.toLowerCase().includes(searchVal));
+            (m.date && m.date.toLowerCase().includes(searchVal)) ||
+            dispDate.includes(searchVal) ||
+            dispLeague.includes(searchVal);
 
-        const matchesLeague = leagueFilter === 'all' || m.seasonKey === leagueFilter || (leagueFilter === '2026/2027' && (!m.seasonKey || m.seasonKey === '2026/2027'));
+        const matchesLeague = leagueFilter === 'all' || m.seasonKey === leagueFilter || (leagueFilter === '2026/2027' && (!m.seasonKey || m.seasonKey === '2026/2027')) || dispLeague === leagueFilter.toLowerCase();
 
         const matchesRound = roundFilter === 'all' || m.round === roundFilter || String(m.roundNr) === roundFilter || (m.round && m.round.includes(roundFilter));
 
@@ -376,61 +442,98 @@ const filterAndSortGames = () => {
         return matchesSearch && matchesLeague && matchesRound && matchesStatus;
     });
 
-    // Handle sortVal
-    if (sortVal === 'date-desc') {
-        currentSort = { column: 'date', asc: false };
-    } else if (sortVal === 'date-asc') {
-        currentSort = { column: 'date', asc: true };
-    } else if (sortVal === 'round-asc') {
-        currentSort = { column: 'round', asc: true };
-    } else if (sortVal === 'round-desc') {
-        currentSort = { column: 'round', asc: false };
-    } else if (sortVal === 'home-asc') {
-        currentSort = { column: 'home', asc: true };
-    } else if (sortVal === 'away-asc') {
-        currentSort = { column: 'away', asc: true };
-    }
-
-    // Sorting
+    // Multi-tier sorting based on sortVal dropdown
     filteredData.sort((a, b) => {
-        let valA = a[currentSort.column];
-        let valB = b[currentSort.column];
-
-        if (currentSort.column === 'date') {
-            const parseD = (d) => {
-                if (!d) return 0;
-                if (d.includes('.')) {
-                    const p = d.split('.');
-                    if (p.length === 3) {
-                        const y = p[2].length === 2 ? `20${p[2]}` : p[2];
-                        return new Date(`${y}-${p[1]}-${p[0]}`).getTime() || 0;
-                    }
-                }
-                return new Date(d).getTime() || 0;
-            };
-            valA = parseD(a.date);
-            valB = parseD(b.date);
-            if (valA !== valB) {
-                return currentSort.asc ? valA - valB : valB - valA;
-            }
-            const roundA = parseInt(String(a.round || a.roundNr || '').replace(/\D/g, '')) || 0;
-            const roundB = parseInt(String(b.round || b.roundNr || '').replace(/\D/g, '')) || 0;
-            return currentSort.asc ? roundA - roundB : roundB - roundA;
+        if (sortVal === 'season-desc') {
+            const diffYear = extractSeasonYear(b) - extractSeasonYear(a);
+            if (diffYear !== 0) return diffYear;
+            const diffRound = extractRoundNumber(a) - extractRoundNumber(b);
+            if (diffRound !== 0) return diffRound;
+            return parseGameDate(a.date, a.time) - parseGameDate(b.date, b.time);
         }
-
-        if (currentSort.column === 'round') {
-            const numA = parseInt(String(a.round || a.roundNr || '').replace(/\D/g, '')) || 0;
-            const numB = parseInt(String(b.round || b.roundNr || '').replace(/\D/g, '')) || 0;
-            return currentSort.asc ? numA - numB : numB - numA;
+        if (sortVal === 'season-asc') {
+            const diffYear = extractSeasonYear(a) - extractSeasonYear(b);
+            if (diffYear !== 0) return diffYear;
+            const diffRound = extractRoundNumber(a) - extractRoundNumber(b);
+            if (diffRound !== 0) return diffRound;
+            return parseGameDate(a.date, a.time) - parseGameDate(b.date, b.time);
         }
-
-        valA = (valA || '').toString().toLowerCase();
-        valB = (valB || '').toString().toLowerCase();
-
-        if (valA < valB) return currentSort.asc ? -1 : 1;
-        if (valA > valB) return currentSort.asc ? 1 : -1;
+        if (sortVal === 'date-desc') {
+            const diffDate = parseGameDate(b.date, b.time) - parseGameDate(a.date, a.time);
+            if (diffDate !== 0) return diffDate;
+            return extractRoundNumber(b) - extractRoundNumber(a);
+        }
+        if (sortVal === 'date-asc') {
+            const diffDate = parseGameDate(a.date, a.time) - parseGameDate(b.date, b.time);
+            if (diffDate !== 0) return diffDate;
+            return extractRoundNumber(a) - extractRoundNumber(b);
+        }
+        if (sortVal === 'round-asc') {
+            const diffRound = extractRoundNumber(a) - extractRoundNumber(b);
+            if (diffRound !== 0) return diffRound;
+            const diffYear = extractSeasonYear(b) - extractSeasonYear(a);
+            if (diffYear !== 0) return diffYear;
+            return parseGameDate(a.date, a.time) - parseGameDate(b.date, b.time);
+        }
+        if (sortVal === 'round-desc') {
+            const diffRound = extractRoundNumber(b) - extractRoundNumber(a);
+            if (diffRound !== 0) return diffRound;
+            const diffYear = extractSeasonYear(b) - extractSeasonYear(a);
+            if (diffYear !== 0) return diffYear;
+            return parseGameDate(a.date, a.time) - parseGameDate(b.date, b.time);
+        }
+        if (sortVal === 'league-asc') {
+            const lComp = (getDisplayLeagueName(a) || '').localeCompare(getDisplayLeagueName(b) || '', 'de');
+            if (lComp !== 0) return lComp;
+            return extractRoundNumber(a) - extractRoundNumber(b);
+        }
+        if (sortVal === 'home-asc') {
+            const hComp = (a.home || '').localeCompare(b.home || '', 'de');
+            if (hComp !== 0) return hComp;
+            return parseGameDate(a.date, a.time) - parseGameDate(b.date, b.time);
+        }
+        if (sortVal === 'away-asc') {
+            const aComp = (a.away || '').localeCompare(b.away || '', 'de');
+            if (aComp !== 0) return aComp;
+            return parseGameDate(a.date, a.time) - parseGameDate(b.date, b.time);
+        }
         return 0;
     });
+
+    // Secondary table header click sorting if active
+    if (currentSort.column) {
+        filteredData.sort((a, b) => {
+            let valA = a[currentSort.column] || '';
+            let valB = b[currentSort.column] || '';
+
+            if (currentSort.column === 'date') {
+                const timeA = parseGameDate(a.date, a.time);
+                const timeB = parseGameDate(b.date, b.time);
+                if (timeA !== timeB) return currentSort.asc ? timeA - timeB : timeB - timeA;
+                return extractRoundNumber(a) - extractRoundNumber(b);
+            }
+
+            if (currentSort.column === 'round') {
+                const numA = extractRoundNumber(a);
+                const numB = extractRoundNumber(b);
+                if (numA !== numB) return currentSort.asc ? numA - numB : numB - numA;
+                return extractSeasonYear(b) - extractSeasonYear(a);
+            }
+
+            if (currentSort.column === 'venue') {
+                const vA = String(a.venue || a.location || '').toLowerCase();
+                const vB = String(b.venue || b.location || '').toLowerCase();
+                return currentSort.asc ? vA.localeCompare(vB, 'de') : vB.localeCompare(vA, 'de');
+            }
+
+            valA = String(valA).toLowerCase();
+            valB = String(valB).toLowerCase();
+
+            return currentSort.asc ? 
+                valA.localeCompare(valB, 'de', { numeric: true }) : 
+                valB.localeCompare(valA, 'de', { numeric: true });
+        });
+    }
 };
 
 const renderGamesTable = () => {
@@ -1204,6 +1307,7 @@ const setupEventHandlers = () => {
 
     const sortSelect = document.getElementById('game-sort-select');
     if (sortSelect) sortSelect.onchange = () => {
+        currentSort = { column: null, asc: true };
         currentPage = 1;
         renderGamesTable();
     };
