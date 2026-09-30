@@ -1081,7 +1081,7 @@ export const Store = {
   },
 
   getAdminRoundsSync(seasonName = null) {
-    const local = loadLocal('dsg_admin_rounds', 22);
+    const local = loadLocal('dsg_admin_rounds', 23);
     if (local && Array.isArray(local)) {
       if (!seasonName) return local;
       return local.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2022/2023'));
@@ -1090,24 +1090,10 @@ export const Store = {
   },
 
   async getAdminRounds(seasonName = null) {
-    const local = loadLocal('dsg_admin_rounds', 22);
+    const local = loadLocal('dsg_admin_rounds', 23);
     if (local && Array.isArray(local) && local.length > 0) {
       if (!seasonName) return local;
       return local.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2022/2023'));
-    }
-
-    try {
-      const roundsSnap = await getDoc(doc(db, 'system', 'rounds_data'));
-      if (roundsSnap.exists() && roundsSnap.data()?.data) {
-        let fbRounds = roundsSnap.data().data;
-        if (Array.isArray(fbRounds) && fbRounds.length > 0 && !fbRounds.some(r => r.jahr === '2026/2027')) {
-          trySetLocal('dsg_admin_rounds_v22', JSON.stringify(fbRounds));
-          if (!seasonName) return fbRounds;
-          return fbRounds.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2022/2023'));
-        }
-      }
-    } catch(e) {
-      console.warn("Could not fetch rounds from Firebase:", e);
     }
 
     try {
@@ -1115,7 +1101,7 @@ export const Store = {
       if (res.ok) {
         const fileRounds = await res.json();
         if (Array.isArray(fileRounds)) {
-          trySetLocal('dsg_admin_rounds_v22', JSON.stringify(fileRounds));
+          trySetLocal('dsg_admin_rounds_v23', JSON.stringify(fileRounds));
           setDoc(doc(db, 'system', 'rounds_data'), { data: fileRounds, lastUpdated: Date.now() })
             .catch(e => console.error("Firebase save error (rounds initial):", e));
           if (!seasonName) return fileRounds;
@@ -1126,12 +1112,26 @@ export const Store = {
       console.warn("Could not fetch data/rounds.json:", e);
     }
 
+    try {
+      const roundsSnap = await getDoc(doc(db, 'system', 'rounds_data'));
+      if (roundsSnap.exists() && roundsSnap.data()?.data) {
+        let fbRounds = roundsSnap.data().data;
+        if (Array.isArray(fbRounds) && fbRounds.length > 0 && !fbRounds.some(r => r.jahr === '2026/2027')) {
+          trySetLocal('dsg_admin_rounds_v23', JSON.stringify(fbRounds));
+          if (!seasonName) return fbRounds;
+          return fbRounds.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2022/2023'));
+        }
+      }
+    } catch(e) {
+      console.warn("Could not fetch rounds from Firebase:", e);
+    }
+
     return [];
   },
 
   saveAdminRounds(rounds) {
     const cleanRounds = Array.isArray(rounds) ? rounds : [];
-    trySetLocal('dsg_admin_rounds_v22', JSON.stringify(cleanRounds));
+    trySetLocal('dsg_admin_rounds_v23', JSON.stringify(cleanRounds));
     setDoc(doc(db, 'system', 'rounds_data'), { data: cleanRounds, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (rounds):", e));
     window.dispatchEvent(new CustomEvent('rounds-updated'));

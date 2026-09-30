@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560003800';
-import { showToast } from './admin.js?v=1790560003800';
+import { Store } from '../store.js?v=1790560003900';
+import { showToast } from './admin.js?v=1790560003900';
 
 let roundsData = [];
 let leaguesData = [];
@@ -196,12 +196,20 @@ const formatDateForInput = (dStr) => {
 
 const getDisplayLeagueName = (r) => {
     if (!r) return '-';
-    const name = r.liga || r.saison || 'DSG Liga';
-    const sKey = r.seasonKey || r.jahr || '';
-    if (sKey && !name.includes(sKey)) {
-        return `${name} ${sKey}`;
+    const matchingLeague = (leaguesData || []).find(l => 
+        (l.seasonKey && r.seasonKey && l.seasonKey === r.seasonKey) ||
+        (l.name && (r.liga === l.name || r.saison === l.name))
+    );
+    if (matchingLeague && matchingLeague.name) {
+        return matchingLeague.name.replace(/\s*\b\d{4}(\/\d{4})?\b/g, '').trim() || matchingLeague.name;
     }
-    return name;
+    let name = r.saison || r.liga || 'DSG Liga';
+    const sKey = r.seasonKey || r.jahr || '';
+    if (sKey) {
+        name = name.replace(sKey, '').trim();
+    }
+    name = name.replace(/\s*\b\d{4}(\/\d{4})?\b/g, '').trim();
+    return name || 'DSG Liga';
 };
 
 const getDisplaySeason = (r) => {
@@ -244,7 +252,10 @@ const filterAndSortData = () => {
             String(r.runde).includes(searchVal) ||
             String(r.jahr).includes(searchVal);
 
-        const matchesLeague = leagueFilter === 'all' || r.liga === leagueFilter || r.seasonKey === leagueFilter;
+        const matchesLeague = leagueFilter === 'all' || 
+            r.liga === leagueFilter || 
+            r.seasonKey === leagueFilter || 
+            getDisplayLeagueName(r) === leagueFilter;
 
         let matchesStatus = true;
         const active = isLeagueActive(r);
@@ -508,7 +519,13 @@ const populateLeaguesDropdowns = () => {
     }
 
     if (filterSelect) {
-        const uniqueLeagueNames = [...new Set(roundsData.map(r => r.liga).filter(Boolean))];
+        const uniqueLeagueNames = [];
+        roundsData.forEach(r => {
+            const dName = getDisplayLeagueName(r);
+            if (dName && !uniqueLeagueNames.includes(dName)) {
+                uniqueLeagueNames.push(dName);
+            }
+        });
         filterSelect.innerHTML = '<option value="all">Alle Ligen</option>' + 
             uniqueLeagueNames.map(l => `<option value="${l}">${l}</option>`).join('');
     }
