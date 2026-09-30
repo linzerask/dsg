@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560002000';
-import { showToast } from './admin.js?v=1790560002000';
+import { Store } from '../store.js?v=1790560003400';
+import { showToast } from './admin.js?v=1790560003400';
 
 let roundsData = [];
 let leaguesData = [];
@@ -158,6 +158,55 @@ const parseRoundDate = (dateStr) => {
     }
     const t = Date.parse(str);
     return isNaN(t) ? 0 : t;
+};
+
+const formatDateDisplay = (dStr) => {
+    if (!dStr) return '-';
+    const str = String(dStr).trim();
+    if (str.includes('-')) {
+        const parts = str.split('-');
+        if (parts.length === 3) {
+            return `${parts[2].padStart(2, '0')}.${parts[1].padStart(2, '0')}.${parts[0]}`;
+        }
+    }
+    if (str.includes('.')) {
+        const parts = str.split('.');
+        if (parts.length === 3) {
+            let yr = parts[2];
+            if (yr.length === 2) yr = '20' + yr;
+            return `${parts[0].padStart(2, '0')}.${parts[1].padStart(2, '0')}.${yr}`;
+        }
+    }
+    return str;
+};
+
+const formatDateForInput = (dStr) => {
+    if (!dStr) return '';
+    const str = String(dStr).trim();
+    if (str.includes('.')) {
+        const parts = str.split('.');
+        if (parts.length === 3) {
+            let yr = parts[2];
+            if (yr.length === 2) yr = '20' + yr;
+            return `${yr}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        }
+    }
+    return str;
+};
+
+const getDisplayLeagueName = (r) => {
+    if (!r) return '-';
+    const name = r.liga || r.saison || 'DSG Liga';
+    const sKey = r.seasonKey || r.jahr || '';
+    if (sKey && !name.includes(sKey)) {
+        return `${name} ${sKey}`;
+    }
+    return name;
+};
+
+const getDisplaySeason = (r) => {
+    if (!r) return '-';
+    return r.seasonKey || r.jahr || '-';
 };
 
 const extractSeasonYear = (r) => {
@@ -322,11 +371,11 @@ const renderTable = () => {
 
         return `
             <tr>
-                <td style="font-weight: 600; color: var(--color-text-primary);">${r.liga || r.saison || '-'}</td>
-                <td style="color: var(--color-text-secondary);">${r.jahr || r.seasonKey || '-'}</td>
+                <td style="font-weight: 600; color: var(--color-text-primary);">${getDisplayLeagueName(r)}</td>
+                <td style="color: var(--color-text-secondary);">${getDisplaySeason(r)}</td>
                 <td style="font-weight: 700; color: var(--color-accent);">${r.runde || '-'}</td>
-                <td style="color: var(--color-text-secondary);">${r.datumVon || '-'}</td>
-                <td style="color: var(--color-text-secondary);">${r.datumBis || '-'}</td>
+                <td style="color: var(--color-text-secondary);">${formatDateDisplay(r.datumVon)}</td>
+                <td style="color: var(--color-text-secondary);">${formatDateDisplay(r.datumBis)}</td>
                 <td>
                     ${isActive ? '<span class="badge badge-success" style="font-size: 0.75rem;">Aktiv</span>' : '<span class="badge badge-secondary" style="font-size: 0.75rem;">Inaktiv</span>'}
                 </td>
@@ -363,9 +412,9 @@ const renderTable = () => {
                     <div class="admin-m-card" data-idx="${rawIndex}">
                         <div class="admin-m-header">
                             <div>
-                                <div class="admin-m-title">${r.runde ? r.runde + '. Runde' : 'Runde'} <span style="font-weight: normal; color: var(--color-text-secondary); font-size: 0.9rem;">(${r.jahr || r.seasonKey || ''})</span></div>
+                                <div class="admin-m-title">${r.runde ? r.runde + '. Runde' : 'Runde'} <span style="font-weight: normal; color: var(--color-text-secondary); font-size: 0.9rem;">(${getDisplaySeason(r)})</span></div>
                                 <div class="admin-m-subtitle">
-                                    <span style="font-weight: 600; color: var(--color-text-primary);">${r.liga || '-'}</span>
+                                    <span style="font-weight: 600; color: var(--color-text-primary);">${getDisplayLeagueName(r)}</span>
                                     ${isActive ? '<span class="badge badge-success" style="font-size: 0.7rem; margin-left: 6px;">Aktiv</span>' : '<span class="badge badge-secondary" style="font-size: 0.7rem; margin-left: 6px;">Inaktiv</span>'}
                                 </div>
                             </div>
@@ -377,11 +426,11 @@ const renderTable = () => {
                             <div class="admin-m-grid">
                                 <div class="admin-m-grid-item">
                                     <span class="admin-m-label">Datum von</span>
-                                    <span class="admin-m-value">${r.datumVon || '-'}</span>
+                                    <span class="admin-m-value">${formatDateDisplay(r.datumVon)}</span>
                                 </div>
                                 <div class="admin-m-grid-item">
                                     <span class="admin-m-label">Datum bis</span>
-                                    <span class="admin-m-value">${r.datumBis || '-'}</span>
+                                    <span class="admin-m-value">${formatDateDisplay(r.datumBis)}</span>
                                 </div>
                             </div>
                             <div class="admin-m-actions">
@@ -560,8 +609,8 @@ const openEditRoundModal = (idx = null) => {
         }
 
         document.getElementById('modal-round-nr').value = r.runde || 1;
-        document.getElementById('modal-round-date-from').value = r.datumVon || '';
-        document.getElementById('modal-round-date-to').value = r.datumBis || '';
+        document.getElementById('modal-round-date-from').value = formatDateForInput(r.datumVon);
+        document.getElementById('modal-round-date-to').value = formatDateForInput(r.datumBis);
     } else {
         editingRoundId = null;
         title.innerText = 'Runde anlegen';
@@ -601,8 +650,8 @@ const openViewRoundGamesModal = (idx) => {
         titleEl.innerText = `${round.runde ? round.runde + '. ' : ''}Runde — Spiele`;
     }
     if (subTitleEl) {
-        const dateRange = (round.datumVon || round.datumBis) ? ` • ${round.datumVon || ''} bis ${round.datumBis || ''}` : '';
-        subTitleEl.innerText = `${round.liga || 'DSG Liga'} (${round.saison || ''} ${round.jahr || ''})${dateRange}`;
+        const dateRange = (round.datumVon || round.datumBis) ? ` • ${formatDateDisplay(round.datumVon)} bis ${formatDateDisplay(round.datumBis)}` : '';
+        subTitleEl.innerText = `${getDisplayLeagueName(round)} (${getDisplaySeason(round)})${dateRange}`;
     }
 
     const targetSeasonKey = round.seasonKey || '2026/2027';
@@ -703,7 +752,7 @@ const deleteRound = (idx) => {
     const r = roundsData[idx];
     if (!r) return;
 
-    if (confirm(`Möchten Sie die Runde "${r.saison} ${r.jahr} - Runde ${r.runde}" wirklich löschen?`)) {
+    if (confirm(`Möchten Sie die Runde "${getDisplayLeagueName(r)} - Runde ${r.runde}" wirklich löschen?`)) {
         const roundId = r.id;
         roundsData = roundsData.filter(item => (roundId !== undefined && roundId !== null ? String(item.id) !== String(roundId) : item !== r));
         Store.saveAdminRounds(roundsData);

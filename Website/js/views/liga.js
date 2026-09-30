@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790560002000';
+import { Store } from '../store.js?v=1790560003400';
 
 
 let currentViewSeason = null;
@@ -277,23 +277,26 @@ export function viewLiga() {
     const nr = parseInt(r.runde) || 0;
     if (nr > 0) {
       let dateRange = '';
-      if (r.datumVon && r.datumBis) {
         const fmtD = (dStr) => {
           if (!dStr) return '';
-          if (dStr.includes('-')) {
-            const p = dStr.split('-');
-            if (p.length === 3) return `${p[2]}.${p[1]}.`;
+          const str = String(dStr).trim();
+          if (str.includes('-')) {
+            const p = str.split('-');
+            if (p.length === 3) return `${p[2].padStart(2, '0')}.${p[1].padStart(2, '0')}.${p[0]}`;
           }
-          return dStr;
+          if (str.includes('.')) {
+            const p = str.split('.');
+            if (p.length === 3) {
+              let yr = p[2];
+              if (yr.length === 2) yr = '20' + yr;
+              return `${p[0].padStart(2, '0')}.${p[1].padStart(2, '0')}.${yr}`;
+            }
+          }
+          return str;
         };
         const von = fmtD(r.datumVon);
-        let bis = fmtD(r.datumBis);
-        if (r.datumBis && r.datumBis.includes('-')) {
-          const p = r.datumBis.split('-');
-          if (p.length === 3) bis = `${p[2]}.${p[1]}.${p[0]}`;
-        }
-        dateRange = ` (${von} - ${bis})`;
-      }
+        const bis = fmtD(r.datumBis);
+        dateRange = (von || bis) ? ` (${von}${bis ? ' - ' + bis : ''})` : '';
       roundMap.set(nr, {
         roundNr: nr,
         label: `${nr}. Runde${dateRange}`,
