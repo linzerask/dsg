@@ -196,7 +196,8 @@ DSG Liga/
 ---
 
 ## 14. Admin Spielrunden Lifecycle & Cache Synchronization
-* **The Pitfall:** Adding, editing, or deleting a round in `adminRounds.js` was getting overwritten on reload due to: (1) obsolete cleanup loops in `Store.init()` clearing active cache versions, (2) `Store.getAdminRounds()` fetching seed JSON before checking Firebase Firestore, (3) strict type equality (`===`) failing between number and string IDs in round updates, and (4) rounds needing scheduled matches to populate the public matchday sliders.
+* **The Pitfall:** Adding, editing, or deleting a round in `adminRounds.js` was getting overwritten on reload due to: (1) obsolete cleanup loops in `Store.init()` clearing active cache versions (e.g. whitelist `i !== 22` deleting `dsg_admin_rounds_v23`), (2) `Store.getAdminRounds()` fetching seed JSON before checking Firebase Firestore, (3) strict type equality (`===`) failing between number and string IDs in round updates, and (4) rounds needing scheduled matches to populate the public matchday sliders.
+* **The Rule:** Always ensure the cache version whitelist in `Store.init()` precisely matches the active version used by the store (`dsg_admin_rounds_v23`, `dsg_admin_leagues_v22`, `dsg_data_v64`). This guarantees that round date ranges (`datumVon`, `datumBis`) persist synchronously across browser reloads without requiring cache purges.
 ---
 
 ## 15. Admin Modal Form Submission, DOM Lifecycle, & Toast Feedback
