@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790560003600';
+import { Store } from '../store.js?v=1790560004000';
 
 
 let currentViewSeason = null;
@@ -272,31 +272,45 @@ export function viewLiga() {
   const roundMap = new Map(); // roundNr -> { roundNr, label, matches: [] }
 
   // 1. Register all rounds known in store for this season
-  const seasonRounds = (Store.getAdminRoundsSync ? Store.getAdminRoundsSync(currentSeason) : []) || [];
+  let seasonRounds = (Store.getAdminRoundsSync ? Store.getAdminRoundsSync(currentSeason) : []) || [];
+  if (seasonRounds.length === 0 && Store.getAdminRoundsSync) {
+    const allRounds = Store.getAdminRoundsSync() || [];
+    seasonRounds = allRounds.filter(r => 
+      r.seasonKey === currentSeason || 
+      r.jahr === currentSeason || 
+      (!r.seasonKey && currentSeason === '2022/2023') ||
+      (r.liga && (r.liga === currentSeason || r.liga.includes(currentSeason)))
+    );
+  }
+
   seasonRounds.forEach(r => {
     const nr = parseInt(r.runde) || 0;
     if (nr > 0) {
       let dateRange = '';
-        const fmtD = (dStr) => {
-          if (!dStr) return '';
-          const str = String(dStr).trim();
-          if (str.includes('-')) {
-            const p = str.split('-');
-            if (p.length === 3) return `${p[2].padStart(2, '0')}.${p[1].padStart(2, '0')}.${p[0]}`;
+      const fmtD = (dStr) => {
+        if (!dStr) return '';
+        const str = String(dStr).trim();
+        if (str.includes('-')) {
+          const p = str.split('-');
+          if (p.length === 3) return `${p[2].padStart(2, '0')}.${p[1].padStart(2, '0')}.${p[0]}`;
+        }
+        if (str.includes('.')) {
+          const p = str.split('.');
+          if (p.length === 3) {
+            let yr = p[2];
+            if (yr.length === 2) yr = '20' + yr;
+            return `${p[0].padStart(2, '0')}.${p[1].padStart(2, '0')}.${yr}`;
           }
-          if (str.includes('.')) {
-            const p = str.split('.');
-            if (p.length === 3) {
-              let yr = p[2];
-              if (yr.length === 2) yr = '20' + yr;
-              return `${p[0].padStart(2, '0')}.${p[1].padStart(2, '0')}.${yr}`;
-            }
-          }
-          return str;
-        };
-        const von = fmtD(r.datumVon);
-        const bis = fmtD(r.datumBis);
-        dateRange = (von || bis) ? ` (${von}${bis ? ' - ' + bis : ''})` : '';
+        }
+        return str;
+      };
+      const von = fmtD(r.datumVon);
+      const bis = fmtD(r.datumBis);
+      if (von || bis) {
+        dateRange = ` (${von}${bis ? ' - ' + bis : ''})`;
+      } else if (r.datum) {
+        dateRange = ` (${r.datum})`;
+      }
       roundMap.set(nr, {
         roundNr: nr,
         label: `${nr}. Runde${dateRange}`,

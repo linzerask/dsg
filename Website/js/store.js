@@ -396,6 +396,37 @@ export const Store = {
         }
       }
 
+      // Sync Rounds - authoritative timestamp comparison
+      if (roundsSnap && roundsSnap.exists() && roundsSnap.data()?.data) {
+        const fbRounds = roundsSnap.data().data;
+        const fbTime = roundsSnap.data().lastUpdated || 0;
+        const localTime = parseInt(localStorage.getItem('dsg_rounds_last_updated')) || 0;
+        const localRounds = loadLocal('dsg_admin_rounds', 23);
+
+        if (localTime > fbTime && localRounds && Array.isArray(localRounds) && localRounds.length > 0) {
+          await setDoc(roundsRef, { data: localRounds, lastUpdated: localTime }).catch(e => console.error("Firebase save error (rounds):", e));
+        } else if (Array.isArray(fbRounds) && fbRounds.length > 0) {
+          trySetLocal('dsg_admin_rounds_v23', JSON.stringify(fbRounds));
+          localStorage.setItem('dsg_rounds_last_updated', String(fbTime));
+        }
+      } else {
+        const localRounds = loadLocal('dsg_admin_rounds', 23);
+        if (localRounds && Array.isArray(localRounds) && localRounds.length > 0) {
+          await setDoc(roundsRef, { data: localRounds, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (rounds):", e));
+        } else {
+          try {
+            const res = await fetch('data/rounds.json');
+            if (res.ok) {
+              const fileRounds = await res.json();
+              if (Array.isArray(fileRounds)) {
+                trySetLocal('dsg_admin_rounds_v23', JSON.stringify(fileRounds));
+                await setDoc(roundsRef, { data: fileRounds, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (rounds):", e));
+              }
+            }
+          } catch(e) {}
+        }
+      }
+
       // Auto-sync all leagues to seasons
       if (leagueSnap && leagueSnap.exists() && leagueSnap.data()?.data) {
         const leagues = leagueSnap.data().data;
@@ -1097,6 +1128,21 @@ export const Store = {
     }
 
     try {
+      const roundsSnap = await getDoc(doc(db, 'system', 'rounds_data'));
+      if (roundsSnap.exists() && roundsSnap.data()?.data) {
+        let fbRounds = roundsSnap.data().data;
+        if (Array.isArray(fbRounds) && fbRounds.length > 0) {
+          trySetLocal('dsg_admin_rounds_v23', JSON.stringify(fbRounds));
+          localStorage.setItem('dsg_rounds_last_updated', String(roundsSnap.data().lastUpdated || Date.now()));
+          if (!seasonName) return fbRounds;
+          return fbRounds.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2022/2023'));
+        }
+      }
+    } catch(e) {
+      console.warn("Could not fetch rounds from Firebase:", e);
+    }
+
+    try {
       const res = await fetch('data/rounds.json');
       if (res.ok) {
         const fileRounds = await res.json();
@@ -1112,27 +1158,15 @@ export const Store = {
       console.warn("Could not fetch data/rounds.json:", e);
     }
 
-    try {
-      const roundsSnap = await getDoc(doc(db, 'system', 'rounds_data'));
-      if (roundsSnap.exists() && roundsSnap.data()?.data) {
-        let fbRounds = roundsSnap.data().data;
-        if (Array.isArray(fbRounds) && fbRounds.length > 0 && !fbRounds.some(r => r.jahr === '2026/2027')) {
-          trySetLocal('dsg_admin_rounds_v23', JSON.stringify(fbRounds));
-          if (!seasonName) return fbRounds;
-          return fbRounds.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2022/2023'));
-        }
-      }
-    } catch(e) {
-      console.warn("Could not fetch rounds from Firebase:", e);
-    }
-
     return [];
   },
 
   saveAdminRounds(rounds) {
     const cleanRounds = Array.isArray(rounds) ? rounds : [];
+    const now = Date.now();
+    localStorage.setItem('dsg_rounds_last_updated', String(now));
     trySetLocal('dsg_admin_rounds_v23', JSON.stringify(cleanRounds));
-    setDoc(doc(db, 'system', 'rounds_data'), { data: cleanRounds, lastUpdated: Date.now() })
+    setDoc(doc(db, 'system', 'rounds_data'), { data: cleanRounds, lastUpdated: now })
       .catch(e => console.error("Firebase save error (rounds):", e));
     window.dispatchEvent(new CustomEvent('rounds-updated'));
   },
