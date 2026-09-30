@@ -1214,6 +1214,12 @@ export const Store = {
     window.dispatchEvent(new CustomEvent('players-updated'));
   },
 
+  getAdminTeamsSync() {
+    const local = loadLocal('dsg_admin_teams', 12);
+    if (local && Array.isArray(local) && local.length > 0) return local;
+    return [];
+  },
+
   async getAdminTeams() {
     const local = loadLocal('dsg_admin_teams', 12);
     if (local && local.length > 0) return local;

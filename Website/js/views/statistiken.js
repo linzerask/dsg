@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560004300';
-import { renderIcon } from '../icons.js?v=1790560004300';
+import { Store } from '../store.js?v=1790560004400';
+import { renderIcon } from '../icons.js?v=1790560004400';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -192,6 +192,37 @@ export const computeAllTimeStats = () => {
     s.rank = idx + 1;
   });
 
+  // Merge all master teams from teams.json / Store.getAdminTeamsSync() into clubMap
+  const allMasterTeams = (Store.getAdminTeamsSync ? Store.getAdminTeamsSync() : []) || [];
+  allMasterTeams.forEach(mt => {
+    const name = (mt.Name || mt.name || '').trim();
+    if (name && !clubMap[name]) {
+      clubMap[name] = {
+        name,
+        played: 0,
+        won: 0,
+        drawn: 0,
+        lost: 0,
+        gf: 0,
+        ga: 0,
+        points: 0,
+        seasonsCount: 0,
+        titles: 0,
+        seasonsList: new Set()
+      };
+    }
+  });
+
+  const uniqueMasterTeamNames = new Set();
+  allMasterTeams.forEach(mt => {
+    const name = (mt.Name || mt.name || '').trim();
+    if (name) uniqueMasterTeamNames.add(name);
+  });
+  Object.keys(clubMap).forEach(name => {
+    if (name) uniqueMasterTeamNames.add(name);
+  });
+  const totalClubsCount = Math.max(uniqueMasterTeamNames.size, 54);
+
   // Sort Clubs and assign real all-time rank
   const allTimeClubs = Object.values(clubMap).map(c => {
     const diff = c.gf - c.ga;
@@ -265,7 +296,7 @@ export const computeAllTimeStats = () => {
     totalGoals,
     goalsPerMatch,
     uniquePlayersCount: allTimeScorers.length,
-    uniqueClubsCount: allTimeClubs.length,
+    uniqueClubsCount: totalClubsCount,
     seasonsCount: seasonKeys.filter(k => seasons[k] && ((seasons[k].teams && seasons[k].teams.length > 0) || (seasons[k].matches && seasons[k].matches.length > 0))).length,
     allTimeScorers,
     allTimeClubs,
