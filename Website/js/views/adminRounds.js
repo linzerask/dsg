@@ -52,13 +52,13 @@ export const renderAdminRounds = () => {
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th data-sort="saison" class="sortable">Saison ↕</th>
-                        <th data-sort="jahr" class="sortable">Jahr ↕</th>
+                        <th data-sort="liga" class="sortable">Liga ↕</th>
+                        <th data-sort="jahr" class="sortable">Saison / Jahr ↕</th>
                         <th data-sort="runde" class="sortable">Runde ↕</th>
                         <th data-sort="datumVon" class="sortable">Datum von ↕</th>
                         <th data-sort="datumBis" class="sortable">Datum bis ↕</th>
-                        <th data-sort="liga" class="sortable">Liga ↕</th>
-                        <th style="min-width: 220px; text-align: center;">Action</th>
+                        <th data-sort="status" class="sortable">Status ↕</th>
+                        <th style="min-width: 220px; text-align: center;">Aktion</th>
                     </tr>
                 </thead>
                 <tbody id="rounds-table-body">
@@ -90,43 +90,30 @@ export const renderAdminRounds = () => {
                 
                 <form id="round-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <div>
-                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Saison</label>
-                        <select id="modal-round-saison" class="admin-input" style="width: 100%;" required>
-                            <option value="Herbst">Herbst</option>
-                            <option value="Frühjahr">Frühjahr</option>
+                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px; font-weight: 600;">Liga</label>
+                        <select id="modal-round-liga" class="admin-input" style="width: 100%; font-weight: 500;" required>
+                            <!-- Dynamically populated from Ligen verwalten -->
                         </select>
                     </div>
 
                     <div>
-                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Jahr</label>
-                        <input type="number" id="modal-round-jahr" class="admin-input" value="2026" style="width: 100%;" required>
-                    </div>
-
-                    <div>
-                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Runde</label>
+                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px; font-weight: 600;">Runde</label>
                         <input type="number" id="modal-round-nr" class="admin-input" min="1" max="50" value="1" style="width: 100%;" required>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
                         <div>
-                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Datum von</label>
+                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px; font-weight: 600;">Datum von</label>
                             <input type="date" id="modal-round-date-from" class="admin-input" style="width: 100%;" required>
                         </div>
                         <div>
-                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Datum bis</label>
+                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px; font-weight: 600;">Datum bis</label>
                             <input type="date" id="modal-round-date-to" class="admin-input" style="width: 100%;" required>
                         </div>
                     </div>
 
-                    <div>
-                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Liga</label>
-                        <select id="modal-round-liga" class="admin-input" style="width: 100%;" required>
-                            <!-- Populated with active leagues -->
-                        </select>
-                    </div>
-
                     <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
-                        <button type="submit" id="btn-save-round" class="primary-btn" style="flex: 1; padding: 10px; font-weight: 700; background: var(--color-accent); color: #fff; border: none; border-radius: 4px; cursor: pointer;">Aktualisieren</button>
+                        <button type="submit" id="btn-save-round" class="primary-btn" style="flex: 1; padding: 10px; font-weight: 700; background: var(--color-accent); color: #fff; border: none; border-radius: 4px; cursor: pointer;">Erstellen</button>
                     </div>
                 </form>
             </div>
@@ -335,14 +322,13 @@ const renderTable = () => {
 
         return `
             <tr>
-                <td style="font-weight: 600; color: var(--color-text-primary);">${r.saison || '-'}</td>
-                <td>${r.jahr || '-'}</td>
+                <td style="font-weight: 600; color: var(--color-text-primary);">${r.liga || r.saison || '-'}</td>
+                <td style="color: var(--color-text-secondary);">${r.jahr || r.seasonKey || '-'}</td>
                 <td style="font-weight: 700; color: var(--color-accent);">${r.runde || '-'}</td>
                 <td style="color: var(--color-text-secondary);">${r.datumVon || '-'}</td>
                 <td style="color: var(--color-text-secondary);">${r.datumBis || '-'}</td>
                 <td>
-                    <span style="font-weight: 600;">${r.liga || '-'}</span>
-                    ${isActive ? '<span class="badge badge-success" style="font-size: 0.7rem; margin-left: 6px;">Aktiv</span>' : '<span class="badge badge-secondary" style="font-size: 0.7rem; margin-left: 6px;">Inaktiv</span>'}
+                    ${isActive ? '<span class="badge badge-success" style="font-size: 0.75rem;">Aktiv</span>' : '<span class="badge badge-secondary" style="font-size: 0.75rem;">Inaktiv</span>'}
                 </td>
                 <td style="text-align: center;">
                     <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
@@ -377,10 +363,10 @@ const renderTable = () => {
                     <div class="admin-m-card" data-idx="${rawIndex}">
                         <div class="admin-m-header">
                             <div>
-                                <div class="admin-m-title">${r.runde || 'Runde'} <span style="font-weight: normal; color: var(--color-text-secondary); font-size: 0.9rem;">(${r.saison || ''} ${r.jahr || ''})</span></div>
+                                <div class="admin-m-title">${r.runde ? r.runde + '. Runde' : 'Runde'} <span style="font-weight: normal; color: var(--color-text-secondary); font-size: 0.9rem;">(${r.jahr || r.seasonKey || ''})</span></div>
                                 <div class="admin-m-subtitle">
                                     <span style="font-weight: 600; color: var(--color-text-primary);">${r.liga || '-'}</span>
-                                    ${isActive ? '<span class="badge badge-success" style="font-size: 0.7rem;">Aktiv</span>' : '<span class="badge badge-secondary" style="font-size: 0.7rem;">Inaktiv</span>'}
+                                    ${isActive ? '<span class="badge badge-success" style="font-size: 0.7rem; margin-left: 6px;">Aktiv</span>' : '<span class="badge badge-secondary" style="font-size: 0.7rem; margin-left: 6px;">Inaktiv</span>'}
                                 </div>
                             </div>
                             <div class="admin-m-chevron">
@@ -463,9 +449,18 @@ const populateLeaguesDropdowns = () => {
     const freshLeagues = Store.getAdminLeaguesSync();
     if (freshLeagues && freshLeagues.length > 0) {
         leaguesData = freshLeagues;
+    } else {
+        const fullData = Store.getData();
+        if (fullData && fullData.seasons) {
+            leaguesData = Object.keys(fullData.seasons).map((sKey, i) => ({
+                id: i + 1,
+                name: fullData.seasons[sKey].name || `DSG Liga ${sKey}`,
+                year: sKey,
+                seasonKey: sKey,
+                status: 'Aktiv'
+            }));
+        }
     }
-
-    const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
 
     if (filterSelect) {
         const uniqueLeagueNames = [...new Set(roundsData.map(r => r.liga).filter(Boolean))];
@@ -474,14 +469,35 @@ const populateLeaguesDropdowns = () => {
     }
 
     if (modalSelect) {
-        // Only allow active leagues when creating/editing a round
-        const leaguesToShow = activeLeagues.length > 0 ? activeLeagues : [{ name: 'Liga 26/27', year: 2026, seasonKey: '2026/2027' }];
-        modalSelect.innerHTML = leaguesToShow.map(l => `
-            <option value="${l.name || 'Liga 26/27 2026'}" data-season="${l.seasonKey || '2026/2027'}">
-                ${l.name} (${l.year || '2026'})
-            </option>
-        `).join('');
+        const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
+        const leaguesToShow = activeLeagues.length > 0 ? activeLeagues : (leaguesData && leaguesData.length > 0 ? leaguesData : [{ name: 'DSG Liga', year: '2026/2027', seasonKey: '2026/2027' }]);
+        
+        modalSelect.innerHTML = leaguesToShow.map(l => {
+            const leagueName = l.name || 'DSG Liga';
+            const yearDisplay = l.year ? ` (${l.year})` : (l.seasonKey ? ` (${l.seasonKey})` : '');
+            const seasonKey = l.seasonKey || l.year || '2026/2027';
+            return `<option value="${leagueName}" data-season="${seasonKey}" data-year="${l.year || seasonKey}">${leagueName}${yearDisplay}</option>`;
+        }).join('');
     }
+};
+
+const updateSuggestedRoundNumber = () => {
+    if (editingRoundId !== null && editingRoundId !== undefined) return;
+    const ligaSelect = document.getElementById('modal-round-liga');
+    const roundNrInput = document.getElementById('modal-round-nr');
+    if (!ligaSelect || !roundNrInput) return;
+
+    const selectedOpt = ligaSelect.selectedOptions[0];
+    const seasonKey = selectedOpt?.getAttribute('data-season') || '2026/2027';
+    const ligaName = ligaSelect.value;
+
+    const matchingRounds = roundsData.filter(r => 
+        (r.seasonKey && r.seasonKey === seasonKey) || 
+        (r.liga && r.liga === ligaName)
+    );
+    const roundNums = matchingRounds.map(r => parseInt(String(r.runde).replace(/\D/g, '')) || 0);
+    const maxRound = roundNums.length > 0 ? Math.max(...roundNums) : 0;
+    roundNrInput.value = maxRound + 1;
 };
 
 const ensureModalsInBody = () => {
@@ -511,44 +527,51 @@ const openEditRoundModal = (idx = null) => {
 
     populateLeaguesDropdowns();
 
+    const ligaSelect = document.getElementById('modal-round-liga');
+    if (ligaSelect) {
+        ligaSelect.onchange = () => {
+            updateSuggestedRoundNumber();
+        };
+    }
+
     if (idx !== null && roundsData[idx]) {
         editingRoundId = roundsData[idx].id || idx;
         const r = roundsData[idx];
         title.innerText = 'Runde bearbeiten';
         submitBtn.innerText = 'Aktualisieren';
 
-        document.getElementById('modal-round-saison').value = r.saison || 'Herbst';
-        document.getElementById('modal-round-jahr').value = r.jahr || 2026;
+        if (ligaSelect) {
+            let foundOpt = Array.from(ligaSelect.options).find(o => 
+                o.value === r.liga || (r.liga && o.value.toLowerCase() === r.liga.toLowerCase())
+            ) || Array.from(ligaSelect.options).find(o => 
+                o.getAttribute('data-season') === r.seasonKey
+            );
+            if (!foundOpt) {
+                const opt = document.createElement('option');
+                opt.value = r.liga || 'DSG Liga';
+                opt.text = `${r.liga || 'DSG Liga'}${r.jahr ? ` (${r.jahr})` : ''}`;
+                opt.setAttribute('data-season', r.seasonKey || '2026/2027');
+                opt.setAttribute('data-year', r.jahr || r.seasonKey || '2026');
+                ligaSelect.appendChild(opt);
+                ligaSelect.value = opt.value;
+            } else {
+                ligaSelect.value = foundOpt.value;
+            }
+        }
+
         document.getElementById('modal-round-nr').value = r.runde || 1;
         document.getElementById('modal-round-date-from').value = r.datumVon || '';
         document.getElementById('modal-round-date-to').value = r.datumBis || '';
-        
-        const ligaSelect = document.getElementById('modal-round-liga');
-        if (ligaSelect) {
-            // Ensure the round's current league is present in the dropdown even if inactive
-            if (!Array.from(ligaSelect.options).some(o => o.value === r.liga)) {
-                const opt = document.createElement('option');
-                opt.value = r.liga;
-                opt.text = r.liga;
-                opt.selected = true;
-                ligaSelect.appendChild(opt);
-            } else {
-                ligaSelect.value = r.liga;
-            }
-        }
     } else {
         editingRoundId = null;
         title.innerText = 'Runde anlegen';
         submitBtn.innerText = 'Erstellen';
 
-        document.getElementById('modal-round-saison').value = 'Herbst';
-        document.getElementById('modal-round-jahr').value = 2026;
-        
-        // Suggest next round number
-        const maxRound = Math.max(0, ...roundsData.filter(r => r.seasonKey === '2026/2027').map(r => r.runde || 0));
-        document.getElementById('modal-round-nr').value = maxRound + 1;
-        document.getElementById('modal-round-date-from').value = new Date().toISOString().split('T')[0];
-        document.getElementById('modal-round-date-to').value = new Date().toISOString().split('T')[0];
+        updateSuggestedRoundNumber();
+
+        const todayIso = new Date().toISOString().split('T')[0];
+        document.getElementById('modal-round-date-from').value = todayIso;
+        document.getElementById('modal-round-date-to').value = todayIso;
     }
 
     modal.style.display = 'flex';
@@ -806,14 +829,16 @@ export const initAdminRounds = async () => {
         roundForm.onsubmit = (e) => {
             e.preventDefault();
 
-            const saison = document.getElementById('modal-round-saison').value;
-            const jahr = parseInt(document.getElementById('modal-round-jahr').value) || 2026;
+            const ligaSelect = document.getElementById('modal-round-liga');
+            const selectedOpt = ligaSelect?.selectedOptions[0];
+            const liga = ligaSelect ? ligaSelect.value : 'DSG Liga';
+            const seasonKey = selectedOpt?.getAttribute('data-season') || '2026/2027';
+            const jahr = selectedOpt?.getAttribute('data-year') || seasonKey;
+            const saison = liga;
+
             const runde = parseInt(document.getElementById('modal-round-nr').value) || 1;
             const datumVon = document.getElementById('modal-round-date-from').value;
             const datumBis = document.getElementById('modal-round-date-to').value;
-            const ligaSelect = document.getElementById('modal-round-liga');
-            const liga = ligaSelect ? ligaSelect.value : '';
-            const seasonKey = ligaSelect?.selectedOptions[0]?.getAttribute('data-season') || '2026/2027';
 
             if (editingRoundId !== null && editingRoundId !== undefined) {
                 const index = roundsData.findIndex(r => String(r.id) === String(editingRoundId));
@@ -830,10 +855,13 @@ export const initAdminRounds = async () => {
                     };
                 }
             } else {
-                // Check if this round already exists
-                const existing = roundsData.find(r => r.runde === runde && r.seasonKey === seasonKey && r.saison === saison);
+                // Check if this round already exists for this league/season
+                const existing = roundsData.find(r => 
+                    String(r.runde) === String(runde) && 
+                    (r.seasonKey === seasonKey || r.liga === liga)
+                );
                 if (existing) {
-                    alert(`Runde ${runde} (${saison} ${jahr}) existiert bereits!`);
+                    showToast(`Runde ${runde} für ${liga} (${jahr}) existiert bereits!`, true);
                     return;
                 }
 

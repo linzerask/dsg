@@ -254,8 +254,11 @@ DSG Liga/
   3. **Visual Match Card Indicators:**
      - On match cards, any dismissal (Yellow-Red or direct Red) renders a Sofascore-style red card badge adjacent to the team name (`[Home] [🟥]` and `[🟥] [Away]`).
 
+---
 
-
-
-
-
+## 23. Streamlined Spielrunde Modal & Dynamic League Ingestion
+* **The Rule:**
+  1. **Zero Redundant Inputs:** The `Runde anlegen` / `Runde bearbeiten` modal (`#round-modal` in `adminRounds.js`) eliminates separate `Saison` (Herbst/Frühjahr) and manual `Jahr` fields.
+  2. **Top-Level League Chooser:** The **Liga** selector sits at the very top of the form and is dynamically populated from active leagues configured in the **Ligen verwalten** tab (`Store.getAdminLeaguesSync()`).
+  3. **Auto-Inherited Properties:** Selecting a league automatically assigns `liga`, `seasonKey`, `jahr`, and `saison` to the round.
+  4. **Smart Auto-Round Increment:** Selecting a league automatically computes and suggests the next round number based on existing rounds in that league.
