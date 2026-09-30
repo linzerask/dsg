@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560003600';
-import { renderIcon } from '../icons.js?v=1790560003600';
+import { Store } from '../store.js?v=1790560004300';
+import { renderIcon } from '../icons.js?v=1790560004300';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -153,26 +153,26 @@ export const computeAllTimeStats = () => {
       clubMap[name].seasonsList.add(seasonKey);
     });
 
-    // Season honors for completed main seasons
-    if (mainSeasons.includes(seasonKey) && teams.length > 0 && seasonKey !== '2026/2027') {
+    // Season honors for completed seasons
+    if (teams.length > 0 && teams.some(t => (t.played || 0) > 0 || (t.points || 0) > 0)) {
       const sortedTeams = [...teams].sort((a, b) => (b.points || 0) - (a.points || 0) || (((b.gf || 0) - (b.ga || 0)) - ((a.gf || 0) - (a.ga || 0))));
       const champion = sortedTeams[0];
       const runnerUp = sortedTeams[1];
       const topScorer = s.stats?.topScorers?.[0] || null;
 
-      if (champion) {
+      if (champion && ((champion.played || 0) > 0 || (champion.points || 0) > 0)) {
         if (clubMap[champion.name.trim()]) {
           clubMap[champion.name.trim()].titles++;
         }
         seasonHonors.push({
           season: seasonKey,
           champion: champion.name,
-          championPoints: champion.points,
-          championPlayed: champion.played,
+          championPoints: champion.points || 0,
+          championPlayed: champion.played || 0,
           runnerUp: runnerUp ? runnerUp.name : '',
-          runnerUpPoints: runnerUp ? runnerUp.points : 0,
+          runnerUpPoints: runnerUp ? (runnerUp.points || 0) : 0,
           topScorer: topScorer ? topScorer.name : 'N/A',
-          topScorerGoals: topScorer ? topScorer.goals : 0,
+          topScorerGoals: topScorer ? (topScorer.goals || 0) : 0,
           topScorerTeam: topScorer ? topScorer.team : ''
         });
       }
@@ -233,6 +233,24 @@ export const computeAllTimeStats = () => {
     }
   });
 
+  // Dynamic Rekordmeister calculation
+  let rekordmeister = null;
+  const clubsWithTitles = Object.values(clubMap)
+    .filter(c => (c.titles || 0) > 0)
+    .sort((a, b) => (b.titles || 0) - (a.titles || 0) || (b.points || 0) - (a.points || 0) || (b.won || 0) - (a.won || 0));
+
+  if (clubsWithTitles.length > 0) {
+    const topClub = clubsWithTitles[0];
+    const wonSeasons = seasonHonors
+      .filter(h => h.champion && h.champion.trim() === topClub.name.trim())
+      .map(h => h.season);
+    rekordmeister = {
+      name: topClub.name,
+      titles: topClub.titles,
+      seasons: wonSeasons
+    };
+  }
+
   // Sort season honors descending by year (e.g. 2025/2026 first down to 2021/2022 last)
   const parseSeasonYear = (seasonStr) => {
     const match = String(seasonStr).match(/\d{4}/);
@@ -255,7 +273,8 @@ export const computeAllTimeStats = () => {
     records: {
       highestScoringMatch,
       biggestWin,
-      bestSingleSeasonScorer
+      bestSingleSeasonScorer,
+      rekordmeister
     }
   };
 };
@@ -784,18 +803,22 @@ export const viewStatistiken = () => {
             </div>
           ` : ''}
 
-          <!-- Rekordmeister der Neuzeit -->
-          <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
-            <div style="margin-bottom: 8px;">${renderIcon('trophy', { size: 30, color: '#f59e0b' })}</div>
-            <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Rekordmeister (seit 2021)</div>
-            <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">SV Croatia Linz</h3>
-            <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
-              3 <span style="font-size: 1rem; font-weight: 600;">Meistertitel</span>
+          <!-- Rekordmeister -->
+          ${stats.records.rekordmeister ? `
+            <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
+              <div style="margin-bottom: 8px;">${renderIcon('trophy', { size: 30, color: '#f59e0b' })}</div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Rekordmeister</div>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.rekordmeister.name}</h3>
+              <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
+                ${stats.records.rekordmeister.titles} <span style="font-size: 1rem; font-weight: 600;">${stats.records.rekordmeister.titles === 1 ? 'Meistertitel' : 'Meistertitel'}</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
+                ${stats.records.rekordmeister.seasons.length > 0 
+                  ? `Titelgewinn${stats.records.rekordmeister.titles > 1 ? 'e' : ''} in ${stats.records.rekordmeister.titles > 1 ? 'den Spielzeiten' : 'der Spielzeit'} <strong>${stats.records.rekordmeister.seasons.join(', ')}</strong>.`
+                  : 'Aktueller Titelträger der Liga.'}
+              </p>
             </div>
-            <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
-              Titelgewinne in den Spielzeiten <strong>2022/2023</strong>, <strong>2024/2025</strong> und <strong>2025/2026</strong>.
-            </p>
-          </div>
+          ` : ''}
 
         </div>
       </div>
