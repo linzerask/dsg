@@ -172,6 +172,15 @@ DSG Liga/
 * **The Rule:**
   1. **Spieler Tab (`adminPlayers.js`):** Default sort order is set to **`Datum (neueste)` (`date-desc`)**, sorting by membership/registration date (`seit`) descending from newest to oldest, with `# ID` descending as the secondary tiebreaker.
   2. **Spiele Tab (`adminGames.js`):** Default sort order is set to **`Datum (älteste)` (`date-asc`)**, ordering matches chronologically.
+  3. **Spielrunden Tab (`adminRounds.js`):** Default sort order is **`Saison (neueste)` (`season-desc`)** with ascending round tiebreaker. Sorting options are:
+     - `Saison (neueste)` (`season-desc`)
+     - `Saison (älteste)` (`season-asc`)
+     - `Datum (neueste)` (`date-desc`)
+     - `Datum (älteste)` (`date-asc`)
+     - `Runde (1 → ..)` (`runde-asc`)
+     - `Runde (.. → 1)` (`runde-desc`)
+     - `Liga (A–Z)` (`league-asc`)
+     Uses true epoch timestamp parsing for Austrian `DD.MM.YYYY` / ISO dates and open-ended dynamic dots (`1 → ..`, `.. → 1`).
 
 ---
 
