@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560003600';
-import { showToast } from './admin.js?v=1790560003600';
+import { Store } from '../store.js?v=1790560003800';
+import { showToast } from './admin.js?v=1790560003800';
 
 let roundsData = [];
 let leaguesData = [];
@@ -693,44 +693,267 @@ const openViewRoundGamesModal = (idx) => {
             </div>
         `;
     } else {
+        const soccerBallSvg = `
+            <svg class="goal-svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; flex-shrink: 0;">
+                <circle cx="12" cy="12" r="10" stroke-width="1.8"></circle>
+                <path d="M12 7.5L15.8 10.2L14.4 15H9.6L8.2 10.2L12 7.5Z" fill="currentColor" fill-opacity="0.25" stroke-width="1.8"></path>
+                <path d="M12 2v5.5"></path>
+                <path d="M21.5 8.5l-5.7 1.7"></path>
+                <path d="M18 20.3l-3.6-5.3"></path>
+                <path d="M6 20.3l3.6-5.3"></path>
+                <path d="M2.5 8.5l5.7 1.7"></path>
+            </svg>
+        `;
+
+        const renderBadge = (type, count) => {
+            if (type === 'goal') {
+                const ballCount = Math.max(1, parseInt(count) || 1);
+                const balls = Array(ballCount).fill(soccerBallSvg).join('');
+                return `<span class="event-icon-wrapper" title="${ballCount > 1 ? ballCount + ' Tore' : 'Tor'}">${balls}</span>`;
+            }
+            if (type === 'yellow') {
+                const cardCount = Math.max(1, parseInt(count) || 1);
+                if (cardCount >= 2) {
+                    return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte (2. Gelbe)"></span>`;
+                }
+                return `<span class="match-card-badge-card badge-yellow" title="Gelbe Karte"></span>`;
+            }
+            if (type === 'yellowRed') {
+                return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte"></span>`;
+            }
+            if (type === 'red') {
+                return `<span class="match-card-badge-card badge-red" title="Rote Karte"></span>`;
+            }
+            return '';
+        };
+
+        const renderTeamReds = (count) => {
+            if (!count || count <= 0) return '';
+            const cards = Array(count).fill('<span class="team-red-card-badge" title="Rote Karte / Platzverweis"></span>').join('');
+            return `<span class="team-red-cards" title="${count > 1 ? count + ' Platzverweise' : 'Platzverweis'}">${cards}</span>`;
+        };
+
+        const groupEvents = (eventsList) => {
+            const playerEvents = new Map();
+            eventsList.forEach(e => {
+                const player = (e.player || e.name || '').trim();
+                if (!player) return;
+                const type = e.type || 'goal';
+                if (!playerEvents.has(player)) playerEvents.set(player, []);
+                playerEvents.get(player).push({ type, count: parseInt(e.count) || 1 });
+            });
+
+            const results = [];
+            playerEvents.forEach((types, player) => {
+                const hasYellowRed = types.some(t => t.type === 'yellowRed');
+                const hasRed = types.some(t => t.type === 'red');
+                const yellowCount = types.filter(t => t.type === 'yellow').reduce((sum, t) => sum + t.count, 0);
+                const goalCount = types.filter(t => t.type === 'goal').reduce((sum, t) => sum + t.count, 0);
+
+                if (goalCount > 0) {
+                    results.push({ player, type: 'goal', count: goalCount });
+                }
+                if (hasYellowRed || (hasRed && yellowCount > 0) || yellowCount >= 2) {
+                    results.push({ player, type: 'yellowRed', count: 1 });
+                } else if (hasRed) {
+                    results.push({ player, type: 'red', count: 1 });
+                } else if (yellowCount > 0) {
+                    results.push({ player, type: 'yellow', count: yellowCount });
+                }
+            });
+            return results;
+        };
+
         listContainer.innerHTML = `
             <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
                 ${roundMatches.map(m => {
                     const isFinished = m.status === 'Beendet' || m.status === 'Played' || m.status === 'Gespielt';
+                    const isAbgesagtStatus = (m.status || '').toLowerCase().includes('abgesagt');
                     let statusBadge = '<span class="badge badge-secondary" style="font-size: 0.72rem;">Ausstehend</span>';
                     if (isFinished) {
                         statusBadge = '<span class="badge badge-success" style="font-size: 0.72rem;">Beendet</span>';
-                    } else if (m.status && m.status.includes('Abgesagt')) {
+                    } else if (isAbgesagtStatus) {
                         statusBadge = `<span class="badge badge-danger" style="font-size: 0.72rem; background: #dc3545; color: #fff;">${m.status}</span>`;
                     } else if (m.status && m.status.includes('Verschoben')) {
                         statusBadge = '<span class="badge badge-warning" style="font-size: 0.72rem; background: #ffc107; color: #000;">Verschoben</span>';
                     }
 
+                    // Calculate Weekday
+                    let weekdayStr = '';
+                    if (m.date) {
+                        const parts = String(m.date).split('.');
+                        if (parts.length === 3) {
+                            let yr = parseInt(parts[2]);
+                            if (yr < 100) yr += 2000;
+                            const dObj = new Date(yr, parseInt(parts[1]) - 1, parseInt(parts[0]));
+                            if (!isNaN(dObj.getTime())) {
+                                const days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+                                weekdayStr = days[dObj.getDay()] + ', ';
+                            }
+                        }
+                    }
+
+                    // Normalize team names for event attribution
+                    const norm = (s) => (s || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').replace(/\s+/g, '').trim();
+                    const homeNorm = norm(m.home);
+                    const awayNorm = norm(m.away);
+
+                    let combinedEvents = (m.events && m.events.length > 0) ? [...m.events] : [];
+                    if (combinedEvents.length === 0) {
+                        (m.cards || []).forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1 }));
+                    }
+                    const hasEvents = combinedEvents.length > 0;
+
+                    const isHomeEvent = (e) => {
+                        const t = String(e.team || '');
+                        return t === String(m.home) || (homeNorm && norm(t) === homeNorm);
+                    };
+                    const isAwayEvent = (e) => {
+                        const t = String(e.team || '');
+                        return t === String(m.away) || (awayNorm && norm(t) === awayNorm);
+                    };
+
+                    const countReds = (evList) => {
+                        const dismissedPlayers = new Set();
+                        evList.forEach(e => {
+                            const p = (e.player || e.name || '').trim();
+                            if (!p) return;
+                            const t = e.type || 'yellow';
+                            if (t === 'red' || t === 'yellowRed') {
+                                dismissedPlayers.add(p);
+                            }
+                        });
+                        const yellowCounts = new Map();
+                        evList.forEach(e => {
+                            const p = (e.player || e.name || '').trim();
+                            if (!p) return;
+                            if (e.type === 'yellow') {
+                                yellowCounts.set(p, (yellowCounts.get(p) || 0) + (parseInt(e.count) || 1));
+                            }
+                        });
+                        yellowCounts.forEach((cnt, p) => {
+                            if (cnt >= 2) dismissedPlayers.add(p);
+                        });
+                        return dismissedPlayers.size;
+                    };
+
+                    let homeReds = 0;
+                    let awayReds = 0;
+                    let eventsHtml = '';
+
+                    if (hasEvents) {
+                        homeReds = countReds(combinedEvents.filter(isHomeEvent));
+                        awayReds = countReds(combinedEvents.filter(isAwayEvent));
+
+                        const homeGrouped = groupEvents(combinedEvents.filter(isHomeEvent));
+                        const awayGrouped = groupEvents(combinedEvents.filter(isAwayEvent));
+
+                        eventsHtml = `
+                            <div class="events-accordion" style="display: none;">
+                                <div class="events-container">
+                                    <div class="events-col-home">
+                                        ${homeGrouped.length > 0 ? homeGrouped.map(e => `
+                                            <div class="match-event-row match-event-home">
+                                                <span class="match-event-player">${e.player}</span>
+                                                <div class="match-event-badges">${renderBadge(e.type, e.count)}</div>
+                                            </div>
+                                        `).join('') : '<span style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0.5;">-</span>'}
+                                    </div>
+                                    <div class="events-col-away">
+                                        ${awayGrouped.length > 0 ? awayGrouped.map(e => `
+                                            <div class="match-event-row match-event-away">
+                                                <div class="match-event-badges">${renderBadge(e.type, e.count)}</div>
+                                                <span class="match-event-player">${e.player}</span>
+                                            </div>
+                                        `).join('') : '<span style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0.5;">-</span>'}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    const locationStr = m.location || m.venue || '';
+
                     return `
-                        <div class="glass-card" style="padding: 14px 18px; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); display: flex; flex-direction: column; gap: 8px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 6px;">
-                                <div style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--color-text-secondary);">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                    <span>${m.date || '-'} • ${m.time || '-'}</span>
+                        <div class="match-card glass-card ${hasEvents ? 'has-events-accordion' : ''}" style="cursor: ${hasEvents ? 'pointer' : 'default'};">
+                            <div class="match-card-meta">
+                                <div class="match-meta-left">
+                                    <span class="match-meta-item">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                        ${weekdayStr}${m.date || '-'}${m.time ? ' • ' + m.time + ' Uhr' : ''}
+                                    </span>
+                                    ${locationStr ? `
+                                        <span class="match-meta-item hide-mobile">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                            ${locationStr}
+                                        </span>
+                                    ` : ''}
                                 </div>
-                                <div>${statusBadge}</div>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 0;">
-                                <div style="flex: 1; text-align: right; font-weight: 700; font-size: 0.92rem; color: var(--color-text-primary); word-break: break-word;">${m.home || 'Heim'}</div>
-                                <div style="text-align: center; font-weight: 800; font-size: 1.1rem; color: var(--color-accent); background: rgba(0,150,64,0.08); padding: 4px 12px; border-radius: 6px; min-width: 60px; flex-shrink: 0;">${m.score || '-:-'}</div>
-                                <div style="flex: 1; text-align: left; font-weight: 700; font-size: 0.92rem; color: var(--color-text-primary); word-break: break-word;">${m.away || 'Gast'}</div>
-                            </div>
-                            ${m.location ? `
-                                <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 2px;">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                                    <span>${m.location}</span>
+                                <div class="match-meta-right" style="display: flex; align-items: center; gap: 8px;">
+                                    ${locationStr ? `
+                                        <span class="match-meta-item show-mobile" style="opacity: 0.85;">
+                                            ${locationStr}
+                                        </span>
+                                    ` : ''}
+                                    ${statusBadge}
+                                    ${hasEvents ? `
+                                        <span class="match-details-indicator">
+                                            <span>Details</span>
+                                            <svg class="details-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        </span>
+                                    ` : ''}
                                 </div>
-                            ` : ''}
+                            </div>
+
+                            <div class="match-card-body">
+                                <div class="match-team match-team-home">
+                                    <span class="team-name">${m.home || 'Heim'}</span>
+                                    ${renderTeamReds(homeReds)}
+                                </div>
+                                
+                                <div class="match-score-center">
+                                    <span class="match-score-badge">
+                                        ${m.score || '-:-'}
+                                    </span>
+                                    ${(m.ht && !isAbgesagtStatus) ? `<span class="match-ht-badge">HT ${m.ht}</span>` : ''}
+                                </div>
+                                
+                                <div class="match-team match-team-away">
+                                    ${renderTeamReds(awayReds)}
+                                    <span class="team-name">${m.away || 'Gast'}</span>
+                                </div>
+                            </div>
+
+                            ${eventsHtml}
                         </div>
                     `;
                 }).join('')}
             </div>
         `;
+
+        // Bind interactive accordion click handlers
+        listContainer.querySelectorAll('.has-events-accordion').forEach(card => {
+            card.addEventListener('click', () => {
+                const accordion = card.querySelector('.events-accordion');
+                if (!accordion) return;
+                if (accordion.style.display === 'none') {
+                    accordion.style.display = 'block';
+                    card.classList.add('accordion-open');
+                    if (typeof anime !== 'undefined') {
+                        anime({
+                            targets: accordion,
+                            opacity: [0, 1],
+                            translateY: [-6, 0],
+                            duration: 250,
+                            easing: 'easeOutQuad'
+                        });
+                    }
+                } else {
+                    accordion.style.display = 'none';
+                    card.classList.remove('accordion-open');
+                }
+            });
+        });
     }
 
     modal.style.display = 'flex';

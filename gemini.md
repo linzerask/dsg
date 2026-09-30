@@ -108,6 +108,7 @@ The frontend implements aggressive client-side caching across `localStorage` and
 * **The Rule:**
   - **Internal Data Keys & IDs:** Standardized in English (e.g. `yellow`, `yellowRed`, `red`, `goalsFor`, `goalsAgainst`, `points`, `goalDiff`).
   - **User-Facing UI Labels:** Authentic, formal Austrian German (e.g. `Gelb`, `Gelb-Rot`, `Rot`, `Tore`, `Punkte`, `Diff`, `Spiele`, `Torschützen`, `Spielbericht`).
+  - **Agent Communication Mandate:** Always converse, explain, and answer the user in English. Never reply in German unless explicitly asked to translate a specific phrase.
 
 ---
 
@@ -236,11 +237,14 @@ DSG Liga/
 
 ---
 
-## 19. Dedicated Round Inspection Modal in Spielrunden
+## 19. Dedicated Round Inspection Modal & Expandable Match Details Accordion in Spielrunden
 * **The Architectural Decision:** Match creation is unified exclusively in the **Spiele** tab (`adminGames.js`), eliminating duplicate forms and divergent state. On the **Spielrunden** tab (`adminRounds.js`), each round row and mobile accordion card provides a **`Spiele ansehen`** action button with an inline eye SVG icon.
 * **The Rule:**
   1. **Dynamic Round Match Resolution:** Clicking `Spiele ansehen` opens `#round-games-modal`, resolving matches from `Store.getMatches(round.seasonKey)` (with cross-season fallback) filtered by round number (`${round.runde}. Runde`, `Runde ${round.runde}`, etc.).
-  2. **Clean Status Badges & Scores:** Displays match date, kickoff time, status badges (`Beendet`, `Ausstehend`, `Abgesagt`, `Verschoben`), score pill, home and away clubs with responsive mobile flex layouts, and match location.
+  2. **Interactive Match Details Accordion:** Matches inside `#round-games-modal` render in the exact interactive format as the public `liga.js` match center:
+     - Header with weekday, date, kickoff time, location, status badge, and animated `Details ⌄` indicator.
+     - Centered score pill with halftime `HT` badge underneath and team dismissal red card indicators adjacent to club names.
+     - Expandable `.events-accordion` 2-column layout (Home vs Away) featuring SVG soccer balls for scorers and badges for yellow/yellow-red/red disciplinary cards with Anime.js transitions.
   3. **Empty State:** If no games are registered for that round, renders a clean SVG calendar empty state advising that matches can be scheduled in the **Spiele** tab.
 
 ## 20. GitHub Pages Deployment Protocol (Website Subtree Root)
