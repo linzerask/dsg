@@ -561,9 +561,9 @@ const renderModalContent = () => {
         }
 
         container.innerHTML = `
-            <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
                 <!-- Desktop Header -->
-                <div class="hide-mobile" style="display: grid; grid-template-columns: 40px 1fr 45px 40px 40px 40px 65px 50px 55px; padding: 8px 14px; font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; border-bottom: 1px solid var(--color-border); letter-spacing: 0.05em;">
+                <div class="hide-mobile" style="display: grid; grid-template-columns: 36px 1fr 45px 40px 40px 40px 65px 50px 55px; padding: 10px 14px; font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; border-bottom: 1px solid var(--color-border); letter-spacing: 0.05em; background: rgba(0,0,0,0.02); border-radius: 6px;">
                     <span style="text-align: center;">#</span>
                     <span>Mannschaft</span>
                     <span style="text-align: center;">Sp</span>
@@ -575,15 +575,15 @@ const renderModalContent = () => {
                     <span style="text-align: right; color: var(--color-accent);">Pkt</span>
                 </div>
 
-                <!-- Teams Accordion List -->
+                <!-- Teams List -->
                 ${teams.map((t, i) => {
                     const diff = (t.gf || 0) - (t.ga || 0);
                     const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
                     return `
                         <div class="has-league-table-accordion" style="border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface); overflow: hidden; cursor: pointer; transition: all 0.2s;">
                             <!-- Desktop Row View -->
-                            <div class="hide-mobile" style="display: grid; grid-template-columns: 40px 1fr 45px 40px 40px 40px 65px 50px 55px; align-items: center; padding: 12px 14px; font-size: 0.9rem;">
-                                <span style="text-align: center; font-weight: 700; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">${i + 1}</span>
+                            <div class="hide-mobile" style="display: grid; grid-template-columns: 36px 1fr 45px 40px 40px 40px 65px 50px 55px; align-items: center; padding: 12px 14px; font-size: 0.9rem;">
+                                <span style="text-align: center; font-weight: 800; font-size: 1rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">${i + 1}</span>
                                 <span style="font-weight: 700; color: var(--color-text-primary);">${t.name}</span>
                                 <span style="text-align: center; color: var(--color-text-secondary);">${t.played ?? 0}</span>
                                 <span style="text-align: center; color: var(--color-text-secondary);">${t.won ?? 0}</span>
@@ -591,31 +591,49 @@ const renderModalContent = () => {
                                 <span style="text-align: center; color: var(--color-text-secondary);">${t.lost ?? 0}</span>
                                 <span style="text-align: center; color: var(--color-text-secondary);">${t.gf ?? 0}:${t.ga ?? 0}</span>
                                 <span style="text-align: center; color: var(--color-text-secondary);">${diffStr}</span>
-                                <span style="text-align: right; font-weight: 900; color: var(--color-accent); font-size: 1.05rem;">${t.points ?? 0}</span>
+                                <span style="text-align: right; font-weight: 900; color: var(--color-accent); font-size: 1.1rem;">${t.points ?? 0}</span>
                             </div>
 
-                            <!-- Mobile Row View (Click to toggle stats breakdown) -->
+                            <!-- Mobile Touch Card View -->
                             <div class="show-mobile" style="padding: 12px 14px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
-                                        <span style="font-weight: 800; font-size: 1.05rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; min-width: 20px;">${i + 1}</span>
-                                        <strong style="font-size: 0.95rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</strong>
+                                <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%;">
+                                    <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+                                        <span style="font-weight: 900; font-size: 1.05rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; min-width: 22px;">${i + 1}</span>
+                                        <span style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
                                     </div>
                                     <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                                        <span style="font-weight: 900; font-size: 1.1rem; color: var(--color-accent);">${t.points ?? 0} Pkt</span>
-                                        <svg class="league-accordion-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                        <span style="font-weight: 800; font-size: 0.92rem; color: var(--color-accent); background: rgba(0,179,65,0.08); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(0,179,65,0.2); white-space: nowrap;">${t.points ?? 0} Pkt</span>
+                                        <svg class="league-accordion-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); transition: transform 0.25s ease; flex-shrink: 0;"><polyline points="6 9 12 15 18 9"></polyline></svg>
                                     </div>
                                 </div>
 
-                                <!-- Accordion Body on Mobile -->
-                                <div class="league-table-accordion-body" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--color-border);">
-                                    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center;">
-                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Spiele</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.played ?? 0}</div></div>
-                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Siege</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.won ?? 0}</div></div>
-                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Unent.</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.drawn ?? 0}</div></div>
-                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Nied.</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.lost ?? 0}</div></div>
-                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Tore</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${t.gf ?? 0}:${t.ga ?? 0}</div></div>
-                                        <div><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary);">Diff</div><div style="font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem;">${diffStr}</div></div>
+                                <!-- Accordion Body on Mobile (6 Stat Badges Grid) -->
+                                <div class="league-table-accordion-body" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--color-border); width: 100%;">
+                                    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; width: 100%;">
+                                        <div style="background: rgba(0,0,0,0.03); padding: 6px 2px; border-radius: 6px;">
+                                            <div style="font-size: 0.62rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 700;">Spiele</div>
+                                            <div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.92rem; margin-top: 2px;">${t.played ?? 0}</div>
+                                        </div>
+                                        <div style="background: rgba(0,0,0,0.03); padding: 6px 2px; border-radius: 6px;">
+                                            <div style="font-size: 0.62rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 700;">Siege</div>
+                                            <div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.92rem; margin-top: 2px;">${t.won ?? 0}</div>
+                                        </div>
+                                        <div style="background: rgba(0,0,0,0.03); padding: 6px 2px; border-radius: 6px;">
+                                            <div style="font-size: 0.62rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 700;">Unent.</div>
+                                            <div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.92rem; margin-top: 2px;">${t.drawn ?? 0}</div>
+                                        </div>
+                                        <div style="background: rgba(0,0,0,0.03); padding: 6px 2px; border-radius: 6px;">
+                                            <div style="font-size: 0.62rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 700;">Nied.</div>
+                                            <div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.92rem; margin-top: 2px;">${t.lost ?? 0}</div>
+                                        </div>
+                                        <div style="background: rgba(0,0,0,0.03); padding: 6px 2px; border-radius: 6px;">
+                                            <div style="font-size: 0.62rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 700;">Tore</div>
+                                            <div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.92rem; margin-top: 2px;">${t.gf ?? 0}:${t.ga ?? 0}</div>
+                                        </div>
+                                        <div style="background: rgba(0,0,0,0.03); padding: 6px 2px; border-radius: 6px;">
+                                            <div style="font-size: 0.62rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 700;">Diff</div>
+                                            <div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.92rem; margin-top: 2px;">${diffStr}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -632,8 +650,22 @@ const renderModalContent = () => {
                 const chevron = card.querySelector('.league-accordion-chevron');
                 if (body) {
                     const isVisible = body.style.display === 'block';
-                    body.style.display = isVisible ? 'none' : 'block';
-                    if (chevron) chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+                    if (isVisible) {
+                        body.style.display = 'none';
+                        if (chevron) chevron.style.transform = 'rotate(0deg)';
+                    } else {
+                        body.style.display = 'block';
+                        if (chevron) chevron.style.transform = 'rotate(180deg)';
+                        if (window.anime) {
+                            anime({
+                                targets: body,
+                                opacity: [0, 1],
+                                translateY: [-6, 0],
+                                duration: 250,
+                                easing: 'easeOutCubic'
+                            });
+                        }
+                    }
                 }
             };
         });

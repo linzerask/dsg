@@ -2982,7 +2982,7 @@ main {
 }
 
 /* Responsive visibility helper classes */
-.show-mobile {
+.show-mobile, .show-mobile-flex {
     display: none !important;
 }
 
@@ -2991,6 +2991,9 @@ main {
         display: none !important;
     }
     .show-mobile {
+        display: block !important;
+    }
+    .show-mobile-flex {
         display: flex !important;
     }
 }
