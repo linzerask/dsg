@@ -774,7 +774,18 @@ const populateFilterAndFormDropdowns = () => {
     // Unique rounds from matches and roundsData
     const allRoundsList = [];
     (roundsData || []).forEach(r => {
-        const label = `${r.liga ? r.liga + ' ' : ''}${r.saison || ''} ${r.jahr || ''} Runde ${r.runde || ''}`.trim() || `Runde ${r.runde}`;
+        const matchingLeague = (leaguesData || []).find(l => 
+            (l.seasonKey && r.seasonKey && l.seasonKey === r.seasonKey) ||
+            (l.name && (r.liga === l.name || r.saison === l.name))
+        );
+        let leagueName = matchingLeague?.name || r.liga || r.saison || 'DSG Liga';
+        const sKey = r.seasonKey || r.jahr || '';
+        if (sKey) {
+            leagueName = leagueName.replace(sKey, '').trim();
+        }
+        leagueName = leagueName.replace(/\s*\b\d{4}(\/\d{4})?\b/g, '').trim() || 'DSG Liga';
+        const seasonDisplay = sKey ? ` ${sKey}` : '';
+        const label = `${leagueName}${seasonDisplay} Runde ${r.runde || ''}`.trim() || `Runde ${r.runde}`;
         if (!allRoundsList.some(item => item.label === label)) {
             allRoundsList.push({ label, roundNr: r.runde, full: `${r.runde}. Runde`, seasonKey: r.seasonKey || (Store.getData()?.currentSeason || '2022/2023'), id: r.id });
         }

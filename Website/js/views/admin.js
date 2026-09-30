@@ -1,9 +1,9 @@
-import { Store } from '../store.js?v=1790560004000';
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560004000';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560004000';
-import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560004000';
-import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560004000';
-import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560004000';
+import { Store } from '../store.js?v=1790560004100';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560004100';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560004100';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560004100';
+import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560004100';
+import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560004100';
 import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790560003800';
 import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1790560003800';
 
