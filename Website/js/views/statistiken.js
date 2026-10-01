@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560025000';
-import { renderIcon } from '../icons.js?v=1790560025000';
+import { Store } from '../store.js?v=1790560040000';
+import { renderIcon } from '../icons.js?v=1790560040000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -116,7 +116,7 @@ export const computeAllTimeStats = () => {
                 matchCount: 0
               };
             }
-            playerMap[name].goals += 1;
+            playerMap[name].goals += (parseInt(ev.count) || 1);
             if (ev.team) playerMap[name].teams.add(ev.team.trim());
             playerMap[name].seasons.add(seasonKey);
           } else if ((ev.type === 'yellow' || ev.type === 'red' || ev.type === 'yellowRed' || ev.type === 'yellow-red') && ev.player) {
@@ -131,9 +131,12 @@ export const computeAllTimeStats = () => {
               };
             }
             if (ev.type === 'yellow') {
-              seasonEventCards[name].yellow += 1;
-            } else {
+              seasonEventCards[name].yellow += (parseInt(ev.count) || 1);
+            } else if (ev.type === 'yellowRed' || ev.type === 'yellow-red') {
+              seasonEventCards[name].yellow += 2;
               seasonEventCards[name].red += 1;
+            } else {
+              seasonEventCards[name].red += (parseInt(ev.count) || 1);
             }
           }
         });
@@ -150,7 +153,7 @@ export const computeAllTimeStats = () => {
               matchCount: 0
             };
           }
-          playerMap[name].goals += (sc.goals || 1);
+          playerMap[name].goals += (parseInt(sc.count) || parseInt(sc.goals) || 1);
           if (sc.team) playerMap[name].teams.add(sc.team.trim());
           playerMap[name].seasons.add(seasonKey);
         });
