@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560008000';
-import { renderIcon } from '../icons.js?v=1790560008000';
+import { Store } from '../store.js?v=1790560009000';
+import { renderIcon } from '../icons.js?v=1790560009000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -39,6 +39,9 @@ export const computeAllTimeStats = () => {
   seasonKeys.forEach(seasonKey => {
     const s = seasons[seasonKey];
     if (!s) return;
+
+    // Seasonal tracking for disciplinary cards
+    const seasonEventCards = {};
 
     // Matches & Goals
     const matches = s.matches || [];
@@ -119,8 +122,8 @@ export const computeAllTimeStats = () => {
           } else if ((ev.type === 'yellow' || ev.type === 'red' || ev.type === 'yellowRed' || ev.type === 'yellow-red') && ev.player) {
             const name = (ev.player || '').trim();
             if (!name) return;
-            if (!cardMap[name]) {
-              cardMap[name] = {
+            if (!seasonEventCards[name]) {
+              seasonEventCards[name] = {
                 name,
                 team: ev.team ? ev.team.trim() : (m.home || ''),
                 yellow: 0,
@@ -128,9 +131,9 @@ export const computeAllTimeStats = () => {
               };
             }
             if (ev.type === 'yellow') {
-              cardMap[name].yellow += 1;
+              seasonEventCards[name].yellow += 1;
             } else {
-              cardMap[name].red += 1;
+              seasonEventCards[name].red += 1;
             }
           }
         });
@@ -151,6 +154,51 @@ export const computeAllTimeStats = () => {
           if (sc.team) playerMap[name].teams.add(sc.team.trim());
           playerMap[name].seasons.add(seasonKey);
         });
+      }
+    });
+
+    // Blend disciplinary cards from match events and s.stats.cards per season
+    const seasonStatsCards = {};
+    if (s.stats && s.stats.cards && Array.isArray(s.stats.cards)) {
+      s.stats.cards.forEach(c => {
+        const name = (c.player || c.name || '').trim();
+        if (!name) return;
+        seasonStatsCards[name] = {
+          name,
+          team: (c.team || '').trim(),
+          yellow: parseInt(c.yellow || c.gelb || 0) || 0,
+          red: parseInt(c.red || c.rot || 0) || 0
+        };
+      });
+    }
+
+    const allSeasonPlayersForCards = new Set([
+      ...Object.keys(seasonEventCards),
+      ...Object.keys(seasonStatsCards)
+    ]);
+
+    allSeasonPlayersForCards.forEach(name => {
+      const evC = seasonEventCards[name] || { yellow: 0, red: 0, team: '' };
+      const stC = seasonStatsCards[name] || { yellow: 0, red: 0, team: '' };
+
+      const effectiveYellow = Math.max(evC.yellow || 0, stC.yellow || 0);
+      const effectiveRed = Math.max(evC.red || 0, stC.red || 0);
+      const team = stC.team || evC.team || '';
+
+      if (effectiveYellow > 0 || effectiveRed > 0) {
+        if (!cardMap[name]) {
+          cardMap[name] = {
+            name,
+            team,
+            yellow: 0,
+            red: 0
+          };
+        }
+        if (team && !cardMap[name].team) {
+          cardMap[name].team = team;
+        }
+        cardMap[name].yellow += effectiveYellow;
+        cardMap[name].red += effectiveRed;
       }
     });
 

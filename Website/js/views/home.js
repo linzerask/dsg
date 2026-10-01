@@ -1,6 +1,6 @@
-import { Store } from '../store.js?v=1790560008000';
-import { computeAllTimeStats } from './statistiken.js?v=1790560008000';
-import { renderIcon } from '../icons.js?v=1790560008000';
+import { Store } from '../store.js?v=1790560009000';
+import { computeAllTimeStats } from './statistiken.js?v=1790560009000';
+import { renderIcon } from '../icons.js?v=1790560009000';
 
 export const viewHome = () => {
   const data = Store.getData();
