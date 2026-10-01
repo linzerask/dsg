@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560021000';
-import { showToast } from './admin.js?v=1790560021000';
+import { Store } from '../store.js?v=1790560022000';
+import { showToast } from './admin.js?v=1790560022000';
 
 let roundsData = [];
 let leaguesData = [];
@@ -214,7 +214,21 @@ const getDisplayLeagueName = (r) => {
 
 const getDisplaySeason = (r) => {
     if (!r) return '-';
-    return r.seasonKey || r.jahr || '-';
+    let yr = r.jahr || '';
+    if (!yr && r.seasonKey) {
+        const match = String(r.seasonKey).match(/\d{4}(\/\d{4})?/);
+        if (match) yr = match[0];
+    }
+    if (yr) {
+        let yrStr = String(yr).trim();
+        if (/^\d{4}$/.test(yrStr)) {
+            const nextY = parseInt(yrStr) + 1;
+            return `${yrStr}/${nextY}`;
+        }
+        return yrStr.replace(/_[a-zA-Z0-9_-]+$/, '');
+    }
+    const sMatch = String(r.seasonKey || '').match(/\d{4}(\/\d{4})?/);
+    return sMatch ? sMatch[0] : (r.seasonKey || '-');
 };
 
 const extractSeasonYear = (r) => {
@@ -536,9 +550,10 @@ const populateLeaguesDropdowns = () => {
         
         modalSelect.innerHTML = leaguesToShow.map(l => {
             const leagueName = l.name || 'DSG Liga';
-            const yearDisplay = l.year ? ` (${l.year})` : (l.seasonKey ? ` (${l.seasonKey})` : '');
+            const cleanYear = l.year ? String(l.year).replace(/_[a-zA-Z0-9_-]+$/, '') : (l.seasonKey ? String(l.seasonKey).replace(/_[a-zA-Z0-9_-]+$/, '') : '');
+            const yearDisplay = cleanYear ? ` (${cleanYear})` : '';
             const seasonKey = l.seasonKey || l.year || (Store.getData()?.currentSeason || '2022/2023');
-            return `<option value="${leagueName}" data-season="${seasonKey}" data-year="${l.year || seasonKey}">${leagueName}${yearDisplay}</option>`;
+            return `<option value="${leagueName}" data-season="${seasonKey}" data-year="${cleanYear || seasonKey}">${leagueName}${yearDisplay}</option>`;
         }).join('');
     }
 };

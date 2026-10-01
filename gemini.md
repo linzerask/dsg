@@ -364,6 +364,16 @@ DSG Liga/
   3. **Auto-Healing in `store.js`:** `Store.syncFirebase()` and `Store.getAdminLeagues()` sanitize any legacy 4-digit years into `YYYY/YYYY` and synchronize the corrected records to Firestore and `localStorage` (`dsg_admin_leagues_v29`).
   4. **Cache Versions:** Active cache keys are `dsg_data_v70`, `dsg_admin_leagues_v29`, `dsg_admin_rounds_v27`.
 
+---
+
+## 32. Round Season Year Formatting & Internal Key Suffix Isolation (`getDisplaySeason`)
+* **The Pitfall:** In `adminRounds.js`, `getDisplaySeason(r)` was prioritizing raw internal database routing keys (`r.seasonKey || r.jahr`), causing sub-division rounds like 1. Klasse to display internal database keys (`2022/2023_1klasse`) in the `SAISON / JAHR` column and mobile card titles instead of the clean competition year (`2022/2023`).
+* **The Rule:**
+  1. **Strict Suffix Stripping & Season Normalization (`getDisplaySeason`):** `getDisplaySeason(r)` in `adminRounds.js` must always isolate and return the clean `YYYY/YYYY` competition season year (e.g. `2022/2023`) by prioritizing `r.jahr` and stripping internal routing suffixes (`_1klasse`, `_oberes`, `_unteres`). Single 4-digit years are expanded via `${yr}/${yr + 1}`.
+  2. **Dropdown Normalization:** Modal league selection options in `adminRounds.js` display clean season years in labels (e.g. `1. Klasse (2022/2023)`) while storing the exact routing key in `data-season`.
+  3. **Universal Application:** Applied across desktop datagrids, mobile cards, round inspection modal headers, and round edit forms.
+
+
 
 
 
