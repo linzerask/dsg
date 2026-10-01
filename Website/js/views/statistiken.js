@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560014000';
-import { renderIcon } from '../icons.js?v=1790560014000';
+import { Store } from '../store.js?v=1790560018000';
+import { renderIcon } from '../icons.js?v=1790560018000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -14,25 +14,7 @@ if (typeof window !== 'undefined' && Store.getAdminTeams) {
       statsMasterTeams = teams;
     }
   });
-// Helper: Dynamic label resolver for champion cards
-export const getSeasonHonorLabel = (seasonKey) => {
-  const leagues = (Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : []) || [];
-  const found = leagues.find(l => l.seasonKey === seasonKey || l.id === seasonKey);
-  if (found && found.name) {
-    const yr = String(seasonKey).match(/\d{4}\/\d{4}/)?.[0] || '';
-    const cleanName = found.name.replace(/\s*\d{4}\/\d{4}/, '').trim();
-    if (cleanName && yr) {
-      return `${cleanName} Saison ${yr}`;
-    }
-    return found.name;
-  }
-  if (seasonKey.includes('1klasse') || seasonKey.toLowerCase().includes('1. klasse')) {
-    const yr = String(seasonKey).match(/\d{4}\/\d{4}/)?.[0] || '2022/2023';
-    return `1. Klasse Saison ${yr}`;
-  }
-  const yr = String(seasonKey).match(/\d{4}\/\d{4}/)?.[0] || seasonKey;
-  return `DSG Liga Saison ${yr}`;
-};
+}
 
 // Helper: Compute aggregate statistics dynamically from Store data
 export const computeAllTimeStats = () => {
@@ -689,28 +671,33 @@ export const getSeasonHonorLabel = (seasonKey) => {
       const match = seasonKey.match(/\d{4}(\/\d{4})?/);
       if (match) yr = match[0];
     }
+    if (/^\d{4}$/.test(yr)) {
+      yr = `${yr}/${parseInt(yr) + 1}`;
+    }
     let name = (found.name || 'Liga').trim();
-    if (yr && !name.includes(yr)) {
+    name = name.replace(/\s*\d{4}(\/\d{4})?/, '').trim();
+    if (yr) {
       return `${name} Saison ${yr}`;
     }
     return `${name}`;
   }
 
   // Fallback pattern matching
+  let yr = seasonKey.match(/\d{4}(\/\d{4})?/)?.[0] || '2022/2023';
+  if (/^\d{4}$/.test(yr)) {
+    yr = `${yr}/${parseInt(yr) + 1}`;
+  }
+
   if (seasonKey.includes('1klasse') || seasonKey.toLowerCase().includes('1. klasse')) {
-    const yr = seasonKey.match(/\d{4}(\/\d{4})?/)?.[0] || '2022/2023';
     return `1. Klasse Saison ${yr}`;
   }
   if (seasonKey.includes('oberes')) {
-    const yr = seasonKey.match(/\d{4}(\/\d{4})?/)?.[0] || '';
     return `Oberes Playoff Saison ${yr}`;
   }
   if (seasonKey.includes('unteres')) {
-    const yr = seasonKey.match(/\d{4}(\/\d{4})?/)?.[0] || '';
     return `Unteres Playoff Saison ${yr}`;
   }
 
-  const yr = seasonKey.match(/\d{4}(\/\d{4})?/)?.[0] || seasonKey;
   return `DSG Liga Saison ${yr}`;
 };
 

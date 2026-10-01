@@ -1081,7 +1081,7 @@ export const Store = {
 
   getAdminLeaguesSync() {
     const local = loadLocal('dsg_admin_leagues', 26);
-    if (local && Array.isArray(local) && local.length > 0) {
+    if (local && Array.isArray(local) && local.length >= 2 && local.some(l => l.seasonKey === '2022/2023_1klasse')) {
       return sortLeaguesByPriority(local.filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027'));
     }
     return [

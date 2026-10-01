@@ -1,14 +1,14 @@
-import { viewHome, bindHome } from './views/home.js?v=1790560014000';
-import { viewNews, bindNews } from './views/news.js?v=1790560014000';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560014000';
-import { viewArchiv } from './views/simpleViews.js?v=1790560014000';
-import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560014000';
-import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560014000';
-import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560014000';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560014000';
-import { viewArticle, bindArticle } from './views/article.js?v=1790560014000';
-import { viewImpressum } from './views/impressum.js?v=1790560014000';
-import { viewDatenschutz } from './views/datenschutz.js?v=1790560014000';
+import { viewHome, bindHome } from './views/home.js?v=1790560018000';
+import { viewNews, bindNews } from './views/news.js?v=1790560018000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560018000';
+import { viewArchiv } from './views/simpleViews.js?v=1790560018000';
+import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560018000';
+import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560018000';
+import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560018000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560018000';
+import { viewArticle, bindArticle } from './views/article.js?v=1790560018000';
+import { viewImpressum } from './views/impressum.js?v=1790560018000';
+import { viewDatenschutz } from './views/datenschutz.js?v=1790560018000';
 
 const routes = {
   '/': { render: () => viewHome(), bind: () => bindHome() },
@@ -175,16 +175,22 @@ export const Router = {
 
     // Animate out if content exists and it's not a background data refresh
     if (app.children.length > 0 && !isDataRefresh && this.currentPath !== path) {
+      let isDone = false;
+      const done = () => {
+        if (!isDone) {
+          isDone = true;
+          renderNewView();
+        }
+      };
       anime({
         targets: app.children,
         opacity: [1, 0],
         translateY: [0, 15],
-        duration: 200,
+        duration: 180,
         easing: 'easeInCubic',
-        complete: () => {
-          renderNewView();
-        }
+        complete: done
       });
+      setTimeout(done, 220);
     } else {
       renderNewView();
     }
