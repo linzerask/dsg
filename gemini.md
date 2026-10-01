@@ -284,5 +284,13 @@ DSG Liga/
 * **The Pitfall:** Hardcoding `"2026/2027"` as fallback season in `store.js`, `liga.js`, `home.js`, `adminGames.js`, and `adminRounds.js` caused uninitialized or reset state to fabricate empty future seasons (`1. Klasse 2026/2027`, `DSG Liga 2026/2027`) and save them to Firestore and local storage, overwriting real scraped historical seasons.
 * **The Rule:**
   1. **Dynamic Season Fallbacks:** Always resolve the default season via `(Store.getData()?.currentSeason || "2022/2023")` or `(currentLeague.seasonKey || currentLeague.name)`. Never hardcode speculative future season years.
-  2. **Canonical Data Protection:** On cache invalidation (`dsg_data_v64`, `dsg_admin_leagues_v22`, `dsg_admin_rounds_v22`), `store.js` eagerly seeds from `data/leagues.json`, `data/rounds.json`, and `data/liga.json` to guarantee that the single canonical league (`#1 DSG Liga 2022/2023`), its 8 teams, and its 7 matchday rounds are intact and immediately synchronized to Firestore.
+  2. **Canonical Data Protection:** On cache invalidation (`dsg_data_v65`, `dsg_admin_leagues_v23`, `dsg_admin_rounds_v23`), `store.js` eagerly seeds from `data/leagues.json`, `data/rounds.json`, and `data/liga.json` to guarantee that canonical leagues (`#1 DSG Liga 2022/2023`), their full team rosters (all 8 clubs), and matchday rounds are intact and immediately synchronized to Firestore.
+
+---
+
+## 25. Public League Visibility (`showOnHomepage`) & Auto-Recalculation
+* **The Rule:**
+  1. **Public Visibility Enforcement:** The `showOnHomepage` flag on leagues controls public website display across both `home.js` (Homepage table & matches) and `liga.js` (Season selection dropdown). When set to `false`, the league is hidden from public selection. If no leagues are marked visible, views display a clean, friendly SVG placeholder ("Keine aktive Liga verfügbar - Derzeit ist keine Saison für die öffentliche Ansicht freigeschaltet.").
+  2. **Automatic Standings Recalculation:** Editing participating teams in `adminLeagues.js` via `Store.setLeagueSeasonTeams(seasonKey, teamNames)` automatically invokes `Store.recalculateSeason(seasonKey)` to re-evaluate match scores, points, and goal differences for all configured teams.
+  3. **Event Listener Synchronization:** `Router` listens to both `data-updated` and `leagues-updated` events to immediately re-render public and admin routes upon Firestore updates.
 
