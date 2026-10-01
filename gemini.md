@@ -294,3 +294,12 @@ DSG Liga/
   2. **Automatic Standings Recalculation:** Editing participating teams in `adminLeagues.js` via `Store.setLeagueSeasonTeams(seasonKey, teamNames)` automatically invokes `Store.recalculateSeason(seasonKey)` to re-evaluate match scores, points, and goal differences for all configured teams.
   3. **Event Listener Synchronization:** `Router` listens to both `data-updated` and `leagues-updated` events to immediately re-render public and admin routes upon Firestore updates.
 
+---
+
+## 26. League Participating Teams Checklist & Comprehensive Master Roster Ingestion
+* **The Pitfall:** In `adminLeagues.js`, filtering the participating teams checkbox list by `cachedActiveTeams = allTeams.filter(t => t.Status === 'Aktiv')` excluded inactive master clubs (e.g. 5 out of 8 clubs in the historical 2022/2023 season). When saving the edit form, `Store.setLeagueSeasonTeams()` replaced the season's team roster with only the remaining 3 active clubs, truncating the season standings table.
+* **The Rule:**
+  1. **Comprehensive Eligible Teams Ingestion (`cachedEligibleTeams`):** The league edit modal checklist must aggregate: (1) all master clubs from `teams.json` (with subtle `Aktiv` / `Inaktiv` status badges), (2) all clubs currently registered in `season.teams`, and (3) all clubs participating in `season.matches`.
+  2. **Preserve All Checked Teams on Save:** `league-edit-form.onsubmit` maps selected teams against `cachedEligibleTeams` without discarding inactive teams, ensuring all historical clubs (e.g. Union Heiligenberg, FC U. Schleißheim, DSG UKJ Froschberg, DSG St. Josef/Oed FC, FC Hinzenbach, SV Croatia Linz, Union Geboltskirchen, Union Goldwörth) remain intact.
+  3. **Auto-Healing in Data Sync:** If a season has fewer teams than the canonical dataset in `data/liga.json`, `Store.syncFirebase()` automatically restores the complete dataset, recalculates standings, and synchronizes to Firebase.
+
