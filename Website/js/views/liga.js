@@ -1,4 +1,4 @@
-import { Store, sortLeaguesByPriority } from '../store.js?v=1790560013000';
+import { Store, sortLeaguesByPriority } from '../store.js?v=1790560014000';
 
 
 let currentViewSeason = null;
@@ -349,6 +349,34 @@ export function viewLiga() {
         });
       }
       roundMap.get(fallbackNr).matches.push(m);
+    }
+  });
+
+  // 3. Ensure every round label has a valid date range (extract from matches if missing)
+  roundMap.forEach(entry => {
+    if (!entry.label.includes('(') && entry.matches && entry.matches.length > 0) {
+      const dates = [];
+      entry.matches.forEach(m => {
+        if (m.date) {
+          const mMatch = m.date.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+          if (mMatch) {
+            const day = mMatch[1].padStart(2, '0');
+            const month = mMatch[2].padStart(2, '0');
+            const year = mMatch[3];
+            dates.push({
+              formatted: `${day}.${month}.${year}`,
+              timestamp: new Date(`${year}-${month}-${day}`).getTime()
+            });
+          }
+        }
+      });
+      if (dates.length > 0) {
+        dates.sort((a, b) => a.timestamp - b.timestamp);
+        const first = dates[0].formatted;
+        const last = dates[dates.length - 1].formatted;
+        const range = first === last ? first : `${first} - ${last}`;
+        entry.label = `${entry.roundNr}. Runde (${range})`;
+      }
     }
   });
 

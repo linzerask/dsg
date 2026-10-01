@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790560013000';
+import { Store } from '../store.js?v=1790560014000';
 
 export const viewArticle = (id) => {
   const article = Store.getArticle(id);

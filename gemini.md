@@ -316,6 +316,16 @@ DSG Liga/
   3. **Multi-League Data Ingestion:**
      - `1. Klasse 2022/2023` (`raw_berichte_2.json` / `seasonKey: "2022/2023_1klasse"`) contains all 8 clubs (DSG Thalheim, Walker FC, Union Eschenau, FC Gornjak, DSG Union Traun, DSG Auberg, FC Bruck, FC Anatolia), 7 rounds (Rounds 8–14 in `rounds.json`), 28 matches, and 59 scorers.
      - Standings and stats for each league are completely isolated in `liga.json.seasons[seasonKey]`, while all-time statistics in `statistiken.js` seamlessly aggregate across all divisions.
-  4. **Cache Versions:** Active versions bumped to `dsg_data_v67`, `dsg_admin_leagues_v25`, `dsg_admin_rounds_v24`.
+  4. **Cache Versions:** Active versions bumped to `dsg_data_v68`, `dsg_admin_leagues_v26`, `dsg_admin_rounds_v25`.
+
+---
+
+## 28. Firestore Multi-League Sync Protection & Dynamic Meister Honor Card Titles
+* **The Pitfall:** (1) When Firestore has an older single-league snapshot, naive synchronization overwrites local multi-league datasets (`leagues.json` and `rounds.json`), causing newly added leagues (such as `1. Klasse 2022/2023`) to vanish from the Admin Dashboard and Stats pages. (2) Round dropdowns without explicit `datumVon`/`datumBis` failed to show dates on the public Liga page. (3) Champion cards in `statistiken.js` were displaying raw keys (`Saison 2022/2023_1klasse`) instead of formal dynamic league titles.
+* **The Rule:**
+  1. **Canonical Dataset Protection in `Store.syncFirebase()`:** Before syncing leagues or rounds from Firestore, verify that Firestore contains the complete canonical dataset (`leagues >= 2`, `rounds >= 14`). If Firestore has fewer items or is missing secondary leagues, merge canonical items from `data/leagues.json` and `data/rounds.json` and write back to Firestore.
+  2. **Dynamic Round Date Fallback:** In `liga.js`, if round metadata does not provide date ranges, dynamically compute the earliest and latest match dates from the round's scheduled matches and format as `${nr}. Runde (${firstDate} - ${lastDate})`.
+  3. **Dynamic Meister Honor Labels (`getSeasonHonorLabel`):** In `statistiken.js`, champion card titles resolve via `getSeasonHonorLabel(seasonKey)`, dynamically mapping keys like `2022/2023` to `DSG Liga Saison 2022/2023` and `2022/2023_1klasse` to `1. Klasse Saison 2022/2023`, with automatic support for any newly added leagues.
+  4. **Cache Versions:** Active cache keys are `dsg_data_v68`, `dsg_admin_leagues_v26`, `dsg_admin_rounds_v25`.
 
 

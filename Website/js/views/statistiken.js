@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560013000';
-import { renderIcon } from '../icons.js?v=1790560013000';
+import { Store } from '../store.js?v=1790560014000';
+import { renderIcon } from '../icons.js?v=1790560014000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -14,7 +14,25 @@ if (typeof window !== 'undefined' && Store.getAdminTeams) {
       statsMasterTeams = teams;
     }
   });
-}
+// Helper: Dynamic label resolver for champion cards
+export const getSeasonHonorLabel = (seasonKey) => {
+  const leagues = (Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : []) || [];
+  const found = leagues.find(l => l.seasonKey === seasonKey || l.id === seasonKey);
+  if (found && found.name) {
+    const yr = String(seasonKey).match(/\d{4}\/\d{4}/)?.[0] || '';
+    const cleanName = found.name.replace(/\s*\d{4}\/\d{4}/, '').trim();
+    if (cleanName && yr) {
+      return `${cleanName} Saison ${yr}`;
+    }
+    return found.name;
+  }
+  if (seasonKey.includes('1klasse') || seasonKey.toLowerCase().includes('1. klasse')) {
+    const yr = String(seasonKey).match(/\d{4}\/\d{4}/)?.[0] || '2022/2023';
+    return `1. Klasse Saison ${yr}`;
+  }
+  const yr = String(seasonKey).match(/\d{4}\/\d{4}/)?.[0] || seasonKey;
+  return `DSG Liga Saison ${yr}`;
+};
 
 // Helper: Compute aggregate statistics dynamically from Store data
 export const computeAllTimeStats = () => {
@@ -281,6 +299,17 @@ export const computeAllTimeStats = () => {
         });
       }
     }
+  });
+
+  // Sort Season Honors: Year descending, DSG Liga before secondary leagues
+  seasonHonors.sort((a, b) => {
+    const yrA = parseInt(String(a.season).match(/\d{4}/)?.[0]) || 0;
+    const yrB = parseInt(String(b.season).match(/\d{4}/)?.[0]) || 0;
+    if (yrB !== yrA) return yrB - yrA;
+    const isKlasseA = a.season.includes('1klasse') || a.season.toLowerCase().includes('1. klasse');
+    const isKlasseB = b.season.includes('1klasse') || b.season.toLowerCase().includes('1. klasse');
+    if (isKlasseA !== isKlasseB) return isKlasseA ? 1 : -1;
+    return 0;
   });
 
   // Sort Scorers and assign real all-time rank
@@ -650,6 +679,41 @@ export const renderClubsTableRows = (filteredClubs) => {
   `).join('');
 };
 
+export const getSeasonHonorLabel = (seasonKey) => {
+  if (!seasonKey) return 'Saison';
+  const leagues = (Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : []) || [];
+  const found = leagues.find(l => l.seasonKey === seasonKey || l.name === seasonKey);
+  if (found) {
+    let yr = found.year ? String(found.year).trim() : '';
+    if (!yr) {
+      const match = seasonKey.match(/\d{4}(\/\d{4})?/);
+      if (match) yr = match[0];
+    }
+    let name = (found.name || 'Liga').trim();
+    if (yr && !name.includes(yr)) {
+      return `${name} Saison ${yr}`;
+    }
+    return `${name}`;
+  }
+
+  // Fallback pattern matching
+  if (seasonKey.includes('1klasse') || seasonKey.toLowerCase().includes('1. klasse')) {
+    const yr = seasonKey.match(/\d{4}(\/\d{4})?/)?.[0] || '2022/2023';
+    return `1. Klasse Saison ${yr}`;
+  }
+  if (seasonKey.includes('oberes')) {
+    const yr = seasonKey.match(/\d{4}(\/\d{4})?/)?.[0] || '';
+    return `Oberes Playoff Saison ${yr}`;
+  }
+  if (seasonKey.includes('unteres')) {
+    const yr = seasonKey.match(/\d{4}(\/\d{4})?/)?.[0] || '';
+    return `Unteres Playoff Saison ${yr}`;
+  }
+
+  const yr = seasonKey.match(/\d{4}(\/\d{4})?/)?.[0] || seasonKey;
+  return `DSG Liga Saison ${yr}`;
+};
+
 export const viewStatistiken = () => {
   const stats = computeAllTimeStats();
   const topScorers = stats.allTimeScorers;
@@ -892,7 +956,7 @@ export const viewStatistiken = () => {
             <div class="glass-card" style="padding: var(--space-lg); border-top: 4px solid var(--color-accent); display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-md); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
               <div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
-                  <span style="font-weight: 800; font-size: 1.25rem; color: var(--color-accent); letter-spacing: 0.5px;">Saison ${h.season}</span>
+                  <span style="font-weight: 800; font-size: 1.25rem; color: var(--color-accent); letter-spacing: 0.5px;">${getSeasonHonorLabel(h.season)}</span>
                   <div style="width: 38px; height: 38px; border-radius: 50%; background: rgba(245, 158, 11, 0.12); display: flex; align-items: center; justify-content: center;">
                     ${renderIcon('trophy', { size: 22, color: '#f59e0b' })}
                   </div>
