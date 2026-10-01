@@ -373,8 +373,12 @@ DSG Liga/
   2. **Dropdown Normalization:** Modal league selection options in `adminRounds.js` display clean season years in labels (e.g. `1. Klasse (2022/2023)`) while storing the exact routing key in `data-season`.
   3. **Universal Application:** Applied across desktop datagrids, mobile cards, round inspection modal headers, and round edit forms.
 
+---
 
-
-
-
-
+## 33. Game Modal Round Selector & League Name Normalization
+* **The Pitfall:** In `adminGames.js`, `populateFilterAndFormDropdowns()` was building round selection labels directly from `r.seasonKey`, causing 1. Klasse rounds to display raw internal keys like `1. Klasse 2022/2023_1klasse Runde 11` in the Add/Edit Match dialog instead of the clean competition format `1. Klasse 2022/2023 Runde 11`.
+* **The Rule:**
+  1. **Clean Display Labels:** `populateFilterAndFormDropdowns()` in `adminGames.js` extracts and normalizes the clean competition year (`2022/2023`) by stripping internal database suffixes (`_1klasse`, `_oberes`, `_unteres`) and normalizing 4-digit years.
+  2. **Intact Backend Routing:** The `<option>` tag preserves `data-season-key="2022/2023_1klasse"` and `value="${r.runde}. Runde"` so match creation, team roster loading, and season recalculations remain 100% reliable.
+  3. **Logical Grouping & Natural Sorting:** The round dropdown options are naturally sorted by League name, Year descending, and Round number ascending ($1 \to 2 \to 3 \dots$) for intuitive navigation.
+  4. **Display League Name Helper (`getDisplayLeagueName`):** Resolves clean competition names from `leaguesData` or strips internal routing suffixes, preventing any raw database keys from appearing in match filters or search queries.

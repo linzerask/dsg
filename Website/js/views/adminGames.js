@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560022000';
-import { showToast } from './admin.js?v=1790560022000';
+import { Store } from '../store.js?v=1790560023000';
+import { showToast } from './admin.js?v=1790560023000';
 
 let gamesData = [];
 let roundsData = [];
@@ -378,8 +378,20 @@ const extractRoundNumber = (m) => {
 const getDisplayLeagueName = (m) => {
     if (!m) return 'DSG Liga';
     if (m.leagueName) return m.leagueName;
+    const matchingLeague = (leaguesData || []).find(l => 
+        (l.seasonKey && m.seasonKey && l.seasonKey === m.seasonKey) ||
+        (l.name && (m.liga === l.name || m.league === l.name))
+    );
+    if (matchingLeague?.name) {
+        let cleanYr = (matchingLeague.year || (matchingLeague.seasonKey ? String(matchingLeague.seasonKey).replace(/_[a-zA-Z0-9_-]+$/, '') : '') || '').trim();
+        if (/^\d{4}$/.test(cleanYr)) {
+            cleanYr = `${cleanYr}/${parseInt(cleanYr, 10) + 1}`;
+        }
+        return cleanYr ? `${matchingLeague.name} ${cleanYr}` : matchingLeague.name;
+    }
     const sKey = m.seasonKey || '';
-    return sKey ? (sKey.startsWith('DSG') || sKey.startsWith('1.') || sKey.startsWith('Saison') || sKey.startsWith('Liga') ? sKey : `DSG Liga ${sKey}`) : 'DSG Liga';
+    const cleanKey = sKey.replace(/_[a-zA-Z0-9_-]+$/, '');
+    return cleanKey ? (cleanKey.startsWith('DSG') || cleanKey.startsWith('1.') || cleanKey.startsWith('Saison') || cleanKey.startsWith('Liga') ? cleanKey : `DSG Liga ${cleanKey}`) : 'DSG Liga';
 };
 
 const formatDisplayDate = (dateStr, timeStr) => {
@@ -762,7 +774,11 @@ const populateFilterAndFormDropdowns = () => {
         const prevVal = leagueFilterSelect.value || 'all';
         const leagueOptions = (leaguesData || []).map(l => {
             const key = l.seasonKey || l.name;
-            const label = l.name && l.year ? `${l.name} ${l.year}` : (l.name || key);
+            let cleanYr = (l.year || (l.seasonKey ? String(l.seasonKey).replace(/_[a-zA-Z0-9_-]+$/, '') : '') || '').trim();
+            if (/^\d{4}$/.test(cleanYr)) {
+                cleanYr = `${cleanYr}/${parseInt(cleanYr, 10) + 1}`;
+            }
+            const label = l.name && cleanYr ? `${l.name} ${cleanYr}` : (l.name || key);
             return `<option value="${key}">${label}</option>`;
         }).join('');
         leagueFilterSelect.innerHTML = '<option value="all">Alle Ligen</option>' + leagueOptions;
@@ -779,23 +795,51 @@ const populateFilterAndFormDropdowns = () => {
             (l.name && (r.liga === l.name || r.saison === l.name))
         );
         let leagueName = matchingLeague?.name || r.liga || r.saison || 'DSG Liga';
-        const sKey = r.seasonKey || r.jahr || '';
-        if (sKey) {
-            leagueName = leagueName.replace(sKey, '').trim();
+        const rawKey = r.seasonKey || r.jahr || '';
+        if (rawKey) {
+            leagueName = leagueName.replace(rawKey, '').trim();
         }
         leagueName = leagueName.replace(/\s*\b\d{4}(\/\d{4})?\b/g, '').trim() || 'DSG Liga';
-        const seasonDisplay = sKey ? ` ${sKey}` : '';
+
+        // Extract clean competition year (e.g. '2022/2023' instead of '2022/2023_1klasse')
+        let cleanYear = (r.jahr || (r.seasonKey ? String(r.seasonKey).replace(/_[a-zA-Z0-9_-]+$/, '') : '') || matchingLeague?.year || '').trim();
+        if (/^\d{4}$/.test(cleanYear)) {
+            cleanYear = `${cleanYear}/${parseInt(cleanYear, 10) + 1}`;
+        }
+        const seasonDisplay = cleanYear ? ` ${cleanYear}` : '';
         const label = `${leagueName}${seasonDisplay} Runde ${r.runde || ''}`.trim() || `Runde ${r.runde}`;
         if (!allRoundsList.some(item => item.label === label)) {
-            allRoundsList.push({ label, roundNr: r.runde, full: `${r.runde}. Runde`, seasonKey: r.seasonKey || (Store.getData()?.currentSeason || '2022/2023'), id: r.id });
+            allRoundsList.push({ 
+                label, 
+                roundNr: parseInt(r.runde, 10) || 0, 
+                full: `${r.runde}. Runde`, 
+                seasonKey: r.seasonKey || (Store.getData()?.currentSeason || '2022/2023'), 
+                id: r.id,
+                leagueName,
+                year: cleanYear
+            });
         }
     });
 
     // Also include rounds from gamesData if any missing
     (gamesData || []).forEach(g => {
         if (g.round && !allRoundsList.some(item => item.label === g.round || item.full === g.round)) {
-            allRoundsList.push({ label: g.round, roundNr: g.roundNr, full: g.round, seasonKey: g.seasonKey || (Store.getData()?.currentSeason || '2022/2023') });
+            allRoundsList.push({ 
+                label: g.round, 
+                roundNr: g.roundNr || parseInt(String(g.round).replace(/\D/g, ''), 10) || 0, 
+                full: g.round, 
+                seasonKey: g.seasonKey || (Store.getData()?.currentSeason || '2022/2023'),
+                leagueName: 'DSG Liga',
+                year: '2022/2023'
+            });
         }
+    });
+
+    // Sort rounds logically: by League name, Year descending, Round number ascending
+    allRoundsList.sort((a, b) => {
+        if (a.leagueName !== b.leagueName) return a.leagueName.localeCompare(b.leagueName);
+        if (a.year !== b.year) return b.year.localeCompare(a.year);
+        return a.roundNr - b.roundNr;
     });
 
     if (roundFilterSelect) {

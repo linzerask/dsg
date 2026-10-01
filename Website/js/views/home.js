@@ -1,6 +1,6 @@
-import { Store, sortLeaguesByPriority } from '../store.js?v=1790560022000';
-import { computeAllTimeStats } from './statistiken.js?v=1790560022000';
-import { renderIcon } from '../icons.js?v=1790560022000';
+import { Store, sortLeaguesByPriority } from '../store.js?v=1790560023000';
+import { computeAllTimeStats } from './statistiken.js?v=1790560023000';
+import { renderIcon } from '../icons.js?v=1790560023000';
 
 export const viewHome = () => {
   const data = Store.getData();
