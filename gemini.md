@@ -338,5 +338,22 @@ DSG Liga/
   3. **Fetch Cache-Busting Protocol:** In `store.js`, all internal `fetch('data/*.json')` calls append `DATA_VERSION_STRING` (`?v=...`) to ensure that fresh data is always loaded without hitting stale browser HTTP caches.
   4. **Cache Versions:** Active cache keys are `dsg_data_v70`, `dsg_admin_leagues_v28`, `dsg_admin_rounds_v27`.
 
+---
+
+## 30. Post-Modification Manual Verification Checklist & Step-by-Step Testing Protocol (MANDATORY)
+* **The Directive:** After completing any task, bugfix, or feature edit, the assistant must **ALWAYS provide a clear, step-by-step manual verification checklist** in the final response to the user.
+* **The Rule:**
+  1. **Structure of the Verification Guide:**
+     - **Step 1: Cache Bypass & URL Access:** Provide the exact local/production URL with latest query parameters (e.g. `http://localhost:8000/#/...` or `https://linzerask.github.io/dsg/#/...`).
+     - **Step 2: Navigation & Action Steps:** Explicit step-by-step instructions on what buttons/tabs to click, dropdowns to select, or inputs to test.
+     - **Step 3: Expected Visual & Data Checkpoints:** Concrete numbers, badge states, table columns, titles, or behavior to look for (e.g. exact ranks, diff values like `+17`, dynamic Meister labels, 0 NaN occurrences).
+     - **Step 4: Cross-Device / Responsiveness Check (if applicable):** Mobile viewport toggle or accordion behavior check.
+  2. **Core Verification Areas:**
+     - **Liga Page (`#/liga`):** Check season dropdown switching, team standings count, numeric goal diffs (`+X`/`-X`), form badges, round dates, match report accordions.
+     - **Homepage (`#/`):** Check count-up stats numbers, Top 5 standings, Top 4 scorers, Topspiel banner, Match Center results.
+     - **Statistiken Page (`#/statistiken`):** Check tab switching (`Torschützen`, `Vereine`, `Meister`, `Fairplay`, `Rekorde`), pagination, live search, and dynamic card headers.
+     - **Admin Dashboard (`#/admin`):** Check all 7 admin tabs, modal dialog openings, form saves, toast confirmations, and real-time frontend reflection.
+
+
 
 
