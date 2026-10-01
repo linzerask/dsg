@@ -1,3 +1,5 @@
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
 import json
 import os
 import re
@@ -8,12 +10,16 @@ with open('Website/data/players.json', 'r', encoding='utf-8') as f:
 
 print(f"Loaded {len(all_players)} players from players.json")
 
-# Build a lookup for players by name
-player_name_map = {}
+all_full_names = []
+player_team_map = {}
 for p in all_players:
-    pname = p.get('name', '').strip()
-    if pname:
-        player_name_map[pname.lower()] = p
+    fn = p.get('Vorname', '').strip()
+    ln = p.get('Nachname', '').strip()
+    full = f"{fn} {ln}".strip()
+    if full:
+        all_full_names.append(full)
+        if p.get('Team'):
+            player_team_map[full.lower()] = p.get('Team')
 
 def clean_html(text):
     if not text: return ""
@@ -23,7 +29,11 @@ def normalize_team(name):
     name = clean_html(name)
     name = name.replace('Union Goldwrth', 'Union Goldwörth').replace('Union Goldwrth', 'Union Goldwörth')
     name = name.replace('FC U. Schleiheim', 'FC U. Schleißheim').replace('FC U. Schleiheim', 'FC U. Schleißheim')
-    name = name.replace('Schleiheim', 'Schleißheim')
+    name = name.replace('Schleiheim', 'Schleißheim').replace('Schleiheim', 'Schleißheim')
+    name = name.replace('Hrsching', 'Hörsching').replace('Hörsching', 'Hörsching')
+    name = name.replace('Mnzkirchen', 'Münzkirchen').replace('Münzkirchen', 'Münzkirchen')
+    name = name.replace('Knigswiesen', 'Königswiesen').replace('Königswiesen', 'Königswiesen')
+    name = name.replace('Wrth', 'Wörth').replace('Wörth', 'Wörth')
     if name in ['DSG St. Josef / Oed', 'DSG St. Josef Oed', 'DSG St. Josef/Oed']:
         return 'DSG St. Josef/Oed FC'
     if name == 'SV Croatia':
@@ -34,6 +44,32 @@ def normalize_team(name):
         return 'DSG UKJ Froschberg'
     return name
 
+def normalize_player_name(raw_name):
+    raw_name = clean_html(raw_name)
+    if not raw_name: return "", ""
+    
+    # Check if there is a minute e.g. (12.) or (90.+2)
+    min_match = re.search(r'\((\d+\.?[\+\d]*)\)', raw_name)
+    minute = min_match.group(1) if min_match else ""
+    name_only = re.sub(r'\(\d+\.?[\+\d]*\)', '', raw_name).strip()
+    name_only = re.sub(r'^\d+:\d+\s*', '', name_only).strip()
+    
+    if not name_only: return "", ""
+    
+    # Direct case-insensitive match
+    for fn in all_full_names:
+        if fn.lower() == name_only.lower():
+            return fn, minute
+            
+    # Wildcard regex match for broken characters
+    escaped = ''.join(['.' if c in ['\ufffd', '?', ''] else re.escape(c) for c in name_only])
+    pattern = re.compile('^' + escaped + '$', re.IGNORECASE)
+    for fn in all_full_names:
+        if pattern.match(fn):
+            return fn, minute
+            
+    return name_only, minute
+
 def parse_date_and_time(raw_date):
     raw_date = clean_html(raw_date)
     weekday = ""
@@ -42,7 +78,7 @@ def parse_date_and_time(raw_date):
     
     if ',' in raw_date:
         parts = raw_date.split(',')
-        weekday = parts[0].strip()
+        weekday = parts[0].strip().upper()
         date_str = parts[1].strip()
         
     if ' ' in date_str:
@@ -62,6 +98,34 @@ def parse_date_and_time(raw_date):
             date_str = f"{d}.{m}.{y}"
             
     return date_str, time_str, weekday
+
+def parse_events_from_td(td_html, team_name):
+    events = []
+    items = re.findall(r'<img[^>]+(?:alt="([^"]+)"|src="[^"]*\/([^"\/]+)\.(?:gif|png)")[^>]*>\s*([^<]+)', td_html, flags=re.IGNORECASE)
+    for alt, src_name, player_raw in items:
+        icon_type = (alt or src_name or '').lower()
+        
+        ev_type = 'goal'
+        if 'tor' in icon_type or 'goal' in icon_type:
+            ev_type = 'goal'
+        elif 'gelb-rot' in icon_type:
+            ev_type = 'yellowRed'
+        elif 'gelb' in icon_type:
+            ev_type = 'yellow'
+        elif 'rot' in icon_type:
+            ev_type = 'red'
+            
+        clean_name, minute = normalize_player_name(player_raw)
+        if clean_name and not clean_name.lower().startswith('eigentor'):
+            events.append({
+                'type': ev_type,
+                'player': clean_name,
+                'name': clean_name,
+                'team': team_name,
+                'count': 1,
+                'minute': minute
+            })
+    return events
 
 def extract_matches_and_stats(part, default_round_name, season_key, league_name, scorers_agg, cards_agg):
     matches = []
@@ -86,68 +150,111 @@ def extract_matches_and_stats(part, default_round_name, season_key, league_name,
         
         date_str, time_str, weekday = parse_date_and_time(raw_date)
         
-        referee = ""
+        # Parse details row: venue, time, home events, away events
         location = ""
+        events = []
+        scorers = []
+        cards = []
         
-        ref_m = re.search(r'Schiedsrichter:\s*</td>\s*<td>([\s\S]*?)</td>', details, flags=re.IGNORECASE)
-        if ref_m: referee = clean_html(ref_m.group(1))
-        
-        loc_m = re.search(r'Spielort:\s*</td>\s*<td>([\s\S]*?)</td>', details, flags=re.IGNORECASE)
-        if loc_m: location = clean_html(loc_m.group(1))
+        if details:
+            dt_tds = re.findall(r'<td[^>]*>([\s\S]*?)</td>', details, flags=re.IGNORECASE)
+            if len(dt_tds) >= 1:
+                dt_info = clean_html(dt_tds[0])
+                # E.g. "Sportplatz Wörth 18:30"
+                if dt_info:
+                    # check for time
+                    time_m = re.search(r'(\d{1,2}:\d{2})', dt_info)
+                    if time_m:
+                        time_str = time_m.group(1)
+                        location = dt_info.replace(time_str, '').strip()
+                    else:
+                        location = dt_info
+                        
+            if len(dt_tds) >= 3:
+                home_events = parse_events_from_td(dt_tds[1], home)
+                away_events = parse_events_from_td(dt_tds[2], away)
+                events = home_events + away_events
+                
         if not location:
             location = f"Sportplatz {home}"
             
+        location = normalize_team(location)
+        
+        # HT score extraction if exists
+        ht = ""
+        if '(' in score and ')' in score:
+            ht_m = re.search(r'\(([^)]+)\)', score)
+            if ht_m: ht = ht_m.group(1).strip()
+            
         status = "Beendet"
-        if not score or score.startswith(':') or score == '-:-':
+        if not score or score.startswith(':') or score == '-:-' or score == '- : -':
             status = "Ausstehend"
             score = "-:-"
         elif 'abgesagt' in score.lower() or 'str' in score.lower():
             status = "Abgesagt"
             
-        scorers = []
-        tore_blocks = re.findall(r'<td[^>]*class="tore"[^>]*>([\s\S]*?)</td>', details, flags=re.IGNORECASE)
-        for tb in tore_blocks:
-            lines = re.split(r'<br\s*/?>|\n', tb, flags=re.IGNORECASE)
-            for line in lines:
-                cline = clean_html(line)
-                if not cline: continue
-                scorers.append(cline)
-                
-                # Parse scorer name for top scorers list
-                # E.g. "1:0 Max Mustermann (12.)" or "Max Mustermann" or "1:0 Eigentor"
-                p_clean = re.sub(r'^\d+:\d+\s*', '', cline)
-                p_clean = re.sub(r'\s*\(\d+\.\)', '', p_clean).strip()
-                if p_clean and not p_clean.lower().startswith('eigentor'):
-                    # determine team if possible
-                    p_key = p_clean.lower()
-                    if p_key not in scorers_agg:
-                        team_guess = home
-                        scorers_agg[p_key] = {'name': p_clean, 'team': team_guess, 'goals': 0}
-                    scorers_agg[p_key]['goals'] += 1
-                
-        # Cards
-        y_count = len(re.findall(r'gelb\.png', details, flags=re.IGNORECASE))
-        r_count = len(re.findall(r'rot\.png', details, flags=re.IGNORECASE))
-        yr_count = len(re.findall(r'gelb-rot\.png', details, flags=re.IGNORECASE))
+        # Classify events into scorers and cards lists
+        y_count = 0
+        r_count = 0
+        yr_count = 0
         
+        for ev in events:
+            if ev['type'] == 'goal':
+                scorers.append({
+                    'name': ev['player'],
+                    'player': ev['player'],
+                    'team': ev['team'],
+                    'count': 1,
+                    'minute': ev['minute']
+                })
+                # Aggregate top scorers
+                p_key = (ev['player'] + '___' + ev['team']).lower()
+                if p_key not in scorers_agg:
+                    scorers_agg[p_key] = {'name': ev['player'], 'team': ev['team'], 'goals': 0}
+                scorers_agg[p_key]['goals'] += 1
+            else:
+                cards.append({
+                    'name': ev['player'],
+                    'player': ev['player'],
+                    'team': ev['team'],
+                    'type': ev['type'],
+                    'count': 1,
+                    'minute': ev['minute']
+                })
+                # Aggregate cards
+                p_key = (ev['player'] + '___' + ev['team']).lower()
+                if p_key not in cards_agg:
+                    cards_agg[p_key] = {'name': ev['player'], 'team': ev['team'], 'yellow': 0, 'red': 0, 'yellowRed': 0, 'suspension': ''}
+                if ev['type'] == 'yellow':
+                    cards_agg[p_key]['yellow'] += 1
+                    y_count += 1
+                elif ev['type'] == 'red':
+                    cards_agg[p_key]['red'] += 1
+                    r_count += 1
+                elif ev['type'] == 'yellowRed':
+                    cards_agg[p_key]['yellowRed'] += 1
+                    yr_count += 1
+                    
         matches.append({
             'date': date_str,
             'time': time_str,
             'weekday': weekday,
             'location': location,
+            'venue': location,
             'home': home,
             'away': away,
             'score': score,
+            'ht': ht,
             'round': default_round_name,
             'seasonKey': season_key,
             'league': league_name,
             'status': status,
-            'referee': referee,
+            'events': events,
             'scorers': scorers,
+            'cards': cards,
             'yellow': y_count,
             'red': r_count,
-            'yellowRed': yr_count,
-            'report': details
+            'yellowRed': yr_count
         })
         
     return matches
@@ -300,14 +407,21 @@ def format_scorers(scorers_dict):
         row['rank'] = idx + 1
     return lst
 
+# Format cards
+def format_cards(cards_dict):
+    lst = sorted(cards_dict.values(), key=lambda x: (x['red'], x['yellowRed'], x['yellow']), reverse=True)
+    for idx, row in enumerate(lst):
+        row['rank'] = idx + 1
+    return lst
+
 # Calculate standings
 def calculate_standings(matches):
     stats = {}
     for m in matches:
         h = m['home']
         a = m['away']
-        if h not in stats: stats[h] = {'name': h, 'played': 0, 'won': 0, 'draw': 0, 'lost': 0, 'goalsFor': 0, 'goalsAgainst': 0, 'goalDiff': 0, 'points': 0}
-        if a not in stats: stats[a] = {'name': a, 'played': 0, 'won': 0, 'draw': 0, 'lost': 0, 'goalsFor': 0, 'goalsAgainst': 0, 'goalDiff': 0, 'points': 0}
+        if h not in stats: stats[h] = {'name': h, 'played': 0, 'won': 0, 'drawn': 0, 'lost': 0, 'goalsFor': 0, 'goalsAgainst': 0, 'goalDiff': 0, 'points': 0}
+        if a not in stats: stats[a] = {'name': a, 'played': 0, 'won': 0, 'drawn': 0, 'lost': 0, 'goalsFor': 0, 'goalsAgainst': 0, 'goalDiff': 0, 'points': 0}
         
         sc = m['score']
         if sc and ':' in sc and not sc.startswith(':') and m['status'] == 'Beendet':
@@ -332,9 +446,9 @@ def calculate_standings(matches):
                     stats[a]['points'] += 3
                     stats[h]['lost'] += 1
                 else:
-                    stats[h]['draw'] += 1
+                    stats[h]['drawn'] += 1
                     stats[h]['points'] += 1
-                    stats[a]['draw'] += 1
+                    stats[a]['drawn'] += 1
                     stats[a]['points'] += 1
             except:
                 pass
@@ -359,7 +473,7 @@ liga_full['seasons']['2022/2023'] = {
     'matches': dsg_liga_matches,
     'stats': {
         'topScorers': format_scorers(dsg_liga_scorers),
-        'cards': []
+        'cards': format_cards(dsg_liga_cards)
     }
 }
 
@@ -368,13 +482,15 @@ liga_full['seasons']['2022/2023_1klasse'] = {
     'matches': klasse_matches,
     'stats': {
         'topScorers': format_scorers(klasse_scorers),
-        'cards': []
+        'cards': format_cards(klasse_cards)
     }
 }
 
 with open('Website/data/liga.json', 'w', encoding='utf-8') as f:
     json.dump(liga_full, f, ensure_ascii=False, indent=2)
 
+print(f"DSG Liga 2022/2023: {len(dsg_liga_matches)} matches, {len(dsg_liga_scorers)} scorers, {len(dsg_liga_cards)} carded players")
+print(f"1. Klasse 2022/2023: {len(klasse_matches)} matches, {len(klasse_scorers)} scorers, {len(klasse_cards)} carded players")
 print("Saved Website/data/liga.json successfully!")
 
 # Write rounds to Website/data/rounds.json
@@ -382,4 +498,4 @@ all_season_rounds = dsg_liga_rounds + klasse_rounds
 with open('Website/data/rounds.json', 'w', encoding='utf-8') as f:
     json.dump(all_season_rounds, f, ensure_ascii=False, indent=2)
 
-print("Saved Website/data/rounds.json successfully!")
+print(f"Saved {len(all_season_rounds)} rounds to Website/data/rounds.json successfully!")
