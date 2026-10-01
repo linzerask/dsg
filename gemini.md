@@ -303,3 +303,19 @@ DSG Liga/
   2. **Preserve All Checked Teams on Save:** `league-edit-form.onsubmit` maps selected teams against `cachedEligibleTeams` without discarding inactive teams, ensuring all historical clubs (e.g. Union Heiligenberg, FC U. Schleißheim, DSG UKJ Froschberg, DSG St. Josef/Oed FC, FC Hinzenbach, SV Croatia Linz, Union Geboltskirchen, Union Goldwörth) remain intact.
   3. **Auto-Healing in Data Sync:** If a season has fewer teams than the canonical dataset in `data/liga.json`, `Store.syncFirebase()` automatically restores the complete dataset, recalculates standings, and synchronizes to Firebase.
 
+---
+
+## 27. Multi-League Support, 1. Klasse 2022/2023 Ingestion, & League Priority Hierarchy (`sortLeaguesByPriority`)
+* **The Core Requirement:** In any given season year, multiple leagues and divisions may exist simultaneously (e.g., `DSG Liga 2022/2023` and `1. Klasse 2022/2023`). **`DSG Liga` is ALWAYS the primary, standard league** and must be prioritized before `1. Klasse`, `Oberes Playoff`, or `Unteres Playoff`.
+* **The Rule:**
+  1. **Strict Hierarchy Order (`sortLeaguesByPriority`):**
+     - Primary Sort: Season year descending (`2025/2026 > 2024/2025 > 2023/2024 > 2022/2023 > 2021/2022`).
+     - Secondary Sort (Hierarchy Weight within same year): `DSG Liga` (Weight 1) &rarr; `Oberes Playoff` (Weight 2) &rarr; `Unteres Playoff` (Weight 3) &rarr; `1. Klasse` (Weight 4) &rarr; `Other` (Weight 5).
+     - Applied globally in `Store.getAdminLeaguesSync()`, `Store.getAdminLeagues()`, `Store.getVisibleSeasonItems()`, `home.js`, `liga.js`, and admin dropdowns so that `DSG Liga` is always the first item and the default active league view.
+  2. **Canonical Keys for Secondary Divisions:** Secondary leagues use specific keys: `2022/2023_1klasse` for `1. Klasse 2022/2023`, `2024/2025_oberes` for Oberes Playoff, etc.
+  3. **Multi-League Data Ingestion:**
+     - `1. Klasse 2022/2023` (`raw_berichte_2.json` / `seasonKey: "2022/2023_1klasse"`) contains all 8 clubs (DSG Thalheim, Walker FC, Union Eschenau, FC Gornjak, DSG Union Traun, DSG Auberg, FC Bruck, FC Anatolia), 7 rounds (Rounds 8–14 in `rounds.json`), 28 matches, and 59 scorers.
+     - Standings and stats for each league are completely isolated in `liga.json.seasons[seasonKey]`, while all-time statistics in `statistiken.js` seamlessly aggregate across all divisions.
+  4. **Cache Versions:** Active versions bumped to `dsg_data_v67`, `dsg_admin_leagues_v25`, `dsg_admin_rounds_v24`.
+
+

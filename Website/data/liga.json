@@ -4994,6 +4994,2407 @@
           "red": 0
         }
       ]
+    },
+    "2022/2023_1klasse": {
+      "name": "1. Klasse 2022/2023",
+      "year": "2022/2023",
+      "teams": [
+        {
+          "id": 2,
+          "name": "DSG Thalheim",
+          "played": 6,
+          "won": 5,
+          "drawn": 0,
+          "lost": 1,
+          "goalsFor": 29,
+          "goalsAgainst": 12,
+          "goalDiff": 17,
+          "points": 15,
+          "logo": "stadion.png",
+          "rank": 1,
+          "diff": "29:12",
+          "gf": 29,
+          "ga": 12
+        },
+        {
+          "id": 7,
+          "name": "Walker FC",
+          "played": 6,
+          "won": 4,
+          "drawn": 1,
+          "lost": 1,
+          "goalsFor": 16,
+          "goalsAgainst": 12,
+          "goalDiff": 4,
+          "points": 13,
+          "logo": "stadion.png",
+          "rank": 2,
+          "diff": "16:12",
+          "gf": 16,
+          "ga": 12
+        },
+        {
+          "id": 8,
+          "name": "Union Eschenau",
+          "played": 6,
+          "won": 3,
+          "drawn": 0,
+          "lost": 3,
+          "goalsFor": 17,
+          "goalsAgainst": 15,
+          "goalDiff": 2,
+          "points": 9,
+          "logo": "stadion.png",
+          "rank": 3,
+          "diff": "17:15",
+          "gf": 17,
+          "ga": 15
+        },
+        {
+          "id": 5,
+          "name": "FC Gornjak",
+          "played": 6,
+          "won": 2,
+          "drawn": 2,
+          "lost": 2,
+          "goalsFor": 12,
+          "goalsAgainst": 14,
+          "goalDiff": -2,
+          "points": 8,
+          "logo": "stadion.png",
+          "rank": 4,
+          "diff": "12:14",
+          "gf": 12,
+          "ga": 14
+        },
+        {
+          "id": 1,
+          "name": "DSG Union Traun",
+          "played": 6,
+          "won": 2,
+          "drawn": 1,
+          "lost": 3,
+          "goalsFor": 20,
+          "goalsAgainst": 22,
+          "goalDiff": -2,
+          "points": 7,
+          "logo": "stadion.png",
+          "rank": 5,
+          "diff": "20:22",
+          "gf": 20,
+          "ga": 22
+        },
+        {
+          "id": 3,
+          "name": "DSG Auberg",
+          "played": 6,
+          "won": 1,
+          "drawn": 1,
+          "lost": 4,
+          "goalsFor": 10,
+          "goalsAgainst": 19,
+          "goalDiff": -9,
+          "points": 4,
+          "logo": "stadion.png",
+          "rank": 6,
+          "diff": "10:19",
+          "gf": 10,
+          "ga": 19
+        },
+        {
+          "id": 4,
+          "name": "FC Bruck",
+          "played": 6,
+          "won": 1,
+          "drawn": 1,
+          "lost": 4,
+          "goalsFor": 7,
+          "goalsAgainst": 17,
+          "goalDiff": -10,
+          "points": 4,
+          "logo": "stadion.png",
+          "rank": 7,
+          "diff": "7:17",
+          "gf": 7,
+          "ga": 17
+        },
+        {
+          "id": 6,
+          "name": "FC Anatolia",
+          "played": 0,
+          "won": 0,
+          "drawn": 0,
+          "lost": 0,
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "goalDiff": 0,
+          "points": 0,
+          "logo": "stadion.png",
+          "rank": 8,
+          "diff": "0:0",
+          "gf": 0,
+          "ga": 0
+        }
+      ],
+      "matches": [
+        {
+          "id": 1,
+          "round": "1. Runde",
+          "runde": "1",
+          "date": "27.08.2022",
+          "time": "15:00",
+          "home": "DSG Union Traun",
+          "away": "DSG Thalheim",
+          "score": "5:3",
+          "ht": "2:2",
+          "status": "Gespielt",
+          "venue": "Sportplatz DSG Traun",
+          "location": "Sportplatz DSG Traun",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Alexander Walter",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Walter",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Walter",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Fabian Walter",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Sebastian Schicklgruber",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Onur Odabas",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Darko Radosavljevic",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Klaus Gramberger",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Manuel Fazeny",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Avduramon Saciri",
+              "team": "DSG Thalheim",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 2,
+          "round": "1. Runde",
+          "runde": "1",
+          "date": "27.08.2022",
+          "time": "17:00",
+          "home": "DSG Auberg",
+          "away": "FC Bruck",
+          "score": "3:3",
+          "ht": "3:0",
+          "status": "Gespielt",
+          "venue": "Sportplatz DSG Traun",
+          "location": "Sportplatz DSG Traun",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Patrick Pix",
+              "team": "DSG Auberg",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Andreas Pirnat",
+              "team": "DSG Auberg",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Michael Mayr",
+              "team": "DSG Auberg",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Julian Burschik",
+              "team": "DSG Auberg",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Andreas Lederer",
+              "team": "FC Bruck",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Philipp Grabner",
+              "team": "FC Bruck",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Patrick Baldinger",
+              "team": "FC Bruck",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Patrick Baldinger",
+              "team": "FC Bruck",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 3,
+          "round": "1. Runde",
+          "runde": "1",
+          "date": "22.10.2022",
+          "time": "00:00",
+          "home": "FC Gornjak",
+          "away": "FC Anatolia",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "venue": "Magistratplatz Linz",
+          "location": "Magistratplatz Linz",
+          "events": [],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 4,
+          "round": "1. Runde",
+          "runde": "1",
+          "date": "22.10.2022",
+          "time": "16:00",
+          "home": "Walker FC",
+          "away": "Union Eschenau",
+          "score": "3:2",
+          "ht": "1:2",
+          "status": "Gespielt",
+          "venue": "DSG-Platz Linz",
+          "location": "DSG-Platz Linz",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Florian Rebhandl",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Lenz",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Max Grund",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Max Grund",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Benjamin Stenhaug",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Patrick Reichl",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Quadus Tobi Keshinro",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Thomas Wiesinger",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Michael Dornetshuber",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Sebastian Haider",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Simon Wenzl",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Bernhard Altendorfer",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Markus Haslehner",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "yellowRed",
+              "player": "Alexander Gfellner",
+              "team": "Union Eschenau",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 5,
+          "round": "2. Runde",
+          "runde": "2",
+          "date": "02.09.2022",
+          "time": "19:00",
+          "home": "FC Bruck",
+          "away": "DSG Union Traun",
+          "score": "0:3",
+          "ht": "0:1",
+          "status": "Gespielt",
+          "venue": "Sportplatz ASKÖ Bruck/Peuerbach",
+          "location": "Sportplatz ASKÖ Bruck/Peuerbach",
+          "events": [
+            {
+              "type": "yellow",
+              "player": "Patrick Reisinger-Auer",
+              "team": "FC Bruck",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Fabian Walter",
+              "team": "DSG Union Traun",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Sebastian Schicklgruber",
+              "team": "DSG Union Traun",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Bernhard Hofer",
+              "team": "DSG Union Traun",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Philipp Habring",
+              "team": "DSG Union Traun",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Lukas Raser",
+              "team": "DSG Union Traun",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 6,
+          "round": "2. Runde",
+          "runde": "2",
+          "date": "02.09.2022",
+          "time": "19:00",
+          "home": "Union Eschenau",
+          "away": "DSG Auberg",
+          "score": "4:3",
+          "ht": "0:1",
+          "status": "Gespielt",
+          "venue": "Sportplatz Eschenau",
+          "location": "Sportplatz Eschenau",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Sebastian Haider",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Gfellner",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Simon Wenzl",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Marco Braumann",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Daniel Auer",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Marco Braumann",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Alexander Gfellner",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Zia Ghaderi",
+              "team": "DSG Auberg",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Zia Ghaderi",
+              "team": "DSG Auberg",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Patrick Altmüller",
+              "team": "DSG Auberg",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Zia Ghaderi",
+              "team": "DSG Auberg",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Ewaz Sahil",
+              "team": "DSG Auberg",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 7,
+          "round": "2. Runde",
+          "runde": "2",
+          "date": "03.09.2022",
+          "time": "14:30",
+          "home": "DSG Thalheim",
+          "away": "FC Gornjak",
+          "score": "7:2",
+          "ht": "3:0",
+          "status": "Gespielt",
+          "venue": "Sportplatz Union Thalheim",
+          "location": "Sportplatz Union Thalheim",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Igor Anusic",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Igor Anusic",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Caner Dökmez",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Amel Pudic",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Georg Gottinger",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Nikola Zivojinovic",
+              "team": "FC Gornjak",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Nikola Zivojinovic",
+              "team": "FC Gornjak",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 8,
+          "round": "2. Runde",
+          "runde": "2",
+          "date": "03.09.2022",
+          "time": "15:00",
+          "home": "FC Anatolia",
+          "away": "Walker FC",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "venue": "DSG-Platz Linz",
+          "location": "DSG-Platz Linz",
+          "events": [],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 9,
+          "round": "3. Runde",
+          "runde": "3",
+          "date": "16.09.2022",
+          "time": "19:00",
+          "home": "DSG Union Traun",
+          "away": "Union Eschenau",
+          "score": "2:5",
+          "ht": "1:2",
+          "status": "Gespielt",
+          "venue": "Sportplatz DSG Traun",
+          "location": "Sportplatz DSG Traun",
+          "events": [
+            {
+              "type": "goal",
+              "player": "René Pacher",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Martin Stütz",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Fatih Odabas",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Thomas Hackl",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Gfellner",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Gfellner",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Michael Dornetshuber",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Christopher Ratzenböck",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Farid Alem",
+              "team": "Union Eschenau",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 10,
+          "round": "3. Runde",
+          "runde": "3",
+          "date": "17.09.2022",
+          "time": "14:00",
+          "home": "DSG Auberg",
+          "away": "Walker FC",
+          "score": "0:3",
+          "ht": "0:1",
+          "status": "Gespielt",
+          "venue": "DSG-Platz Linz",
+          "location": "DSG-Platz Linz",
+          "events": [
+            {
+              "type": "yellow",
+              "player": "Zied Omrane",
+              "team": "DSG Auberg",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Dominik Pfannhauser",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Thomas Schwarzbauer",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Lenz",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Benjamin Stenhaug",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Dominik Pfannhauser",
+              "team": "Walker FC",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 11,
+          "round": "3. Runde",
+          "runde": "3",
+          "date": "17.09.2022",
+          "time": "16:00",
+          "home": "FC Anatolia",
+          "away": "DSG Thalheim",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "venue": "DSG-Platz Linz",
+          "location": "DSG-Platz Linz",
+          "events": [],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 12,
+          "round": "3. Runde",
+          "runde": "3",
+          "date": "17.09.2022",
+          "time": "16:00",
+          "home": "FC Gornjak",
+          "away": "FC Bruck",
+          "score": "2:0",
+          "ht": "0:0",
+          "status": "Gespielt",
+          "venue": "Magistratplatz Linz",
+          "location": "Magistratplatz Linz",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Markus Kalakovic",
+              "team": "FC Gornjak",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Filip Nikolov",
+              "team": "FC Gornjak",
+              "isHome": true
+            },
+            {
+              "type": "red",
+              "player": "Nemanja Ilic",
+              "team": "FC Gornjak",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Niklas Standhartinger",
+              "team": "FC Bruck",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Sebastian Scharinger",
+              "team": "FC Bruck",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Michael Humer",
+              "team": "FC Bruck",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Alexander Biener",
+              "team": "FC Bruck",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 13,
+          "round": "4. Runde",
+          "runde": "4",
+          "date": "23.09.2022",
+          "time": "19:00",
+          "home": "DSG Union Traun",
+          "away": "Walker FC",
+          "score": "4:7",
+          "ht": "1:1",
+          "status": "Gespielt",
+          "venue": "Sportplatz DSG Traun",
+          "location": "Sportplatz DSG Traun",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Alexander Walter",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Walter",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Walter",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Fatih Odabas",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Alexander Walter",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Alexander Zamberger",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Matthias Stütz",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Jürgen Rittsteiger",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Fatih Odabas",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Ninoslav Matanovic",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Florian Rebhandl",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Florian Rebhandl",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Felix Halder",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Felix Halder",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Dominik Pfannhauser",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Philipp Kölbl",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Patrick Reichl",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Valentin Ransmayr",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Benjamin Stenhaug",
+              "team": "Walker FC",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 14,
+          "round": "4. Runde",
+          "runde": "4",
+          "date": "24.09.2022",
+          "time": "14:00",
+          "home": "FC Gornjak",
+          "away": "DSG Auberg",
+          "score": "3:0",
+          "ht": "2:0",
+          "status": "Gespielt",
+          "venue": "Magistratplatz Linz",
+          "location": "Magistratplatz Linz",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Markus Kalakovic",
+              "team": "FC Gornjak",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Markus Kalakovic",
+              "team": "FC Gornjak",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Ivica Jovanovic",
+              "team": "FC Gornjak",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Andreas Pirnat",
+              "team": "DSG Auberg",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 15,
+          "round": "4. Runde",
+          "runde": "4",
+          "date": "24.09.2022",
+          "time": "14:30",
+          "home": "DSG Thalheim",
+          "away": "FC Bruck",
+          "score": "6:1",
+          "ht": "3:1",
+          "status": "Gespielt",
+          "venue": "Sportplatz Union Thalheim",
+          "location": "Sportplatz Union Thalheim",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Elvir Ekmecic",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Caner Dökmez",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Markus Brandmayr",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Igor Anusic",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Patrick Reisinger-Auer",
+              "team": "FC Bruck",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 16,
+          "round": "4. Runde",
+          "runde": "4",
+          "date": "24.09.2022",
+          "time": "16:00",
+          "home": "FC Anatolia",
+          "away": "Union Eschenau",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "venue": "Seminarplatz Linz",
+          "location": "Seminarplatz Linz",
+          "events": [],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 17,
+          "round": "5. Runde",
+          "runde": "5",
+          "date": "30.09.2022",
+          "time": "19:00",
+          "home": "Union Eschenau",
+          "away": "FC Gornjak",
+          "score": "2:0",
+          "ht": "1:0",
+          "status": "Gespielt",
+          "venue": "Sportplatz Eschenau",
+          "location": "Sportplatz Eschenau",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Mario Wolfschluckner",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Christopher Ratzenböck",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Christopher Ratzenböck",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Michael Dornetshuber",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Dominik Scheuringer",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Klaus Scheuringer",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Marko Duric",
+              "team": "FC Gornjak",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Dragan Nikolic",
+              "team": "FC Gornjak",
+              "isHome": false
+            },
+            {
+              "type": "yellowRed",
+              "player": "Nikola Zivojinovic",
+              "team": "FC Gornjak",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 18,
+          "round": "5. Runde",
+          "runde": "5",
+          "date": "01.10.2022",
+          "time": "14:00",
+          "home": "DSG Auberg",
+          "away": "DSG Union Traun",
+          "score": "3:2",
+          "ht": "2:0",
+          "status": "Gespielt",
+          "venue": "DSG-Platz Linz",
+          "location": "DSG-Platz Linz",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Stefan Wiener",
+              "team": "DSG Auberg",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Manuel Kapfhammer",
+              "team": "DSG Auberg",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Julian Burschik",
+              "team": "DSG Auberg",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Daniel Kirchmayr",
+              "team": "DSG Union Traun",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Denis Petak",
+              "team": "DSG Union Traun",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Stefan Zika",
+              "team": "DSG Union Traun",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 19,
+          "round": "5. Runde",
+          "runde": "5",
+          "date": "01.10.2022",
+          "time": "16:00",
+          "home": "Walker FC",
+          "away": "DSG Thalheim",
+          "score": "0:4",
+          "ht": "0:3",
+          "status": "Gespielt",
+          "venue": "DSG-Platz Linz",
+          "location": "DSG-Platz Linz",
+          "events": [
+            {
+              "type": "yellow",
+              "player": "Alexander Lenz",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Florian Rebhandl",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Gerald Wurdinger",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Taha Güler",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Taha Güler",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Avduramon Saciri",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Okan Demirsoy",
+              "team": "DSG Thalheim",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 20,
+          "round": "5. Runde",
+          "runde": "5",
+          "date": "01.10.2022",
+          "time": "17:00",
+          "home": "FC Bruck",
+          "away": "FC Anatolia",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "venue": "Sportplatz ASKÖ Bruck/Peuerbach",
+          "location": "Sportplatz ASKÖ Bruck/Peuerbach",
+          "events": [],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 21,
+          "round": "6. Runde",
+          "runde": "6",
+          "date": "07.10.2022",
+          "time": "18:30",
+          "home": "FC Bruck",
+          "away": "Union Eschenau",
+          "score": "2:1",
+          "ht": "2:1",
+          "status": "Gespielt",
+          "venue": "Sportplatz ASKÖ Bruck/Peuerbach",
+          "location": "Sportplatz ASKÖ Bruck/Peuerbach",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Niklas Standhartinger",
+              "team": "FC Bruck",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Patrick Reisinger-Auer",
+              "team": "FC Bruck",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Luca Brunnmair",
+              "team": "FC Bruck",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Gfellner",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Rudolf Rossgatterer",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Mario Wolfschluckner",
+              "team": "Union Eschenau",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Michael Dornetshuber",
+              "team": "Union Eschenau",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 22,
+          "round": "6. Runde",
+          "runde": "6",
+          "date": "08.10.2022",
+          "time": "14:00",
+          "home": "FC Gornjak",
+          "away": "Walker FC",
+          "score": "1:1",
+          "ht": "0:1",
+          "status": "Gespielt",
+          "venue": "Magistratplatz Linz",
+          "location": "Magistratplatz Linz",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Markus Kalakovic",
+              "team": "FC Gornjak",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Milos Jovanovic",
+              "team": "FC Gornjak",
+              "isHome": true
+            },
+            {
+              "type": "yellowRed",
+              "player": "Dalibor Beric",
+              "team": "FC Gornjak",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Philipp Kölbl",
+              "team": "Walker FC",
+              "isHome": false
+            },
+            {
+              "type": "yellowRed",
+              "player": "Dominik Pfannhauser",
+              "team": "Walker FC",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 23,
+          "round": "6. Runde",
+          "runde": "6",
+          "date": "08.10.2022",
+          "time": "15:00",
+          "home": "DSG Thalheim",
+          "away": "DSG Auberg",
+          "score": "4:1",
+          "ht": "0:0",
+          "status": "Gespielt",
+          "venue": "Sportplatz Union Thalheim",
+          "location": "Sportplatz Union Thalheim",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Volkan Er",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Neumayr",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Elvir Ekmecic",
+              "team": "DSG Thalheim",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Michael Mayr",
+              "team": "DSG Auberg",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Manuel Kapfhammer",
+              "team": "DSG Auberg",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 24,
+          "round": "6. Runde",
+          "runde": "6",
+          "date": "08.10.2022",
+          "time": "16:00",
+          "home": "FC Anatolia",
+          "away": "DSG Union Traun",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "venue": "Seminarplatz Linz",
+          "location": "Seminarplatz Linz",
+          "events": [],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 25,
+          "round": "7. Runde",
+          "runde": "7",
+          "date": "14.10.2022",
+          "time": "19:00",
+          "home": "DSG Union Traun",
+          "away": "FC Gornjak",
+          "score": "4:4",
+          "ht": "1:3",
+          "status": "Gespielt",
+          "venue": "Sportplatz DSG Traun",
+          "location": "Sportplatz DSG Traun",
+          "events": [
+            {
+              "type": "goal",
+              "player": "René Pacher",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "René Pacher",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Daniel Kirchmayr",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Andreas Walter-Raab",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Florian Haudum",
+              "team": "DSG Union Traun",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Vladica Petrovic",
+              "team": "FC Gornjak",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Vladica Petrovic",
+              "team": "FC Gornjak",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Filip Nikolov",
+              "team": "FC Gornjak",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Markus Kalakovic",
+              "team": "FC Gornjak",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 26,
+          "round": "7. Runde",
+          "runde": "7",
+          "date": "15.10.2022",
+          "time": "17:00",
+          "home": "Union Eschenau",
+          "away": "DSG Thalheim",
+          "score": "3:5",
+          "ht": "1:2",
+          "status": "Gespielt",
+          "venue": "Sportplatz Eschenau",
+          "location": "Sportplatz Eschenau",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Michael Dornetshuber",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Gfellner",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Simon Wenzl",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Bernhard Altendorfer",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Markus Haslehner",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Marco Braumann",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Rudolf Rossgatterer",
+              "team": "Union Eschenau",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Avduramon Saciri",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Avduramon Saciri",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Taha Güler",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Neumayr",
+              "team": "DSG Thalheim",
+              "isHome": false
+            },
+            {
+              "type": "goal",
+              "player": "Volkan Er",
+              "team": "DSG Thalheim",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 27,
+          "round": "7. Runde",
+          "runde": "7",
+          "date": "26.10.2022",
+          "time": "00:00",
+          "home": "DSG Auberg",
+          "away": "FC Anatolia",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "venue": "DSG-Platz Linz",
+          "location": "DSG-Platz Linz",
+          "events": [],
+          "seasonKey": "2022/2023_1klasse"
+        },
+        {
+          "id": 28,
+          "round": "7. Runde",
+          "runde": "7",
+          "date": "08.04.2023",
+          "time": "16:00",
+          "home": "Walker FC",
+          "away": "FC Bruck",
+          "score": "2:1",
+          "ht": "2:0",
+          "status": "Gespielt",
+          "venue": "DSG-Platz Linz",
+          "location": "DSG-Platz Linz",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Florian Rebhandl",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Benjamin Stenhaug",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "yellow",
+              "player": "Felix Halder",
+              "team": "Walker FC",
+              "isHome": true
+            },
+            {
+              "type": "goal",
+              "player": "Tobias Kornfelder",
+              "team": "FC Bruck",
+              "isHome": false
+            },
+            {
+              "type": "yellow",
+              "player": "Sebastian Scharinger",
+              "team": "FC Bruck",
+              "isHome": false
+            }
+          ],
+          "seasonKey": "2022/2023_1klasse"
+        }
+      ],
+      "stats": {
+        "topScorers": [
+          {
+            "name": "Alexander Walter",
+            "team": "DSG Union Traun",
+            "goals": 6
+          },
+          {
+            "name": "Aaron Außermair",
+            "team": "DSG Thalheim",
+            "goals": 6
+          },
+          {
+            "name": "Alexander Gfellner",
+            "team": "Union Eschenau",
+            "goals": 5
+          },
+          {
+            "name": "Markus Kalakovic",
+            "team": "FC Gornjak",
+            "goals": 5
+          },
+          {
+            "name": "Florian Rebhandl",
+            "team": "Walker FC",
+            "goals": 4
+          },
+          {
+            "name": "Michael Dornetshuber",
+            "team": "Union Eschenau",
+            "goals": 3
+          },
+          {
+            "name": "Igor Anusic",
+            "team": "DSG Thalheim",
+            "goals": 3
+          },
+          {
+            "name": "René Pacher",
+            "team": "DSG Union Traun",
+            "goals": 3
+          },
+          {
+            "name": "Taha Güler",
+            "team": "DSG Thalheim",
+            "goals": 3
+          },
+          {
+            "name": "Avduramon Saciri",
+            "team": "DSG Thalheim",
+            "goals": 3
+          },
+          {
+            "name": "Fabian Walter",
+            "team": "DSG Union Traun",
+            "goals": 2
+          },
+          {
+            "name": "Sebastian Schicklgruber",
+            "team": "DSG Union Traun",
+            "goals": 2
+          },
+          {
+            "name": "Michael Mayr",
+            "team": "DSG Auberg",
+            "goals": 2
+          },
+          {
+            "name": "Alexander Lenz",
+            "team": "Walker FC",
+            "goals": 2
+          },
+          {
+            "name": "Simon Wenzl",
+            "team": "Union Eschenau",
+            "goals": 2
+          },
+          {
+            "name": "Zia Ghaderi",
+            "team": "DSG Auberg",
+            "goals": 2
+          },
+          {
+            "name": "Caner Dökmez",
+            "team": "DSG Thalheim",
+            "goals": 2
+          },
+          {
+            "name": "Nikola Zivojinovic",
+            "team": "FC Gornjak",
+            "goals": 2
+          },
+          {
+            "name": "Christopher Ratzenböck",
+            "team": "Union Eschenau",
+            "goals": 2
+          },
+          {
+            "name": "Dominik Pfannhauser",
+            "team": "Walker FC",
+            "goals": 2
+          },
+          {
+            "name": "Filip Nikolov",
+            "team": "FC Gornjak",
+            "goals": 2
+          },
+          {
+            "name": "Felix Halder",
+            "team": "Walker FC",
+            "goals": 2
+          },
+          {
+            "name": "Philipp Kölbl",
+            "team": "Walker FC",
+            "goals": 2
+          },
+          {
+            "name": "Elvir Ekmecic",
+            "team": "DSG Thalheim",
+            "goals": 2
+          },
+          {
+            "name": "Patrick Reisinger-Auer",
+            "team": "FC Bruck",
+            "goals": 2
+          },
+          {
+            "name": "Daniel Kirchmayr",
+            "team": "DSG Union Traun",
+            "goals": 2
+          },
+          {
+            "name": "Volkan Er",
+            "team": "DSG Thalheim",
+            "goals": 2
+          },
+          {
+            "name": "Alexander Neumayr",
+            "team": "DSG Thalheim",
+            "goals": 2
+          },
+          {
+            "name": "Vladica Petrovic",
+            "team": "FC Gornjak",
+            "goals": 2
+          },
+          {
+            "name": "Darko Radosavljevic",
+            "team": "DSG Thalheim",
+            "goals": 1
+          },
+          {
+            "name": "Klaus Gramberger",
+            "team": "DSG Thalheim",
+            "goals": 1
+          },
+          {
+            "name": "Patrick Pix",
+            "team": "DSG Auberg",
+            "goals": 1
+          },
+          {
+            "name": "Andreas Pirnat",
+            "team": "DSG Auberg",
+            "goals": 1
+          },
+          {
+            "name": "Andreas Lederer",
+            "team": "FC Bruck",
+            "goals": 1
+          },
+          {
+            "name": "Philipp Grabner",
+            "team": "FC Bruck",
+            "goals": 1
+          },
+          {
+            "name": "Patrick Baldinger",
+            "team": "FC Bruck",
+            "goals": 1
+          },
+          {
+            "name": "Max Grund",
+            "team": "Walker FC",
+            "goals": 1
+          },
+          {
+            "name": "Bernhard Hofer",
+            "team": "DSG Union Traun",
+            "goals": 1
+          },
+          {
+            "name": "Sebastian Haider",
+            "team": "Union Eschenau",
+            "goals": 1
+          },
+          {
+            "name": "Marco Braumann",
+            "team": "Union Eschenau",
+            "goals": 1
+          },
+          {
+            "name": "Patrick Altmüller",
+            "team": "DSG Auberg",
+            "goals": 1
+          },
+          {
+            "name": "Amel Pudic",
+            "team": "DSG Thalheim",
+            "goals": 1
+          },
+          {
+            "name": "Georg Gottinger",
+            "team": "DSG Thalheim",
+            "goals": 1
+          },
+          {
+            "name": "Farid Alem",
+            "team": "Union Eschenau",
+            "goals": 1
+          },
+          {
+            "name": "Thomas Schwarzbauer",
+            "team": "Walker FC",
+            "goals": 1
+          },
+          {
+            "name": "Fatih Odabas",
+            "team": "DSG Union Traun",
+            "goals": 1
+          },
+          {
+            "name": "Patrick Reichl",
+            "team": "Walker FC",
+            "goals": 1
+          },
+          {
+            "name": "Ivica Jovanovic",
+            "team": "FC Gornjak",
+            "goals": 1
+          },
+          {
+            "name": "Markus Brandmayr",
+            "team": "DSG Thalheim",
+            "goals": 1
+          },
+          {
+            "name": "Mario Wolfschluckner",
+            "team": "Union Eschenau",
+            "goals": 1
+          },
+          {
+            "name": "Stefan Wiener",
+            "team": "DSG Auberg",
+            "goals": 1
+          },
+          {
+            "name": "Manuel Kapfhammer",
+            "team": "DSG Auberg",
+            "goals": 1
+          },
+          {
+            "name": "Julian Burschik",
+            "team": "DSG Auberg",
+            "goals": 1
+          },
+          {
+            "name": "Denis Petak",
+            "team": "DSG Union Traun",
+            "goals": 1
+          },
+          {
+            "name": "Okan Demirsoy",
+            "team": "DSG Thalheim",
+            "goals": 1
+          },
+          {
+            "name": "Niklas Standhartinger",
+            "team": "FC Bruck",
+            "goals": 1
+          },
+          {
+            "name": "Andreas Walter-Raab",
+            "team": "DSG Union Traun",
+            "goals": 1
+          },
+          {
+            "name": "Benjamin Stenhaug",
+            "team": "Walker FC",
+            "goals": 1
+          },
+          {
+            "name": "Tobias Kornfelder",
+            "team": "FC Bruck",
+            "goals": 1
+          }
+        ],
+        "cards": [
+          {
+            "name": "Alexander Gfellner",
+            "team": "Union Eschenau",
+            "yellow": 3,
+            "yellowRed": 0,
+            "red": 1
+          },
+          {
+            "name": "Dominik Pfannhauser",
+            "team": "Walker FC",
+            "yellow": 3,
+            "yellowRed": 0,
+            "red": 1
+          },
+          {
+            "name": "Nikola Zivojinovic",
+            "team": "FC Gornjak",
+            "yellow": 2,
+            "yellowRed": 0,
+            "red": 1
+          },
+          {
+            "name": "Dalibor Beric",
+            "team": "FC Gornjak",
+            "yellow": 2,
+            "yellowRed": 0,
+            "red": 1
+          },
+          {
+            "name": "Nemanja Ilic",
+            "team": "FC Gornjak",
+            "yellow": 0,
+            "yellowRed": 0,
+            "red": 1
+          },
+          {
+            "name": "Benjamin Stenhaug",
+            "team": "Walker FC",
+            "yellow": 3,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Bernhard Altendorfer",
+            "team": "Union Eschenau",
+            "yellow": 2,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Markus Haslehner",
+            "team": "Union Eschenau",
+            "yellow": 2,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Marco Braumann",
+            "team": "Union Eschenau",
+            "yellow": 2,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Fatih Odabas",
+            "team": "DSG Union Traun",
+            "yellow": 2,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Sebastian Scharinger",
+            "team": "FC Bruck",
+            "yellow": 2,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Michael Dornetshuber",
+            "team": "Union Eschenau",
+            "yellow": 2,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Rudolf Rossgatterer",
+            "team": "Union Eschenau",
+            "yellow": 2,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Onur Odabas",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Aaron Außermair",
+            "team": "DSG Thalheim",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Manuel Fazeny",
+            "team": "DSG Thalheim",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Avduramon Saciri",
+            "team": "DSG Thalheim",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Julian Burschik",
+            "team": "DSG Auberg",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Patrick Baldinger",
+            "team": "FC Bruck",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Max Grund",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Patrick Reichl",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Quadus Tobi Keshinro",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Thomas Wiesinger",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Sebastian Haider",
+            "team": "Union Eschenau",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Simon Wenzl",
+            "team": "Union Eschenau",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Patrick Reisinger-Auer",
+            "team": "FC Bruck",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Philipp Habring",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Lukas Raser",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Daniel Auer",
+            "team": "Union Eschenau",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Zia Ghaderi",
+            "team": "DSG Auberg",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Ewaz Sahil",
+            "team": "DSG Auberg",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Martin Stütz",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Thomas Hackl",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Zied Omrane",
+            "team": "DSG Auberg",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Niklas Standhartinger",
+            "team": "FC Bruck",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Michael Humer",
+            "team": "FC Bruck",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Alexander Biener",
+            "team": "FC Bruck",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Alexander Walter",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Alexander Zamberger",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Matthias Stütz",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Jürgen Rittsteiger",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Ninoslav Matanovic",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Valentin Ransmayr",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Andreas Pirnat",
+            "team": "DSG Auberg",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Christopher Ratzenböck",
+            "team": "Union Eschenau",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Dominik Scheuringer",
+            "team": "Union Eschenau",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Klaus Scheuringer",
+            "team": "Union Eschenau",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Marko Duric",
+            "team": "FC Gornjak",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Dragan Nikolic",
+            "team": "FC Gornjak",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Stefan Zika",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Alexander Lenz",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Florian Rebhandl",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Gerald Wurdinger",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Luca Brunnmair",
+            "team": "FC Bruck",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Mario Wolfschluckner",
+            "team": "Union Eschenau",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Milos Jovanovic",
+            "team": "FC Gornjak",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Manuel Kapfhammer",
+            "team": "DSG Auberg",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Florian Haudum",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          },
+          {
+            "name": "Felix Halder",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0
+          }
+        ]
+      }
     }
   }
 }

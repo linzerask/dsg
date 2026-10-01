@@ -82,5 +82,89 @@
     "liga": "DSG Liga",
     "seasonKey": "2022/2023",
     "status": "Aktiv"
+  },
+  {
+    "id": 8,
+    "saison": "1. Klasse",
+    "jahr": "2022/2023",
+    "runde": "1",
+    "datum": "27.08. -22.10.2022",
+    "datumVon": "27.08.2022",
+    "datumBis": "22.10.2022",
+    "liga": "1. Klasse",
+    "seasonKey": "2022/2023_1klasse",
+    "status": "Aktiv"
+  },
+  {
+    "id": 9,
+    "saison": "1. Klasse",
+    "jahr": "2022/2023",
+    "runde": "2",
+    "datum": "02.09. -03.09.2022",
+    "datumVon": "02.09.2022",
+    "datumBis": "03.09.2022",
+    "liga": "1. Klasse",
+    "seasonKey": "2022/2023_1klasse",
+    "status": "Aktiv"
+  },
+  {
+    "id": 10,
+    "saison": "1. Klasse",
+    "jahr": "2022/2023",
+    "runde": "3",
+    "datum": "16.09. -17.09.2022",
+    "datumVon": "16.09.2022",
+    "datumBis": "17.09.2022",
+    "liga": "1. Klasse",
+    "seasonKey": "2022/2023_1klasse",
+    "status": "Aktiv"
+  },
+  {
+    "id": 11,
+    "saison": "1. Klasse",
+    "jahr": "2022/2023",
+    "runde": "4",
+    "datum": "23.09. -24.09.2022",
+    "datumVon": "23.09.2022",
+    "datumBis": "24.09.2022",
+    "liga": "1. Klasse",
+    "seasonKey": "2022/2023_1klasse",
+    "status": "Aktiv"
+  },
+  {
+    "id": 12,
+    "saison": "1. Klasse",
+    "jahr": "2022/2023",
+    "runde": "5",
+    "datum": "30.09. -01.10.2022",
+    "datumVon": "30.09.2022",
+    "datumBis": "01.10.2022",
+    "liga": "1. Klasse",
+    "seasonKey": "2022/2023_1klasse",
+    "status": "Aktiv"
+  },
+  {
+    "id": 13,
+    "saison": "1. Klasse",
+    "jahr": "2022/2023",
+    "runde": "6",
+    "datum": "07.10. -08.10.2022",
+    "datumVon": "07.10.2022",
+    "datumBis": "08.10.2022",
+    "liga": "1. Klasse",
+    "seasonKey": "2022/2023_1klasse",
+    "status": "Aktiv"
+  },
+  {
+    "id": 14,
+    "saison": "1. Klasse",
+    "jahr": "2022/2023",
+    "runde": "7",
+    "datum": "14.10. -08.04.2023",
+    "datumVon": "14.10.2023",
+    "datumBis": "08.04.2023",
+    "liga": "1. Klasse",
+    "seasonKey": "2022/2023_1klasse",
+    "status": "Aktiv"
   }
 ]
