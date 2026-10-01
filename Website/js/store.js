@@ -423,8 +423,20 @@ export const Store = {
                 await setDoc(roundsRef, { data: fileRounds, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (rounds):", e));
               }
             }
-          } catch(e) {}
-        }
+      }
+
+      // Sync Teams
+      const localTeams = loadLocal('dsg_admin_teams', 12);
+      if (!localTeams || localTeams.length === 0) {
+        try {
+          const res = await fetch('data/teams.json');
+          if (res.ok) {
+            const fileTeams = await res.json();
+            if (Array.isArray(fileTeams) && fileTeams.length > 0) {
+              trySetLocal('dsg_admin_teams_v12', JSON.stringify(fileTeams));
+            }
+          }
+        } catch(e) {}
       }
 
       // Auto-sync all leagues to seasons

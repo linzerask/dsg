@@ -7,6 +7,15 @@ let clubSearchQuery = '';
 let scorerPage = 1;
 const SCORERS_PER_PAGE = 20;
 
+let statsMasterTeams = [];
+if (typeof window !== 'undefined' && Store.getAdminTeams) {
+  Store.getAdminTeams().then(teams => {
+    if (teams && teams.length > 0) {
+      statsMasterTeams = teams;
+    }
+  });
+}
+
 // Helper: Compute aggregate statistics dynamically from Store data
 export const computeAllTimeStats = () => {
   const data = Store.getData();
@@ -18,6 +27,10 @@ export const computeAllTimeStats = () => {
   const playerMap = {};
   const clubMap = {};
   const seasonHonors = [];
+  const cardMap = {};
+  const concededList = [];
+  const roundGoalsMap = {};
+  const drawsMap = {};
 
   // Iterate over all seasons
   const seasonKeys = Object.keys(seasons);
@@ -56,9 +69,36 @@ export const computeAllTimeStats = () => {
           round: m.round || '',
           date: m.date || ''
         });
+
+        if (m.home && m.away) {
+          concededList.push({
+            team: m.home,
+            conceded: gB,
+            opponent: m.away,
+            score: m.score || `${gA}:${gB}`,
+            season: seasonKey,
+            date: m.date || ''
+          });
+          concededList.push({
+            team: m.away,
+            conceded: gA,
+            opponent: m.home,
+            score: m.score || `${gA}:${gB}`,
+            season: seasonKey,
+            date: m.date || ''
+          });
+
+          if (gA === gB && gA > 0) {
+            drawsMap[m.home] = (drawsMap[m.home] || 0) + 1;
+            drawsMap[m.away] = (drawsMap[m.away] || 0) + 1;
+          }
+
+          const rLabel = `${m.round || 'Runde'} (${seasonKey})`;
+          roundGoalsMap[rLabel] = (roundGoalsMap[rLabel] || 0) + sumGoals;
+        }
       }
 
-      // Scorers from match events (m.events or m.scorers)
+      // Scorers & Disciplinary cards from match events
       if (m.events && Array.isArray(m.events) && m.events.length > 0) {
         m.events.forEach(ev => {
           if (ev.type === 'goal' && ev.player) {
@@ -76,6 +116,22 @@ export const computeAllTimeStats = () => {
             playerMap[name].goals += 1;
             if (ev.team) playerMap[name].teams.add(ev.team.trim());
             playerMap[name].seasons.add(seasonKey);
+          } else if ((ev.type === 'yellow' || ev.type === 'red' || ev.type === 'yellowRed' || ev.type === 'yellow-red') && ev.player) {
+            const name = (ev.player || '').trim();
+            if (!name) return;
+            if (!cardMap[name]) {
+              cardMap[name] = {
+                name,
+                team: ev.team ? ev.team.trim() : (m.home || ''),
+                yellow: 0,
+                red: 0
+              };
+            }
+            if (ev.type === 'yellow') {
+              cardMap[name].yellow += 1;
+            } else {
+              cardMap[name].red += 1;
+            }
           }
         });
       } else if (m.scorers && Array.isArray(m.scorers) && m.scorers.length > 0) {
@@ -193,7 +249,9 @@ export const computeAllTimeStats = () => {
   });
 
   // Merge all master teams from teams.json / Store.getAdminTeamsSync() into clubMap
-  const allMasterTeams = (Store.getAdminTeamsSync ? Store.getAdminTeamsSync() : []) || [];
+  const allMasterTeams = (statsMasterTeams && statsMasterTeams.length > 0)
+    ? statsMasterTeams
+    : ((Store.getAdminTeamsSync ? Store.getAdminTeamsSync() : []) || []);
   allMasterTeams.forEach(mt => {
     const name = (mt.Name || mt.name || '').trim();
     if (name && !clubMap[name]) {
@@ -282,6 +340,47 @@ export const computeAllTimeStats = () => {
     };
   }
 
+  // 1. Die Schießbude (Most conceded in a single match)
+  concededList.sort((a, b) => b.conceded - a.conceded);
+  const mostConcededMatch = concededList.length > 0 && concededList[0].conceded > 0 ? concededList[0] : null;
+
+  // 2. Der Kartensünder (Player with most card points)
+  const badBoyList = Object.values(cardMap).sort((a, b) => (b.red * 3 + b.yellow) - (a.red * 3 + a.yellow) || b.yellow - a.yellow);
+  const badBoy = badBoyList.length > 0 && (badBoyList[0].yellow > 0 || badBoyList[0].red > 0) ? badBoyList[0] : null;
+
+  // 3. Die Remis-Könige (Team with most draws)
+  let drawKings = null;
+  const clubDraws = Object.entries(drawsMap).map(([team, count]) => ({ team, count })).sort((a, b) => b.count - a.count);
+  if (clubDraws.length > 0 && clubDraws[0].count > 0) {
+    drawKings = clubDraws[0];
+  }
+
+  // 4. Tor-Garantie (Average minutes per goal)
+  const minutesPerGoal = totalGoals > 0 && totalMatches > 0 ? ((totalMatches * 90) / totalGoals).toFixed(1) : null;
+
+  // 5. Torreichster Spieltag (Round with most goals)
+  let mostGoalsRound = null;
+  const roundEntries = Object.entries(roundGoalsMap).map(([round, goals]) => ({ round, goals })).sort((a, b) => b.goals - a.goals);
+  if (roundEntries.length > 0 && roundEntries[0].goals > 0) {
+    mostGoalsRound = roundEntries[0];
+  }
+
+  // 6. Das Vereins-Urgestein (Oldest active club)
+  let oldestClub = null;
+  const activeMasterTeamsWithDate = allMasterTeams
+    .filter(t => (t.Status === 'Aktiv' || t.status === 'Aktiv') && t['Aktiv seit'] && t['Aktiv seit'] !== '0000-00-00' && t['Aktiv seit'].trim() !== '')
+    .sort((a, b) => a['Aktiv seit'].localeCompare(b['Aktiv seit']));
+  const targetOldest = activeMasterTeamsWithDate.length > 0 ? activeMasterTeamsWithDate[0] : allMasterTeams.filter(t => t['Aktiv seit'] && t['Aktiv seit'] !== '0000-00-00' && t['Aktiv seit'].trim() !== '').sort((a, b) => a['Aktiv seit'].localeCompare(b['Aktiv seit']))[0];
+
+  if (targetOldest) {
+    const yearMatch = String(targetOldest['Aktiv seit']).match(/\d{4}/);
+    oldestClub = {
+      name: targetOldest.Name || targetOldest.name,
+      since: yearMatch ? yearMatch[0] : targetOldest['Aktiv seit'],
+      fullDate: targetOldest['Aktiv seit']
+    };
+  }
+
   // Sort season honors descending by year (e.g. 2025/2026 first down to 2021/2022 last)
   const parseSeasonYear = (seasonStr) => {
     const match = String(seasonStr).match(/\d{4}/);
@@ -305,7 +404,13 @@ export const computeAllTimeStats = () => {
       highestScoringMatch,
       biggestWin,
       bestSingleSeasonScorer,
-      rekordmeister
+      rekordmeister,
+      mostConcededMatch,
+      badBoy,
+      drawKings,
+      minutesPerGoal,
+      mostGoalsRound,
+      oldestClub
     }
   };
 };
@@ -847,6 +952,105 @@ export const viewStatistiken = () => {
                 ${stats.records.rekordmeister.seasons.length > 0 
                   ? `Titelgewinn${stats.records.rekordmeister.titles > 1 ? 'e' : ''} in ${stats.records.rekordmeister.titles > 1 ? 'den Spielzeiten' : 'der Spielzeit'} <strong>${stats.records.rekordmeister.seasons.join(', ')}</strong>.`
                   : 'Aktueller Titelträger der Liga.'}
+              </p>
+            </div>
+          ` : ''}
+
+          <!-- Die Schießbude (Most conceded in a single match) -->
+          ${stats.records.mostConcededMatch ? `
+            <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid #ef4444;">
+              <div style="margin-bottom: 8px;">${renderIcon('target', { size: 30, color: '#ef4444' })}</div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: #ef4444; text-transform: uppercase;">Die Schießbude</div>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.mostConcededMatch.team}</h3>
+              <div style="font-size: 2rem; font-weight: 800; color: #ef4444; margin: 6px 0;">
+                ${stats.records.mostConcededMatch.conceded} <span style="font-size: 1rem; font-weight: 600;">Gegentore</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
+                Kassiert in einem einzigen Spiel beim <strong>${stats.records.mostConcededMatch.score}</strong> gegen <strong>${stats.records.mostConcededMatch.opponent}</strong> (Saison ${stats.records.mostConcededMatch.season}).
+              </p>
+            </div>
+          ` : ''}
+
+          <!-- Der Kartensünder -->
+          ${stats.records.badBoy ? `
+            <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid #eab308;">
+              <div style="margin-bottom: 8px;">${renderIcon('alertTriangle', { size: 30, color: '#eab308' })}</div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: #eab308; text-transform: uppercase;">Der Kartensünder</div>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.badBoy.name}</h3>
+              <div style="font-size: 1.5rem; font-weight: 800; color: var(--color-text-primary); margin: 6px 0; display: flex; align-items: center; gap: 10px;">
+                <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 1.1rem; color: #eab308;">
+                  <span style="display:inline-block;width:12px;height:16px;background:#eab308;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+                  ${stats.records.badBoy.yellow} Gelb
+                </span>
+                ${stats.records.badBoy.red > 0 ? `
+                  <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 1.1rem; color: #ef4444;">
+                    <span style="display:inline-block;width:12px;height:16px;background:#ef4444;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+                    ${stats.records.badBoy.red} Rot
+                  </span>
+                ` : ''}
+              </div>
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
+                Aktiv für <strong>${stats.records.badBoy.team || 'DSG Verein'}</strong> &bull; Meiste Verwarnungen in den digital erfassten Spielberichten.
+              </p>
+            </div>
+          ` : ''}
+
+          <!-- Die Remis-Könige -->
+          ${stats.records.drawKings ? `
+            <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
+              <div style="margin-bottom: 8px;">${renderIcon('handshake', { size: 30, color: 'var(--color-accent)' })}</div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Die Remis-Könige</div>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.drawKings.team}</h3>
+              <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
+                ${stats.records.drawKings.count} <span style="font-size: 1rem; font-weight: 600;">Unentschieden</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
+                Niemand teilte sich so oft die Punkte wie dieser Verein in den erfassten Ligaspielen.
+              </p>
+            </div>
+          ` : ''}
+
+          <!-- Tor-Garantie: Minuten pro Tor -->
+          ${stats.records.minutesPerGoal ? `
+            <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
+              <div style="margin-bottom: 8px;">${renderIcon('clock', { size: 30, color: 'var(--color-accent)' })}</div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Tor-Garantie</div>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">Taktfrequenz der Liga</h3>
+              <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
+                Alle ${stats.records.minutesPerGoal} <span style="font-size: 1rem; font-weight: 600;">Min.</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
+                Durchschnittliche Zeitspanne bis zum nächsten Treffer über alle <strong>${stats.totalMatches} Spiele</strong> hinweg.
+              </p>
+            </div>
+          ` : ''}
+
+          <!-- Torreichster Spieltag -->
+          ${stats.records.mostGoalsRound ? `
+            <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid #f97316;">
+              <div style="margin-bottom: 8px;">${renderIcon('sparkles', { size: 30, color: '#f97316' })}</div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: #f97316; text-transform: uppercase;">Torreichster Spieltag</div>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.mostGoalsRound.round}</h3>
+              <div style="font-size: 2rem; font-weight: 800; color: #f97316; margin: 6px 0;">
+                ${stats.records.mostGoalsRound.goals} <span style="font-size: 1rem; font-weight: 600;">Tore</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
+                Der treffsicherste Spieltag der Ligageschichte mit dem höchsten Gesamtscore.
+              </p>
+            </div>
+          ` : ''}
+
+          <!-- Das Vereins-Urgestein -->
+          ${stats.records.oldestClub ? `
+            <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
+              <div style="margin-bottom: 8px;">${renderIcon('award', { size: 30, color: 'var(--color-accent)' })}</div>
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Vereins-Urgestein</div>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.oldestClub.name}</h3>
+              <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
+                Seit ${stats.records.oldestClub.since} <span style="font-size: 1rem; font-weight: 600;">aktiv</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
+                Ältester aktiver DSG-Mitgliedsverein laut Gründungs- und Beitrittsdatenbank.
               </p>
             </div>
           ` : ''}
