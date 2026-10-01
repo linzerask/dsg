@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560007000';
-import { showToast } from './admin.js?v=1790560007000';
+import { Store } from '../store.js?v=1790560008000';
+import { showToast } from './admin.js?v=1790560008000';
 
 let leaguesData = [];
 let filteredData = [];
@@ -216,7 +216,7 @@ export const initAdminLeagues = async () => {
 };
 
 const getSeasonKey = (league) => {
-    if (!league) return '2026/2027';
+    if (!league) return '2022/2023';
     if (league.seasonKey && typeof league.seasonKey === 'string' && league.seasonKey !== 'undefined') {
         const sk = league.seasonKey.trim();
         if (sk === '2026/2027' || sk === '2025/2026' || sk === '2024/2025' || sk === '2024/2025_oberes' || sk === '2024/2025_unteres' || sk === '2023/2024' || sk === '2022/2023' || sk === '2022/2023_1klasse' || sk === '2021/2022' || sk === '2021/2022_1klasse') {
@@ -255,7 +255,7 @@ const getSeasonKey = (league) => {
     if (nameStr && yrStr && !nameStr.includes(yrStr)) {
         return `${nameStr} ${yrStr}`;
     }
-    return nameStr || yrStr || '2026/2027';
+    return nameStr || yrStr || '2022/2023';
 };
 
 const renderTable = () => {

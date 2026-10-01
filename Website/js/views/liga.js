@@ -1,44 +1,45 @@
-import { Store } from '../store.js?v=1790560007000';
+import { Store } from '../store.js?v=1790560008000';
 
 
 let currentViewSeason = null;
 
 export function viewLiga() {
   const data = Store.getData();
-  const leagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
+  const rawLeagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
+  const leagues = (rawLeagues || []).filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027' && l.status !== 'Inaktiv');
   const currentLeague = leagues.find(l => l.isCurrent) || leagues[0];
   const defaultSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : (data.currentSeason || "2022/2023");
 
-  let visibleItems = Store.getVisibleSeasonItems ? Store.getVisibleSeasonItems() : [];
-  if (!visibleItems || visibleItems.length === 0) {
-    if (leagues && leagues.length > 0) {
-      visibleItems = leagues.map(l => {
-        const key = l.seasonKey || l.name;
-        let name = (l.name || key).trim();
-        let year = l.year ? String(l.year).trim() : '';
-        if (!year && key) {
-          const match = key.match(/\d{4}(\/\d{4})?/);
-          if (match) year = match[0];
-        }
-        if (/^\d{4}$/.test(year)) {
-          const nextY = parseInt(year) + 1;
-          year = `${year}/${nextY}`;
-        }
-        if (year && !name.includes(year)) {
-          name = `${name} ${year}`;
-        } else if (!year && /^\d{4}\/\d{4}$/.test(name)) {
-          name = `Saison ${name}`;
-        }
-        return { key, label: name };
-      });
-    } else if (data && data.seasons && Object.keys(data.seasons).length > 0) {
-      visibleItems = Object.keys(data.seasons).map(s => ({
+  let visibleItems = [];
+  if (leagues && leagues.length > 0) {
+    visibleItems = leagues.map(l => {
+      const key = l.seasonKey || l.name;
+      let name = (l.name || key).trim();
+      let year = l.year ? String(l.year).trim() : '';
+      if (!year && key) {
+        const match = key.match(/\d{4}(\/\d{4})?/);
+        if (match) year = match[0];
+      }
+      if (/^\d{4}$/.test(year)) {
+        const nextY = parseInt(year) + 1;
+        year = `${year}/${nextY}`;
+      }
+      if (year && !name.includes(year)) {
+        name = `${name} ${year}`;
+      } else if (!year && /^\d{4}\/\d{4}$/.test(name)) {
+        name = `Saison ${name}`;
+      }
+      return { key, label: name };
+    });
+  } else if (data && data.seasons && Object.keys(data.seasons).length > 0) {
+    visibleItems = Object.keys(data.seasons)
+      .filter(s => s !== '2026/2027')
+      .map(s => ({
         key: s,
         label: s.startsWith('DSG') || s.startsWith('1.') || s.startsWith('Saison') || s.startsWith('Liga') ? s : `DSG Liga ${s}`
       }));
-    } else {
-      visibleItems = [];
-    }
+  } else {
+    visibleItems = [{ key: "2022/2023", label: "DSG Liga 2022/2023" }];
   }
 
   const visibleSeasonKeys = visibleItems.map(i => i.key);

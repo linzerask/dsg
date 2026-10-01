@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560007000';
-import { showToast } from './admin.js?v=1790560007000';
+import { Store } from '../store.js?v=1790560008000';
+import { showToast } from './admin.js?v=1790560008000';
 
 let gamesData = [];
 let roundsData = [];
@@ -910,7 +910,7 @@ const openEditGameModal = (idx) => {
             const opt = document.createElement('option');
             opt.value = match.round;
             opt.text = match.round;
-            opt.setAttribute('data-season-key', match.seasonKey || '2026/2027');
+            opt.setAttribute('data-season-key', match.seasonKey || '2022/2023');
             opt.selected = true;
             roundSelect.appendChild(opt);
         }
