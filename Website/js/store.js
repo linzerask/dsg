@@ -423,6 +423,8 @@ export const Store = {
                 await setDoc(roundsRef, { data: fileRounds, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (rounds):", e));
               }
             }
+          } catch(e) {}
+        }
       }
 
       // Sync Teams
