@@ -611,10 +611,12 @@ const renderGamesTable = () => {
                 Bericht
             </button>
         ` : `
-            <button class="btn-report-game" data-idx="${rawIndex}" disabled title="${INACTIVE_GAME_TOOLTIP}" style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 600; cursor: not-allowed; opacity: 0.45; display: inline-flex; align-items: center; gap: 3px;">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                Bericht
-            </button>
+            <span class="tooltip-trigger" data-tooltip="${INACTIVE_GAME_TOOLTIP}" style="display: inline-flex; cursor: not-allowed;">
+                <button class="btn-report-game" data-idx="${rawIndex}" disabled style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 600; cursor: not-allowed; opacity: 0.45; display: inline-flex; align-items: center; gap: 3px; pointer-events: none;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                    Bericht
+                </button>
+            </span>
         `;
 
         const editBtnHtml = isActive ? `
@@ -622,9 +624,11 @@ const renderGamesTable = () => {
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             </button>
         ` : `
-            <button class="btn-edit-game" data-idx="${rawIndex}" disabled title="${INACTIVE_GAME_TOOLTIP}" style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 600; cursor: not-allowed; opacity: 0.45; display: inline-flex; align-items: center;">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            </button>
+            <span class="tooltip-trigger" data-tooltip="${INACTIVE_GAME_TOOLTIP}" style="display: inline-flex; cursor: not-allowed;">
+                <button class="btn-edit-game" data-idx="${rawIndex}" disabled style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 600; cursor: not-allowed; opacity: 0.45; display: inline-flex; align-items: center; pointer-events: none;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+            </span>
         `;
 
         const deleteBtnHtml = isActive ? `
@@ -632,9 +636,11 @@ const renderGamesTable = () => {
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
         ` : `
-            <button class="btn-delete-game" data-idx="${rawIndex}" disabled title="${INACTIVE_GAME_TOOLTIP}" style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 600; cursor: not-allowed; opacity: 0.45; display: inline-flex; align-items: center;">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            </button>
+            <span class="tooltip-trigger" data-tooltip="${INACTIVE_GAME_TOOLTIP}" style="display: inline-flex; cursor: not-allowed;">
+                <button class="btn-delete-game" data-idx="${rawIndex}" disabled style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 600; cursor: not-allowed; opacity: 0.45; display: inline-flex; align-items: center; pointer-events: none;">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+            </span>
         `;
 
         return `
@@ -684,10 +690,12 @@ const renderGamesTable = () => {
                         Spielbericht erfassen
                     </button>
                 ` : `
-                    <button class="btn-report-game full-width" data-idx="${rawIndex}" disabled title="${INACTIVE_GAME_TOOLTIP}" style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); opacity: 0.45; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                        Spielbericht erfassen
-                    </button>
+                    <span class="tooltip-trigger" data-tooltip="${INACTIVE_GAME_TOOLTIP}" style="display: block; width: 100%; cursor: not-allowed;">
+                        <button class="btn-report-game full-width" data-idx="${rawIndex}" disabled style="width: 100%; background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); opacity: 0.45; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px; pointer-events: none;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            Spielbericht erfassen
+                        </button>
+                    </span>
                 `;
 
                 const mEditBtn = isActive ? `
@@ -696,10 +704,12 @@ const renderGamesTable = () => {
                         Editieren
                     </button>
                 ` : `
-                    <button class="btn-edit-game" data-idx="${rawIndex}" disabled title="${INACTIVE_GAME_TOOLTIP}" style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); opacity: 0.45; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                        Editieren
-                    </button>
+                    <span class="tooltip-trigger" data-tooltip="${INACTIVE_GAME_TOOLTIP}" style="display: block; width: 100%; cursor: not-allowed;">
+                        <button class="btn-edit-game" data-idx="${rawIndex}" disabled style="width: 100%; background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); opacity: 0.45; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px; pointer-events: none;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            Editieren
+                        </button>
+                    </span>
                 `;
 
                 const mDeleteBtn = isActive ? `
@@ -708,10 +718,12 @@ const renderGamesTable = () => {
                         Löschen
                     </button>
                 ` : `
-                    <button class="btn-delete-game" data-idx="${rawIndex}" disabled title="${INACTIVE_GAME_TOOLTIP}" style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); opacity: 0.45; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        Löschen
-                    </button>
+                    <span class="tooltip-trigger" data-tooltip="${INACTIVE_GAME_TOOLTIP}" style="display: block; width: 100%; cursor: not-allowed;">
+                        <button class="btn-delete-game" data-idx="${rawIndex}" disabled style="width: 100%; background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); opacity: 0.45; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px; pointer-events: none;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            Löschen
+                        </button>
+                    </span>
                 `;
 
                 return `
@@ -919,11 +931,42 @@ const populateFilterAndFormDropdowns = () => {
         }
     }
 
+    const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
+    const activeRoundsList = (activeLeagues.length === 0) ? [] : allRoundsList.filter(r => {
+        const matchingLeague = activeLeagues.find(l => 
+            (l.seasonKey && r.seasonKey && l.seasonKey === r.seasonKey) ||
+            (l.name && (r.leagueName === l.name || (r.label && r.label.startsWith(l.name))))
+        );
+        return !!matchingLeague;
+    });
+
     if (modalRoundSelect) {
-        modalRoundSelect.innerHTML = allRoundsList.map(r => `
-            <option value="${r.full}" data-season-key="${r.seasonKey || (Store.getData()?.currentSeason || '2022/2023')}" data-round-id="${r.id || ''}">${r.label || r.full}</option>
-        `).join('');
+        if (activeRoundsList.length === 0) {
+            modalRoundSelect.innerHTML = '<option value="" disabled selected>Keine aktive Spielrunde verfügbar</option>';
+        } else {
+            modalRoundSelect.innerHTML = activeRoundsList.map(r => `
+                <option value="${r.full}" data-season-key="${r.seasonKey || (Store.getData()?.currentSeason || '2022/2023')}" data-round-id="${r.id || ''}">${r.label || r.full}</option>
+            `).join('');
+        }
         modalRoundSelect.onchange = updateTeamsForSelectedRound;
+    }
+
+    // Update "+ Spiel anlegen" button state
+    const addGameBtn = document.getElementById('btn-add-game-main');
+    if (addGameBtn) {
+        if (activeRoundsList.length === 0) {
+            addGameBtn.disabled = true;
+            addGameBtn.style.opacity = '0.5';
+            addGameBtn.style.cursor = 'not-allowed';
+            addGameBtn.parentElement.classList.add('tooltip-trigger');
+            addGameBtn.parentElement.setAttribute('data-tooltip', 'Keine aktive Spielrunde vorhanden. Um Spiele anzulegen, aktivieren Sie zuerst eine Liga unter \'Ligen verwalten\'.');
+        } else {
+            addGameBtn.disabled = false;
+            addGameBtn.style.opacity = '1';
+            addGameBtn.style.cursor = 'pointer';
+            addGameBtn.parentElement.classList.remove('tooltip-trigger');
+            addGameBtn.parentElement.removeAttribute('data-tooltip');
+        }
     }
 
     updateTeamsForSelectedRound();
@@ -949,6 +992,12 @@ const ensureModalsInBody = () => {
 
 const openAddGameModal = () => {
     ensureModalsInBody();
+    const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
+    if (activeLeagues.length === 0) {
+        showToast('Keine aktive Liga vorhanden. Um Spiele anzulegen, aktivieren Sie zuerst eine Liga unter "Ligen verwalten".', true);
+        return;
+    }
+
     editingMatchId = null;
     const modal = document.getElementById('game-modal');
     const title = document.getElementById('game-modal-title');
@@ -1109,6 +1158,18 @@ const saveGameForm = (e) => {
     const roundSelect = document.getElementById('input-game-round');
     const selectedRoundOpt = roundSelect?.selectedOptions[0];
     const targetSeasonKey = selectedRoundOpt?.getAttribute('data-season-key') || (Store.getData()?.currentSeason || '2022/2023');
+
+    // Strict active league guard
+    const matchingLeague = (leaguesData || []).find(l => 
+        (l.seasonKey && targetSeasonKey && l.seasonKey === targetSeasonKey) ||
+        (l.year && targetSeasonKey && l.year === targetSeasonKey) ||
+        (l.name && round && round.includes(l.name))
+    );
+    const isTargetActive = matchingLeague ? (matchingLeague.status === 'Aktiv' || matchingLeague.Status === 'Aktiv') : true;
+    if (!isTargetActive) {
+        showToast('Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter "Ligen verwalten" auf "Aktiv".', true);
+        return;
+    }
 
     let existingMatch = editingMatchId !== null ? Store.getMatch(targetSeasonKey, editingMatchId) : null;
     if (!existingMatch && editingMatchId !== null) {
@@ -1608,16 +1669,7 @@ const loadDataAndRender = async () => {
 };
 
 export const initAdminGames = async () => {
-    // Ensure modals are attached to body for full viewport centered overlay
-    const gameModal = document.getElementById('game-modal');
-    if (gameModal && gameModal.parentElement !== document.body) {
-        document.body.appendChild(gameModal);
-    }
-    const reportModal = document.getElementById('report-modal');
-    if (reportModal && reportModal.parentElement !== document.body) {
-        document.body.appendChild(reportModal);
-    }
-
+    ensureModalsInBody();
     setupEventHandlers();
     await loadDataAndRender();
 };

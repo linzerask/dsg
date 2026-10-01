@@ -390,8 +390,21 @@ DSG Liga/
 * **The Rule:**
   1. **Strict Public Visibility Decoupling:** Public website views (`#/`, `#/liga`, `#/statistiken`) filter leagues strictly by `l.showOnHomepage !== false`. A league with `Status: Inaktiv` and `Homepage: Ja` remains 100% visible and browsable on the public website.
   2. **Admin-Side Inactive Season Locking:**
-     - **Spielrunden (`adminRounds.js`):** Rounds belonging to an `Inaktiv` league render `Editieren` and `Löschen` as disabled/greyed out with `opacity: 0.45; cursor: not-allowed;` and an informative hover tooltip (`title="Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter 'Ligen verwalten' auf 'Aktiv'."`). `Spiele ansehen` remains active and clickable.
-     - **Spiele (`adminGames.js`):** Matches belonging to an `Inaktiv` league render `Bericht`, `Bearbeiten`, and `Löschen` as disabled/greyed out with the informative hover tooltip.
-     - **Execution Guards:** Functions `openEditRoundModal`, `deleteRound`, `openEditGameModal`, `deleteGame`, and `openReportModal` guard against inactive season operations and display an alert toast.
+     - **Spielrunden (`adminRounds.js`):** Rounds belonging to an `Inaktiv` league render `Editieren` and `Löschen` as disabled/greyed out with `opacity: 0.45; cursor: not-allowed;` wrapped in a `.tooltip-trigger` displaying the interactive DSG custom floating tooltip. `Spiele ansehen` remains active and clickable.
+     - **Spiele (`adminGames.js`):** Matches belonging to an `Inaktiv` league render `Bericht`, `Bearbeiten`, and `Löschen` as disabled/greyed out with the custom floating tooltip.
+     - **Creation Restrictions (Strict Inactive Locking):** 
+       - Adding new rounds (`+ Runde anlegen`) only allows selecting active leagues (`status === 'Aktiv'`). If no active leagues exist, the button is disabled with a floating tooltip and form submissions are blocked.
+       - Adding new games (`+ Spiel anlegen`) only allows selecting rounds from active leagues. If no active leagues or rounds exist, the button is disabled with a floating tooltip and form submissions are blocked.
+     - **Execution Guards:** Functions `openEditRoundModal`, `deleteRound`, `openEditGameModal`, `deleteGame`, `openReportModal`, and form handlers guard against inactive season operations and display an alert toast.
      - **Reactivation:** Switching a league back to `Aktiv` in **Ligen verwalten** immediately unlocks all administrative controls for that competition.
+
+---
+
+## 35. Custom Cursor-Following Floating Tooltip Badge System
+* **The Pitfall:** Standard browser `title="..."` tooltips render as low-res OS-native dark boxes that do not track the cursor, have arbitrary system display delays, and do not follow the application's glassmorphic design language. Furthermore, native HTML `disabled` buttons swallow mouse events in several browsers, preventing tooltips from triggering reliably.
+* **The Rule:**
+  1. **Dynamic Cursor Tracking:** Tooltips dynamically follow the mouse pointer coordinates (`clientX`, `clientY`) via `translate3d(x, y, 0)` with smart viewport boundary collision detection (automatically flipping horizontally or vertically if close to window edges).
+  2. **Athletic Glassmorphic Design:** Renders via `#dsg-floating-tooltip` in `main.js` and `global.css` with slate/emerald glass backdrop blur, subtle green border glow (`rgba(0, 230, 118, 0.3)`), crisp inline SVG lock/info icons, and Outfit typography.
+  3. **Disabled Element Support:** Elements with `disabled` attributes are wrapped in `<span class="tooltip-trigger" data-tooltip="...">` with `pointer-events: none` on inner disabled buttons to ensure mouseenter/mousemove events trigger instantly across all browsers.
+
 

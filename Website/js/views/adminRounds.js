@@ -401,10 +401,12 @@ const renderTable = () => {
                 Editieren
             </button>
         ` : `
-            <button class="btn-edit-round" data-idx="${rawIndex}" disabled title="${INACTIVE_ROUND_TOOLTIP}" style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; cursor: not-allowed; opacity: 0.45; display: inline-flex; align-items: center; gap: 4px;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                Editieren
-            </button>
+            <span class="tooltip-trigger" data-tooltip="${INACTIVE_ROUND_TOOLTIP}" style="display: inline-flex; cursor: not-allowed;">
+                <button class="btn-edit-round" data-idx="${rawIndex}" disabled style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; cursor: not-allowed; opacity: 0.45; display: inline-flex; align-items: center; gap: 4px; pointer-events: none;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    Editieren
+                </button>
+            </span>
         `;
 
         const deleteBtnHtml = isActive ? `
@@ -413,10 +415,12 @@ const renderTable = () => {
                 Löschen
             </button>
         ` : `
-            <button class="btn-delete-round" data-idx="${rawIndex}" disabled title="${INACTIVE_ROUND_TOOLTIP}" style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; cursor: not-allowed; opacity: 0.45; display: inline-flex; align-items: center; gap: 4px;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                Löschen
-            </button>
+            <span class="tooltip-trigger" data-tooltip="${INACTIVE_ROUND_TOOLTIP}" style="display: inline-flex; cursor: not-allowed;">
+                <button class="btn-delete-round" data-idx="${rawIndex}" disabled style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; cursor: not-allowed; opacity: 0.45; display: inline-flex; align-items: center; gap: 4px; pointer-events: none;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    Löschen
+                </button>
+            </span>
         `;
 
         return `
@@ -458,10 +462,12 @@ const renderTable = () => {
                         Editieren
                     </button>
                 ` : `
-                    <button class="btn-edit-round" data-idx="${rawIndex}" disabled title="${INACTIVE_ROUND_TOOLTIP}" style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); opacity: 0.45; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                        Editieren
-                    </button>
+                    <span class="tooltip-trigger" data-tooltip="${INACTIVE_ROUND_TOOLTIP}" style="display: block; width: 100%; cursor: not-allowed;">
+                        <button class="btn-edit-round" data-idx="${rawIndex}" disabled style="width: 100%; background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); opacity: 0.45; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px; pointer-events: none;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            Editieren
+                        </button>
+                    </span>
                 `;
                 const mDeleteBtn = isActive ? `
                     <button class="btn-delete-round" data-idx="${rawIndex}" style="background: #dc3545; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
@@ -469,10 +475,12 @@ const renderTable = () => {
                         Löschen
                     </button>
                 ` : `
-                    <button class="btn-delete-round" data-idx="${rawIndex}" disabled title="${INACTIVE_ROUND_TOOLTIP}" style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); opacity: 0.45; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        Löschen
-                    </button>
+                    <span class="tooltip-trigger" data-tooltip="${INACTIVE_ROUND_TOOLTIP}" style="display: block; width: 100%; cursor: not-allowed;">
+                        <button class="btn-delete-round" data-idx="${rawIndex}" disabled style="width: 100%; background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); opacity: 0.45; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px; pointer-events: none;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            Löschen
+                        </button>
+                    </span>
                 `;
 
                 return `
@@ -586,15 +594,35 @@ const populateLeaguesDropdowns = () => {
 
     if (modalSelect) {
         const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
-        const leaguesToShow = activeLeagues.length > 0 ? activeLeagues : (leaguesData && leaguesData.length > 0 ? leaguesData : [{ name: 'DSG Liga', year: '2022/2023', seasonKey: '2022/2023' }]);
-        
-        modalSelect.innerHTML = leaguesToShow.map(l => {
-            const leagueName = l.name || 'DSG Liga';
-            const cleanYear = l.year ? String(l.year).replace(/_[a-zA-Z0-9_-]+$/, '') : (l.seasonKey ? String(l.seasonKey).replace(/_[a-zA-Z0-9_-]+$/, '') : '');
-            const yearDisplay = cleanYear ? ` (${cleanYear})` : '';
-            const seasonKey = l.seasonKey || l.year || (Store.getData()?.currentSeason || '2022/2023');
-            return `<option value="${leagueName}" data-season="${seasonKey}" data-year="${cleanYear || seasonKey}">${leagueName}${yearDisplay}</option>`;
-        }).join('');
+        if (activeLeagues.length === 0) {
+            modalSelect.innerHTML = '<option value="" disabled selected>Keine aktive Liga verfügbar</option>';
+        } else {
+            modalSelect.innerHTML = activeLeagues.map(l => {
+                const leagueName = l.name || 'DSG Liga';
+                const cleanYear = l.year ? String(l.year).replace(/_[a-zA-Z0-9_-]+$/, '') : (l.seasonKey ? String(l.seasonKey).replace(/_[a-zA-Z0-9_-]+$/, '') : '');
+                const yearDisplay = cleanYear ? ` (${cleanYear})` : '';
+                const seasonKey = l.seasonKey || l.year || (Store.getData()?.currentSeason || '2022/2023');
+                return `<option value="${leagueName}" data-season="${seasonKey}" data-year="${cleanYear || seasonKey}">${leagueName}${yearDisplay}</option>`;
+            }).join('');
+        }
+
+        // Update "+ Runde anlegen" button state
+        const addBtn = document.getElementById('btn-add-round');
+        if (addBtn) {
+            if (activeLeagues.length === 0) {
+                addBtn.disabled = true;
+                addBtn.style.opacity = '0.5';
+                addBtn.style.cursor = 'not-allowed';
+                addBtn.parentElement.classList.add('tooltip-trigger');
+                addBtn.parentElement.setAttribute('data-tooltip', 'Keine aktive Liga vorhanden. Um Runden anzulegen, aktivieren Sie zuerst eine Liga unter \'Ligen verwalten\'.');
+            } else {
+                addBtn.disabled = false;
+                addBtn.style.opacity = '1';
+                addBtn.style.cursor = 'pointer';
+                addBtn.parentElement.classList.remove('tooltip-trigger');
+                addBtn.parentElement.removeAttribute('data-tooltip');
+            }
+        }
     }
 };
 
@@ -690,6 +718,12 @@ const openEditRoundModal = (idx = null) => {
         document.getElementById('modal-round-date-from').value = formatDateForInput(r.datumVon);
         document.getElementById('modal-round-date-to').value = formatDateForInput(r.datumBis);
     } else {
+        const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
+        if (activeLeagues.length === 0) {
+            showToast('Keine aktive Liga vorhanden. Um Runden anzulegen, aktivieren Sie zuerst eine Liga unter "Ligen verwalten".', true);
+            return;
+        }
+
         editingRoundId = null;
         title.innerText = 'Runde anlegen';
         submitBtn.innerText = 'Erstellen';
@@ -1199,6 +1233,17 @@ export const initAdminRounds = async () => {
             const runde = parseInt(document.getElementById('modal-round-nr').value) || 1;
             const datumVon = document.getElementById('modal-round-date-from').value;
             const datumBis = document.getElementById('modal-round-date-to').value;
+
+            // Strict active league guard
+            const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
+            const isTargetActive = activeLeagues.some(l => 
+                (l.seasonKey && seasonKey && l.seasonKey === seasonKey) ||
+                (l.name && (liga === l.name || saison === l.name))
+            );
+            if (!isTargetActive) {
+                showToast('Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter "Ligen verwalten" auf "Aktiv".', true);
+                return;
+            }
 
             if (editingRoundId !== null && editingRoundId !== undefined) {
                 const index = roundsData.findIndex(r => String(r.id) === String(editingRoundId));
