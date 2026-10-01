@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560019000';
-import { showToast } from './admin.js?v=1790560019000';
+import { Store } from '../store.js?v=1790560021000';
+import { showToast } from './admin.js?v=1790560021000';
 
 let leaguesData = [];
 let filteredData = [];
@@ -9,6 +9,16 @@ let currentSort = { column: 'id', asc: false };
 
 let selectedLeague = null;
 let currentModalTab = 'table';
+
+export const formatLeagueYear = (yr) => {
+    if (!yr) return '-';
+    let s = String(yr).trim();
+    if (/^\d{4}$/.test(s)) {
+        const nextY = parseInt(s) + 1;
+        return `${s}/${nextY}`;
+    }
+    return s;
+};
 
 export const renderAdminLeagues = () => {
     return `
@@ -86,7 +96,7 @@ export const renderAdminLeagues = () => {
                     </div>
                     <div>
                         <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Jahr</label>
-                        <input type="text" id="edit-league-year" class="admin-input" placeholder="YYYY" style="width: 100%;" required>
+                        <input type="text" id="edit-league-year" class="admin-input" placeholder="z.B. 2022/2023 oder 2022" style="width: 100%;" required>
                     </div>
                     <div>
                         <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Status</label>
@@ -296,7 +306,7 @@ const renderTable = () => {
             <tr>
                 <td style="color: var(--color-text-secondary); white-space: nowrap;">#${l.id || '-'}</td>
                 <td style="white-space: nowrap;"><strong style="color: var(--color-text-primary);">${l.name || '-'}</strong></td>
-                <td style="white-space: nowrap;">${l.year || '-'}</td>
+                <td style="white-space: nowrap;">${formatLeagueYear(l.year)}</td>
                 <td style="white-space: nowrap;"><span class="badge ${badgeClass}">${status}</span></td>
                 <td style="text-align: center; white-space: nowrap;">
                     <span class="badge ${isVisible ? 'badge-success' : 'badge-secondary'}" style="font-size: 0.75rem;">
@@ -356,7 +366,7 @@ const renderTable = () => {
                                 <div class="admin-m-subtitle">
                                     <span class="badge ${badgeClass}" style="font-size: 0.72rem;">${status}</span>
                                     <span>•</span>
-                                    <span>Jahr: ${l.year || '-'}</span>
+                                    <span>Jahr: ${formatLeagueYear(l.year)}</span>
                                     <span>•</span>
                                     <span>Homepage: ${isVisible ? 'Ja' : 'Nein'}</span>
                                 </div>
@@ -1104,7 +1114,7 @@ const openEditModal = async (idx = null) => {
         if (submitBtn) submitBtn.innerText = 'Bestätigen';
         document.getElementById('edit-league-id').value = idx;
         document.getElementById('edit-league-name').value = l.name || '';
-        document.getElementById('edit-league-year').value = l.year || '';
+        document.getElementById('edit-league-year').value = formatLeagueYear(l.year) !== '-' ? formatLeagueYear(l.year) : '';
         document.getElementById('edit-league-status').value = l.status === 'Aktiv' ? 'Aktiv' : 'Inaktiv';
         document.getElementById('edit-league-show-homepage').checked = (l.showOnHomepage !== false);
         deleteBtn.style.display = 'block';
@@ -1383,15 +1393,37 @@ const bindEvents = () => {
             const nameInput = document.getElementById('edit-league-name');
             const yearInput = document.getElementById('edit-league-year');
             const nameVal = nameInput ? nameInput.value.trim() : '';
-            const yearVal = yearInput ? parseInt(yearInput.value) : 0;
+            const yearRaw = yearInput ? yearInput.value.trim() : '';
 
             if (!nameVal) {
                 showToast('Bitte geben Sie einen Namen für die Liga ein!', true);
                 if (nameInput) nameInput.focus();
                 return;
             }
-            if (!yearVal || isNaN(yearVal) || yearVal < 1900 || yearVal > 2100) {
-                showToast('Bitte geben Sie ein gültiges Jahr ein (z.B. 2026)!', true);
+            if (!yearRaw) {
+                showToast('Bitte geben Sie ein gültiges Jahr oder eine Saison ein (z.B. 2022/2023 oder 2022)!', true);
+                if (yearInput) yearInput.focus();
+                return;
+            }
+
+            let normalizedYear = yearRaw;
+            if (/^\d{4}$/.test(normalizedYear)) {
+                const yr = parseInt(normalizedYear);
+                if (yr < 1900 || yr > 2100) {
+                    showToast('Bitte geben Sie ein gültiges Jahr ein (z.B. 2026)!', true);
+                    if (yearInput) yearInput.focus();
+                    return;
+                }
+                normalizedYear = `${yr}/${yr + 1}`;
+            } else if (/^\d{4}\/\d{4}$/.test(normalizedYear)) {
+                const [y1, y2] = normalizedYear.split('/').map(Number);
+                if (y1 < 1900 || y1 > 2100 || isNaN(y1) || isNaN(y2)) {
+                    showToast('Bitte geben Sie eine gültige Saison ein (z.B. 2022/2023)!', true);
+                    if (yearInput) yearInput.focus();
+                    return;
+                }
+            } else {
+                showToast('Bitte geben Sie ein gültiges Format ein (z.B. 2022/2023 oder 2022)!', true);
                 if (yearInput) yearInput.focus();
                 return;
             }
@@ -1399,7 +1431,7 @@ const bindEvents = () => {
             const existingLeague = (idVal !== 'new' && leaguesData[parseInt(idVal)]) ? leaguesData[parseInt(idVal)] : null;
             const updatedLeague = {
                 name: nameVal,
-                year: yearVal,
+                year: normalizedYear,
                 status: document.getElementById('edit-league-status').value,
                 showOnHomepage: document.getElementById('edit-league-show-homepage').checked,
                 seasonKey: existingLeague?.seasonKey || undefined

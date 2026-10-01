@@ -129,7 +129,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1790560020000';
+const DATA_VERSION_STRING = '?v=1790560021000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -292,7 +292,7 @@ export const Store = {
         if (i !== 12) localStorage.removeItem(`dsg_admin_players_v${i}`);
         if (i !== 12) localStorage.removeItem(`dsg_admin_teams_v${i}`);
         if (i !== 27) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
-        if (i !== 28) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
+        if (i !== 29) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
       }
     } catch(e) {}
 
@@ -451,22 +451,32 @@ export const Store = {
         const fbLeagues = leagueSnap.data().data;
         const fbTime = leagueSnap.data().lastUpdated || 0;
         const localTime = parseInt(localStorage.getItem('dsg_leagues_last_updated')) || 0;
-        const localLeagues = loadLocal('dsg_admin_leagues', 28);
+        const localLeagues = loadLocal('dsg_admin_leagues', 29);
 
         let merged = (localTime > fbTime && localLeagues && localLeagues.length >= canonicalLeagues.length) ? [...localLeagues] : [...fbLeagues];
+        merged.forEach(l => {
+          if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
+            const yr = parseInt(String(l.year).trim());
+            l.year = `${yr}/${yr + 1}`;
+          }
+        });
         canonicalLeagues.forEach(cl => {
           if (!merged.some(l => l.seasonKey === cl.seasonKey || (l.name === cl.name && l.year === cl.year))) {
             merged.push(cl);
           }
         });
         merged = sortLeaguesByPriority(merged.filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027'));
-        trySetLocal('dsg_admin_leagues_v28', JSON.stringify(merged));
-        if (merged.length > fbLeagues.length || localTime > fbTime) {
-          await setDoc(leagueRef, { data: merged, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (leagues):", e));
-        }
+        trySetLocal('dsg_admin_leagues_v29', JSON.stringify(merged));
+        await setDoc(leagueRef, { data: merged, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (leagues):", e));
       } else {
         const cleanLeagues = sortLeaguesByPriority(canonicalLeagues);
-        trySetLocal('dsg_admin_leagues_v28', JSON.stringify(cleanLeagues));
+        cleanLeagues.forEach(l => {
+          if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
+            const yr = parseInt(String(l.year).trim());
+            l.year = `${yr}/${yr + 1}`;
+          }
+        });
+        trySetLocal('dsg_admin_leagues_v29', JSON.stringify(cleanLeagues));
         await setDoc(leagueRef, { data: cleanLeagues, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (leagues):", e));
       }
 
@@ -1082,9 +1092,16 @@ export const Store = {
   },
 
   getAdminLeaguesSync() {
-    const local = loadLocal('dsg_admin_leagues', 28);
+    const local = loadLocal('dsg_admin_leagues', 29);
     if (local && Array.isArray(local) && local.length >= 2 && local.some(l => l.seasonKey === '2022/2023_1klasse')) {
-      return sortLeaguesByPriority(local.filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027'));
+      const clean = local.map(l => {
+        if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
+          const yr = parseInt(String(l.year).trim());
+          return { ...l, year: `${yr}/${yr + 1}` };
+        }
+        return l;
+      });
+      return sortLeaguesByPriority(clean.filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027'));
     }
     return [
       {
@@ -1107,9 +1124,16 @@ export const Store = {
   },
 
   async getAdminLeagues() {
-    const local = loadLocal('dsg_admin_leagues', 28);
+    const local = loadLocal('dsg_admin_leagues', 29);
     if (local && Array.isArray(local) && local.length >= 2) {
-      const filtered = sortLeaguesByPriority(local.filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027'));
+      const clean = local.map(l => {
+        if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
+          const yr = parseInt(String(l.year).trim());
+          return { ...l, year: `${yr}/${yr + 1}` };
+        }
+        return l;
+      });
+      const filtered = sortLeaguesByPriority(clean.filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027'));
       if (filtered.length >= 2) return filtered;
     }
 
@@ -1118,9 +1142,16 @@ export const Store = {
       if (leaguesSnap.exists() && leaguesSnap.data()?.data) {
         let fbLeagues = leaguesSnap.data().data;
         if (Array.isArray(fbLeagues) && fbLeagues.length >= 2) {
+          fbLeagues = fbLeagues.map(l => {
+            if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
+              const yr = parseInt(String(l.year).trim());
+              return { ...l, year: `${yr}/${yr + 1}` };
+            }
+            return l;
+          });
           fbLeagues = sortLeaguesByPriority(fbLeagues.filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027'));
           if (fbLeagues.length >= 2) {
-            trySetLocal('dsg_admin_leagues_v28', JSON.stringify(fbLeagues));
+            trySetLocal('dsg_admin_leagues_v29', JSON.stringify(fbLeagues));
             return fbLeagues;
           }
         }
@@ -1135,7 +1166,7 @@ export const Store = {
         const fileLeagues = await res.json();
         if (Array.isArray(fileLeagues)) {
           const cleanLeagues = sortLeaguesByPriority(fileLeagues.filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027'));
-          trySetLocal('dsg_admin_leagues_v28', JSON.stringify(cleanLeagues));
+          trySetLocal('dsg_admin_leagues_v29', JSON.stringify(cleanLeagues));
           setDoc(doc(db, 'system', 'leagues_data'), { data: cleanLeagues, lastUpdated: Date.now() })
             .catch(e => console.error("Firebase save error (leagues initial):", e));
           return cleanLeagues;
@@ -1166,8 +1197,14 @@ export const Store = {
   },
 
   saveAdminLeagues(leagues) {
-    const cleanLeagues = Array.isArray(leagues) ? leagues : [];
-    trySetLocal('dsg_admin_leagues_v28', JSON.stringify(cleanLeagues));
+    const cleanLeagues = (Array.isArray(leagues) ? leagues : []).map(l => {
+      if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
+        const yr = parseInt(String(l.year).trim());
+        return { ...l, year: `${yr}/${yr + 1}` };
+      }
+      return l;
+    });
+    trySetLocal('dsg_admin_leagues_v29', JSON.stringify(cleanLeagues));
     setDoc(doc(db, 'system', 'leagues_data'), { data: cleanLeagues, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (leagues):", e));
     window.dispatchEvent(new CustomEvent('leagues-updated'));

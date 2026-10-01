@@ -354,6 +354,17 @@ DSG Liga/
      - **Statistiken Page (`#/statistiken`):** Check tab switching (`Torschützen`, `Vereine`, `Meister`, `Fairplay`, `Rekorde`), pagination, live search, and dynamic card headers.
      - **Admin Dashboard (`#/admin`):** Check all 7 admin tabs, modal dialog openings, form saves, toast confirmations, and real-time frontend reflection.
 
+---
+
+## 31. Season Year Input & Display Normalization (`formatLeagueYear`)
+* **The Pitfall:** (1) Using `parseInt(yearInput.value)` on season inputs stripped trailing year parts (e.g. converting `"2022/2023"` into integer `2022`), saving truncated 4-digit years into Firestore. (2) Displaying raw `l.year` on desktop tables and mobile cards resulted in single-year labels (`Jahr: 2022`) instead of full Austrian amateur season notation (`Jahr: 2022/2023`).
+* **The Rule:**
+  1. **Dual-Format Input Support & Normalization:** In `adminLeagues.js`, `yearInput` accepts both `YYYY` and `YYYY/YYYY` strings. Single 4-digit years are automatically expanded to `${yr}/${yr + 1}` (e.g. `2022` $\rightarrow$ `2022/2023`).
+  2. **Display Normalization (`formatLeagueYear`):** All league tables, mobile cards (`admin-m-card`), and modal inputs pass `l.year` through `formatLeagueYear()`, guaranteeing that `2022` is always displayed as `2022/2023`.
+  3. **Auto-Healing in `store.js`:** `Store.syncFirebase()` and `Store.getAdminLeagues()` sanitize any legacy 4-digit years into `YYYY/YYYY` and synchronize the corrected records to Firestore and `localStorage` (`dsg_admin_leagues_v29`).
+  4. **Cache Versions:** Active cache keys are `dsg_data_v70`, `dsg_admin_leagues_v29`, `dsg_admin_rounds_v27`.
+
+
 
 
 
