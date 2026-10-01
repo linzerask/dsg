@@ -1,4 +1,4 @@
-import { Store, sortLeaguesByPriority } from '../store.js?v=1790560018000';
+import { Store, sortLeaguesByPriority } from '../store.js?v=1790560019000';
 
 
 let currentViewSeason = null;
@@ -61,8 +61,8 @@ export function viewLiga() {
     const ptsB = Number(b.points) || 0;
     if (ptsB !== ptsA) return ptsB - ptsA;
 
-    const diffA = (a.diff !== undefined ? Number(a.diff) : (Number(a.goalDiff) || (Number(a.gf || a.goalsFor || 0) - Number(a.ga || a.goalsAgainst || 0))));
-    const diffB = (b.diff !== undefined ? Number(b.diff) : (Number(b.goalDiff) || (Number(b.gf || b.goalsFor || 0) - Number(b.ga || b.goalsAgainst || 0))));
+    const diffA = (a.goalDiff !== undefined && !isNaN(Number(a.goalDiff))) ? Number(a.goalDiff) : ((a.diff !== undefined && !isNaN(Number(a.diff))) ? Number(a.diff) : ((Number(a.gf !== undefined ? a.gf : (a.goalsFor || 0))) - (Number(a.ga !== undefined ? a.ga : (a.goalsAgainst || 0)))));
+    const diffB = (b.goalDiff !== undefined && !isNaN(Number(b.goalDiff))) ? Number(b.goalDiff) : ((b.diff !== undefined && !isNaN(Number(b.diff))) ? Number(b.diff) : ((Number(b.gf !== undefined ? b.gf : (b.goalsFor || 0))) - (Number(b.ga !== undefined ? b.ga : (b.goalsAgainst || 0)))));
     if (diffB !== diffA) return diffB - diffA;
 
     const gfA = Number(a.gf !== undefined ? a.gf : (a.goalsFor || 0));
@@ -134,7 +134,7 @@ export function viewLiga() {
   const rows = teams.map((t, i) => {
     const gf = Number(t.gf !== undefined ? t.gf : (t.goalsFor || 0));
     const ga = Number(t.ga !== undefined ? t.ga : (t.goalsAgainst || 0));
-    const diff = t.diff !== undefined ? Number(t.diff) : (t.goalDiff !== undefined ? Number(t.goalDiff) : (gf - ga));
+    const diff = (t.goalDiff !== undefined && !isNaN(Number(t.goalDiff))) ? Number(t.goalDiff) : ((t.diff !== undefined && !isNaN(Number(t.diff))) ? Number(t.diff) : (gf - ga));
     const diffStr = diff > 0 ? '+' + diff : diff;
     return `
       <div class="liga-row glass-card stagger-item ${i < 3 ? 'top-3-row' : ''} has-table-accordion" style="display: grid; grid-template-columns: 40px 1fr 100px 40px 35px 35px 35px 70px 50px 60px; align-items: center; margin-bottom: var(--space-sm); padding: var(--space-sm) var(--space-md); cursor: pointer; transition: background 0.3s;">

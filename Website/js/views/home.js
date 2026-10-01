@@ -1,6 +1,6 @@
-import { Store, sortLeaguesByPriority } from '../store.js?v=1790560018000';
-import { computeAllTimeStats } from './statistiken.js?v=1790560018000';
-import { renderIcon } from '../icons.js?v=1790560018000';
+import { Store, sortLeaguesByPriority } from '../store.js?v=1790560019000';
+import { computeAllTimeStats } from './statistiken.js?v=1790560019000';
+import { renderIcon } from '../icons.js?v=1790560019000';
 
 export const viewHome = () => {
   const data = Store.getData();
@@ -15,8 +15,8 @@ export const viewHome = () => {
     const ptsB = Number(b.points) || 0;
     if (ptsB !== ptsA) return ptsB - ptsA;
 
-    const diffA = (a.diff !== undefined ? Number(a.diff) : (Number(a.goalDiff) || (Number(a.gf || a.goalsFor || 0) - Number(a.ga || a.goalsAgainst || 0))));
-    const diffB = (b.diff !== undefined ? Number(b.diff) : (Number(b.goalDiff) || (Number(b.gf || b.goalsFor || 0) - Number(b.ga || b.goalsAgainst || 0))));
+    const diffA = (a.goalDiff !== undefined && !isNaN(Number(a.goalDiff))) ? Number(a.goalDiff) : ((a.diff !== undefined && !isNaN(Number(a.diff))) ? Number(a.diff) : ((Number(a.gf !== undefined ? a.gf : (a.goalsFor || 0))) - (Number(a.ga !== undefined ? a.ga : (a.goalsAgainst || 0)))));
+    const diffB = (b.goalDiff !== undefined && !isNaN(Number(b.goalDiff))) ? Number(b.goalDiff) : ((b.diff !== undefined && !isNaN(Number(b.diff))) ? Number(b.diff) : ((Number(b.gf !== undefined ? b.gf : (b.goalsFor || 0))) - (Number(b.ga !== undefined ? b.ga : (b.goalsAgainst || 0)))));
     if (diffB !== diffA) return diffB - diffA;
 
     const gfA = Number(a.gf !== undefined ? a.gf : (a.goalsFor || 0));
@@ -138,7 +138,7 @@ export const viewHome = () => {
   const teamRows = teams.length > 0 ? teams.map((t, index) => {
     const gf = Number(t.gf !== undefined ? t.gf : (t.goalsFor || 0));
     const ga = Number(t.ga !== undefined ? t.ga : (t.goalsAgainst || 0));
-    const diff = t.diff !== undefined ? Number(t.diff) : (t.goalDiff !== undefined ? Number(t.goalDiff) : (gf - ga));
+    const diff = (t.goalDiff !== undefined && !isNaN(Number(t.goalDiff))) ? Number(t.goalDiff) : ((t.diff !== undefined && !isNaN(Number(t.diff))) ? Number(t.diff) : (gf - ga));
     const diffStr = diff > 0 ? '+' + diff : diff;
     return `
     <div class="table-row has-home-accordion" style="display: flex; flex-direction: column; cursor: pointer; transition: background 0.2s; padding: 10px 12px; border-radius: 6px; margin-bottom: 4px; border: 1px solid transparent;">

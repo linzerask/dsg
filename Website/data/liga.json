@@ -17,7 +17,10 @@
           "points": 17,
           "logo": "stadion.png",
           "id": 1,
-          "rank": 1
+          "rank": 1,
+          "diff": 18,
+          "gf": 29,
+          "ga": 11
         },
         {
           "name": "FC U. Schleißheim",
@@ -31,7 +34,10 @@
           "points": 14,
           "logo": "stadion.png",
           "id": 2,
-          "rank": 2
+          "rank": 2,
+          "diff": 10,
+          "gf": 22,
+          "ga": 12
         },
         {
           "name": "DSG UKJ Froschberg",
@@ -45,7 +51,10 @@
           "points": 13,
           "logo": "stadion.png",
           "id": 3,
-          "rank": 3
+          "rank": 3,
+          "diff": 1,
+          "gf": 14,
+          "ga": 13
         },
         {
           "name": "DSG St. Josef/Oed FC",
@@ -59,7 +68,10 @@
           "points": 12,
           "logo": "stadion.png",
           "id": 4,
-          "rank": 4
+          "rank": 4,
+          "diff": -2,
+          "gf": 19,
+          "ga": 21
         },
         {
           "name": "FC Hinzenbach",
@@ -73,7 +85,10 @@
           "points": 10,
           "logo": "stadion.png",
           "id": 5,
-          "rank": 5
+          "rank": 5,
+          "diff": 8,
+          "gf": 29,
+          "ga": 21
         },
         {
           "name": "SV Croatia Linz",
@@ -87,7 +102,10 @@
           "points": 7,
           "logo": "stadion.png",
           "id": 6,
-          "rank": 6
+          "rank": 6,
+          "diff": -1,
+          "gf": 16,
+          "ga": 17
         },
         {
           "name": "Union Geboltskirchen",
@@ -101,7 +119,10 @@
           "points": 7,
           "logo": "stadion.png",
           "id": 7,
-          "rank": 7
+          "rank": 7,
+          "diff": -9,
+          "gf": 18,
+          "ga": 27
         },
         {
           "name": "Union Goldwörth",
@@ -115,7 +136,10 @@
           "points": 0,
           "logo": "stadion.png",
           "id": 8,
-          "rank": 8
+          "rank": 8,
+          "diff": -25,
+          "gf": 12,
+          "ga": 37
         }
       ],
       "matches": [
@@ -5012,7 +5036,7 @@
           "points": 15,
           "logo": "stadion.png",
           "rank": 1,
-          "diff": "29:12",
+          "diff": 17,
           "gf": 29,
           "ga": 12
         },
@@ -5029,7 +5053,7 @@
           "points": 13,
           "logo": "stadion.png",
           "rank": 2,
-          "diff": "16:12",
+          "diff": 4,
           "gf": 16,
           "ga": 12
         },
@@ -5046,7 +5070,7 @@
           "points": 9,
           "logo": "stadion.png",
           "rank": 3,
-          "diff": "17:15",
+          "diff": 2,
           "gf": 17,
           "ga": 15
         },
@@ -5063,7 +5087,7 @@
           "points": 8,
           "logo": "stadion.png",
           "rank": 4,
-          "diff": "12:14",
+          "diff": -2,
           "gf": 12,
           "ga": 14
         },
@@ -5080,7 +5104,7 @@
           "points": 7,
           "logo": "stadion.png",
           "rank": 5,
-          "diff": "20:22",
+          "diff": -2,
           "gf": 20,
           "ga": 22
         },
@@ -5097,7 +5121,7 @@
           "points": 4,
           "logo": "stadion.png",
           "rank": 6,
-          "diff": "10:19",
+          "diff": -9,
           "gf": 10,
           "ga": 19
         },
@@ -5114,26 +5138,9 @@
           "points": 4,
           "logo": "stadion.png",
           "rank": 7,
-          "diff": "7:17",
+          "diff": -10,
           "gf": 7,
           "ga": 17
-        },
-        {
-          "id": 6,
-          "name": "FC Anatolia",
-          "played": 0,
-          "won": 0,
-          "drawn": 0,
-          "lost": 0,
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "goalDiff": 0,
-          "points": 0,
-          "logo": "stadion.png",
-          "rank": 8,
-          "diff": "0:0",
-          "gf": 0,
-          "ga": 0
         }
       ],
       "matches": [
@@ -5289,22 +5296,6 @@
               "isHome": false
             }
           ],
-          "seasonKey": "2022/2023_1klasse"
-        },
-        {
-          "id": 3,
-          "round": "1. Runde",
-          "runde": "1",
-          "date": "22.10.2022",
-          "time": "00:00",
-          "home": "FC Gornjak",
-          "away": "FC Anatolia",
-          "score": "-:-",
-          "ht": "",
-          "status": "Ausstehend",
-          "venue": "Magistratplatz Linz",
-          "location": "Magistratplatz Linz",
-          "events": [],
           "seasonKey": "2022/2023_1klasse"
         },
         {
@@ -5622,22 +5613,6 @@
           "seasonKey": "2022/2023_1klasse"
         },
         {
-          "id": 8,
-          "round": "2. Runde",
-          "runde": "2",
-          "date": "03.09.2022",
-          "time": "15:00",
-          "home": "FC Anatolia",
-          "away": "Walker FC",
-          "score": "-:-",
-          "ht": "",
-          "status": "Ausstehend",
-          "venue": "DSG-Platz Linz",
-          "location": "DSG-Platz Linz",
-          "events": [],
-          "seasonKey": "2022/2023_1klasse"
-        },
-        {
           "id": 9,
           "round": "3. Runde",
           "runde": "3",
@@ -5759,22 +5734,6 @@
               "isHome": false
             }
           ],
-          "seasonKey": "2022/2023_1klasse"
-        },
-        {
-          "id": 11,
-          "round": "3. Runde",
-          "runde": "3",
-          "date": "17.09.2022",
-          "time": "16:00",
-          "home": "FC Anatolia",
-          "away": "DSG Thalheim",
-          "score": "-:-",
-          "ht": "",
-          "status": "Ausstehend",
-          "venue": "DSG-Platz Linz",
-          "location": "DSG-Platz Linz",
-          "events": [],
           "seasonKey": "2022/2023_1klasse"
         },
         {
@@ -6068,22 +6027,6 @@
           "seasonKey": "2022/2023_1klasse"
         },
         {
-          "id": 16,
-          "round": "4. Runde",
-          "runde": "4",
-          "date": "24.09.2022",
-          "time": "16:00",
-          "home": "FC Anatolia",
-          "away": "Union Eschenau",
-          "score": "-:-",
-          "ht": "",
-          "status": "Ausstehend",
-          "venue": "Seminarplatz Linz",
-          "location": "Seminarplatz Linz",
-          "events": [],
-          "seasonKey": "2022/2023_1klasse"
-        },
-        {
           "id": 17,
           "round": "5. Runde",
           "runde": "5",
@@ -6267,22 +6210,6 @@
           "seasonKey": "2022/2023_1klasse"
         },
         {
-          "id": 20,
-          "round": "5. Runde",
-          "runde": "5",
-          "date": "01.10.2022",
-          "time": "17:00",
-          "home": "FC Bruck",
-          "away": "FC Anatolia",
-          "score": "-:-",
-          "ht": "",
-          "status": "Ausstehend",
-          "venue": "Sportplatz ASKÖ Bruck/Peuerbach",
-          "location": "Sportplatz ASKÖ Bruck/Peuerbach",
-          "events": [],
-          "seasonKey": "2022/2023_1klasse"
-        },
-        {
           "id": 21,
           "round": "6. Runde",
           "runde": "6",
@@ -6433,22 +6360,6 @@
               "isHome": false
             }
           ],
-          "seasonKey": "2022/2023_1klasse"
-        },
-        {
-          "id": 24,
-          "round": "6. Runde",
-          "runde": "6",
-          "date": "08.10.2022",
-          "time": "16:00",
-          "home": "FC Anatolia",
-          "away": "DSG Union Traun",
-          "score": "-:-",
-          "ht": "",
-          "status": "Ausstehend",
-          "venue": "Seminarplatz Linz",
-          "location": "Seminarplatz Linz",
-          "events": [],
           "seasonKey": "2022/2023_1klasse"
         },
         {
@@ -6615,22 +6526,6 @@
               "isHome": false
             }
           ],
-          "seasonKey": "2022/2023_1klasse"
-        },
-        {
-          "id": 27,
-          "round": "7. Runde",
-          "runde": "7",
-          "date": "26.10.2022",
-          "time": "00:00",
-          "home": "DSG Auberg",
-          "away": "FC Anatolia",
-          "score": "-:-",
-          "ht": "",
-          "status": "Ausstehend",
-          "venue": "DSG-Platz Linz",
-          "location": "DSG-Platz Linz",
-          "events": [],
           "seasonKey": "2022/2023_1klasse"
         },
         {

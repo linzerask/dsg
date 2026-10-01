@@ -326,6 +326,17 @@ DSG Liga/
   1. **Canonical Dataset Protection in `Store.syncFirebase()`:** Before syncing leagues or rounds from Firestore, verify that Firestore contains the complete canonical dataset (`leagues >= 2`, `rounds >= 14`). If Firestore has fewer items or is missing secondary leagues, merge canonical items from `data/leagues.json` and `data/rounds.json` and write back to Firestore.
   2. **Dynamic Round Date Fallback:** In `liga.js`, if round metadata does not provide date ranges, dynamically compute the earliest and latest match dates from the round's scheduled matches and format as `${nr}. Runde (${firstDate} - ${lastDate})`.
   3. **Dynamic Meister Honor Labels (`getSeasonHonorLabel`):** In `statistiken.js`, champion card titles resolve via `getSeasonHonorLabel(seasonKey)`, dynamically mapping keys like `2022/2023` to `DSG Liga Saison 2022/2023` and `2022/2023_1klasse` to `1. Klasse Saison 2022/2023`, with automatic support for any newly added leagues.
-  4. **Cache Versions:** Active cache keys are `dsg_data_v68`, `dsg_admin_leagues_v26`, `dsg_admin_rounds_v25`.
+  4. **Cache Versions:** Active cache keys are `dsg_data_v70`, `dsg_admin_leagues_v28`, `dsg_admin_rounds_v27`.
+
+---
+
+## 29. Standings Goal Difference Ratio Parsing (`NaN` Fix), FC Anatolia Unplayed Club Cleanup, & Data Fetch Cache-Busting
+* **The Pitfall:** (1) When raw scraped data stores goal difference as a ratio string (e.g. `"29:12"` or `"16:12"`) rather than a difference integer, `Number(t.diff)` evaluates to `NaN`, breaking table sorting and displaying `NaN` in public and admin standings. (2) Clubs that never played a single match (e.g., `FC Anatolia` in 1. Klasse 2022/2023 with 0 played, 0 points, and 7 unplayed fixtures) distort division standings and round match counts. (3) Browser HTTP caching can serve stale `data/*.json` files on local servers unless query strings are passed to `fetch()`.
+* **The Rule:**
+  1. **Goal Difference Normalization:** `t.goalDiff` must always be stored as an integer (`goalsFor - goalsAgainst`). In table sorting and row rendering (`liga.js`, `home.js`, `statistiken.js`), diff calculation must prioritize `t.goalDiff !== undefined && !isNaN(Number(t.goalDiff)) ? Number(t.goalDiff) : (gf - ga)`.
+  2. **Unplayed Club Cleanup:** `FC Anatolia` and its 7 unplayed fixtures are completely excluded from `seasons['2022/2023_1klasse']`, leaving 7 active clubs and 21 played matches (3 matches per round for rounds 1–7).
+  3. **Fetch Cache-Busting Protocol:** In `store.js`, all internal `fetch('data/*.json')` calls append `DATA_VERSION_STRING` (`?v=...`) to ensure that fresh data is always loaded without hitting stale browser HTTP caches.
+  4. **Cache Versions:** Active cache keys are `dsg_data_v70`, `dsg_admin_leagues_v28`, `dsg_admin_rounds_v27`.
+
 
 
