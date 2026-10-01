@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560010000';
-import { showToast } from './admin.js?v=1790560010000';
+import { Store } from '../store.js?v=1790560012000';
+import { showToast } from './admin.js?v=1790560012000';
 
 let leaguesData = [];
 let filteredData = [];
@@ -1025,29 +1025,36 @@ const renderModalContent = () => {
 };
 
 let assignedTeamNames = new Set();
-let cachedActiveTeams = [];
+let cachedEligibleTeams = [];
 
 const renderLeagueTeamsCheckboxes = (filterText = '') => {
     const container = document.getElementById('league-teams-checkbox-container');
     if (!container) return;
     const q = (filterText || '').toLowerCase().trim();
-    const visibleTeams = cachedActiveTeams.filter(t => {
+    const visibleTeams = cachedEligibleTeams.filter(t => {
         const name = (t.Name || t.name || '').toLowerCase();
         return !q || name.includes(q);
     });
 
     if (visibleTeams.length === 0) {
-        container.innerHTML = '<span style="color: var(--color-text-secondary); font-size: 0.85rem; padding: 4px;">Keine aktiven Teams gefunden.</span>';
+        container.innerHTML = '<span style="color: var(--color-text-secondary); font-size: 0.85rem; padding: 4px;">Keine passenden Teams gefunden.</span>';
         return;
     }
 
     container.innerHTML = visibleTeams.map(t => {
-        const teamName = t.Name || t.name;
-        const isChecked = assignedTeamNames.has(teamName.trim().toLowerCase());
+        const teamName = (t.Name || t.name || '').trim();
+        const isChecked = assignedTeamNames.has(teamName.toLowerCase());
+        const isActive = (t.Status === 'Aktiv' || t.status === 'Aktiv');
+        const badgeColor = isActive ? '#27ae60' : '#888888';
+        const badgeBg = isActive ? 'rgba(39, 174, 96, 0.12)' : 'rgba(136, 136, 136, 0.12)';
+        const badgeText = isActive ? 'Aktiv' : 'Inaktiv';
         return `
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; cursor: pointer; padding: 2px 0;">
-                <input type="checkbox" class="league-team-cb" value="${teamName}" ${isChecked ? 'checked' : ''} style="cursor: pointer; accent-color: var(--color-accent); width: 16px; height: 16px;">
-                <span style="color: var(--color-text-primary); font-weight: ${isChecked ? '600' : '400'};">${teamName}</span>
+            <label style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.88rem; cursor: pointer; padding: 3px 6px; border-radius: 4px;">
+                <div style="display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden;">
+                    <input type="checkbox" class="league-team-cb" value="${teamName}" ${isChecked ? 'checked' : ''} style="cursor: pointer; accent-color: var(--color-accent); width: 16px; height: 16px; flex-shrink: 0;">
+                    <span class="league-team-label" style="color: var(--color-text-primary); font-weight: ${isChecked ? '600' : '400'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${teamName}</span>
+                </div>
+                <span style="font-size: 0.72rem; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: ${badgeBg}; color: ${badgeColor}; flex-shrink: 0;">${badgeText}</span>
             </label>
         `;
     }).join('');
@@ -1057,6 +1064,8 @@ const renderLeagueTeamsCheckboxes = (filterText = '') => {
             const val = e.target.value.trim().toLowerCase();
             if (e.target.checked) assignedTeamNames.add(val);
             else assignedTeamNames.delete(val);
+            const labelSpan = e.target.parentElement.querySelector('.league-team-label');
+            if (labelSpan) labelSpan.style.fontWeight = e.target.checked ? '600' : '400';
         };
     });
 };
@@ -1072,8 +1081,21 @@ const openEditModal = async (idx = null) => {
     assignedTeamNames.clear();
 
     const allTeams = await Store.getAdminTeams();
-    cachedActiveTeams = (allTeams || []).filter(t => t.Status === 'Aktiv' || t.status === 'Aktiv');
-    cachedActiveTeams.sort((a, b) => (a.Name || a.name || '').localeCompare(b.Name || b.name || ''));
+    const teamsMap = new Map();
+
+    // 1. Ingest all master teams from teams.json
+    (allTeams || []).forEach(t => {
+        const name = (t.Name || t.name || '').trim();
+        if (name) {
+            teamsMap.set(name.toLowerCase(), {
+                Name: name,
+                Status: t.Status || t.status || 'Inaktiv',
+                ID: t.ID || t.id || ''
+            });
+        }
+    });
+
+    const storeData = Store.getData();
 
     if (idx !== null && leaguesData[idx]) {
         const l = leaguesData[idx];
@@ -1088,14 +1110,46 @@ const openEditModal = async (idx = null) => {
         deleteBtn.style.display = 'block';
 
         const sKey = getSeasonKey(l);
-        const storeData = Store.getData();
         const season = storeData.seasons ? (storeData.seasons[sKey] || storeData.seasons[l.seasonKey] || storeData.seasons[l.year] || storeData.seasons[l.name]) : null;
-        if (season && season.teams && Array.isArray(season.teams) && season.teams.length > 0) {
-            season.teams.forEach(t => {
-                if (t && t.name) assignedTeamNames.add(t.name.trim().toLowerCase());
+        
+        // 2. Add all teams participating in this season to map if not present, and mark as assigned
+        if (season) {
+            if (season.teams && Array.isArray(season.teams) && season.teams.length > 0) {
+                season.teams.forEach(t => {
+                    const tName = (t && t.name ? t.name : (typeof t === 'string' ? t : '')).trim();
+                    if (tName) {
+                        const key = tName.toLowerCase();
+                        if (!teamsMap.has(key)) {
+                            teamsMap.set(key, { Name: tName, Status: 'Inaktiv', ID: '' });
+                        }
+                        assignedTeamNames.add(key);
+                    }
+                });
+            }
+            if (season.matches && Array.isArray(season.matches)) {
+                season.matches.forEach(m => {
+                    ['homeTeam', 'awayTeam', 'home', 'away'].forEach(prop => {
+                        const mTeam = (m[prop] || '').trim();
+                        if (mTeam) {
+                            const key = mTeam.toLowerCase();
+                            if (!teamsMap.has(key)) {
+                                teamsMap.set(key, { Name: mTeam, Status: 'Inaktiv', ID: '' });
+                            }
+                            if (assignedTeamNames.size === 0) {
+                                assignedTeamNames.add(key);
+                            }
+                        }
+                    });
+                });
+            }
+        }
+
+        // Fallback if no teams found in season
+        if (assignedTeamNames.size === 0) {
+            (allTeams || []).filter(t => t.Status === 'Aktiv' || t.status === 'Aktiv').forEach(t => {
+                const name = (t.Name || t.name || '').trim();
+                if (name) assignedTeamNames.add(name.toLowerCase());
             });
-        } else {
-            cachedActiveTeams.forEach(t => assignedTeamNames.add((t.Name || t.name).trim().toLowerCase()));
         }
     } else {
         title.innerText = 'Liga hinzufügen';
@@ -1107,8 +1161,21 @@ const openEditModal = async (idx = null) => {
         document.getElementById('edit-league-show-homepage').checked = true;
         deleteBtn.style.display = 'none';
 
-        cachedActiveTeams.forEach(t => assignedTeamNames.add((t.Name || t.name).trim().toLowerCase()));
+        // Pre-check active teams for new leagues
+        (allTeams || []).filter(t => t.Status === 'Aktiv' || t.status === 'Aktiv').forEach(t => {
+            const name = (t.Name || t.name || '').trim();
+            if (name) assignedTeamNames.add(name.toLowerCase());
+        });
     }
+
+    cachedEligibleTeams = Array.from(teamsMap.values());
+    // Sort: Active teams first, then alphabetically
+    cachedEligibleTeams.sort((a, b) => {
+        const isActA = (a.Status === 'Aktiv' || a.status === 'Aktiv') ? 1 : 0;
+        const isActB = (b.Status === 'Aktiv' || b.status === 'Aktiv') ? 1 : 0;
+        if (isActA !== isActB) return isActB - isActA;
+        return (a.Name || '').localeCompare(b.Name || '');
+    });
 
     renderLeagueTeamsCheckboxes('');
     const teamSearch = document.getElementById('league-team-search');
@@ -1258,7 +1325,7 @@ const bindEvents = () => {
     const selectAllBtn = document.getElementById('btn-select-all-league-teams');
     if (selectAllBtn) {
         selectAllBtn.onclick = () => {
-            cachedActiveTeams.forEach(t => assignedTeamNames.add((t.Name || t.name).trim().toLowerCase()));
+            cachedEligibleTeams.forEach(t => assignedTeamNames.add((t.Name || t.name).trim().toLowerCase()));
             renderLeagueTeamsCheckboxes(document.getElementById('league-team-search')?.value || '');
         };
     }
@@ -1355,9 +1422,9 @@ const bindEvents = () => {
             }
 
             if (updatedLeague.status === 'Aktiv') {
-                const selectedTeamNames = cachedActiveTeams
-                    .map(t => t.Name || t.name)
-                    .filter(name => assignedTeamNames.has(name.trim().toLowerCase()));
+                const selectedTeamNames = cachedEligibleTeams
+                    .map(t => (t.Name || t.name || '').trim())
+                    .filter(name => name && assignedTeamNames.has(name.toLowerCase()));
                 if (selectedTeamNames.length === 0) {
                     showToast('Bitte wählen Sie mindestens ein teilnehmendes Team aus!', true);
                     return;
