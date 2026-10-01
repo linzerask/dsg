@@ -101,28 +101,63 @@ def parse_date_and_time(raw_date):
 
 def parse_events_from_td(td_html, team_name):
     events = []
-    items = re.findall(r'<img[^>]+(?:alt="([^"]+)"|src="[^"]*\/([^"\/]+)\.(?:gif|png)")[^>]*>\s*([^<]+)', td_html, flags=re.IGNORECASE)
-    for alt, src_name, player_raw in items:
-        icon_type = (alt or src_name or '').lower()
+    blocks = re.split(r'<br\s*/?>', td_html, flags=re.IGNORECASE)
+    for block in blocks:
+        block_clean = block.strip()
+        if not block_clean or block_clean == '&nbsp;': continue
+        if '<img' not in block_clean: continue
         
-        ev_type = 'goal'
-        if 'tor' in icon_type or 'goal' in icon_type:
-            ev_type = 'goal'
-        elif 'gelb-rot' in icon_type:
-            ev_type = 'yellowRed'
-        elif 'gelb' in icon_type:
-            ev_type = 'yellow'
-        elif 'rot' in icon_type:
-            ev_type = 'red'
-            
-        clean_name, minute = normalize_player_name(player_raw)
-        if clean_name and not clean_name.lower().startswith('eigentor'):
+        # Count goal icons (tor.gif or alt="tor")
+        tor_imgs = re.findall(r'<img[^>]+(?:alt="tor"|src="[^"]*\/tor\.(?:gif|png|jpg)")[^>]*>', block_clean, flags=re.IGNORECASE)
+        
+        # Count yellow-red icons (gelbrot.jpg, gelb-rot.png, alt="gelbrot", alt="gelb-rot")
+        yr_imgs = re.findall(r'<img[^>]+(?:alt="gelb-?rot"|src="[^"]*\/gelb-?rot\.(?:gif|png|jpg)")[^>]*>', block_clean, flags=re.IGNORECASE)
+        
+        # Count yellow icons (gelb.png or alt="gelb" where NOT gelbrot or gelb-rot)
+        temp_block = re.sub(r'gelb-?rot', '', block_clean, flags=re.IGNORECASE)
+        y_imgs = re.findall(r'<img[^>]+(?:alt="gelb"|src="[^"]*\/gelb\.(?:gif|png|jpg)")[^>]*>', temp_block, flags=re.IGNORECASE)
+        
+        # Count red icons (rot.png or alt="rot" where NOT gelb-rot or gelbrot)
+        r_imgs = re.findall(r'<img[^>]+(?:alt="rot"|src="[^"]*\/rot\.(?:gif|png|jpg)")[^>]*>', temp_block, flags=re.IGNORECASE)
+        
+        raw_player = clean_html(block_clean)
+        clean_name, minute = normalize_player_name(raw_player)
+        if not clean_name or clean_name.lower().startswith('eigentor'): continue
+        
+        if tor_imgs:
             events.append({
-                'type': ev_type,
+                'type': 'goal',
                 'player': clean_name,
                 'name': clean_name,
                 'team': team_name,
-                'count': 1,
+                'count': len(tor_imgs),
+                'minute': minute
+            })
+        if yr_imgs:
+            events.append({
+                'type': 'yellowRed',
+                'player': clean_name,
+                'name': clean_name,
+                'team': team_name,
+                'count': len(yr_imgs),
+                'minute': minute
+            })
+        if y_imgs:
+            events.append({
+                'type': 'yellow',
+                'player': clean_name,
+                'name': clean_name,
+                'team': team_name,
+                'count': len(y_imgs),
+                'minute': minute
+            })
+        if r_imgs:
+            events.append({
+                'type': 'red',
+                'player': clean_name,
+                'name': clean_name,
+                'team': team_name,
+                'count': len(r_imgs),
                 'minute': minute
             })
     return events
@@ -199,41 +234,48 @@ def extract_matches_and_stats(part, default_round_name, season_key, league_name,
         yr_count = 0
         
         for ev in events:
+            cnt = int(ev.get('count', 1))
             if ev['type'] == 'goal':
-                scorers.append({
-                    'name': ev['player'],
-                    'player': ev['player'],
-                    'team': ev['team'],
-                    'count': 1,
-                    'minute': ev['minute']
-                })
+                for _ in range(cnt):
+                    scorers.append({
+                        'name': ev['player'],
+                        'player': ev['player'],
+                        'team': ev['team'],
+                        'count': 1,
+                        'minute': ev['minute']
+                    })
                 # Aggregate top scorers
                 p_key = (ev['player'] + '___' + ev['team']).lower()
                 if p_key not in scorers_agg:
                     scorers_agg[p_key] = {'name': ev['player'], 'team': ev['team'], 'goals': 0}
-                scorers_agg[p_key]['goals'] += 1
+                scorers_agg[p_key]['goals'] += cnt
             else:
-                cards.append({
-                    'name': ev['player'],
-                    'player': ev['player'],
-                    'team': ev['team'],
-                    'type': ev['type'],
-                    'count': 1,
-                    'minute': ev['minute']
-                })
-                # Aggregate cards
+                for _ in range(cnt):
+                    cards.append({
+                        'name': ev['player'],
+                        'player': ev['player'],
+                        'team': ev['team'],
+                        'type': ev['type'],
+                        'count': 1,
+                        'minute': ev['minute']
+                    })
+                # Disciplinary Card Model per Rule 22:
                 p_key = (ev['player'] + '___' + ev['team']).lower()
                 if p_key not in cards_agg:
                     cards_agg[p_key] = {'name': ev['player'], 'team': ev['team'], 'yellow': 0, 'red': 0, 'yellowRed': 0, 'suspension': ''}
+                
                 if ev['type'] == 'yellow':
-                    cards_agg[p_key]['yellow'] += 1
-                    y_count += 1
-                elif ev['type'] == 'red':
-                    cards_agg[p_key]['red'] += 1
-                    r_count += 1
+                    cards_agg[p_key]['yellow'] += cnt
+                    y_count += cnt
                 elif ev['type'] == 'yellowRed':
-                    cards_agg[p_key]['yellowRed'] += 1
-                    yr_count += 1
+                    # Rule 22: Yellow-Red dismissal counts as 2 Yellows and 1 Red
+                    cards_agg[p_key]['yellow'] += (2 * cnt)
+                    cards_agg[p_key]['red'] += cnt
+                    cards_agg[p_key]['yellowRed'] += cnt
+                    yr_count += cnt
+                elif ev['type'] == 'red':
+                    cards_agg[p_key]['red'] += cnt
+                    r_count += cnt
                     
         matches.append({
             'date': date_str,

@@ -129,7 +129,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1790560032000';
+const DATA_VERSION_STRING = '?v=1790560039000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -286,7 +286,7 @@ export const Store = {
     // Clear all obsolete cache versions
     try {
       for (let i = 1; i <= 100; i++) {
-        if (i !== 73) localStorage.removeItem(`dsg_data_v${i}`);
+        if (i !== 74) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 37) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 26) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 12) localStorage.removeItem(`dsg_admin_players_v${i}`);
@@ -297,7 +297,7 @@ export const Store = {
     } catch(e) {}
 
     // Eagerly load synchronous local memory into shared singleton
-    state.memoryData = loadLocal('dsg_data', 73) || { currentSeason: "2022/2023", seasons: {} };
+    state.memoryData = loadLocal('dsg_data', 74) || { currentSeason: "2022/2023", seasons: {} };
     state.memoryNews = loadLocal('dsg_articles', 37) || sortArticles([...(INITIAL_DATA.news || [])]);
     state.memoryGallery = loadLocal('dsg_gallery', 26) || INITIAL_DATA.gallery || [];
 
@@ -348,7 +348,7 @@ export const Store = {
       if (dataSnap.exists() && dataSnap.data()?.data) {
         const fbData = dataSnap.data().data;
         const fbTime = dataSnap.data().lastUpdated || fbData.lastUpdated || 0;
-        const localData = loadLocal('dsg_data', 73);
+        const localData = loadLocal('dsg_data', 74);
         const localTime = localData?.lastUpdated || 0;
         
         // Verify that 2022/2023 has 8 teams, 56 matches, and valid cards stats
@@ -369,7 +369,7 @@ export const Store = {
           needsMigration = (localTime > fbTime);
         } else if (fbData && fbData.seasons && Object.keys(fbData.seasons).length > 0 && fbTeamsCount1 >= 8 && fbMatchesCount1 >= 56 && fbCardsCount1 >= 50 && fbTeamsCount2 >= 7 && fbMatchesCount2 >= 49 && !fbData.seasons['2022/2023_1klasse'].teams.some(t => t.name.includes('Anatolia'))) {
           state.memoryData = fbData;
-          trySetLocal('dsg_data_v73', JSON.stringify(fbData));
+          trySetLocal('dsg_data_v74', JSON.stringify(fbData));
           hasUpdates = true;
         } else {
           try {
@@ -377,7 +377,7 @@ export const Store = {
             if (res.ok) {
               const fileLiga = await res.json();
               state.memoryData = fileLiga;
-              trySetLocal('dsg_data_v73', JSON.stringify(fileLiga));
+              trySetLocal('dsg_data_v74', JSON.stringify(fileLiga));
               needsMigration = true;
               hasUpdates = true;
             }
@@ -389,12 +389,12 @@ export const Store = {
           if (res.ok) {
             const fileLiga = await res.json();
             state.memoryData = fileLiga;
-            trySetLocal('dsg_data_v73', JSON.stringify(fileLiga));
+            trySetLocal('dsg_data_v74', JSON.stringify(fileLiga));
             needsMigration = true;
             hasUpdates = true;
           }
         } catch(e) {
-          let legacyData = loadLocal('dsg_data', 73) || { currentSeason: "2022/2023", seasons: {} };
+          let legacyData = loadLocal('dsg_data', 74) || { currentSeason: "2022/2023", seasons: {} };
           state.memoryData = legacyData;
           needsMigration = true;
         }
@@ -595,7 +595,7 @@ export const Store = {
         await setDoc(galleryRef, { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v72', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_data_v74', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v37', JSON.stringify(state.memoryNews));
       trySetLocal('dsg_gallery_v26', JSON.stringify(state.memoryGallery));
 
@@ -832,11 +832,12 @@ export const Store = {
       const stats = this.getStats(season);
       match.events.forEach(ev => {
         if (ev.type === 'goal' && ev.player) {
+          const goalCount = parseInt(ev.count) || 1;
           let scorer = stats.topScorers.find(s => s.name === ev.player && s.team === ev.team);
           if (scorer) {
-            scorer.goals += 1;
+            scorer.goals += goalCount;
           } else {
-            stats.topScorers.push({ name: ev.player, team: ev.team, goals: 1 });
+            stats.topScorers.push({ name: ev.player, team: ev.team, goals: goalCount });
           }
         }
         if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red') && ev.player) {
@@ -916,9 +917,10 @@ export const Store = {
       const stats = this.getStats(season);
       match.events.forEach(ev => {
         if (ev.type === 'goal' && ev.player) {
+          const goalCount = parseInt(ev.count) || 1;
           let scorer = stats.topScorers.find(s => s.name === ev.player && s.team === ev.team);
           if (scorer) {
-            scorer.goals = Math.max(0, scorer.goals - 1);
+            scorer.goals = Math.max(0, scorer.goals - goalCount);
           }
         }
         if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red') && ev.player) {

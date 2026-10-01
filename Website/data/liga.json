@@ -333,7 +333,7 @@
               "player": "Ernst Zahrer",
               "name": "Ernst Zahrer",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -341,7 +341,7 @@
               "player": "Dominik Penninger",
               "name": "Dominik Penninger",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -349,7 +349,7 @@
               "player": "Michael Haslehner",
               "name": "Michael Haslehner",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -377,8 +377,36 @@
               "minute": ""
             },
             {
+              "name": "Ernst Zahrer",
+              "player": "Ernst Zahrer",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Ernst Zahrer",
+              "player": "Ernst Zahrer",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Dominik Penninger",
               "player": "Dominik Penninger",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Dominik Penninger",
+              "player": "Dominik Penninger",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Haslehner",
+              "player": "Michael Haslehner",
               "team": "Union Heiligenberg",
               "count": 1,
               "minute": ""
@@ -441,7 +469,7 @@
               "player": "Ante Zuljevic",
               "name": "Ante Zuljevic",
               "team": "SV Croatia Linz",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -462,6 +490,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Ante Zuljevic",
+              "player": "Ante Zuljevic",
+              "team": "SV Croatia Linz",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Ante Zuljevic",
               "player": "Ante Zuljevic",
@@ -509,7 +544,7 @@
               "player": "Philipp Zwickl",
               "name": "Philipp Zwickl",
               "team": "FC U. Schleißheim",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -538,6 +573,20 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Philipp Zwickl",
+              "player": "Philipp Zwickl",
+              "team": "FC U. Schleißheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Philipp Zwickl",
+              "player": "Philipp Zwickl",
+              "team": "FC U. Schleißheim",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Philipp Zwickl",
               "player": "Philipp Zwickl",
@@ -642,7 +691,7 @@
               "player": "Thomas Paulmair",
               "name": "Thomas Paulmair",
               "team": "DSG St. Josef/Oed FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -682,6 +731,13 @@
               "name": "Slaven Steko",
               "player": "Slaven Steko",
               "team": "SV Croatia Linz",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Thomas Paulmair",
+              "player": "Thomas Paulmair",
+              "team": "DSG St. Josef/Oed FC",
               "count": 1,
               "minute": ""
             },
@@ -774,7 +830,7 @@
               "player": "Fabian Michael Ott",
               "name": "Fabian Michael Ott",
               "team": "Union Goldwörth",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -798,7 +854,7 @@
               "player": "Peter Furtner",
               "name": "Peter Furtner",
               "team": "Union Geboltskirchen",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -806,7 +862,7 @@
               "player": "Michael Dickinger",
               "name": "Michael Dickinger",
               "team": "Union Geboltskirchen",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -835,6 +891,13 @@
               "minute": ""
             },
             {
+              "name": "Fabian Michael Ott",
+              "player": "Fabian Michael Ott",
+              "team": "Union Goldwörth",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Martin Huemer",
               "player": "Martin Huemer",
               "team": "Union Goldwörth",
@@ -844,6 +907,20 @@
             {
               "name": "Peter Furtner",
               "player": "Peter Furtner",
+              "team": "Union Geboltskirchen",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Peter Furtner",
+              "player": "Peter Furtner",
+              "team": "Union Geboltskirchen",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Dickinger",
+              "player": "Michael Dickinger",
               "team": "Union Geboltskirchen",
               "count": 1,
               "minute": ""
@@ -906,7 +983,7 @@
               "player": "Michael Haslehner",
               "name": "Michael Haslehner",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 4,
               "minute": ""
             },
             {
@@ -914,7 +991,7 @@
               "player": "Gregor Mair",
               "name": "Gregor Mair",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -938,7 +1015,7 @@
               "player": "Michael Ahammer",
               "name": "Michael Ahammer",
               "team": "FC Hinzenbach",
-              "count": 1,
+              "count": 2,
               "minute": ""
             }
           ],
@@ -946,6 +1023,34 @@
             {
               "name": "Michael Haslehner",
               "player": "Michael Haslehner",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Haslehner",
+              "player": "Michael Haslehner",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Haslehner",
+              "player": "Michael Haslehner",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Haslehner",
+              "player": "Michael Haslehner",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Gregor Mair",
+              "player": "Gregor Mair",
               "team": "Union Heiligenberg",
               "count": 1,
               "minute": ""
@@ -968,6 +1073,13 @@
               "name": "Ernst Zahrer",
               "player": "Ernst Zahrer",
               "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Ahammer",
+              "player": "Michael Ahammer",
+              "team": "FC Hinzenbach",
               "count": 1,
               "minute": ""
             },
@@ -1136,7 +1248,7 @@
               "player": "Thomas Paulmair",
               "name": "Thomas Paulmair",
               "team": "DSG St. Josef/Oed FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -1184,7 +1296,7 @@
               "player": "Roland Meindlhumer",
               "name": "Roland Meindlhumer",
               "team": "FC Hinzenbach",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -1192,7 +1304,7 @@
               "player": "Bernhard Meindlhumer",
               "name": "Bernhard Meindlhumer",
               "team": "FC Hinzenbach",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -1237,6 +1349,13 @@
               "minute": ""
             },
             {
+              "name": "Thomas Paulmair",
+              "player": "Thomas Paulmair",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Matthias Binder",
               "player": "Matthias Binder",
               "team": "DSG St. Josef/Oed FC",
@@ -1246,6 +1365,20 @@
             {
               "name": "Roland Meindlhumer",
               "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Bernhard Meindlhumer",
+              "player": "Bernhard Meindlhumer",
               "team": "FC Hinzenbach",
               "count": 1,
               "minute": ""
@@ -1346,7 +1479,7 @@
               "player": "Flavius-Samuel Petrean",
               "name": "Flavius-Samuel Petrean",
               "team": "Union Geboltskirchen",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -1391,6 +1524,20 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Flavius-Samuel Petrean",
+              "player": "Flavius-Samuel Petrean",
+              "team": "Union Geboltskirchen",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Flavius-Samuel Petrean",
+              "player": "Flavius-Samuel Petrean",
+              "team": "Union Geboltskirchen",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Flavius-Samuel Petrean",
               "player": "Flavius-Samuel Petrean",
@@ -1461,7 +1608,7 @@
               "player": "Nicolaus Steurer",
               "name": "Nicolaus Steurer",
               "team": "DSG UKJ Froschberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -1530,6 +1677,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Nicolaus Steurer",
+              "player": "Nicolaus Steurer",
+              "team": "DSG UKJ Froschberg",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Nicolaus Steurer",
               "player": "Nicolaus Steurer",
@@ -1786,7 +1940,7 @@
               "player": "Roland Meindlhumer",
               "name": "Roland Meindlhumer",
               "team": "FC Hinzenbach",
-              "count": 1,
+              "count": 7,
               "minute": ""
             },
             {
@@ -1794,7 +1948,7 @@
               "player": "Markus Jungreithmayr",
               "name": "Markus Jungreithmayr",
               "team": "FC Hinzenbach",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -1802,7 +1956,7 @@
               "player": "Bernhard Meindlhumer",
               "name": "Bernhard Meindlhumer",
               "team": "FC Hinzenbach",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -1837,8 +1991,78 @@
               "minute": ""
             },
             {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Markus Jungreithmayr",
               "player": "Markus Jungreithmayr",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Markus Jungreithmayr",
+              "player": "Markus Jungreithmayr",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Markus Jungreithmayr",
+              "player": "Markus Jungreithmayr",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Bernhard Meindlhumer",
+              "player": "Bernhard Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Bernhard Meindlhumer",
+              "player": "Bernhard Meindlhumer",
               "team": "FC Hinzenbach",
               "count": 1,
               "minute": ""
@@ -2042,7 +2266,7 @@
               "player": "Michael Dickinger",
               "name": "Michael Dickinger",
               "team": "Union Geboltskirchen",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -2082,7 +2306,7 @@
               "player": "Philipp Zwickl",
               "name": "Philipp Zwickl",
               "team": "FC U. Schleißheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -2151,6 +2375,13 @@
               "minute": ""
             },
             {
+              "name": "Michael Dickinger",
+              "player": "Michael Dickinger",
+              "team": "Union Geboltskirchen",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Narcis-Benjamin Petrean",
               "player": "Narcis-Benjamin Petrean",
               "team": "Union Geboltskirchen",
@@ -2161,6 +2392,13 @@
               "name": "David Wimmer",
               "player": "David Wimmer",
               "team": "Union Geboltskirchen",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Philipp Zwickl",
+              "player": "Philipp Zwickl",
+              "team": "FC U. Schleißheim",
               "count": 1,
               "minute": ""
             },
@@ -2306,7 +2544,7 @@
               "player": "Michael Haslehner",
               "name": "Michael Haslehner",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             }
           ],
@@ -2322,6 +2560,13 @@
               "name": "Ahmed Basic",
               "player": "Ahmed Basic",
               "team": "DSG UKJ Froschberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Haslehner",
+              "player": "Michael Haslehner",
+              "team": "Union Heiligenberg",
               "count": 1,
               "minute": ""
             },
@@ -2383,7 +2628,7 @@
               "player": "Thomas Paulmair",
               "name": "Thomas Paulmair",
               "team": "DSG St. Josef/Oed FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -2444,6 +2689,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Thomas Paulmair",
+              "player": "Thomas Paulmair",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Thomas Paulmair",
               "player": "Thomas Paulmair",
@@ -2529,7 +2781,7 @@
               "player": "Roland Meindlhumer",
               "name": "Roland Meindlhumer",
               "team": "FC Hinzenbach",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -2545,7 +2797,7 @@
               "player": "Valentin Vejic",
               "name": "Valentin Vejic",
               "team": "SV Croatia Linz",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -2565,7 +2817,7 @@
               "minute": ""
             },
             {
-              "type": "yellow",
+              "type": "yellowRed",
               "player": "Igor Vidovic",
               "name": "Igor Vidovic",
               "team": "SV Croatia Linz",
@@ -2582,9 +2834,30 @@
               "minute": ""
             },
             {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Michael Ahammer",
               "player": "Michael Ahammer",
               "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Valentin Vejic",
+              "player": "Valentin Vejic",
+              "team": "SV Croatia Linz",
               "count": 1,
               "minute": ""
             },
@@ -2617,14 +2890,14 @@
               "name": "Igor Vidovic",
               "player": "Igor Vidovic",
               "team": "SV Croatia Linz",
-              "type": "yellow",
+              "type": "yellowRed",
               "count": 1,
               "minute": ""
             }
           ],
-          "yellow": 3,
+          "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 1
         },
         {
           "date": "05.10.2022",
@@ -2678,7 +2951,7 @@
               "player": "Thomas Paulmair",
               "name": "Thomas Paulmair",
               "team": "DSG St. Josef/Oed FC",
-              "count": 1,
+              "count": 4,
               "minute": ""
             },
             {
@@ -2710,6 +2983,27 @@
               "name": "Michael Dickinger",
               "player": "Michael Dickinger",
               "team": "Union Geboltskirchen",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Thomas Paulmair",
+              "player": "Thomas Paulmair",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Thomas Paulmair",
+              "player": "Thomas Paulmair",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Thomas Paulmair",
+              "player": "Thomas Paulmair",
+              "team": "DSG St. Josef/Oed FC",
               "count": 1,
               "minute": ""
             },
@@ -3012,7 +3306,7 @@
               "player": "Roman Reisinger",
               "name": "Roman Reisinger",
               "team": "FC U. Schleißheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -3068,6 +3362,13 @@
               "name": "Martin Huemer",
               "player": "Martin Huemer",
               "team": "Union Goldwörth",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Roman Reisinger",
+              "player": "Roman Reisinger",
+              "team": "FC U. Schleißheim",
               "count": 1,
               "minute": ""
             },
@@ -3182,7 +3483,7 @@
               "player": "Gregor Mair",
               "name": "Gregor Mair",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -3190,7 +3491,7 @@
               "player": "Michael Haslehner",
               "name": "Michael Haslehner",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -3235,6 +3536,20 @@
             {
               "name": "Gregor Mair",
               "player": "Gregor Mair",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Gregor Mair",
+              "player": "Gregor Mair",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Haslehner",
+              "player": "Michael Haslehner",
               "team": "Union Heiligenberg",
               "count": 1,
               "minute": ""
@@ -3428,7 +3743,7 @@
               "player": "Ante Zuljevic",
               "name": "Ante Zuljevic",
               "team": "SV Croatia Linz",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -3489,6 +3804,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Ante Zuljevic",
+              "player": "Ante Zuljevic",
+              "team": "SV Croatia Linz",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Ante Zuljevic",
               "player": "Ante Zuljevic",
@@ -3576,7 +3898,7 @@
               "player": "Roland Meindlhumer",
               "name": "Roland Meindlhumer",
               "team": "FC Hinzenbach",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -3637,6 +3959,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Roland Meindlhumer",
               "player": "Roland Meindlhumer",
@@ -3723,7 +4052,7 @@
               "player": "Benson Hosseya",
               "name": "Benson Hosseya",
               "team": "DSG UKJ Froschberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -3735,7 +4064,7 @@
               "minute": ""
             },
             {
-              "type": "yellow",
+              "type": "yellowRed",
               "player": "Florian Boxhofer",
               "name": "Florian Boxhofer",
               "team": "DSG UKJ Froschberg",
@@ -3792,6 +4121,13 @@
               "minute": ""
             },
             {
+              "name": "Benson Hosseya",
+              "player": "Benson Hosseya",
+              "team": "DSG UKJ Froschberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Herbert Fürnschuß",
               "player": "Herbert Fürnschuß",
               "team": "FC U. Schleißheim",
@@ -3819,7 +4155,7 @@
               "name": "Florian Boxhofer",
               "player": "Florian Boxhofer",
               "team": "DSG UKJ Froschberg",
-              "type": "yellow",
+              "type": "yellowRed",
               "count": 1,
               "minute": ""
             },
@@ -3848,9 +4184,9 @@
               "minute": ""
             }
           ],
-          "yellow": 5,
+          "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 1
         },
         {
           "date": "10.06.2023",
@@ -3872,7 +4208,7 @@
               "player": "Thomas Paulmair",
               "name": "Thomas Paulmair",
               "team": "DSG St. Josef/Oed FC",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -3941,6 +4277,20 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Thomas Paulmair",
+              "player": "Thomas Paulmair",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Thomas Paulmair",
+              "player": "Thomas Paulmair",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Thomas Paulmair",
               "player": "Thomas Paulmair",
@@ -4088,7 +4438,7 @@
               "player": "Roland Meindlhumer",
               "name": "Roland Meindlhumer",
               "team": "FC Hinzenbach",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -4128,6 +4478,20 @@
               "name": "Valentino Gruber",
               "player": "Valentino Gruber",
               "team": "Union Geboltskirchen",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Roland Meindlhumer",
+              "player": "Roland Meindlhumer",
+              "team": "FC Hinzenbach",
               "count": 1,
               "minute": ""
             },
@@ -4202,7 +4566,7 @@
               "player": "Herbert Fürnschuß",
               "name": "Herbert Fürnschuß",
               "team": "FC U. Schleißheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -4210,7 +4574,7 @@
               "player": "Stefan Niederwimmer",
               "name": "Stefan Niederwimmer",
               "team": "FC U. Schleißheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -4226,6 +4590,20 @@
             {
               "name": "Herbert Fürnschuß",
               "player": "Herbert Fürnschuß",
+              "team": "FC U. Schleißheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Herbert Fürnschuß",
+              "player": "Herbert Fürnschuß",
+              "team": "FC U. Schleißheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Stefan Niederwimmer",
+              "player": "Stefan Niederwimmer",
               "team": "FC U. Schleißheim",
               "count": 1,
               "minute": ""
@@ -4270,7 +4648,7 @@
               "player": "Jure Luketina",
               "name": "Jure Luketina",
               "team": "SV Croatia Linz",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -4339,6 +4717,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Jure Luketina",
+              "player": "Jure Luketina",
+              "team": "SV Croatia Linz",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Jure Luketina",
               "player": "Jure Luketina",
@@ -4434,7 +4819,7 @@
               "player": "Patrick Wöckinger",
               "name": "Patrick Wöckinger",
               "team": "DSG UKJ Froschberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -4503,6 +4888,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Patrick Wöckinger",
+              "player": "Patrick Wöckinger",
+              "team": "DSG UKJ Froschberg",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Patrick Wöckinger",
               "player": "Patrick Wöckinger",
@@ -4598,7 +4990,7 @@
               "player": "Herbert Fürnschuß",
               "name": "Herbert Fürnschuß",
               "team": "FC U. Schleißheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -4606,7 +4998,7 @@
               "player": "Philipp Zwickl",
               "name": "Philipp Zwickl",
               "team": "FC U. Schleißheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -4622,7 +5014,7 @@
               "player": "Daniel-Gabriel Gheorghies",
               "name": "Daniel-Gabriel Gheorghies",
               "team": "Union Geboltskirchen",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -4651,6 +5043,20 @@
               "minute": ""
             },
             {
+              "name": "Herbert Fürnschuß",
+              "player": "Herbert Fürnschuß",
+              "team": "FC U. Schleißheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Philipp Zwickl",
+              "player": "Philipp Zwickl",
+              "team": "FC U. Schleißheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Philipp Zwickl",
               "player": "Philipp Zwickl",
               "team": "FC U. Schleißheim",
@@ -4661,6 +5067,13 @@
               "name": "Michael Hofmair",
               "player": "Michael Hofmair",
               "team": "FC U. Schleißheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Daniel-Gabriel Gheorghies",
+              "player": "Daniel-Gabriel Gheorghies",
+              "team": "Union Geboltskirchen",
               "count": 1,
               "minute": ""
             },
@@ -5007,7 +5420,7 @@
               "player": "Michael Haslehner",
               "name": "Michael Haslehner",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -5015,7 +5428,7 @@
               "player": "Johannes Steinbock",
               "name": "Johannes Steinbock",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -5039,7 +5452,7 @@
               "player": "Benson Hosseya",
               "name": "Benson Hosseya",
               "team": "DSG UKJ Froschberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -5076,6 +5489,20 @@
               "minute": ""
             },
             {
+              "name": "Michael Haslehner",
+              "player": "Michael Haslehner",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Johannes Steinbock",
+              "player": "Johannes Steinbock",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Johannes Steinbock",
               "player": "Johannes Steinbock",
               "team": "Union Heiligenberg",
@@ -5086,6 +5513,13 @@
               "name": "Ernst Zahrer",
               "player": "Ernst Zahrer",
               "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Benson Hosseya",
+              "player": "Benson Hosseya",
+              "team": "DSG UKJ Froschberg",
               "count": 1,
               "minute": ""
             },
@@ -5171,7 +5605,7 @@
               "player": "Michael Haslehner",
               "name": "Michael Haslehner",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 4,
               "minute": ""
             },
             {
@@ -5179,7 +5613,7 @@
               "player": "Dominik Penninger",
               "name": "Dominik Penninger",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -5210,6 +5644,41 @@
             {
               "name": "Michael Haslehner",
               "player": "Michael Haslehner",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Haslehner",
+              "player": "Michael Haslehner",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Haslehner",
+              "player": "Michael Haslehner",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Haslehner",
+              "player": "Michael Haslehner",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Dominik Penninger",
+              "player": "Dominik Penninger",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Dominik Penninger",
+              "player": "Dominik Penninger",
               "team": "Union Heiligenberg",
               "count": 1,
               "minute": ""
@@ -5573,7 +6042,7 @@
               "player": "Stjepan Jerkovic",
               "name": "Stjepan Jerkovic",
               "team": "SV Croatia Linz",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -5618,6 +6087,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Stjepan Jerkovic",
+              "player": "Stjepan Jerkovic",
+              "team": "SV Croatia Linz",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Stjepan Jerkovic",
               "player": "Stjepan Jerkovic",
@@ -5688,7 +6164,7 @@
               "player": "Fabian Michael Ott",
               "name": "Fabian Michael Ott",
               "team": "Union Goldwörth",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -5749,6 +6225,20 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Fabian Michael Ott",
+              "player": "Fabian Michael Ott",
+              "team": "Union Goldwörth",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Fabian Michael Ott",
+              "player": "Fabian Michael Ott",
+              "team": "Union Goldwörth",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Fabian Michael Ott",
               "player": "Fabian Michael Ott",
@@ -5858,7 +6348,7 @@
               "player": "Ernst Zahrer",
               "name": "Ernst Zahrer",
               "team": "Union Heiligenberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -5894,7 +6384,7 @@
               "minute": ""
             },
             {
-              "type": "yellow",
+              "type": "yellowRed",
               "player": "Salih Cömlek",
               "name": "Salih Cömlek",
               "team": "FC U. Schleißheim",
@@ -5903,6 +6393,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Ernst Zahrer",
+              "player": "Ernst Zahrer",
+              "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Ernst Zahrer",
               "player": "Ernst Zahrer",
@@ -5947,14 +6444,14 @@
               "name": "Salih Cömlek",
               "player": "Salih Cömlek",
               "team": "FC U. Schleißheim",
-              "type": "yellow",
+              "type": "yellowRed",
               "count": 1,
               "minute": ""
             }
           ],
-          "yellow": 4,
+          "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 1
         },
         {
           "date": "17.05.2023",
@@ -6014,7 +6511,7 @@
               "player": "Markus Jungreithmayr",
               "name": "Markus Jungreithmayr",
               "team": "FC Hinzenbach",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -6022,7 +6519,7 @@
               "player": "Tobias Pointner",
               "name": "Tobias Pointner",
               "team": "FC Hinzenbach",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -6062,6 +6559,20 @@
             {
               "name": "Markus Jungreithmayr",
               "player": "Markus Jungreithmayr",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Markus Jungreithmayr",
+              "player": "Markus Jungreithmayr",
+              "team": "FC Hinzenbach",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Tobias Pointner",
+              "player": "Tobias Pointner",
               "team": "FC Hinzenbach",
               "count": 1,
               "minute": ""
@@ -6162,7 +6673,7 @@
               "player": "Haris Balihodzic",
               "name": "Haris Balihodzic",
               "team": "DSG St. Josef/Oed FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -6186,6 +6697,13 @@
               "name": "Dominik Penninger",
               "player": "Dominik Penninger",
               "team": "Union Heiligenberg",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Haris Balihodzic",
+              "player": "Haris Balihodzic",
+              "team": "DSG St. Josef/Oed FC",
               "count": 1,
               "minute": ""
             },
@@ -6246,7 +6764,7 @@
               "player": "Valentin Vejic",
               "name": "Valentin Vejic",
               "team": "SV Croatia Linz",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -6254,7 +6772,7 @@
               "player": "Jure Luketina",
               "name": "Jure Luketina",
               "team": "SV Croatia Linz",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -6286,6 +6804,20 @@
             {
               "name": "Valentin Vejic",
               "player": "Valentin Vejic",
+              "team": "SV Croatia Linz",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Valentin Vejic",
+              "player": "Valentin Vejic",
+              "team": "SV Croatia Linz",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Jure Luketina",
+              "player": "Jure Luketina",
               "team": "SV Croatia Linz",
               "count": 1,
               "minute": ""
@@ -6493,7 +7025,7 @@
               "player": "Thomas Paulmair",
               "name": "Thomas Paulmair",
               "team": "DSG St. Josef/Oed FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -6526,6 +7058,13 @@
               "name": "Tobias Pommermayr",
               "player": "Tobias Pommermayr",
               "team": "Union Goldwörth",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Thomas Paulmair",
+              "player": "Thomas Paulmair",
+              "team": "DSG St. Josef/Oed FC",
               "count": 1,
               "minute": ""
             },
@@ -6590,456 +7129,456 @@
           {
             "name": "Michael Haslehner",
             "team": "Union Heiligenberg",
-            "goals": 11,
+            "goals": 21,
             "rank": 1
           },
           {
             "name": "Thomas Paulmair",
             "team": "DSG St. Josef/Oed FC",
-            "goals": 11,
+            "goals": 20,
             "rank": 2
           },
           {
-            "name": "Herbert Fürnschuß",
-            "team": "FC U. Schleißheim",
-            "goals": 8,
+            "name": "Roland Meindlhumer",
+            "team": "FC Hinzenbach",
+            "goals": 18,
             "rank": 3
           },
           {
             "name": "Ernst Zahrer",
             "team": "Union Heiligenberg",
-            "goals": 7,
+            "goals": 10,
             "rank": 4
           },
           {
-            "name": "Roland Meindlhumer",
-            "team": "FC Hinzenbach",
-            "goals": 6,
+            "name": "Herbert Fürnschuß",
+            "team": "FC U. Schleißheim",
+            "goals": 10,
             "rank": 5
           },
           {
-            "name": "Michael Dickinger",
-            "team": "Union Geboltskirchen",
-            "goals": 5,
+            "name": "Philipp Zwickl",
+            "team": "FC U. Schleißheim",
+            "goals": 9,
             "rank": 6
           },
           {
             "name": "Dominik Penninger",
             "team": "Union Heiligenberg",
-            "goals": 5,
+            "goals": 8,
             "rank": 7
-          },
-          {
-            "name": "Leonardo Glavas",
-            "team": "SV Croatia Linz",
-            "goals": 5,
-            "rank": 8
-          },
-          {
-            "name": "Philipp Zwickl",
-            "team": "FC U. Schleißheim",
-            "goals": 5,
-            "rank": 9
-          },
-          {
-            "name": "Slaven Steko",
-            "team": "SV Croatia Linz",
-            "goals": 5,
-            "rank": 10
           },
           {
             "name": "Bernhard Meindlhumer",
             "team": "FC Hinzenbach",
-            "goals": 5,
-            "rank": 11
+            "goals": 8,
+            "rank": 8
+          },
+          {
+            "name": "Michael Dickinger",
+            "team": "Union Geboltskirchen",
+            "goals": 7,
+            "rank": 9
+          },
+          {
+            "name": "Markus Jungreithmayr",
+            "team": "FC Hinzenbach",
+            "goals": 7,
+            "rank": 10
           },
           {
             "name": "Valentin Vejic",
+            "team": "SV Croatia Linz",
+            "goals": 7,
+            "rank": 11
+          },
+          {
+            "name": "Ante Zuljevic",
             "team": "SV Croatia Linz",
             "goals": 5,
             "rank": 12
           },
           {
-            "name": "Michael Hofmair",
-            "team": "FC U. Schleißheim",
-            "goals": 4,
+            "name": "Leonardo Glavas",
+            "team": "SV Croatia Linz",
+            "goals": 5,
             "rank": 13
           },
           {
-            "name": "Markus Jungreithmayr",
-            "team": "FC Hinzenbach",
-            "goals": 4,
+            "name": "Slaven Steko",
+            "team": "SV Croatia Linz",
+            "goals": 5,
             "rank": 14
+          },
+          {
+            "name": "Fabian Michael Ott",
+            "team": "Union Goldwörth",
+            "goals": 5,
+            "rank": 15
+          },
+          {
+            "name": "Gregor Mair",
+            "team": "Union Heiligenberg",
+            "goals": 5,
+            "rank": 16
           },
           {
             "name": "Johannes Steinbock",
             "team": "Union Heiligenberg",
-            "goals": 4,
-            "rank": 15
+            "goals": 5,
+            "rank": 17
           },
           {
-            "name": "Ante Zuljevic",
+            "name": "Jure Luketina",
             "team": "SV Croatia Linz",
-            "goals": 3,
-            "rank": 16
+            "goals": 5,
+            "rank": 18
+          },
+          {
+            "name": "Michael Hofmair",
+            "team": "FC U. Schleißheim",
+            "goals": 4,
+            "rank": 19
+          },
+          {
+            "name": "Peter Furtner",
+            "team": "Union Geboltskirchen",
+            "goals": 4,
+            "rank": 20
+          },
+          {
+            "name": "Patrick Wöckinger",
+            "team": "DSG UKJ Froschberg",
+            "goals": 4,
+            "rank": 21
+          },
+          {
+            "name": "Benson Hosseya",
+            "team": "DSG UKJ Froschberg",
+            "goals": 4,
+            "rank": 22
           },
           {
             "name": "Salih Cömlek",
             "team": "FC U. Schleißheim",
             "goals": 3,
-            "rank": 17
-          },
-          {
-            "name": "Martin Huemer",
-            "team": "Union Goldwörth",
-            "goals": 3,
-            "rank": 18
-          },
-          {
-            "name": "Peter Furtner",
-            "team": "Union Geboltskirchen",
-            "goals": 3,
-            "rank": 19
-          },
-          {
-            "name": "Gregor Mair",
-            "team": "Union Heiligenberg",
-            "goals": 3,
-            "rank": 20
-          },
-          {
-            "name": "Narcis-Benjamin Petrean",
-            "team": "Union Geboltskirchen",
-            "goals": 3,
-            "rank": 21
-          },
-          {
-            "name": "Patrick Wöckinger",
-            "team": "DSG UKJ Froschberg",
-            "goals": 3,
-            "rank": 22
-          },
-          {
-            "name": "Jure Luketina",
-            "team": "SV Croatia Linz",
-            "goals": 3,
             "rank": 23
           },
           {
-            "name": "Manuel Stadler",
+            "name": "Haris Balihodzic",
             "team": "DSG St. Josef/Oed FC",
             "goals": 3,
             "rank": 24
           },
           {
-            "name": "Haris Balihodzic",
-            "team": "DSG St. Josef/Oed FC",
-            "goals": 2,
+            "name": "Martin Huemer",
+            "team": "Union Goldwörth",
+            "goals": 3,
             "rank": 25
           },
           {
-            "name": "Fabian Michael Ott",
-            "team": "Union Goldwörth",
-            "goals": 2,
+            "name": "Michael Ahammer",
+            "team": "FC Hinzenbach",
+            "goals": 3,
             "rank": 26
+          },
+          {
+            "name": "Tobias Pointner",
+            "team": "FC Hinzenbach",
+            "goals": 3,
+            "rank": 27
+          },
+          {
+            "name": "Flavius-Samuel Petrean",
+            "team": "Union Geboltskirchen",
+            "goals": 3,
+            "rank": 28
+          },
+          {
+            "name": "Narcis-Benjamin Petrean",
+            "team": "Union Geboltskirchen",
+            "goals": 3,
+            "rank": 29
+          },
+          {
+            "name": "Stjepan Jerkovic",
+            "team": "SV Croatia Linz",
+            "goals": 3,
+            "rank": 30
+          },
+          {
+            "name": "Stefan Niederwimmer",
+            "team": "FC U. Schleißheim",
+            "goals": 3,
+            "rank": 31
+          },
+          {
+            "name": "Manuel Stadler",
+            "team": "DSG St. Josef/Oed FC",
+            "goals": 3,
+            "rank": 32
           },
           {
             "name": "Paul Steininger",
             "team": "Union Heiligenberg",
             "goals": 2,
-            "rank": 27
-          },
-          {
-            "name": "Michael Ahammer",
-            "team": "FC Hinzenbach",
-            "goals": 2,
-            "rank": 28
+            "rank": 33
           },
           {
             "name": "Matthias Binder",
             "team": "DSG St. Josef/Oed FC",
             "goals": 2,
-            "rank": 29
-          },
-          {
-            "name": "Tobias Pointner",
-            "team": "FC Hinzenbach",
-            "goals": 2,
-            "rank": 30
+            "rank": 34
           },
           {
             "name": "Martin Gubo",
             "team": "FC Hinzenbach",
             "goals": 2,
-            "rank": 31
-          },
-          {
-            "name": "Fabian Grünberger",
-            "team": "Union Goldwörth",
-            "goals": 2,
-            "rank": 32
-          },
-          {
-            "name": "Jörg Fuhrmann",
-            "team": "DSG St. Josef/Oed FC",
-            "goals": 2,
-            "rank": 33
-          },
-          {
-            "name": "Ivan Puljic",
-            "team": "SV Croatia Linz",
-            "goals": 2,
-            "rank": 34
-          },
-          {
-            "name": "Stjepan Jerkovic",
-            "team": "SV Croatia Linz",
-            "goals": 2,
             "rank": 35
           },
           {
-            "name": "Benson Hosseya",
+            "name": "Nicolaus Steurer",
             "team": "DSG UKJ Froschberg",
             "goals": 2,
             "rank": 36
           },
           {
-            "name": "Stefan Niederwimmer",
-            "team": "FC U. Schleißheim",
+            "name": "Fabian Grünberger",
+            "team": "Union Goldwörth",
             "goals": 2,
             "rank": 37
           },
           {
-            "name": "Kevin Schneider",
+            "name": "Jörg Fuhrmann",
             "team": "DSG St. Josef/Oed FC",
             "goals": 2,
             "rank": 38
           },
           {
+            "name": "Ivan Puljic",
+            "team": "SV Croatia Linz",
+            "goals": 2,
+            "rank": 39
+          },
+          {
+            "name": "Roman Reisinger",
+            "team": "FC U. Schleißheim",
+            "goals": 2,
+            "rank": 40
+          },
+          {
+            "name": "Kevin Schneider",
+            "team": "DSG St. Josef/Oed FC",
+            "goals": 2,
+            "rank": 41
+          },
+          {
             "name": "Valentino Gruber",
             "team": "Union Geboltskirchen",
             "goals": 2,
-            "rank": 39
+            "rank": 42
+          },
+          {
+            "name": "Daniel-Gabriel Gheorghies",
+            "team": "Union Geboltskirchen",
+            "goals": 2,
+            "rank": 43
           },
           {
             "name": "Anto Marcinkovic",
             "team": "SV Croatia Linz",
             "goals": 2,
-            "rank": 40
+            "rank": 44
           },
           {
             "name": "Tobias Pommermayr",
             "team": "Union Goldwörth",
             "goals": 2,
-            "rank": 41
+            "rank": 45
           },
           {
             "name": "Emre Karakaya",
             "team": "DSG UKJ Froschberg",
             "goals": 1,
-            "rank": 42
+            "rank": 46
           },
           {
             "name": "Klemens Leitner",
             "team": "DSG UKJ Froschberg",
             "goals": 1,
-            "rank": 43
+            "rank": 47
           },
           {
             "name": "Anton Krajina",
             "team": "SV Croatia Linz",
             "goals": 1,
-            "rank": 44
+            "rank": 48
           },
           {
             "name": "Marijo Sipura",
             "team": "FC U. Schleißheim",
             "goals": 1,
-            "rank": 45
+            "rank": 49
           },
           {
             "name": "Simon Penninger",
             "team": "Union Heiligenberg",
             "goals": 1,
-            "rank": 46
-          },
-          {
-            "name": "Flavius-Samuel Petrean",
-            "team": "Union Geboltskirchen",
-            "goals": 1,
-            "rank": 47
-          },
-          {
-            "name": "Nicolaus Steurer",
-            "team": "DSG UKJ Froschberg",
-            "goals": 1,
-            "rank": 48
+            "rank": 50
           },
           {
             "name": "Christian Fröstl",
             "team": "DSG UKJ Froschberg",
             "goals": 1,
-            "rank": 49
+            "rank": 51
           },
           {
             "name": "Florian Kubouschek",
             "team": "Union Goldwörth",
             "goals": 1,
-            "rank": 50
+            "rank": 52
           },
           {
             "name": "Robert Priglinger",
             "team": "Union Goldwörth",
             "goals": 1,
-            "rank": 51
+            "rank": 53
           },
           {
             "name": "David Wimmer",
             "team": "Union Geboltskirchen",
             "goals": 1,
-            "rank": 52
+            "rank": 54
           },
           {
             "name": "Severin Kreilhuber",
             "team": "FC U. Schleißheim",
             "goals": 1,
-            "rank": 53
+            "rank": 55
           },
           {
             "name": "Kenan Basic",
             "team": "DSG UKJ Froschberg",
             "goals": 1,
-            "rank": 54
+            "rank": 56
           },
           {
             "name": "Ahmed Basic",
             "team": "DSG UKJ Froschberg",
             "goals": 1,
-            "rank": 55
+            "rank": 57
           },
           {
             "name": "Manuel Märzinger",
             "team": "DSG St. Josef/Oed FC",
             "goals": 1,
-            "rank": 56
+            "rank": 58
           },
           {
             "name": "Clemens Rössler",
             "team": "DSG St. Josef/Oed FC",
             "goals": 1,
-            "rank": 57
+            "rank": 59
           },
           {
             "name": "Andreas Glatz",
             "team": "Union Goldwörth",
             "goals": 1,
-            "rank": 58
+            "rank": 60
           },
           {
             "name": "Thomas Außerwöger",
             "team": "Union Goldwörth",
             "goals": 1,
-            "rank": 59
+            "rank": 61
           },
           {
             "name": "Lukas Lackner",
             "team": "Union Goldwörth",
             "goals": 1,
-            "rank": 60
+            "rank": 62
           },
           {
             "name": "Philipp Geiblinger",
             "team": "DSG UKJ Froschberg",
             "goals": 1,
-            "rank": 61
+            "rank": 63
           },
           {
             "name": "Murat Yildiz",
             "team": "DSG UKJ Froschberg",
             "goals": 1,
-            "rank": 62
+            "rank": 64
           },
           {
             "name": "Florian Bötscher",
             "team": "Union Goldwörth",
             "goals": 1,
-            "rank": 63
-          },
-          {
-            "name": "Roman Reisinger",
-            "team": "FC U. Schleißheim",
-            "goals": 1,
-            "rank": 64
+            "rank": 65
           },
           {
             "name": "Gerard Pührer",
             "team": "FC U. Schleißheim",
             "goals": 1,
-            "rank": 65
+            "rank": 66
           },
           {
             "name": "Florian Staudinger",
             "team": "DSG St. Josef/Oed FC",
             "goals": 1,
-            "rank": 66
+            "rank": 67
           },
           {
             "name": "Stefan Amering",
             "team": "FC Hinzenbach",
             "goals": 1,
-            "rank": 67
+            "rank": 68
           },
           {
             "name": "Daniel Dobner",
             "team": "Union Geboltskirchen",
             "goals": 1,
-            "rank": 68
+            "rank": 69
           },
           {
             "name": "Almir Suvalic",
             "team": "DSG UKJ Froschberg",
             "goals": 1,
-            "rank": 69
+            "rank": 70
           },
           {
             "name": "Josip II Budimir",
             "team": "SV Croatia Linz",
             "goals": 1,
-            "rank": 70
+            "rank": 71
           },
           {
             "name": "Domagoj Simunovic",
             "team": "SV Croatia Linz",
             "goals": 1,
-            "rank": 71
+            "rank": 72
           },
           {
             "name": "Michael Kaimberger",
             "team": "FC Hinzenbach",
             "goals": 1,
-            "rank": 72
+            "rank": 73
           },
           {
             "name": "Jürgen Thaller",
             "team": "FC U. Schleißheim",
             "goals": 1,
-            "rank": 73
+            "rank": 74
           },
           {
             "name": "Paul Haindl",
             "team": "DSG St. Josef/Oed FC",
             "goals": 1,
-            "rank": 74
+            "rank": 75
           },
           {
             "name": "Wolfgang Krendl",
             "team": "DSG St. Josef/Oed FC",
-            "goals": 1,
-            "rank": 75
-          },
-          {
-            "name": "Daniel-Gabriel Gheorghies",
-            "team": "Union Geboltskirchen",
             "goals": 1,
             "rank": 76
           },
@@ -7118,13 +7657,40 @@
         ],
         "cards": [
           {
+            "name": "Igor Vidovic",
+            "team": "SV Croatia Linz",
+            "yellow": 4,
+            "red": 1,
+            "yellowRed": 1,
+            "suspension": "",
+            "rank": 1
+          },
+          {
+            "name": "Salih Cömlek",
+            "team": "FC U. Schleißheim",
+            "yellow": 3,
+            "red": 1,
+            "yellowRed": 1,
+            "suspension": "",
+            "rank": 2
+          },
+          {
+            "name": "Florian Boxhofer",
+            "team": "DSG UKJ Froschberg",
+            "yellow": 2,
+            "red": 1,
+            "yellowRed": 1,
+            "suspension": "",
+            "rank": 3
+          },
+          {
             "name": "Dominik Wittinghofer",
             "team": "DSG St. Josef/Oed FC",
             "yellow": 1,
             "red": 1,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 1
+            "rank": 4
           },
           {
             "name": "Ramadan Karakaya",
@@ -7133,7 +7699,7 @@
             "red": 1,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 2
+            "rank": 5
           },
           {
             "name": "Clemens Rössler",
@@ -7142,7 +7708,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 3
+            "rank": 6
           },
           {
             "name": "Peter Furtner",
@@ -7151,7 +7717,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 4
+            "rank": 7
           },
           {
             "name": "Anton Krajina",
@@ -7160,7 +7726,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 5
+            "rank": 8
           },
           {
             "name": "Valentin Vejic",
@@ -7169,16 +7735,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 6
-          },
-          {
-            "name": "Igor Vidovic",
-            "team": "SV Croatia Linz",
-            "yellow": 3,
-            "red": 0,
-            "yellowRed": 0,
-            "suspension": "",
-            "rank": 7
+            "rank": 9
           },
           {
             "name": "Josip Zuljevic",
@@ -7187,7 +7744,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 8
+            "rank": 10
           },
           {
             "name": "Michael Hofmair",
@@ -7196,7 +7753,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 9
+            "rank": 11
           },
           {
             "name": "Gregor Mair",
@@ -7205,7 +7762,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 10
+            "rank": 12
           },
           {
             "name": "Stefan Woschitz",
@@ -7214,7 +7771,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 11
+            "rank": 13
           },
           {
             "name": "Markus Diesenberger",
@@ -7223,7 +7780,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 12
+            "rank": 14
           },
           {
             "name": "Michael Kaimberger",
@@ -7232,7 +7789,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 13
+            "rank": 15
           },
           {
             "name": "Thomas Paulmair",
@@ -7241,7 +7798,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 14
+            "rank": 16
           },
           {
             "name": "Stjepan Jerkovic",
@@ -7250,7 +7807,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 15
+            "rank": 17
           },
           {
             "name": "Daniel Leeb",
@@ -7259,7 +7816,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 16
+            "rank": 18
           },
           {
             "name": "Gerard Pührer",
@@ -7268,7 +7825,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 17
+            "rank": 19
           },
           {
             "name": "Lukas Alexander Wimmer",
@@ -7277,7 +7834,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 18
+            "rank": 20
           },
           {
             "name": "Simon Penninger",
@@ -7286,7 +7843,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 19
+            "rank": 21
           },
           {
             "name": "Jetlir Bytyci",
@@ -7295,7 +7852,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 20
+            "rank": 22
           },
           {
             "name": "Benedict Humer",
@@ -7304,7 +7861,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 21
+            "rank": 23
           },
           {
             "name": "Manuel Märzinger",
@@ -7313,7 +7870,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 22
+            "rank": 24
           },
           {
             "name": "Florian Berger",
@@ -7322,7 +7879,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 23
+            "rank": 25
           },
           {
             "name": "Christian Fröstl",
@@ -7331,7 +7888,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 24
+            "rank": 26
           },
           {
             "name": "Vasile Calini",
@@ -7340,7 +7897,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 25
+            "rank": 27
           },
           {
             "name": "Dominik Steiner",
@@ -7349,7 +7906,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 26
+            "rank": 28
           },
           {
             "name": "Stefan Niederwimmer",
@@ -7358,7 +7915,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 27
+            "rank": 29
           },
           {
             "name": "Daniel Dobner",
@@ -7367,7 +7924,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 28
+            "rank": 30
           },
           {
             "name": "Roman Reisinger",
@@ -7376,16 +7933,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 29
-          },
-          {
-            "name": "Salih Cömlek",
-            "team": "FC U. Schleißheim",
-            "yellow": 2,
-            "red": 0,
-            "yellowRed": 0,
-            "suspension": "",
-            "rank": 30
+            "rank": 31
           },
           {
             "name": "Philipp Geiblinger",
@@ -7394,7 +7942,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 31
+            "rank": 32
           },
           {
             "name": "Ante Zuljevic",
@@ -7403,7 +7951,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 32
+            "rank": 33
           },
           {
             "name": "David Wimmer",
@@ -7412,7 +7960,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 33
+            "rank": 34
           },
           {
             "name": "Kevin Tiepelt",
@@ -7421,7 +7969,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 34
+            "rank": 35
           },
           {
             "name": "Philipp Zwickl",
@@ -7430,7 +7978,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 35
+            "rank": 36
           },
           {
             "name": "Michael Pehamberger",
@@ -7439,7 +7987,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 36
+            "rank": 37
           },
           {
             "name": "Patrick Wöckinger",
@@ -7448,7 +7996,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 37
+            "rank": 38
           },
           {
             "name": "Felix Trinkfass",
@@ -7457,7 +8005,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 38
+            "rank": 39
           },
           {
             "name": "Stefan Amering",
@@ -7466,7 +8014,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 39
+            "rank": 40
           },
           {
             "name": "Robert Mitter",
@@ -7475,7 +8023,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 40
+            "rank": 41
           },
           {
             "name": "Jürgen Thaller",
@@ -7484,7 +8032,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 41
+            "rank": 42
           },
           {
             "name": "Haris Balihodzic",
@@ -7493,7 +8041,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 42
+            "rank": 43
           },
           {
             "name": "Florian Trefflinger",
@@ -7502,7 +8050,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 43
+            "rank": 44
           },
           {
             "name": "Alexander Gruber",
@@ -7511,7 +8059,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 44
+            "rank": 45
           },
           {
             "name": "Florian Staudinger",
@@ -7520,7 +8068,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 45
+            "rank": 46
           },
           {
             "name": "Michael Ahammer",
@@ -7529,7 +8077,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 46
+            "rank": 47
           },
           {
             "name": "Andreas Glatz",
@@ -7538,7 +8086,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 47
+            "rank": 48
           },
           {
             "name": "Michael Haslehner",
@@ -7547,7 +8095,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 48
+            "rank": 49
           },
           {
             "name": "Samuel Jenner",
@@ -7556,7 +8104,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 49
+            "rank": 50
           },
           {
             "name": "Erwin Reisenberger",
@@ -7565,7 +8113,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 50
+            "rank": 51
           },
           {
             "name": "Martin Gubo",
@@ -7574,7 +8122,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 51
+            "rank": 52
           },
           {
             "name": "Günter Weiss",
@@ -7583,7 +8131,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 52
+            "rank": 53
           },
           {
             "name": "Martin Huemer",
@@ -7592,7 +8140,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 53
+            "rank": 54
           },
           {
             "name": "Florian Norbert Wiesinger",
@@ -7601,7 +8149,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 54
+            "rank": 55
           },
           {
             "name": "Ivan Andjelic",
@@ -7610,7 +8158,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 55
+            "rank": 56
           },
           {
             "name": "Tomislav Zuljevic",
@@ -7619,7 +8167,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 56
+            "rank": 57
           },
           {
             "name": "Milos Jelic",
@@ -7628,7 +8176,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 57
+            "rank": 58
           },
           {
             "name": "Jakob Bötscher",
@@ -7637,7 +8185,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 58
+            "rank": 59
           },
           {
             "name": "Wolfgang Lehner",
@@ -7646,7 +8194,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 59
+            "rank": 60
           },
           {
             "name": "Christian Greifeneder",
@@ -7655,7 +8203,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 60
+            "rank": 61
           },
           {
             "name": "Ahmed Basic",
@@ -7664,7 +8212,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 61
+            "rank": 62
           },
           {
             "name": "Murat Yildiz",
@@ -7673,7 +8221,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 62
+            "rank": 63
           },
           {
             "name": "Michael Benda",
@@ -7682,19 +8230,10 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 63
-          },
-          {
-            "name": "Klemens Leitner",
-            "team": "DSG UKJ Froschberg",
-            "yellow": 1,
-            "red": 0,
-            "yellowRed": 0,
-            "suspension": "",
             "rank": 64
           },
           {
-            "name": "Florian Boxhofer",
+            "name": "Klemens Leitner",
             "team": "DSG UKJ Froschberg",
             "yellow": 1,
             "red": 0,
@@ -8023,7 +8562,7 @@
               "player": "Alexander Walter",
               "name": "Alexander Walter",
               "team": "DSG Union Traun",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -8100,6 +8639,20 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Alexander Walter",
+              "player": "Alexander Walter",
+              "team": "DSG Union Traun",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Alexander Walter",
+              "player": "Alexander Walter",
+              "team": "DSG Union Traun",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Alexander Walter",
               "player": "Alexander Walter",
@@ -8468,7 +9021,7 @@
               "minute": ""
             },
             {
-              "type": "yellow",
+              "type": "yellowRed",
               "player": "Alexander Gfellner",
               "name": "Alexander Gfellner",
               "team": "Union Eschenau",
@@ -8583,14 +9136,14 @@
               "name": "Alexander Gfellner",
               "player": "Alexander Gfellner",
               "team": "Union Eschenau",
-              "type": "yellow",
+              "type": "yellowRed",
               "count": 1,
               "minute": ""
             }
           ],
-          "yellow": 10,
+          "yellow": 9,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 1
         },
         {
           "date": "02.09.2022",
@@ -8785,7 +9338,7 @@
               "player": "Zia Ghaderi",
               "name": "Zia Ghaderi",
               "team": "DSG Auberg",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -8839,6 +9392,13 @@
               "name": "Marco Braumann",
               "player": "Marco Braumann",
               "team": "Union Eschenau",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Zia Ghaderi",
+              "player": "Zia Ghaderi",
+              "team": "DSG Auberg",
               "count": 1,
               "minute": ""
             },
@@ -8923,7 +9483,7 @@
               "player": "Aaron Außermair",
               "name": "Aaron Außermair",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -8931,7 +9491,7 @@
               "player": "Igor Anusic",
               "name": "Igor Anusic",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -8963,7 +9523,7 @@
               "player": "Nikola Zivojinovic",
               "name": "Nikola Zivojinovic",
               "team": "FC Gornjak",
-              "count": 1,
+              "count": 2,
               "minute": ""
             }
           ],
@@ -8971,6 +9531,20 @@
             {
               "name": "Aaron Außermair",
               "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Aaron Außermair",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Igor Anusic",
+              "player": "Igor Anusic",
               "team": "DSG Thalheim",
               "count": 1,
               "minute": ""
@@ -9000,6 +9574,13 @@
               "name": "Georg Gottinger",
               "player": "Georg Gottinger",
               "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Nikola Zivojinovic",
+              "player": "Nikola Zivojinovic",
+              "team": "FC Gornjak",
               "count": 1,
               "minute": ""
             },
@@ -9089,7 +9670,7 @@
               "player": "Alexander Gfellner",
               "name": "Alexander Gfellner",
               "team": "Union Eschenau",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -9122,6 +9703,13 @@
               "name": "René Pacher",
               "player": "René Pacher",
               "team": "DSG Union Traun",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Alexander Gfellner",
+              "player": "Alexander Gfellner",
+              "team": "Union Eschenau",
               "count": 1,
               "minute": ""
             },
@@ -9476,7 +10064,7 @@
               "player": "Alexander Walter",
               "name": "Alexander Walter",
               "team": "DSG Union Traun",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -9540,7 +10128,7 @@
               "player": "Florian Rebhandl",
               "name": "Florian Rebhandl",
               "team": "Walker FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -9548,7 +10136,7 @@
               "player": "Felix Halder",
               "name": "Felix Halder",
               "team": "Walker FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -9601,6 +10189,20 @@
               "minute": ""
             },
             {
+              "name": "Alexander Walter",
+              "player": "Alexander Walter",
+              "team": "DSG Union Traun",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Alexander Walter",
+              "player": "Alexander Walter",
+              "team": "DSG Union Traun",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Fatih Odabas",
               "player": "Fatih Odabas",
               "team": "DSG Union Traun",
@@ -9610,6 +10212,20 @@
             {
               "name": "Florian Rebhandl",
               "player": "Florian Rebhandl",
+              "team": "Walker FC",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Florian Rebhandl",
+              "player": "Florian Rebhandl",
+              "team": "Walker FC",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Felix Halder",
+              "player": "Felix Halder",
               "team": "Walker FC",
               "count": 1,
               "minute": ""
@@ -9733,7 +10349,7 @@
               "player": "Markus Kalakovic",
               "name": "Markus Kalakovic",
               "team": "FC Gornjak",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -9754,6 +10370,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Markus Kalakovic",
+              "player": "Markus Kalakovic",
+              "team": "FC Gornjak",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Markus Kalakovic",
               "player": "Markus Kalakovic",
@@ -9803,7 +10426,7 @@
               "player": "Aaron Außermair",
               "name": "Aaron Außermair",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -9848,6 +10471,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Aaron Außermair",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Aaron Außermair",
               "player": "Aaron Außermair",
@@ -9997,7 +10627,7 @@
               "minute": ""
             },
             {
-              "type": "yellow",
+              "type": "yellowRed",
               "player": "Nikola Zivojinovic",
               "name": "Nikola Zivojinovic",
               "team": "FC Gornjak",
@@ -10074,14 +10704,14 @@
               "name": "Nikola Zivojinovic",
               "player": "Nikola Zivojinovic",
               "team": "FC Gornjak",
-              "type": "yellow",
+              "type": "yellowRed",
               "count": 1,
               "minute": ""
             }
           ],
-          "yellow": 7,
+          "yellow": 6,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 1
         },
         {
           "date": "01.10.2022",
@@ -10242,7 +10872,7 @@
               "player": "Taha Güler",
               "name": "Taha Güler",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -10263,6 +10893,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Taha Güler",
+              "player": "Taha Güler",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Taha Güler",
               "player": "Taha Güler",
@@ -10501,7 +11138,7 @@
               "minute": ""
             },
             {
-              "type": "yellow",
+              "type": "yellowRed",
               "player": "Dalibor Beric",
               "name": "Dalibor Beric",
               "team": "FC Gornjak",
@@ -10517,7 +11154,7 @@
               "minute": ""
             },
             {
-              "type": "yellow",
+              "type": "yellowRed",
               "player": "Dominik Pfannhauser",
               "name": "Dominik Pfannhauser",
               "team": "Walker FC",
@@ -10554,7 +11191,7 @@
               "name": "Dalibor Beric",
               "player": "Dalibor Beric",
               "team": "FC Gornjak",
-              "type": "yellow",
+              "type": "yellowRed",
               "count": 1,
               "minute": ""
             },
@@ -10562,14 +11199,14 @@
               "name": "Dominik Pfannhauser",
               "player": "Dominik Pfannhauser",
               "team": "Walker FC",
-              "type": "yellow",
+              "type": "yellowRed",
               "count": 1,
               "minute": ""
             }
           ],
-          "yellow": 3,
+          "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 2
         },
         {
           "date": "08.10.2022",
@@ -10712,7 +11349,7 @@
               "player": "René Pacher",
               "name": "René Pacher",
               "team": "DSG Union Traun",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -10744,7 +11381,7 @@
               "player": "Vladica Petrovic",
               "name": "Vladica Petrovic",
               "team": "FC Gornjak",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -10773,6 +11410,13 @@
               "minute": ""
             },
             {
+              "name": "René Pacher",
+              "player": "René Pacher",
+              "team": "DSG Union Traun",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Daniel Kirchmayr",
               "player": "Daniel Kirchmayr",
               "team": "DSG Union Traun",
@@ -10783,6 +11427,13 @@
               "name": "Andreas Walter-Raab",
               "player": "Andreas Walter-Raab",
               "team": "DSG Union Traun",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Vladica Petrovic",
+              "player": "Vladica Petrovic",
+              "team": "FC Gornjak",
               "count": 1,
               "minute": ""
             },
@@ -10898,7 +11549,7 @@
               "player": "Avduramon Saciri",
               "name": "Avduramon Saciri",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -10953,6 +11604,13 @@
               "name": "Simon Wenzl",
               "player": "Simon Wenzl",
               "team": "Union Eschenau",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Avduramon Saciri",
+              "player": "Avduramon Saciri",
+              "team": "DSG Thalheim",
               "count": 1,
               "minute": ""
             },
@@ -11317,7 +11975,7 @@
               "player": "Daniel Auer",
               "name": "Daniel Auer",
               "team": "Union Eschenau",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -11325,7 +11983,7 @@
               "player": "Christopher Ratzenböck",
               "name": "Christopher Ratzenböck",
               "team": "Union Eschenau",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -11333,7 +11991,7 @@
               "player": "Mathias Königseder",
               "name": "Mathias Königseder",
               "team": "Union Eschenau",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -11392,8 +12050,29 @@
               "minute": ""
             },
             {
+              "name": "Daniel Auer",
+              "player": "Daniel Auer",
+              "team": "Union Eschenau",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Christopher Ratzenböck",
               "player": "Christopher Ratzenböck",
+              "team": "Union Eschenau",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Christopher Ratzenböck",
+              "player": "Christopher Ratzenböck",
+              "team": "Union Eschenau",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Mathias Königseder",
+              "player": "Mathias Königseder",
               "team": "Union Eschenau",
               "count": 1,
               "minute": ""
@@ -11470,7 +12149,7 @@
               "player": "Michael Dornetshuber",
               "name": "Michael Dornetshuber",
               "team": "Union Eschenau",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -11478,7 +12157,7 @@
               "player": "Simon Wenzl",
               "name": "Simon Wenzl",
               "team": "Union Eschenau",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -11518,7 +12197,7 @@
               "player": "Florian Rebhandl",
               "name": "Florian Rebhandl",
               "team": "Walker FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -11555,6 +12234,20 @@
               "minute": ""
             },
             {
+              "name": "Michael Dornetshuber",
+              "player": "Michael Dornetshuber",
+              "team": "Union Eschenau",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Simon Wenzl",
+              "player": "Simon Wenzl",
+              "team": "Union Eschenau",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Simon Wenzl",
               "player": "Simon Wenzl",
               "team": "Union Eschenau",
@@ -11565,6 +12258,13 @@
               "name": "Rudolf Rossgatterer",
               "player": "Rudolf Rossgatterer",
               "team": "Union Eschenau",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Florian Rebhandl",
+              "player": "Florian Rebhandl",
+              "team": "Walker FC",
               "count": 1,
               "minute": ""
             },
@@ -11764,7 +12464,7 @@
               "player": "Adel Mujic",
               "name": "Adel Mujic",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -11772,7 +12472,7 @@
               "player": "Aaron Außermair",
               "name": "Aaron Außermair",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -11780,7 +12480,7 @@
               "player": "Rene Petraschek",
               "name": "Rene Petraschek",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -11841,8 +12541,36 @@
               "minute": ""
             },
             {
+              "name": "Adel Mujic",
+              "player": "Adel Mujic",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Adel Mujic",
+              "player": "Adel Mujic",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
               "name": "Aaron Außermair",
               "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Aaron Außermair",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Rene Petraschek",
+              "player": "Rene Petraschek",
               "team": "DSG Thalheim",
               "count": 1,
               "minute": ""
@@ -12012,7 +12740,7 @@
               "player": "Florian Rebhandl",
               "name": "Florian Rebhandl",
               "team": "Walker FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -12049,6 +12777,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Florian Rebhandl",
+              "player": "Florian Rebhandl",
+              "team": "Walker FC",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Florian Rebhandl",
               "player": "Florian Rebhandl",
@@ -12186,7 +12921,7 @@
               "player": "Aaron Außermair",
               "name": "Aaron Außermair",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -12199,6 +12934,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Aaron Außermair",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Aaron Außermair",
               "player": "Aaron Außermair",
@@ -12555,7 +13297,7 @@
               "player": "Adel Mujic",
               "name": "Adel Mujic",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -12616,6 +13358,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Adel Mujic",
+              "player": "Adel Mujic",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Adel Mujic",
               "player": "Adel Mujic",
@@ -12701,7 +13450,7 @@
               "player": "Michael Dornetshuber",
               "name": "Michael Dornetshuber",
               "team": "Union Eschenau",
-              "count": 1,
+              "count": 3,
               "minute": ""
             },
             {
@@ -12762,6 +13511,20 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Michael Dornetshuber",
+              "player": "Michael Dornetshuber",
+              "team": "Union Eschenau",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Michael Dornetshuber",
+              "player": "Michael Dornetshuber",
+              "team": "Union Eschenau",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Michael Dornetshuber",
               "player": "Michael Dornetshuber",
@@ -12933,7 +13696,7 @@
               "player": "Alexander Lenz",
               "name": "Alexander Lenz",
               "team": "Walker FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -12941,7 +13704,7 @@
               "player": "Florian Rebhandl",
               "name": "Florian Rebhandl",
               "team": "Walker FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -12965,6 +13728,20 @@
             {
               "name": "Alexander Lenz",
               "player": "Alexander Lenz",
+              "team": "Walker FC",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Alexander Lenz",
+              "player": "Alexander Lenz",
+              "team": "Walker FC",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Florian Rebhandl",
+              "player": "Florian Rebhandl",
               "team": "Walker FC",
               "count": 1,
               "minute": ""
@@ -13133,7 +13910,7 @@
               "player": "Florian Rebhandl",
               "name": "Florian Rebhandl",
               "team": "Walker FC",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -13162,6 +13939,13 @@
             }
           ],
           "scorers": [
+            {
+              "name": "Florian Rebhandl",
+              "player": "Florian Rebhandl",
+              "team": "Walker FC",
+              "count": 1,
+              "minute": ""
+            },
             {
               "name": "Florian Rebhandl",
               "player": "Florian Rebhandl",
@@ -13218,7 +14002,7 @@
               "player": "Aaron Außermair",
               "name": "Aaron Außermair",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 4,
               "minute": ""
             },
             {
@@ -13226,7 +14010,7 @@
               "player": "Volkan Er",
               "name": "Volkan Er",
               "team": "DSG Thalheim",
-              "count": 1,
+              "count": 2,
               "minute": ""
             },
             {
@@ -13258,6 +14042,34 @@
             {
               "name": "Aaron Außermair",
               "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Aaron Außermair",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Aaron Außermair",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Aaron Außermair",
+              "player": "Aaron Außermair",
+              "team": "DSG Thalheim",
+              "count": 1,
+              "minute": ""
+            },
+            {
+              "name": "Volkan Er",
+              "player": "Volkan Er",
               "team": "DSG Thalheim",
               "count": 1,
               "minute": ""
@@ -13304,396 +14116,396 @@
           {
             "name": "Aaron Außermair",
             "team": "DSG Thalheim",
-            "goals": 8,
+            "goals": 15,
             "rank": 1
           },
           {
             "name": "Florian Rebhandl",
             "team": "Walker FC",
-            "goals": 7,
+            "goals": 12,
             "rank": 2
           },
           {
             "name": "Michael Dornetshuber",
             "team": "Union Eschenau",
-            "goals": 7,
+            "goals": 10,
             "rank": 3
           },
           {
             "name": "Alexander Gfellner",
             "team": "Union Eschenau",
-            "goals": 6,
+            "goals": 7,
             "rank": 4
+          },
+          {
+            "name": "Alexander Walter",
+            "team": "DSG Union Traun",
+            "goals": 6,
+            "rank": 5
           },
           {
             "name": "Alexander Lenz",
             "team": "Walker FC",
-            "goals": 5,
-            "rank": 5
-          },
-          {
-            "name": "Philipp Grabner",
-            "team": "FC Bruck",
-            "goals": 4,
+            "goals": 6,
             "rank": 6
           },
           {
             "name": "Simon Wenzl",
             "team": "Union Eschenau",
-            "goals": 4,
+            "goals": 5,
             "rank": 7
           },
           {
             "name": "Markus Kalakovic",
             "team": "FC Gornjak",
-            "goals": 4,
+            "goals": 5,
             "rank": 8
           },
           {
             "name": "Avduramon Saciri",
             "team": "DSG Thalheim",
-            "goals": 4,
+            "goals": 5,
             "rank": 9
+          },
+          {
+            "name": "Adel Mujic",
+            "team": "DSG Thalheim",
+            "goals": 5,
+            "rank": 10
+          },
+          {
+            "name": "Philipp Grabner",
+            "team": "FC Bruck",
+            "goals": 4,
+            "rank": 11
+          },
+          {
+            "name": "Christopher Ratzenböck",
+            "team": "Union Eschenau",
+            "goals": 4,
+            "rank": 12
+          },
+          {
+            "name": "Taha Güler",
+            "team": "DSG Thalheim",
+            "goals": 4,
+            "rank": 13
+          },
+          {
+            "name": "Volkan Er",
+            "team": "DSG Thalheim",
+            "goals": 4,
+            "rank": 14
           },
           {
             "name": "Alexander Neumayr",
             "team": "DSG Thalheim",
             "goals": 4,
-            "rank": 10
+            "rank": 15
           },
           {
             "name": "Fabian Walter",
             "team": "DSG Union Traun",
             "goals": 3,
-            "rank": 11
+            "rank": 16
           },
           {
             "name": "Michael Mayr",
             "team": "DSG Auberg",
             "goals": 3,
-            "rank": 12
+            "rank": 17
           },
           {
-            "name": "Christopher Ratzenböck",
-            "team": "Union Eschenau",
+            "name": "Igor Anusic",
+            "team": "DSG Thalheim",
             "goals": 3,
-            "rank": 13
+            "rank": 18
+          },
+          {
+            "name": "René Pacher",
+            "team": "DSG Union Traun",
+            "goals": 3,
+            "rank": 19
           },
           {
             "name": "Dominik Pfannhauser",
             "team": "Walker FC",
             "goals": 3,
-            "rank": 14
+            "rank": 20
           },
           {
             "name": "Philipp Kölbl",
             "team": "Walker FC",
             "goals": 3,
-            "rank": 15
+            "rank": 21
           },
           {
             "name": "Patrick Reisinger-Auer",
             "team": "FC Bruck",
             "goals": 3,
-            "rank": 16
+            "rank": 22
           },
           {
             "name": "Mario Wolfschluckner",
             "team": "Union Eschenau",
             "goals": 3,
-            "rank": 17
+            "rank": 23
           },
           {
             "name": "Daniel Kirchmayr",
             "team": "DSG Union Traun",
             "goals": 3,
-            "rank": 18
+            "rank": 24
           },
           {
-            "name": "Taha Güler",
+            "name": "Daniel Auer",
+            "team": "Union Eschenau",
+            "goals": 3,
+            "rank": 25
+          },
+          {
+            "name": "Mathias Königseder",
+            "team": "Union Eschenau",
+            "goals": 3,
+            "rank": 26
+          },
+          {
+            "name": "Rene Petraschek",
             "team": "DSG Thalheim",
             "goals": 3,
-            "rank": 19
-          },
-          {
-            "name": "Volkan Er",
-            "team": "DSG Thalheim",
-            "goals": 3,
-            "rank": 20
-          },
-          {
-            "name": "Alexander Walter",
-            "team": "DSG Union Traun",
-            "goals": 2,
-            "rank": 21
+            "rank": 27
           },
           {
             "name": "Sebastian Schicklgruber",
             "team": "DSG Union Traun",
             "goals": 2,
-            "rank": 22
+            "rank": 28
           },
           {
             "name": "Patrick Pix",
             "team": "DSG Auberg",
             "goals": 2,
-            "rank": 23
+            "rank": 29
           },
           {
             "name": "Bernhard Hofer",
             "team": "DSG Union Traun",
             "goals": 2,
-            "rank": 24
+            "rank": 30
           },
           {
             "name": "Marco Braumann",
             "team": "Union Eschenau",
             "goals": 2,
-            "rank": 25
+            "rank": 31
           },
           {
-            "name": "Igor Anusic",
-            "team": "DSG Thalheim",
+            "name": "Zia Ghaderi",
+            "team": "DSG Auberg",
             "goals": 2,
-            "rank": 26
+            "rank": 32
           },
           {
             "name": "Caner Dökmez",
             "team": "DSG Thalheim",
             "goals": 2,
-            "rank": 27
+            "rank": 33
           },
           {
             "name": "Georg Gottinger",
             "team": "DSG Thalheim",
             "goals": 2,
-            "rank": 28
+            "rank": 34
           },
           {
-            "name": "René Pacher",
-            "team": "DSG Union Traun",
+            "name": "Nikola Zivojinovic",
+            "team": "FC Gornjak",
             "goals": 2,
-            "rank": 29
+            "rank": 35
           },
           {
             "name": "Filip Nikolov",
             "team": "FC Gornjak",
             "goals": 2,
-            "rank": 30
+            "rank": 36
+          },
+          {
+            "name": "Felix Halder",
+            "team": "Walker FC",
+            "goals": 2,
+            "rank": 37
           },
           {
             "name": "Elvir Ekmecic",
             "team": "DSG Thalheim",
             "goals": 2,
-            "rank": 31
+            "rank": 38
           },
           {
             "name": "Markus Brandmayr",
             "team": "DSG Thalheim",
             "goals": 2,
-            "rank": 32
+            "rank": 39
           },
           {
             "name": "Stefan Wiener",
             "team": "DSG Auberg",
             "goals": 2,
-            "rank": 33
+            "rank": 40
           },
           {
             "name": "Manuel Kapfhammer",
             "team": "DSG Auberg",
             "goals": 2,
-            "rank": 34
+            "rank": 41
           },
           {
             "name": "Julian Burschik",
             "team": "DSG Auberg",
             "goals": 2,
-            "rank": 35
+            "rank": 42
+          },
+          {
+            "name": "Vladica Petrovic",
+            "team": "FC Gornjak",
+            "goals": 2,
+            "rank": 43
           },
           {
             "name": "Benjamin Stenhaug",
             "team": "Walker FC",
             "goals": 2,
-            "rank": 36
+            "rank": 44
           },
           {
             "name": "Tobias Kornfelder",
             "team": "FC Bruck",
             "goals": 2,
-            "rank": 37
+            "rank": 45
           },
           {
             "name": "Luca Brunnmair",
             "team": "FC Bruck",
             "goals": 2,
-            "rank": 38
-          },
-          {
-            "name": "Daniel Auer",
-            "team": "Union Eschenau",
-            "goals": 2,
-            "rank": 39
-          },
-          {
-            "name": "Mathias Königseder",
-            "team": "Union Eschenau",
-            "goals": 2,
-            "rank": 40
-          },
-          {
-            "name": "Adel Mujic",
-            "team": "DSG Thalheim",
-            "goals": 2,
-            "rank": 41
-          },
-          {
-            "name": "Rene Petraschek",
-            "team": "DSG Thalheim",
-            "goals": 2,
-            "rank": 42
+            "rank": 46
           },
           {
             "name": "Onur Odabas",
             "team": "DSG Union Traun",
             "goals": 2,
-            "rank": 43
+            "rank": 47
           },
           {
             "name": "Severin Prugger",
             "team": "Walker FC",
             "goals": 2,
-            "rank": 44
+            "rank": 48
           },
           {
             "name": "Darko Radosavljevic",
             "team": "DSG Thalheim",
             "goals": 1,
-            "rank": 45
+            "rank": 49
           },
           {
             "name": "Klaus Gramberger",
             "team": "DSG Thalheim",
             "goals": 1,
-            "rank": 46
+            "rank": 50
           },
           {
             "name": "Andreas Pirnat",
             "team": "DSG Auberg",
             "goals": 1,
-            "rank": 47
+            "rank": 51
           },
           {
             "name": "Andreas Lederer",
             "team": "FC Bruck",
             "goals": 1,
-            "rank": 48
+            "rank": 52
           },
           {
             "name": "Patrick Baldinger",
             "team": "FC Bruck",
             "goals": 1,
-            "rank": 49
+            "rank": 53
           },
           {
             "name": "Max Grund",
             "team": "Walker FC",
             "goals": 1,
-            "rank": 50
+            "rank": 54
           },
           {
             "name": "Sebastian Haider",
             "team": "Union Eschenau",
             "goals": 1,
-            "rank": 51
-          },
-          {
-            "name": "Zia Ghaderi",
-            "team": "DSG Auberg",
-            "goals": 1,
-            "rank": 52
+            "rank": 55
           },
           {
             "name": "Patrick Altmüller",
             "team": "DSG Auberg",
             "goals": 1,
-            "rank": 53
+            "rank": 56
           },
           {
             "name": "Amel Pudic",
             "team": "DSG Thalheim",
             "goals": 1,
-            "rank": 54
-          },
-          {
-            "name": "Nikola Zivojinovic",
-            "team": "FC Gornjak",
-            "goals": 1,
-            "rank": 55
+            "rank": 57
           },
           {
             "name": "Farid Alem",
             "team": "Union Eschenau",
             "goals": 1,
-            "rank": 56
+            "rank": 58
           },
           {
             "name": "Thomas Schwarzbauer",
             "team": "Walker FC",
             "goals": 1,
-            "rank": 57
+            "rank": 59
           },
           {
             "name": "Fatih Odabas",
             "team": "DSG Union Traun",
             "goals": 1,
-            "rank": 58
-          },
-          {
-            "name": "Felix Halder",
-            "team": "Walker FC",
-            "goals": 1,
-            "rank": 59
+            "rank": 60
           },
           {
             "name": "Patrick Reichl",
             "team": "Walker FC",
             "goals": 1,
-            "rank": 60
+            "rank": 61
           },
           {
             "name": "Ivica Jovanovic",
             "team": "FC Gornjak",
             "goals": 1,
-            "rank": 61
+            "rank": 62
           },
           {
             "name": "Denis Petak",
             "team": "DSG Union Traun",
             "goals": 1,
-            "rank": 62
+            "rank": 63
           },
           {
             "name": "Okan Demirsoy",
             "team": "DSG Thalheim",
             "goals": 1,
-            "rank": 63
+            "rank": 64
           },
           {
             "name": "Niklas Standhartinger",
             "team": "FC Bruck",
             "goals": 1,
-            "rank": 64
+            "rank": 65
           },
           {
             "name": "Andreas Walter-Raab",
             "team": "DSG Union Traun",
-            "goals": 1,
-            "rank": 65
-          },
-          {
-            "name": "Vladica Petrovic",
-            "team": "FC Gornjak",
             "goals": 1,
             "rank": 66
           },
@@ -13772,13 +14584,49 @@
         ],
         "cards": [
           {
+            "name": "Alexander Gfellner",
+            "team": "Union Eschenau",
+            "yellow": 4,
+            "red": 1,
+            "yellowRed": 1,
+            "suspension": "",
+            "rank": 1
+          },
+          {
+            "name": "Dominik Pfannhauser",
+            "team": "Walker FC",
+            "yellow": 3,
+            "red": 1,
+            "yellowRed": 1,
+            "suspension": "",
+            "rank": 2
+          },
+          {
+            "name": "Nikola Zivojinovic",
+            "team": "FC Gornjak",
+            "yellow": 3,
+            "red": 1,
+            "yellowRed": 1,
+            "suspension": "",
+            "rank": 3
+          },
+          {
+            "name": "Dalibor Beric",
+            "team": "FC Gornjak",
+            "yellow": 2,
+            "red": 1,
+            "yellowRed": 1,
+            "suspension": "",
+            "rank": 4
+          },
+          {
             "name": "Nemanja Ilic",
             "team": "FC Gornjak",
             "yellow": 0,
             "red": 1,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 1
+            "rank": 5
           },
           {
             "name": "Johannes Weger",
@@ -13787,7 +14635,7 @@
             "red": 1,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 2
+            "rank": 6
           },
           {
             "name": "Daniel Auer",
@@ -13796,7 +14644,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 3
+            "rank": 7
           },
           {
             "name": "Benjamin Stenhaug",
@@ -13805,7 +14653,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 4
+            "rank": 8
           },
           {
             "name": "Bernhard Altendorfer",
@@ -13814,16 +14662,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 5
-          },
-          {
-            "name": "Alexander Gfellner",
-            "team": "Union Eschenau",
-            "yellow": 3,
-            "red": 0,
-            "yellowRed": 0,
-            "suspension": "",
-            "rank": 6
+            "rank": 9
           },
           {
             "name": "Marco Braumann",
@@ -13832,7 +14671,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 7
+            "rank": 10
           },
           {
             "name": "Alexander Biener",
@@ -13841,7 +14680,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 8
+            "rank": 11
           },
           {
             "name": "Rudolf Rossgatterer",
@@ -13850,7 +14689,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 9
+            "rank": 12
           },
           {
             "name": "Onur Odabas",
@@ -13859,7 +14698,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 10
+            "rank": 13
           },
           {
             "name": "Aaron Außermair",
@@ -13868,7 +14707,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 11
+            "rank": 14
           },
           {
             "name": "Manuel Fazeny",
@@ -13877,7 +14716,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 12
+            "rank": 15
           },
           {
             "name": "Avduramon Saciri",
@@ -13886,7 +14725,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 13
+            "rank": 16
           },
           {
             "name": "Quadus Tobi Keshinro",
@@ -13895,7 +14734,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 14
+            "rank": 17
           },
           {
             "name": "Simon Wenzl",
@@ -13904,7 +14743,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 15
+            "rank": 18
           },
           {
             "name": "Markus Haslehner",
@@ -13913,7 +14752,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 16
+            "rank": 19
           },
           {
             "name": "Fatih Odabas",
@@ -13922,16 +14761,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 17
-          },
-          {
-            "name": "Dominik Pfannhauser",
-            "team": "Walker FC",
-            "yellow": 2,
-            "red": 0,
-            "yellowRed": 0,
-            "suspension": "",
-            "rank": 18
+            "rank": 20
           },
           {
             "name": "Sebastian Scharinger",
@@ -13940,7 +14770,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 19
+            "rank": 21
           },
           {
             "name": "Michael Dornetshuber",
@@ -13949,16 +14779,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 20
-          },
-          {
-            "name": "Nikola Zivojinovic",
-            "team": "FC Gornjak",
-            "yellow": 2,
-            "red": 0,
-            "yellowRed": 0,
-            "suspension": "",
-            "rank": 21
+            "rank": 22
           },
           {
             "name": "Luca Brunnmair",
@@ -13967,7 +14788,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 22
+            "rank": 23
           },
           {
             "name": "Mario Wolfschluckner",
@@ -13976,7 +14797,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 23
+            "rank": 24
           },
           {
             "name": "Andreas Lederer",
@@ -13985,7 +14806,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 24
+            "rank": 25
           },
           {
             "name": "Julian Burschik",
@@ -13994,7 +14815,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 25
+            "rank": 26
           },
           {
             "name": "Patrick Baldinger",
@@ -14003,7 +14824,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 26
+            "rank": 27
           },
           {
             "name": "Max Grund",
@@ -14012,7 +14833,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 27
+            "rank": 28
           },
           {
             "name": "Patrick Reichl",
@@ -14021,7 +14842,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 28
+            "rank": 29
           },
           {
             "name": "Thomas Wiesinger",
@@ -14030,7 +14851,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 29
+            "rank": 30
           },
           {
             "name": "Sebastian Haider",
@@ -14039,7 +14860,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 30
+            "rank": 31
           },
           {
             "name": "Patrick Reisinger-Auer",
@@ -14048,7 +14869,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 31
+            "rank": 32
           },
           {
             "name": "Philipp Habring",
@@ -14057,7 +14878,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 32
+            "rank": 33
           },
           {
             "name": "Lukas Raser",
@@ -14066,7 +14887,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 33
+            "rank": 34
           },
           {
             "name": "Zia Ghaderi",
@@ -14075,7 +14896,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 34
+            "rank": 35
           },
           {
             "name": "Ewaz Sahil",
@@ -14084,7 +14905,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 35
+            "rank": 36
           },
           {
             "name": "Martin Stütz",
@@ -14093,7 +14914,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 36
+            "rank": 37
           },
           {
             "name": "Thomas Hackl",
@@ -14102,7 +14923,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 37
+            "rank": 38
           },
           {
             "name": "Zied Omrane",
@@ -14111,7 +14932,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 38
+            "rank": 39
           },
           {
             "name": "Niklas Standhartinger",
@@ -14120,7 +14941,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 39
+            "rank": 40
           },
           {
             "name": "Michael Humer",
@@ -14129,7 +14950,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 40
+            "rank": 41
           },
           {
             "name": "Alexander Walter",
@@ -14138,7 +14959,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 41
+            "rank": 42
           },
           {
             "name": "Alexander Zamberger",
@@ -14147,7 +14968,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 42
+            "rank": 43
           },
           {
             "name": "Matthias Stütz",
@@ -14156,7 +14977,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 43
+            "rank": 44
           },
           {
             "name": "Jürgen Rittsteiger",
@@ -14165,7 +14986,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 44
+            "rank": 45
           },
           {
             "name": "Ninoslav Matanovic",
@@ -14174,7 +14995,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 45
+            "rank": 46
           },
           {
             "name": "Valentin Ransmayr",
@@ -14183,7 +15004,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 46
+            "rank": 47
           },
           {
             "name": "Andreas Pirnat",
@@ -14192,7 +15013,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 47
+            "rank": 48
           },
           {
             "name": "Christopher Ratzenböck",
@@ -14201,7 +15022,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 48
+            "rank": 49
           },
           {
             "name": "Dominik Scheuringer",
@@ -14210,7 +15031,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 49
+            "rank": 50
           },
           {
             "name": "Klaus Scheuringer",
@@ -14219,7 +15040,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 50
+            "rank": 51
           },
           {
             "name": "Marko Duric",
@@ -14228,7 +15049,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 51
+            "rank": 52
           },
           {
             "name": "Dragan Nikolic",
@@ -14237,7 +15058,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 52
+            "rank": 53
           },
           {
             "name": "Stefan Zika",
@@ -14246,7 +15067,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 53
+            "rank": 54
           },
           {
             "name": "Alexander Lenz",
@@ -14255,7 +15076,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 54
+            "rank": 55
           },
           {
             "name": "Florian Rebhandl",
@@ -14264,7 +15085,7 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 55
+            "rank": 56
           },
           {
             "name": "Gerald Wurdinger",
@@ -14273,19 +15094,10 @@
             "red": 0,
             "yellowRed": 0,
             "suspension": "",
-            "rank": 56
-          },
-          {
-            "name": "Milos Jovanovic",
-            "team": "FC Gornjak",
-            "yellow": 1,
-            "red": 0,
-            "yellowRed": 0,
-            "suspension": "",
             "rank": 57
           },
           {
-            "name": "Dalibor Beric",
+            "name": "Milos Jovanovic",
             "team": "FC Gornjak",
             "yellow": 1,
             "red": 0,
