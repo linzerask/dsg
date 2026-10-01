@@ -1,5 +1,5 @@
-import { Router } from './router.js?v=1790560024000';
-import { Store } from './store.js?v=1790560024000';
+import { Router } from './router.js?v=1790560025000';
+import { Store } from './store.js?v=1790560025000';
 
 window.Store = Store;
 

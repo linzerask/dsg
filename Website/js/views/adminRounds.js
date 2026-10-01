@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560024000';
-import { showToast } from './admin.js?v=1790560024000';
+import { Store } from '../store.js?v=1790560025000';
+import { showToast } from './admin.js?v=1790560025000';
 
 let roundsData = [];
 let leaguesData = [];
@@ -389,7 +389,7 @@ const renderTable = () => {
         return true;
     };
 
-    const INACTIVE_ROUND_TOOLTIP = 'Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter \\'Ligen verwalten\\' auf \\'Aktiv\\'.';
+    const INACTIVE_ROUND_TOOLTIP = "Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter 'Ligen verwalten' auf 'Aktiv'.";
 
     tbody.innerHTML = pageRows.map(r => {
         const rawIndex = roundsData.indexOf(r);
