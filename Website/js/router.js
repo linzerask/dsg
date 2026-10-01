@@ -1,14 +1,14 @@
-import { viewHome, bindHome } from './views/home.js?v=1790560032000';
-import { viewNews, bindNews } from './views/news.js?v=1790560032000';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560032000';
-import { viewArchiv } from './views/simpleViews.js?v=1790560032000';
-import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560032000';
-import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560032000';
-import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560032000';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560032000';
-import { viewArticle, bindArticle } from './views/article.js?v=1790560032000';
-import { viewImpressum } from './views/impressum.js?v=1790560032000';
-import { viewDatenschutz } from './views/datenschutz.js?v=1790560032000';
+import { viewHome, bindHome } from './views/home.js?v=1790560034000';
+import { viewNews, bindNews } from './views/news.js?v=1790560034000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560034000';
+import { viewArchiv } from './views/simpleViews.js?v=1790560034000';
+import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560034000';
+import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560034000';
+import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560034000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560034000';
+import { viewArticle, bindArticle } from './views/article.js?v=1790560034000';
+import { viewImpressum } from './views/impressum.js?v=1790560034000';
+import { viewDatenschutz } from './views/datenschutz.js?v=1790560034000';
 
 const routes = {
   '/': { render: () => viewHome(), bind: () => bindHome() },
@@ -162,14 +162,14 @@ export const Router = {
       // Ensure floating nav is visible on new page load
       floatingNav?.classList.remove('nav-hidden');
 
-      // Animate in
+      // Animate in only visible top-level containers and active tab items
       anime({
-        targets: '.stagger-item, .liga-row, .masonry-item',
+        targets: '#app > .container > *, .tab-content:not([style*="display: none"]) > *, .masonry-item',
         opacity: [0, 1],
-        translateY: [25, 0],
-        delay: anime.stagger(80),
-        easing: 'spring(1, 80, 10, 0)',
-        duration: 800
+        translateY: [15, 0],
+        delay: anime.stagger(25),
+        easing: 'easeOutCubic',
+        duration: 350
       });
     };
 

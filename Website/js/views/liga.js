@@ -807,8 +807,8 @@ export function bindLigaTabs() {
         targets: target.children,
         opacity: [0, 1],
         translateY: [10, 0],
-        delay: anime.stagger(50),
-        duration: 500,
+        delay: anime.stagger(25),
+        duration: 300,
         easing: 'easeOutCubic'
       });
     });
