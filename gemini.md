@@ -398,13 +398,23 @@ DSG Liga/
      - **Execution Guards:** Functions `openEditRoundModal`, `deleteRound`, `openEditGameModal`, `deleteGame`, `openReportModal`, and form handlers guard against inactive season operations and display an alert toast.
      - **Reactivation:** Switching a league back to `Aktiv` in **Ligen verwalten** immediately unlocks all administrative controls for that competition.
 
----
-
 ## 35. Custom Cursor-Following Floating Tooltip Badge System
 * **The Pitfall:** Standard browser `title="..."` tooltips render as low-res OS-native dark boxes that do not track the cursor, have arbitrary system display delays, and do not follow the application's glassmorphic design language. Furthermore, native HTML `disabled` buttons swallow mouse events in several browsers, preventing tooltips from triggering reliably.
 * **The Rule:**
   1. **Dynamic Cursor Tracking:** Tooltips dynamically follow the mouse pointer coordinates (`clientX`, `clientY`) via `translate3d(x, y, 0)` with smart viewport boundary collision detection (automatically flipping horizontally or vertically if close to window edges).
   2. **Athletic Glassmorphic Design:** Renders via `#dsg-floating-tooltip` in `main.js` and `global.css` with slate/emerald glass backdrop blur, subtle green border glow (`rgba(0, 230, 118, 0.3)`), crisp inline SVG lock/info icons, and Outfit typography.
   3. **Disabled Element Support:** Elements with `disabled` attributes are wrapped in `<span class="tooltip-trigger" data-tooltip="...">` with `pointer-events: none` on inner disabled buttons to ensure mouseenter/mousemove events trigger instantly across all browsers.
+
+---
+
+## 36. Historical Archive Ingestion & Multi-Season Database Reconstruction
+* **The Pitfall:** The legacy database stored competitions under disconnected IDs using single calendar years (`2022`, `2023`, `2024`) and split Hinrunde (Autumn) and Rückrunde (Spring) across multiple database rows (e.g. Autumn 2023 under ID #3 and Spring 2024 under ID #5; Autumn 2022 under ID #1/#2 and Spring 2023 under ID #3/#4).
+* **The Rule:**
+  1. **Canonical Season Structure:** Reassemble historical seasons into full academic football campaigns (`2022/2023`, `2023/2024`, `2024/2025`, `2025/2026`, `2026/2027`).
+  2. **Season 2022/2023 Ingestion:**
+     - **DSG Liga 2022/2023 (`2022/2023`):** 14 rounds, 56 matches between 8 teams (*Hinzenbach, Schleißheim, Oed, Froschberg, Geboltskirchen, Heiligenberg, Croatia Linz, Goldwörth*).
+     - **1. Klasse 2022/2023 (`2022/2023_1klasse`):** 14 rounds, 49 matches between 8/7 teams (*Auberg, Thalheim, Traun, Bruck, Gornjak, Eschenau, Walker FC*).
+  3. **Data Integrity Verification:** Always verify that all 14 rounds are present in `rounds.json` (28 rounds total for Season 1) and that `Store.syncFirebase()` automatically migrates and writes full season datasets directly to Firebase Firestore without requiring manual Admin UI reactivation.
+
 
 
