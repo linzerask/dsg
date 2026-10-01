@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark" data-variant="universal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSG Liga – Club Logo Asset Matrix & QA Bench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --bg-body: #0b0f19;
+      --bg-surface: #111827;
+      --bg-card: #1f2937;
+      --bg-card-hover: #283548;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border: #374151;
+      --primary: #38bdf8;
+      --primary-glow: rgba(56, 189, 248, 0.25);
+      --accent: #10b981;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --bench-bg: #0f172a;
+    }
+
+    [data-theme="light"] {
+      --bg-body: #f3f4f6;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f9fafb;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --primary: #0284c7;
+      --primary-glow: rgba(2, 132, 199, 0.15);
+      --bench-bg: #ffffff;
+    }
+
+    [data-theme="pitch-black"] {
+      --bg-body: #000000;
+      --bg-surface: #0a0a0a;
+      --bg-card: #121212;
+      --bg-card-hover: #1a1a1a;
+      --text-main: #ffffff;
+      --text-muted: #737373;
+      --border: #262626;
+      --bench-bg: #000000;
+    }
+
+    [data-theme="checker"] {
+      --bench-bg: #1e293b;
+      --bench-pattern: repeating-conic-gradient(#334155 0% 25%, #1e293b 0% 50%) 50% / 20px 20px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.5;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    /* Top Bar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+    }
+    [data-theme="light"] header { background: rgba(255, 255, 255, 0.9); }
+    [data-theme="pitch-black"] header { background: rgba(10, 10, 10, 0.9); }
+
+    .header-content {
+      max-width: 1540px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand-logo-preview {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+    }
+    .brand-info h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge-status {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #059669;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .brand-info p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .control-group {
+      display: flex;
+      align-items: center;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+    .control-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0 10px;
+    }
+    .btn-toggle {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-toggle:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .btn-toggle.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 10px var(--primary-glow);
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1540px;
+      margin: 32px auto 0;
+      padding: 0 32px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title span {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* Alignment Ribbon */
+    .ribbon-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    .ribbon-stage {
+      background-color: var(--bench-bg);
+      background-image: var(--bench-pattern);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      overflow-x: auto;
+      transition: background-color 0.25s ease;
+    }
+    .ribbon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .ribbon-item .logo-box {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .ribbon-item .logo-box::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px dotted rgba(56, 189, 248, 0.2);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    .ribbon-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.2s ease;
+    }
+    .ribbon-item:hover img {
+      transform: scale(1.15);
+    }
+    .ribbon-name {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      max-width: 72px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Grid of Cards */
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 24px;
+    }
+    .club-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .club-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    }
+
+    .club-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .club-card-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    .club-card-header .file-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--primary);
+      background: var(--primary-glow);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    /* Comparison Stage inside card */
+    .card-stage {
+      background-color: var(--bench-bg);
+      background-image: var(--bench-pattern);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      min-height: 200px;
+      position: relative;
+      transition: background-color 0.25s ease;
+    }
+
+    .size-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .size-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .img-24 { width: 24px; height: 24px; object-fit: contain; }
+    .img-48 { width: 48px; height: 48px; object-fit: contain; }
+    .img-96 { width: 96px; height: 96px; object-fit: contain; }
+    .img-140 { width: 140px; height: 140px; object-fit: contain; }
+
+    .club-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+    .club-meta .specs {
+      display: flex;
+      gap: 12px;
+      font-family: var(--font-mono);
+    }
+    .club-meta a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .club-meta a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <div class="brand">
+        <img id="dsg-header-logo" src="dsglogo.png" alt="DSG Liga" class="brand-logo-preview">
+        <div class="brand-info">
+          <h1>DSG Liga – Asset Matrix <span class="badge-status">100% Solid & Verified</span></h1>
+          <p>Standardized 500×500 px Club Crests with Optical Weight Balancing</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="control-group">
+          <span class="control-label">Variant:</span>
+          <button class="btn-toggle active" onclick="setVariant('universal', this)">Universal (Dual-Rim)</button>
+          <button class="btn-toggle" onclick="setVariant('standard', this)">Standard (Pure Cutout)</button>
+          <button class="btn-toggle" onclick="setVariant('dark-mode', this)">Dark Mode (White Stroke)</button>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">Theme:</span>
+          <button class="btn-toggle active" onclick="setTheme('dark', this)">Dark</button>
+          <button class="btn-toggle" onclick="setTheme('light', this)">Light</button>
+          <button class="btn-toggle" onclick="setTheme('pitch-black', this)">Pitch Black</button>
+          <button class="btn-toggle" onclick="setTheme('checker', this)">Alpha Grid</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Optical Alignment Strip -->
+    <div class="section-title">
+      Optical Alignment Strip <span>(Visual weight comparison across all 16 clubs in a single row)</span>
+    </div>
+    <div class="ribbon-card">
+      <div class="ribbon-stage" id="ribbon-stage">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Multi-Size Matrix Grid -->
+    <div class="section-title">
+      Multi-Size Inspection Matrix <span>(24px table icon, 48px match card, 96px badge, 140px profile)</span>
+    </div>
+    <div class="logo-grid" id="club-grid">
+      <!-- Rendered dynamically -->
+    </div>
+  </main>
+
+  <script>
+    const clubs = [
+      { id: "croatia", name: "NK Croatia Linz", file: "croatia.png", shape: "Circle", orig: "640x640 JPG" },
+      { id: "dsgauberg", name: "DSG Union Auberg", file: "dsgauberg.png", shape: "Circle", orig: "330x330 JPG" },
+      { id: "dsgthalheim", name: "DSG Union Thalheim", file: "dsgthalheim.png", shape: "Circle", orig: "225x225 JPEG" },
+      { id: "dsgtraun", name: "DSG Traun", file: "dsgtraun.png", shape: "Shield", orig: "371x435 JPG" },
+      { id: "dsgfroschberg", name: "DSG UKJ Froschberg", file: "dsgfroschberg.png", shape: "Shield", orig: "200x252 PNG" },
+      { id: "eschenau", name: "Union Eschenau", file: "eschenau.png", shape: "Shield", orig: "710x960 JPG" },
+      { id: "etehad", name: "Etehad FC", file: "etehad.png", shape: "Circle", orig: "150x150 JPG" },
+      { id: "fcbruck", name: "FC Bruck", file: "fcbruck.png", shape: "Shield", orig: "2048x2048 JPG" },
+      { id: "fcgornjak", name: "FC Gornjak", file: "fcgornjak.png", shape: "Shield", orig: "128x128 JPEG" },
+      { id: "fchinzenbach", name: "FC Hinzenbach", file: "fchinzenbach.png", shape: "Shield", orig: "225x225 JPEG" },
+      { id: "geboltskirchen", name: "Union Geboltskirchen", file: "geboltskirchen.png", shape: "Circle", orig: "180x180 PNG" },
+      { id: "oed", name: "SV Oed", file: "oed.png", shape: "Shield", orig: "250x234 PNG" },
+      { id: "schleissheim", name: "Union Schleißheim", file: "schleissheim.png", shape: "Shield", orig: "197x256 JPEG" },
+      { id: "uniongoldwoerth", name: "Union Goldwörth", file: "uniongoldwoerth.png", shape: "Shield", orig: "176x180 JPEG" },
+      { id: "unionheiligenberg", name: "Union Heiligenberg", file: "unionheiligenberg.png", shape: "Shield", orig: "225x225 PNG" },
+      { id: "walker", name: "Walker FC", file: "walker.png", shape: "Circle", orig: "100x100 PNG" },
+    ];
+
+    let currentVariant = "universal";
+
+    function setVariant(variant, btn) {
+      currentVariant = variant;
+      document.documentElement.setAttribute("data-variant", variant);
+      btn.parentElement.querySelectorAll(".btn-toggle").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      updateImages();
+    }
+
+    function setTheme(theme, btn) {
+      document.documentElement.setAttribute("data-theme", theme);
+      btn.parentElement.querySelectorAll(".btn-toggle").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    }
+
+    function updateImages() {
+      document.querySelectorAll(".dyn-logo").forEach(img => {
+        const file = img.getAttribute("data-file");
+        img.src = `${currentVariant}/${file}`;
+      });
+    }
+
+    function renderRibbon() {
+      const stage = document.getElementById("ribbon-stage");
+      stage.innerHTML = clubs.map(c => `
+        <div class="ribbon-item">
+          <div class="logo-box">
+            <img class="dyn-logo" data-file="${c.file}" src="${currentVariant}/${c.file}" alt="${c.name}">
+          </div>
+          <span class="ribbon-name" title="${c.name}">${c.id}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById("club-grid");
+      grid.innerHTML = clubs.map(c => `
+        <div class="club-card">
+          <div class="club-card-header">
+            <h3>${c.name}</h3>
+            <span class="file-tag">${c.file}</span>
+          </div>
+          <div class="card-stage">
+            <div class="size-col">
+              <img class="img-24 dyn-logo" data-file="${c.file}" src="${currentVariant}/${c.file}" alt="${c.name}">
+              <span class="size-label">24px</span>
+            </div>
+            <div class="size-col">
+              <img class="img-48 dyn-logo" data-file="${c.file}" src="${currentVariant}/${c.file}" alt="${c.name}">
+              <span class="size-label">48px</span>
+            </div>
+            <div class="size-col">
+              <img class="img-96 dyn-logo" data-file="${c.file}" src="${currentVariant}/${c.file}" alt="${c.name}">
+              <span class="size-label">96px</span>
+            </div>
+            <div class="size-col">
+              <img class="img-140 dyn-logo" data-file="${c.file}" src="${currentVariant}/${c.file}" alt="${c.name}">
+              <span class="size-label">140px</span>
+            </div>
+          </div>
+          <div class="club-meta">
+            <div class="specs">
+              <span>Shape: ${c.shape}</span>
+              <span>Orig: ${c.orig}</span>
+            </div>
+            <a href="${currentVariant}/${c.file}" download="${c.file}">Download PNG ↓</a>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    renderRibbon();
+    renderGrid();
+  </script>
+</body>
+</html>
