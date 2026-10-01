@@ -382,3 +382,16 @@ DSG Liga/
   2. **Intact Backend Routing:** The `<option>` tag preserves `data-season-key="2022/2023_1klasse"` and `value="${r.runde}. Runde"` so match creation, team roster loading, and season recalculations remain 100% reliable.
   3. **Logical Grouping & Natural Sorting:** The round dropdown options are naturally sorted by League name, Year descending, and Round number ascending ($1 \to 2 \to 3 \dots$) for intuitive navigation.
   4. **Display League Name Helper (`getDisplayLeagueName`):** Resolves clean competition names from `leaguesData` or strips internal routing suffixes, preventing any raw database keys from appearing in match filters or search queries.
+
+---
+
+## 34. Homepage Visibility Decoupling & Inactive Season Administrative Edit Locking
+* **The Pitfall:** (1) Checking `l.status !== 'Inaktiv'` on public views (`liga.js`, `home.js`, `store.js`) caused completed / archived seasons to disappear from the public website even when `Homepage: Ja` (`showOnHomepage: true`) was enabled. (2) Without admin-side protection, inactive historical seasons could accidentally have rounds/matches modified, deleted, or added.
+* **The Rule:**
+  1. **Strict Public Visibility Decoupling:** Public website views (`#/`, `#/liga`, `#/statistiken`) filter leagues strictly by `l.showOnHomepage !== false`. A league with `Status: Inaktiv` and `Homepage: Ja` remains 100% visible and browsable on the public website.
+  2. **Admin-Side Inactive Season Locking:**
+     - **Spielrunden (`adminRounds.js`):** Rounds belonging to an `Inaktiv` league render `Editieren` and `Löschen` as disabled/greyed out with `opacity: 0.45; cursor: not-allowed;` and an informative hover tooltip (`title="Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter 'Ligen verwalten' auf 'Aktiv'."`). `Spiele ansehen` remains active and clickable.
+     - **Spiele (`adminGames.js`):** Matches belonging to an `Inaktiv` league render `Bericht`, `Bearbeiten`, and `Löschen` as disabled/greyed out with the informative hover tooltip.
+     - **Execution Guards:** Functions `openEditRoundModal`, `deleteRound`, `openEditGameModal`, `deleteGame`, and `openReportModal` guard against inactive season operations and display an alert toast.
+     - **Reactivation:** Switching a league back to `Aktiv` in **Ligen verwalten** immediately unlocks all administrative controls for that competition.
+

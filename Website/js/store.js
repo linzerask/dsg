@@ -129,7 +129,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1790560023000';
+const DATA_VERSION_STRING = '?v=1790560024000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -1060,7 +1060,7 @@ export const Store = {
   getVisibleSeasonItems() {
     const leagues = this.getAdminLeaguesSync();
     if (leagues && leagues.length > 0) {
-      const visibleLeagues = sortLeaguesByPriority(leagues.filter(l => l.showOnHomepage !== false && l.status !== 'Inaktiv' && l.year !== '2026/2027' && l.seasonKey !== '2026/2027'));
+      const visibleLeagues = sortLeaguesByPriority(leagues.filter(l => l.showOnHomepage !== false && l.year !== '2026/2027' && l.seasonKey !== '2026/2027'));
       return visibleLeagues.map(l => {
         const key = l.seasonKey || l.name;
         let name = (l.name || key).trim();

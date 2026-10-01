@@ -1,4 +1,4 @@
-import { Store, sortLeaguesByPriority } from '../store.js?v=1790560023000';
+import { Store, sortLeaguesByPriority } from '../store.js?v=1790560024000';
 
 
 let currentViewSeason = null;
@@ -6,7 +6,7 @@ let currentViewSeason = null;
 export function viewLiga() {
   const data = Store.getData();
   const rawLeagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
-  const leagues = sortLeaguesByPriority((rawLeagues || []).filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027' && l.status !== 'Inaktiv' && l.showOnHomepage !== false));
+  const leagues = sortLeaguesByPriority((rawLeagues || []).filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027' && l.showOnHomepage !== false));
 
   if (leagues.length === 0) {
     return `
@@ -15,7 +15,7 @@ export function viewLiga() {
           <div style="margin-bottom: 16px; display: flex; justify-content: center;">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
-          <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Keine aktive Liga verfügbar</h2>
+          <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Keine Liga verfügbar</h2>
           <p style="color: var(--color-text-secondary); font-size: 0.95rem; margin: 0;">Derzeit ist keine Saison für die öffentliche Ansicht freigeschaltet.</p>
         </div>
       </div>

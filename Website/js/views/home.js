@@ -1,11 +1,11 @@
-import { Store, sortLeaguesByPriority } from '../store.js?v=1790560023000';
-import { computeAllTimeStats } from './statistiken.js?v=1790560023000';
-import { renderIcon } from '../icons.js?v=1790560023000';
+import { Store, sortLeaguesByPriority } from '../store.js?v=1790560024000';
+import { computeAllTimeStats } from './statistiken.js?v=1790560024000';
+import { renderIcon } from '../icons.js?v=1790560024000';
 
 export const viewHome = () => {
   const data = Store.getData();
   const leagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
-  const visibleLeagues = sortLeaguesByPriority((leagues || []).filter(l => l.showOnHomepage !== false && l.status !== 'Inaktiv' && l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027'));
+  const visibleLeagues = sortLeaguesByPriority((leagues || []).filter(l => l.showOnHomepage !== false && l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027'));
   const currentLeague = visibleLeagues.find(l => l.isCurrent) || visibleLeagues[0] || null;
   const defaultHomeSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : null;
 
