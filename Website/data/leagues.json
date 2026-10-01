@@ -4,6 +4,7 @@
     "name": "DSG Liga",
     "year": "2022/2023",
     "seasonKey": "2022/2023",
-    "status": "Aktiv"
+    "status": "Aktiv",
+    "showOnHomepage": true
   }
 ]

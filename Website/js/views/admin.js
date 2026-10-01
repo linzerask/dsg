@@ -1,11 +1,11 @@
-import { Store } from '../store.js?v=1790560009000';
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560009000';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560009000';
-import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560009000';
-import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560009000';
-import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560009000';
-import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790560009000';
-import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1790560009000';
+import { Store } from '../store.js?v=1790560010000';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1790560010000';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1790560010000';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1790560010000';
+import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1790560010000';
+import { renderAdminGames, initAdminGames } from './adminGames.js?v=1790560010000';
+import { renderAdminNews, initAdminNews } from './adminNews.js?v=1790560010000';
+import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1790560010000';
 
 export const showToast = (message, isError = false) => {
   let toast = document.getElementById('dsg-admin-toast');

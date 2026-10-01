@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560009000';
-import { showToast } from './admin.js?v=1790560009000';
+import { Store } from '../store.js?v=1790560010000';
+import { showToast } from './admin.js?v=1790560010000';
 
 let playersData = [];
 let teamsData = [];

@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560009000';
-import { showToast } from './admin.js?v=1790560009000';
+import { Store } from '../store.js?v=1790560010000';
+import { showToast } from './admin.js?v=1790560010000';
 
 let leaguesData = [];
 let filteredData = [];
@@ -1090,10 +1090,12 @@ const openEditModal = async (idx = null) => {
         const sKey = getSeasonKey(l);
         const storeData = Store.getData();
         const season = storeData.seasons ? (storeData.seasons[sKey] || storeData.seasons[l.seasonKey] || storeData.seasons[l.year] || storeData.seasons[l.name]) : null;
-        if (season && season.teams && Array.isArray(season.teams)) {
+        if (season && season.teams && Array.isArray(season.teams) && season.teams.length > 0) {
             season.teams.forEach(t => {
                 if (t && t.name) assignedTeamNames.add(t.name.trim().toLowerCase());
             });
+        } else {
+            cachedActiveTeams.forEach(t => assignedTeamNames.add((t.Name || t.name).trim().toLowerCase()));
         }
     } else {
         title.innerText = 'Liga hinzufügen';
@@ -1352,14 +1354,19 @@ const bindEvents = () => {
                 leaguesData[idx] = { ...leaguesData[idx], ...updatedLeague };
             }
 
-            Store.saveAdminLeagues(leaguesData);
-            Store.ensureLeagueSeason(updatedLeague);
             if (updatedLeague.status === 'Aktiv') {
                 const selectedTeamNames = cachedActiveTeams
                     .map(t => t.Name || t.name)
                     .filter(name => assignedTeamNames.has(name.trim().toLowerCase()));
+                if (selectedTeamNames.length === 0) {
+                    showToast('Bitte wählen Sie mindestens ein teilnehmendes Team aus!', true);
+                    return;
+                }
                 Store.setLeagueSeasonTeams(sKey, selectedTeamNames);
             }
+
+            Store.saveAdminLeagues(leaguesData);
+            Store.ensureLeagueSeason(updatedLeague);
 
             closeEditModal();
             applyFilters();

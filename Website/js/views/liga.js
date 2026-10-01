@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790560009000';
+import { Store } from '../store.js?v=1790560010000';
 
 
 let currentViewSeason = null;
@@ -6,41 +6,44 @@ let currentViewSeason = null;
 export function viewLiga() {
   const data = Store.getData();
   const rawLeagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
-  const leagues = (rawLeagues || []).filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027' && l.status !== 'Inaktiv');
+  const leagues = (rawLeagues || []).filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027' && l.status !== 'Inaktiv' && l.showOnHomepage !== false);
+
+  if (leagues.length === 0) {
+    return `
+      <div class="container view-enter-active" style="padding-top: var(--space-xl); padding-bottom: var(--space-xxl);">
+        <div class="glass-card" style="padding: 60px 24px; text-align: center; max-width: 640px; margin: 40px auto; border-radius: var(--border-radius-md);">
+          <div style="margin-bottom: 16px; display: flex; justify-content: center;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Keine aktive Liga verfügbar</h2>
+          <p style="color: var(--color-text-secondary); font-size: 0.95rem; margin: 0;">Derzeit ist keine Saison für die öffentliche Ansicht freigeschaltet.</p>
+        </div>
+      </div>
+    `;
+  }
+
   const currentLeague = leagues.find(l => l.isCurrent) || leagues[0];
   const defaultSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : (data.currentSeason || "2022/2023");
 
-  let visibleItems = [];
-  if (leagues && leagues.length > 0) {
-    visibleItems = leagues.map(l => {
-      const key = l.seasonKey || l.name;
-      let name = (l.name || key).trim();
-      let year = l.year ? String(l.year).trim() : '';
-      if (!year && key) {
-        const match = key.match(/\d{4}(\/\d{4})?/);
-        if (match) year = match[0];
-      }
-      if (/^\d{4}$/.test(year)) {
-        const nextY = parseInt(year) + 1;
-        year = `${year}/${nextY}`;
-      }
-      if (year && !name.includes(year)) {
-        name = `${name} ${year}`;
-      } else if (!year && /^\d{4}\/\d{4}$/.test(name)) {
-        name = `Saison ${name}`;
-      }
-      return { key, label: name };
-    });
-  } else if (data && data.seasons && Object.keys(data.seasons).length > 0) {
-    visibleItems = Object.keys(data.seasons)
-      .filter(s => s !== '2026/2027')
-      .map(s => ({
-        key: s,
-        label: s.startsWith('DSG') || s.startsWith('1.') || s.startsWith('Saison') || s.startsWith('Liga') ? s : `DSG Liga ${s}`
-      }));
-  } else {
-    visibleItems = [{ key: "2022/2023", label: "DSG Liga 2022/2023" }];
-  }
+  let visibleItems = leagues.map(l => {
+    const key = l.seasonKey || l.name;
+    let name = (l.name || key).trim();
+    let year = l.year ? String(l.year).trim() : '';
+    if (!year && key) {
+      const match = key.match(/\d{4}(\/\d{4})?/);
+      if (match) year = match[0];
+    }
+    if (/^\d{4}$/.test(year)) {
+      const nextY = parseInt(year) + 1;
+      year = `${year}/${nextY}`;
+    }
+    if (year && !name.includes(year)) {
+      name = `${name} ${year}`;
+    } else if (!year && /^\d{4}\/\d{4}$/.test(name)) {
+      name = `Saison ${name}`;
+    }
+    return { key, label: name };
+  });
 
   const visibleSeasonKeys = visibleItems.map(i => i.key);
   if (!currentViewSeason || !visibleSeasonKeys.includes(currentViewSeason)) {

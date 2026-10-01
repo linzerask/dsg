@@ -1,14 +1,14 @@
-import { viewHome, bindHome } from './views/home.js?v=1790560009000';
-import { viewNews, bindNews } from './views/news.js?v=1790560009000';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560009000';
-import { viewArchiv } from './views/simpleViews.js?v=1790560009000';
-import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560009000';
-import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560009000';
-import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560009000';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560009000';
-import { viewArticle, bindArticle } from './views/article.js?v=1790560009000';
-import { viewImpressum } from './views/impressum.js?v=1790560009000';
-import { viewDatenschutz } from './views/datenschutz.js?v=1790560009000';
+import { viewHome, bindHome } from './views/home.js?v=1790560010000';
+import { viewNews, bindNews } from './views/news.js?v=1790560010000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560010000';
+import { viewArchiv } from './views/simpleViews.js?v=1790560010000';
+import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560010000';
+import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560010000';
+import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560010000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560010000';
+import { viewArticle, bindArticle } from './views/article.js?v=1790560010000';
+import { viewImpressum } from './views/impressum.js?v=1790560010000';
+import { viewDatenschutz } from './views/datenschutz.js?v=1790560010000';
 
 const routes = {
   '/': { render: () => viewHome(), bind: () => bindHome() },
@@ -79,6 +79,7 @@ export const Router = {
     }, { passive: true });
 
     window.addEventListener('data-updated', () => this.handleRoute(true));
+    window.addEventListener('leagues-updated', () => this.handleRoute(true));
     this.handleRoute(false);
   },
 

@@ -1,14 +1,15 @@
-import { Store } from '../store.js?v=1790560009000';
-import { computeAllTimeStats } from './statistiken.js?v=1790560009000';
-import { renderIcon } from '../icons.js?v=1790560009000';
+import { Store } from '../store.js?v=1790560010000';
+import { computeAllTimeStats } from './statistiken.js?v=1790560010000';
+import { renderIcon } from '../icons.js?v=1790560010000';
 
 export const viewHome = () => {
   const data = Store.getData();
   const leagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
-  const currentLeague = leagues.find(l => l.isCurrent) || leagues[0];
-  const defaultHomeSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : (data.currentSeason || "2022/2023");
+  const visibleLeagues = (leagues || []).filter(l => l.showOnHomepage !== false && l.status !== 'Inaktiv' && l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027');
+  const currentLeague = visibleLeagues.find(l => l.isCurrent) || visibleLeagues[0] || null;
+  const defaultHomeSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : null;
 
-  const rawTeams = Store.getLiga(defaultHomeSeason) || [];
+  const rawTeams = defaultHomeSeason ? (Store.getLiga(defaultHomeSeason) || []) : [];
   const sortedTeams = [...rawTeams].sort((a, b) => {
     const ptsA = Number(a.points) || 0;
     const ptsB = Number(b.points) || 0;
@@ -24,12 +25,12 @@ export const viewHome = () => {
   });
   const teams = sortedTeams.slice(0, 5);
 
-  const rawScorers = (Store.getStats(defaultHomeSeason) || { topScorers: [] }).topScorers || [];
+  const rawScorers = defaultHomeSeason ? ((Store.getStats(defaultHomeSeason) || { topScorers: [] }).topScorers || []) : [];
   const sortedScorers = [...rawScorers].sort((a, b) => (b.goals || 0) - (a.goals || 0));
   const scorers = sortedScorers.slice(0, 4);
 
   const news = Store.getNews().slice(0, 3);
-  const allMatches = Store.getMatches(defaultHomeSeason) || [];
+  const allMatches = defaultHomeSeason ? (Store.getMatches(defaultHomeSeason) || []) : [];
   const allTimeStats = computeAllTimeStats();
 
   // Helper: Format Dates safely (YYYY-MM-DD or DD.MM.YYYY)
