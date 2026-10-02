@@ -579,3 +579,21 @@ DSG Liga/
   4. **Fast First-Visit Eager Population:**
      - `Store.syncFirebase()` must eagerly populate `state.memoryData`, `dsg_admin_leagues_v40`, and `dsg_admin_rounds_v40` from static JSON files on first visit and dispatch `data-updated` / `rounds-updated` / `leagues-updated` so that the round slider renders immediately without waiting for cloud timeouts.
 
+
+---
+
+## 49. League-to-Round Active Status Inheritance & Academic Year Matching Integrity
+* **The Pitfall:** In `adminRounds.js`, helper functions (`isLeagueActive`, `getDisplayLeagueName`, `openEditRoundModal`, `deleteRound`, `roundForm.onsubmit`) used a loose fallback matching condition `|| (l.name && (r.liga === l.name || r.saison === l.name))`. Because `leaguesData` is sorted with newest leagues first (`DSG Liga 2026/2027` at index 0), any past season named `"DSG Liga"` (e.g. `DSG Liga 2022/2023`) loosely matched `DSG Liga 2026/2027` (which is `Aktiv`), causing rounds of inactive historical leagues to falsely display green `Aktiv` status badges and maintain active Edit/Delete buttons.
+* **The Rule:**
+  1. **Dedicated `findMatchingLeague(r)` Resolver:**
+     - Always resolve a round's parent league in `adminRounds.js` through a strict multi-tier algorithm:
+       1. **Exact `seasonKey` match:** Match `l.seasonKey === r.seasonKey`.
+       2. **Year Prefix + Sub-Division match:** Extract 4-digit academic start year from `r.jahr` / `r.seasonKey` (e.g. `2022`) and compare strictly with `l.year` / `l.seasonKey`. Ensure sub-division qualifiers (`1. Klasse`, `Oberes Playoff`, `Unteres Playoff`) match identically between round and league.
+       3. **Never perform unconstrained name comparisons:** Never allow a bare string comparison like `r.liga === l.name` without verifying the year prefix.
+  2. **Strict Inactive Round Protection & UX:**
+     - When a parent league is `Inaktiv`, its rounds must:
+       - Display a grey `Inaktiv` badge in both desktop table and mobile card accordion views.
+       - Disable `Editieren` and `Löschen` buttons with `disabled`, `pointer-events: none`, opacity reduction, and a hover tooltip explaining: *"Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter 'Ligen verwalten' auf 'Aktiv'."*
+       - Allow `Spiele ansehen` inspection to remain fully functional.
+       - Accurately filter under the `#round-status-filter` (`Nur Aktiv` vs `Nur Inaktiv`).
+     - Form submissions in `adminRounds.js` (`roundForm.onsubmit`) must validate the active state via `findMatchingLeague` before writing new rounds.

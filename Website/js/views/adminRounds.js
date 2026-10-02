@@ -194,12 +194,48 @@ const formatDateForInput = (dStr) => {
     return str;
 };
 
+const findMatchingLeague = (r) => {
+    if (!r || !leaguesData || leaguesData.length === 0) return null;
+    
+    // 1. Exact seasonKey match
+    if (r.seasonKey) {
+        const exact = leaguesData.find(l => l.seasonKey === r.seasonKey);
+        if (exact) return exact;
+    }
+
+    // 2. Year + Sub-division match
+    const rYearStr = (getDisplaySeason(r) || '').replace(/\D/g, '');
+    const rYearPrefix = rYearStr.length >= 4 ? rYearStr.slice(0, 4) : '';
+    const rLigaName = (r.liga || r.saison || '').toLowerCase();
+
+    return leaguesData.find(l => {
+        const lYearStr = String(l.year || l.seasonKey || '').replace(/\D/g, '');
+        const lYearPrefix = lYearStr.length >= 4 ? lYearStr.slice(0, 4) : '';
+        const yearMatches = (rYearPrefix && lYearPrefix && rYearPrefix === lYearPrefix);
+        
+        const lName = (l.name || '').toLowerCase();
+        const nameMatches = rLigaName.includes(lName) || lName.includes(rLigaName);
+
+        // Sub-division specific checks
+        const is1KlasseR = rLigaName.includes('1. klasse') || rLigaName.includes('1klasse');
+        const is1KlasseL = lName.includes('1. klasse') || lName.includes('1klasse');
+        if (is1KlasseR !== is1KlasseL) return false;
+
+        const isOberesR = rLigaName.includes('oberes');
+        const isOberesL = lName.includes('oberes');
+        if (isOberesR !== isOberesL) return false;
+
+        const isUnteresR = rLigaName.includes('unteres');
+        const isUnteresL = lName.includes('unteres');
+        if (isUnteresR !== isUnteresL) return false;
+
+        return yearMatches && nameMatches;
+    }) || null;
+};
+
 const getDisplayLeagueName = (r) => {
     if (!r) return '-';
-    const matchingLeague = (leaguesData || []).find(l => 
-        (l.seasonKey && r.seasonKey && l.seasonKey === r.seasonKey) ||
-        (l.name && (r.liga === l.name || r.saison === l.name))
-    );
+    const matchingLeague = findMatchingLeague(r);
     if (matchingLeague && matchingLeague.name) {
         return matchingLeague.name.replace(/\s*\b\d{4}(\/\d{4})?\b/g, '').trim() || matchingLeague.name;
     }
@@ -252,11 +288,8 @@ const filterAndSortData = () => {
 
     const isLeagueActive = (r) => {
         if (!r) return false;
-        const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
-        return activeLeagues.some(l => 
-            (l.seasonKey && l.seasonKey === r.seasonKey) || 
-            (l.name && r.liga && r.liga.toLowerCase().includes(l.name.toLowerCase()))
-        );
+        const matchingLeague = findMatchingLeague(r);
+        return matchingLeague ? (matchingLeague.status === 'Aktiv' || matchingLeague.Status === 'Aktiv') : true;
     };
 
     filteredData = roundsData.filter(r => {
@@ -379,14 +412,8 @@ const renderTable = () => {
 
     const isLeagueActive = (r) => {
         if (!r) return false;
-        const matchingLeague = (leaguesData || []).find(l => 
-            (l.seasonKey && r.seasonKey && l.seasonKey === r.seasonKey) || 
-            (l.name && (r.liga === l.name || r.saison === l.name || (r.liga && r.liga.toLowerCase().includes(l.name.toLowerCase()))))
-        );
-        if (matchingLeague) {
-            return matchingLeague.status === 'Aktiv' || matchingLeague.Status === 'Aktiv';
-        }
-        return true;
+        const matchingLeague = findMatchingLeague(r);
+        return matchingLeague ? (matchingLeague.status === 'Aktiv' || matchingLeague.Status === 'Aktiv') : true;
     };
 
     const INACTIVE_ROUND_TOOLTIP = "Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter 'Ligen verwalten' auf 'Aktiv'.";
@@ -681,10 +708,7 @@ const openEditRoundModal = (idx = null) => {
 
     if (idx !== null && roundsData[idx]) {
         const r = roundsData[idx];
-        const matchingLeague = (leaguesData || []).find(l => 
-            (l.seasonKey && r.seasonKey && l.seasonKey === r.seasonKey) || 
-            (l.name && (r.liga === l.name || r.saison === l.name || (r.liga && r.liga.toLowerCase().includes(l.name.toLowerCase()))))
-        );
+        const matchingLeague = findMatchingLeague(r);
         const isActive = matchingLeague ? (matchingLeague.status === 'Aktiv' || matchingLeague.Status === 'Aktiv') : true;
         if (!isActive) {
             showToast('Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter "Ligen verwalten" auf "Aktiv".', true);
@@ -1096,10 +1120,7 @@ const deleteRound = (idx) => {
     const r = roundsData[idx];
     if (!r) return;
 
-    const matchingLeague = (leaguesData || []).find(l => 
-        (l.seasonKey && r.seasonKey && l.seasonKey === r.seasonKey) || 
-        (l.name && (r.liga === l.name || r.saison === l.name || (r.liga && r.liga.toLowerCase().includes(l.name.toLowerCase()))))
-    );
+    const matchingLeague = findMatchingLeague(r);
     const isActive = matchingLeague ? (matchingLeague.status === 'Aktiv' || matchingLeague.Status === 'Aktiv') : true;
     if (!isActive) {
         showToast('Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter "Ligen verwalten" auf "Aktiv".', true);
@@ -1244,11 +1265,8 @@ export const initAdminRounds = async () => {
             const datumBis = document.getElementById('modal-round-date-to').value;
 
             // Strict active league guard
-            const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
-            const isTargetActive = activeLeagues.some(l => 
-                (l.seasonKey && seasonKey && l.seasonKey === seasonKey) ||
-                (l.name && (liga === l.name || saison === l.name))
-            );
+            const matchingLeague = findMatchingLeague({ seasonKey, liga, saison, jahr });
+            const isTargetActive = matchingLeague ? (matchingLeague.status === 'Aktiv' || matchingLeague.Status === 'Aktiv') : false;
             if (!isTargetActive) {
                 showToast('Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter "Ligen verwalten" auf "Aktiv".', true);
                 return;
