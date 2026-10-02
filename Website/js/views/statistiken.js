@@ -16,6 +16,25 @@ if (typeof window !== 'undefined' && Store.getAdminTeams) {
   });
 }
 
+export const formatSeasonDisplay = (seasonKey) => {
+  if (!seasonKey) return '';
+  const leagues = (Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : []) || [];
+  const found = leagues.find(l => l.seasonKey === seasonKey || l.name === seasonKey);
+  if (found) {
+    const yr = found.year ? String(found.year).trim() : (seasonKey.match(/\d{4}(\/\d{4})?/)?.[0] || '');
+    const cleanName = (found.name || 'DSG Liga').replace(/\s*\d{4}(\/\d{4})?/, '').trim();
+    return yr ? `${cleanName} ${yr}` : cleanName;
+  }
+  let yr = seasonKey.match(/\d{4}(\/\d{4})?/)?.[0] || seasonKey;
+  if (/^\d{4}$/.test(yr)) {
+    yr = `${yr}/${parseInt(yr) + 1}`;
+  }
+  if (seasonKey.includes('oberes')) return `Oberes Playoff ${yr}`;
+  if (seasonKey.includes('unteres')) return `Unteres Playoff ${yr}`;
+  if (seasonKey.includes('1klasse') || seasonKey.toLowerCase().includes('1. klasse')) return `1. Klasse ${yr}`;
+  return `DSG Liga ${yr}`;
+};
+
 // Helper: Compute aggregate statistics dynamically from Store data
 export const computeAllTimeStats = () => {
   const data = Store.getData();
@@ -96,7 +115,7 @@ export const computeAllTimeStats = () => {
             drawsMap[m.away] = (drawsMap[m.away] || 0) + 1;
           }
 
-          const rLabel = `${m.round || 'Runde'} (${seasonKey})`;
+          const rLabel = `${m.round || 'Runde'} (${formatSeasonDisplay(seasonKey)})`;
           roundGoalsMap[rLabel] = (roundGoalsMap[rLabel] || 0) + sumGoals;
         }
       }
@@ -1011,7 +1030,7 @@ export const viewStatistiken = () => {
               ${stats.records.bestSingleSeasonScorer.goals} <span style="font-size: 1rem; font-weight: 600;">Tore</span>
             </div>
             <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
-              Erzielt für <strong>${stats.records.bestSingleSeasonScorer.team}</strong> in der Saison <strong>${stats.records.bestSingleSeasonScorer.season}</strong>.
+              Erzielt für <strong>${stats.records.bestSingleSeasonScorer.team}</strong> in der Saison <strong>${formatSeasonDisplay(stats.records.bestSingleSeasonScorer.season)}</strong>.
             </p>
           </div>
 
@@ -1025,7 +1044,7 @@ export const viewStatistiken = () => {
                 ${stats.records.highestScoringMatch.score} <span style="font-size: 1rem; font-weight: 600;">(${stats.records.highestScoringMatch.totalGoals} Tore)</span>
               </div>
               <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
-                Saison <strong>${stats.records.highestScoringMatch.season}</strong> &bull; ${stats.records.highestScoringMatch.date || 'Meisterschaftsspiel'}
+                Saison <strong>${formatSeasonDisplay(stats.records.highestScoringMatch.season)}</strong> &bull; ${stats.records.highestScoringMatch.date || 'Meisterschaftsspiel'}
               </p>
             </div>
           ` : ''}
@@ -1040,7 +1059,7 @@ export const viewStatistiken = () => {
                 ${stats.records.biggestWin.score}
               </div>
               <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
-                Saison <strong>${stats.records.biggestWin.season}</strong> &bull; Tordifferenz von ${stats.records.biggestWin.diff} Treffern
+                Saison <strong>${formatSeasonDisplay(stats.records.biggestWin.season)}</strong> &bull; Tordifferenz von ${stats.records.biggestWin.diff} Treffern
               </p>
             </div>
           ` : ''}
@@ -1056,7 +1075,7 @@ export const viewStatistiken = () => {
               </div>
               <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
                 ${stats.records.rekordmeister.seasons.length > 0 
-                  ? `Titelgewinn${stats.records.rekordmeister.titles > 1 ? 'e' : ''} in ${stats.records.rekordmeister.titles > 1 ? 'den Spielzeiten' : 'der Spielzeit'} <strong>${stats.records.rekordmeister.seasons.join(', ')}</strong>.`
+                  ? `Titelgewinn${stats.records.rekordmeister.titles > 1 ? 'e' : ''} in ${stats.records.rekordmeister.titles > 1 ? 'den Spielzeiten' : 'der Spielzeit'} <strong>${stats.records.rekordmeister.seasons.map(s => formatSeasonDisplay(s)).join(', ')}</strong>.`
                   : 'Aktueller Titelträger der Liga.'}
               </p>
             </div>
@@ -1072,7 +1091,7 @@ export const viewStatistiken = () => {
                 ${stats.records.mostConcededMatch.conceded} <span style="font-size: 1rem; font-weight: 600;">Gegentore</span>
               </div>
               <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
-                Kassiert in einem einzigen Spiel beim <strong>${stats.records.mostConcededMatch.score}</strong> gegen <strong>${stats.records.mostConcededMatch.opponent}</strong> (Saison ${stats.records.mostConcededMatch.season}).
+                Kassiert in einem einzigen Spiel beim <strong>${stats.records.mostConcededMatch.score}</strong> gegen <strong>${stats.records.mostConcededMatch.opponent}</strong> (Saison ${formatSeasonDisplay(stats.records.mostConcededMatch.season)}).
               </p>
             </div>
           ` : ''}

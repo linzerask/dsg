@@ -492,3 +492,13 @@ DSG Liga/
   1. **Dual Name Resolution:** Always resolve top scorers with `topScorer ? (topScorer.name || topScorer.player || 'N/A') : 'N/A'`.
   2. **Sorting Assurance:** Season honors top scorer selection must dynamically sort by `(b.goals || 0) - (a.goals || 0)` to guarantee the top athlete is selected.
 
+---
+
+## 44. Human-Readable Competition & Season Label Normalization in Records
+* **The Pitfall:** In `statistiken.js` (`computeAllTimeStats` & Records tab), passing raw database keys (`seasonKey`) directly into user-facing record cards caused labels to print internal strings such as `2024/2025_oberes`, `2022/2023_1klasse`, or truncated league names like `in der Saison DSG Liga`.
+* **The Rule:**
+  1. **Dynamic Formatter (`formatSeasonDisplay`):** Always route competition keys through `formatSeasonDisplay(seasonKey)`. This resolves the canonical name and academic year from `Store.getAdminLeaguesSync()` (e.g. `DSG Liga 2023/2024`, `Oberes Playoff 2024/2025`, `1. Klasse 2022/2023`).
+  2. **Consistency Across All Records:** Apply `formatSeasonDisplay` uniformly to `Saison-Torrekord`, `Torreichstes Spiel`, `Höchster Sieg`, `Rekordmeister`, `Die Schießbude`, and `Torreichster Spieltag`.
+
+
+
