@@ -15604,9 +15604,9 @@
           "weekday": "Sa",
           "home": "DSG UKJ Froschberg",
           "away": "SV Croatia Linz",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "Seminarplatz",
           "referee": "",
           "league": "DSG Liga",
@@ -16033,9 +16033,9 @@
           "weekday": "Sa",
           "home": "FC Bruck",
           "away": "DSG UKJ Froschberg",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "Sportplatz Bruck",
           "referee": "",
           "league": "DSG Liga",
@@ -16257,9 +16257,9 @@
           "weekday": "Fr",
           "home": "Union Heiligenberg",
           "away": "DSG UKJ Froschberg",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "Sportplatz Heiligenberg",
           "referee": "",
           "league": "DSG Liga",
@@ -16701,9 +16701,9 @@
           "weekday": "Sa",
           "home": "Walker FC",
           "away": "DSG UKJ Froschberg",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "DSG-Platz",
           "referee": "",
           "league": "DSG Liga",
@@ -17086,9 +17086,9 @@
           "weekday": "Sa",
           "home": "DSG UKJ Froschberg",
           "away": "Union Goldwörth",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "Seminarplatz",
           "referee": "",
           "league": "DSG Liga",
@@ -17486,9 +17486,9 @@
           "weekday": "Sa",
           "home": "DSG UKJ Froschberg",
           "away": "DSG Union Traun",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "Seminarplatz",
           "referee": "",
           "league": "DSG Liga",
@@ -17752,9 +17752,9 @@
           "weekday": "Sa",
           "home": "FC Gornjak",
           "away": "DSG UKJ Froschberg",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "DSG-Platz",
           "referee": "",
           "league": "DSG Liga",
@@ -18331,9 +18331,9 @@
           "weekday": "Sa",
           "home": "DSG UKJ Froschberg",
           "away": "DSG Thalheim",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "Seminarplatz",
           "referee": "",
           "league": "DSG Liga",
@@ -19030,9 +19030,9 @@
           "weekday": "Sa",
           "home": "FC Hinzenbach",
           "away": "DSG UKJ Froschberg",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "Sportplatz Wörth",
           "referee": "",
           "league": "DSG Liga",
@@ -19188,9 +19188,9 @@
           "weekday": "Sa",
           "home": "DSG UKJ Froschberg",
           "away": "DSG St. Josef/Oed FC",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "Seminarplatz",
           "referee": "",
           "league": "DSG Liga",
@@ -19423,9 +19423,9 @@
           "weekday": "Mi",
           "home": "Union Eschenau",
           "away": "DSG Thalheim",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "Sportplatz Thalheim",
           "referee": "",
           "league": "DSG Liga",
@@ -19587,9 +19587,9 @@
           "weekday": "Sa",
           "home": "Union Geboltskirchen",
           "away": "DSG UKJ Froschberg",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "Sportplatz Geboltskirchen",
           "referee": "",
           "league": "DSG Liga",
@@ -20025,9 +20025,9 @@
           "weekday": "Sa",
           "home": "DSG UKJ Froschberg",
           "away": "Union Eschenau",
-          "score": ":",
+          "score": "-:-",
           "ht": ":",
-          "status": "Gespielt",
+          "status": "Ausstehend",
           "location": "Seminarplatz",
           "referee": "",
           "league": "DSG Liga",
@@ -31913,13 +31913,13 @@
           "events": [
             {
               "type": "goal",
-              "player": "Manuel PÃ¼hringer",
+              "player": "Manuel Pühringer",
               "count": 1,
               "team": "Union Eschenau"
             },
             {
               "type": "goal",
-              "player": "Manuel PÃ¼hringer",
+              "player": "Manuel Pühringer",
               "count": 1,
               "team": "Union Eschenau"
             },
@@ -31937,7 +31937,7 @@
             },
             {
               "type": "goal",
-              "player": "Christopher RatzenbÃ¶ck",
+              "player": "Christopher Ratzenböck",
               "count": 1,
               "team": "Union Eschenau"
             },
@@ -31949,7 +31949,7 @@
             },
             {
               "type": "yellow",
-              "player": "Manuel PÃ¼hringer",
+              "player": "Manuel Pühringer",
               "count": 1,
               "team": "Union Eschenau"
             },
@@ -31973,7 +31973,7 @@
             },
             {
               "type": "yellow",
-              "player": "Christoph MÃ¼hlbacher",
+              "player": "Christoph Mühlbacher",
               "count": 1,
               "team": "Walker FC"
             },
@@ -32113,7 +32113,7 @@
           "score": "3:3",
           "ht": "1:2",
           "status": "Gespielt",
-          "location": "Sportplatz WÃ¶rth",
+          "location": "Sportplatz Wörth",
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2025/2026",
@@ -32156,7 +32156,7 @@
             },
             {
               "type": "yellow",
-              "player": "Christoph MÃ¼hlbacher",
+              "player": "Christoph Mühlbacher",
               "count": 1,
               "team": "Walker FC"
             },
@@ -32405,7 +32405,7 @@
             },
             {
               "type": "goal",
-              "player": "Clemens RÃ¶ssler",
+              "player": "Clemens Rössler",
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             },
@@ -32563,14 +32563,14 @@
           "score": "3:0",
           "ht": "1:0",
           "status": "Gespielt",
-          "location": "Sportplatz WÃ¶rth",
+          "location": "Sportplatz Wörth",
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2025/2026",
           "events": [
             {
               "type": "goal",
-              "player": "Felix Ãbleis",
+              "player": "Felix Übleis",
               "count": 1,
               "team": "FC Hinzenbach"
             },
@@ -32623,7 +32623,7 @@
             },
             {
               "type": "goal",
-              "player": "JÃ¼rgen Hutsteiner",
+              "player": "Jürgen Hutsteiner",
               "count": 1,
               "team": "Union Heiligenberg"
             },
@@ -32641,7 +32641,7 @@
             },
             {
               "type": "yellow",
-              "player": "Jan SchÃ¼tzeneder",
+              "player": "Jan Schützeneder",
               "count": 1,
               "team": "Union Heiligenberg"
             },
@@ -32659,7 +32659,7 @@
             },
             {
               "type": "goal",
-              "player": "Clemens RÃ¶ssler",
+              "player": "Clemens Rössler",
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             },
@@ -32683,7 +32683,7 @@
             },
             {
               "type": "yellow",
-              "player": "Clemens RÃ¶ssler",
+              "player": "Clemens Rössler",
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             },
@@ -33393,7 +33393,7 @@
             },
             {
               "type": "yellow",
-              "player": "Manuel MÃ¤rzinger",
+              "player": "Manuel Märzinger",
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             },
@@ -33474,7 +33474,7 @@
           "score": "3:1",
           "ht": "1:1",
           "status": "Gespielt",
-          "location": "Sportplatz WÃ¶rth",
+          "location": "Sportplatz Wörth",
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2025/2026",
@@ -33558,7 +33558,7 @@
             },
             {
               "type": "goal",
-              "player": "Christopher RatzenbÃ¶ck",
+              "player": "Christopher Ratzenböck",
               "count": 1,
               "team": "Union Eschenau"
             },
@@ -33827,7 +33827,7 @@
           "score": "1:3",
           "ht": "1:3",
           "status": "Gespielt",
-          "location": "Sportplatz WÃ¶rth",
+          "location": "Sportplatz Wörth",
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2025/2026",
@@ -34555,7 +34555,7 @@
           "score": "1:3",
           "ht": "1:2",
           "status": "Gespielt",
-          "location": "Sportplatz WÃ¶rth",
+          "location": "Sportplatz Wörth",
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2025/2026",
@@ -34709,7 +34709,7 @@
           "score": "2:1",
           "ht": "0:0",
           "status": "Gespielt",
-          "location": "Sportplatz WÃ¶rth",
+          "location": "Sportplatz Wörth",
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2025/2026",
@@ -34976,7 +34976,7 @@
           "score": "2:3",
           "ht": "2:2",
           "status": "Gespielt",
-          "location": "Sportplatz WÃ¶rth",
+          "location": "Sportplatz Wörth",
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2025/2026",
@@ -35066,7 +35066,7 @@
             },
             {
               "type": "goal",
-              "player": "Clemens RÃ¶ssler",
+              "player": "Clemens Rössler",
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
@@ -35208,7 +35208,7 @@
             },
             {
               "type": "yellow",
-              "player": "Christopher RatzenbÃ¶ck",
+              "player": "Christopher Ratzenböck",
               "count": 1,
               "team": "Union Eschenau"
             }
@@ -35435,8 +35435,8 @@
             "rank": 31
           },
           {
-            "player": "Clemens RÃ¶ssler",
-            "name": "Clemens RÃ¶ssler",
+            "player": "Clemens Rössler",
+            "name": "Clemens Rössler",
             "team": "DSG St. Josef/Oed FC",
             "goals": 3,
             "rank": 32
@@ -35519,15 +35519,15 @@
             "rank": 43
           },
           {
-            "player": "Manuel PÃ¼hringer",
-            "name": "Manuel PÃ¼hringer",
+            "player": "Manuel Pühringer",
+            "name": "Manuel Pühringer",
             "team": "Union Eschenau",
             "goals": 2,
             "rank": 44
           },
           {
-            "player": "Christopher RatzenbÃ¶ck",
-            "name": "Christopher RatzenbÃ¶ck",
+            "player": "Christopher Ratzenböck",
+            "name": "Christopher Ratzenböck",
             "team": "Union Eschenau",
             "goals": 2,
             "rank": 45
@@ -35652,8 +35652,8 @@
             "rank": 62
           },
           {
-            "player": "Felix Ãbleis",
-            "name": "Felix Ãbleis",
+            "player": "Felix Übleis",
+            "name": "Felix Übleis",
             "team": "FC Hinzenbach",
             "goals": 1,
             "rank": 63
@@ -35673,8 +35673,8 @@
             "rank": 65
           },
           {
-            "player": "JÃ¼rgen Hutsteiner",
-            "name": "JÃ¼rgen Hutsteiner",
+            "player": "Jürgen Hutsteiner",
+            "name": "Jürgen Hutsteiner",
             "team": "Union Heiligenberg",
             "goals": 1,
             "rank": 66
@@ -36079,8 +36079,8 @@
             "red": 0
           },
           {
-            "player": "Christoph MÃ¼hlbacher",
-            "name": "Christoph MÃ¼hlbacher",
+            "player": "Christoph Mühlbacher",
+            "name": "Christoph Mühlbacher",
             "team": "Walker FC",
             "yellow": 2,
             "yellowRed": 0,
@@ -36215,8 +36215,8 @@
             "red": 0
           },
           {
-            "player": "Manuel PÃ¼hringer",
-            "name": "Manuel PÃ¼hringer",
+            "player": "Manuel Pühringer",
+            "name": "Manuel Pühringer",
             "team": "Union Eschenau",
             "yellow": 1,
             "yellowRed": 0,
@@ -36351,16 +36351,16 @@
             "red": 0
           },
           {
-            "player": "Jan SchÃ¼tzeneder",
-            "name": "Jan SchÃ¼tzeneder",
+            "player": "Jan Schützeneder",
+            "name": "Jan Schützeneder",
             "team": "Union Heiligenberg",
             "yellow": 1,
             "yellowRed": 0,
             "red": 0
           },
           {
-            "player": "Clemens RÃ¶ssler",
-            "name": "Clemens RÃ¶ssler",
+            "player": "Clemens Rössler",
+            "name": "Clemens Rössler",
             "team": "DSG St. Josef/Oed FC",
             "yellow": 1,
             "yellowRed": 0,
@@ -36471,8 +36471,8 @@
             "red": 0
           },
           {
-            "player": "Manuel MÃ¤rzinger",
-            "name": "Manuel MÃ¤rzinger",
+            "player": "Manuel Märzinger",
+            "name": "Manuel Märzinger",
             "team": "DSG St. Josef/Oed FC",
             "yellow": 1,
             "yellowRed": 0,
@@ -36703,8 +36703,8 @@
             "red": 0
           },
           {
-            "player": "Christopher RatzenbÃ¶ck",
-            "name": "Christopher RatzenbÃ¶ck",
+            "player": "Christopher Ratzenböck",
+            "name": "Christopher Ratzenböck",
             "team": "Union Eschenau",
             "yellow": 1,
             "yellowRed": 0,
@@ -37342,8 +37342,8 @@
           "events": [
             {
               "type": "yellow",
-              "player": "Christoph MÃ¼hlbacher",
-              "name": "Christoph MÃ¼hlbacher",
+              "player": "Christoph Mühlbacher",
+              "name": "Christoph Mühlbacher",
               "count": 1,
               "team": "Walker FC"
             },
@@ -37356,8 +37356,8 @@
             },
             {
               "type": "yellow",
-              "player": "Sebastian GÃ¶ttfert",
-              "name": "Sebastian GÃ¶ttfert",
+              "player": "Sebastian Göttfert",
+              "name": "Sebastian Göttfert",
               "count": 1,
               "team": "DSG Union Traun"
             }
@@ -37439,22 +37439,22 @@
           "events": [
             {
               "type": "goal",
-              "player": "Dominik PrilmÃ¼ller",
-              "name": "Dominik PrilmÃ¼ller",
+              "player": "Dominik Prilmüller",
+              "name": "Dominik Prilmüller",
               "count": 1,
               "team": "DSG Union Traun"
             },
             {
               "type": "goal",
-              "player": "Dominik PrilmÃ¼ller",
-              "name": "Dominik PrilmÃ¼ller",
+              "player": "Dominik Prilmüller",
+              "name": "Dominik Prilmüller",
               "count": 1,
               "team": "DSG Union Traun"
             },
             {
               "type": "goal",
-              "player": "Dominik PrilmÃ¼ller",
-              "name": "Dominik PrilmÃ¼ller",
+              "player": "Dominik Prilmüller",
+              "name": "Dominik Prilmüller",
               "count": 1,
               "team": "DSG Union Traun"
             },
@@ -37509,8 +37509,8 @@
             },
             {
               "type": "yellow",
-              "player": "SÃ¼leyman Targil",
-              "name": "SÃ¼leyman Targil",
+              "player": "Süleyman Targil",
+              "name": "Süleyman Targil",
               "count": 1,
               "team": "DSG Union Traun"
             },
@@ -37841,8 +37841,8 @@
             "rank": 4
           },
           {
-            "player": "Dominik PrilmÃ¼ller",
-            "name": "Dominik PrilmÃ¼ller",
+            "player": "Dominik Prilmüller",
+            "name": "Dominik Prilmüller",
             "team": "DSG Union Traun",
             "goals": 3,
             "rank": 5
@@ -38189,8 +38189,8 @@
             "rank": 19
           },
           {
-            "player": "Christoph MÃ¼hlbacher",
-            "name": "Christoph MÃ¼hlbacher",
+            "player": "Christoph Mühlbacher",
+            "name": "Christoph Mühlbacher",
             "team": "Walker FC",
             "yellow": 1,
             "yellowRed": 0,
@@ -38207,8 +38207,8 @@
             "rank": 21
           },
           {
-            "player": "Sebastian GÃ¶ttfert",
-            "name": "Sebastian GÃ¶ttfert",
+            "player": "Sebastian Göttfert",
+            "name": "Sebastian Göttfert",
             "team": "DSG Union Traun",
             "yellow": 1,
             "yellowRed": 0,
@@ -38243,8 +38243,8 @@
             "rank": 25
           },
           {
-            "player": "SÃ¼leyman Targil",
-            "name": "SÃ¼leyman Targil",
+            "player": "Süleyman Targil",
+            "name": "Süleyman Targil",
             "team": "DSG Union Traun",
             "yellow": 1,
             "yellowRed": 0,

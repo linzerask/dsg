@@ -3,8 +3,11 @@ import re
 from bs4 import BeautifulSoup
 
 def parse_html_berichte(file_path, league_name, season_key):
-    with open(file_path, 'r', encoding='latin-1') as f:
-        html = f.read()
+    raw_bytes = open(file_path, 'rb').read()
+    try:
+        html = raw_bytes.decode('utf-8')
+    except UnicodeDecodeError:
+        html = raw_bytes.decode('latin-1')
     soup = BeautifulSoup(html, 'html.parser')
     
     rows = soup.find_all('tr')
