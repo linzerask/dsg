@@ -208,7 +208,7 @@ export const computeAllTimeStats = () => {
     // Also blend stats from s.stats.topScorers if missing in match events
     if (s.stats && s.stats.topScorers && Array.isArray(s.stats.topScorers)) {
       s.stats.topScorers.forEach(sc => {
-        const name = (sc.name || '').trim();
+        const name = (sc.name || sc.player || '').trim();
         if (!name) return;
         if (!playerMap[name]) {
           playerMap[name] = {
@@ -265,7 +265,11 @@ export const computeAllTimeStats = () => {
       const sortedTeams = [...teams].sort((a, b) => (b.points || 0) - (a.points || 0) || (((b.goalsFor ?? b.gf ?? 0) - (b.goalsAgainst ?? b.ga ?? 0)) - ((a.goalsFor ?? a.gf ?? 0) - (a.goalsAgainst ?? a.ga ?? 0))));
       const champion = sortedTeams[0];
       const runnerUp = sortedTeams[1];
-      const topScorer = s.stats?.topScorers?.[0] || null;
+      
+      let topScorer = null;
+      if (s.stats?.topScorers && Array.isArray(s.stats.topScorers) && s.stats.topScorers.length > 0) {
+        topScorer = [...s.stats.topScorers].sort((a, b) => (b.goals || 0) - (a.goals || 0))[0];
+      }
 
       if (champion && ((champion.played || 0) > 0 || (champion.points || 0) > 0)) {
         if (clubMap[champion.name.trim()]) {
@@ -278,9 +282,9 @@ export const computeAllTimeStats = () => {
           championPlayed: champion.played || 0,
           runnerUp: runnerUp ? runnerUp.name : '',
           runnerUpPoints: runnerUp ? (runnerUp.points || 0) : 0,
-          topScorer: topScorer ? topScorer.name : 'N/A',
+          topScorer: topScorer ? (topScorer.name || topScorer.player || 'N/A') : 'N/A',
           topScorerGoals: topScorer ? (topScorer.goals || 0) : 0,
-          topScorerTeam: topScorer ? topScorer.team : ''
+          topScorerTeam: topScorer ? (topScorer.team || '') : ''
         });
       }
     }
@@ -374,7 +378,7 @@ export const computeAllTimeStats = () => {
       s.stats.topScorers.forEach(sc => {
         if (sc.goals > bestSingleSeasonScorer.goals) {
           bestSingleSeasonScorer = {
-            name: sc.name,
+            name: sc.name || sc.player || '',
             goals: sc.goals,
             season: sKey,
             team: sc.team || ''

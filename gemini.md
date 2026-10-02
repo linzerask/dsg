@@ -483,3 +483,12 @@ DSG Liga/
 * **The Rule:**
   1. **Canonical Property Resolution:** All team statistics aggregators must read `t.goalsFor ?? t.gf ?? 0` and `t.goalsAgainst ?? t.ga ?? 0`.
   2. **Tiebreaker Sorting:** Club and champion sorting logic must consistently use `(t.goalsFor ?? t.gf ?? 0)` and `(t.goalsAgainst ?? t.ga ?? 0)` when comparing goal differences and goals scored.
+
+---
+
+## 43. Season Honors Top Scorer Resolution Protocol
+* **The Pitfall:** When extracting the top scorer for historical honor cards (`seasonHonors`), reading only `topScorer.name` caused players stored with `player` (e.g. Roland Meindlhumer with 34 goals in Season 2023/2024) to evaluate to `undefined`, making the entire `Torschützenkönig:` line disappear from the card.
+* **The Rule:**
+  1. **Dual Name Resolution:** Always resolve top scorers with `topScorer ? (topScorer.name || topScorer.player || 'N/A') : 'N/A'`.
+  2. **Sorting Assurance:** Season honors top scorer selection must dynamically sort by `(b.goals || 0) - (a.goals || 0)` to guarantee the top athlete is selected.
+
