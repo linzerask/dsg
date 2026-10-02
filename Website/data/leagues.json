@@ -22,5 +22,29 @@
     "seasonKey": "2023/2024",
     "status": "Aktiv",
     "showOnHomepage": true
+  },
+  {
+    "id": 4,
+    "name": "DSG Liga",
+    "year": "2024/2025",
+    "seasonKey": "2024/2025",
+    "status": "Aktiv",
+    "showOnHomepage": true
+  },
+  {
+    "id": 5,
+    "name": "Oberes Playoff",
+    "year": "2024/2025",
+    "seasonKey": "2024/2025_oberes",
+    "status": "Aktiv",
+    "showOnHomepage": true
+  },
+  {
+    "id": 6,
+    "name": "Unteres Playoff",
+    "year": "2024/2025",
+    "seasonKey": "2024/2025_unteres",
+    "status": "Aktiv",
+    "showOnHomepage": true
   }
 ]

@@ -550,5 +550,215 @@
     "liga": "DSG Liga",
     "seasonKey": "2023/2024",
     "status": "Aktiv"
+  },
+  {
+    "id": 119,
+    "liga": "DSG Liga",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025",
+    "runde": 1,
+    "datumVon": "06.09.2024",
+    "datumBis": "07.09.2024",
+    "status": "Aktiv"
+  },
+  {
+    "id": 120,
+    "liga": "DSG Liga",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025",
+    "runde": 2,
+    "datumVon": "13.09.2024",
+    "datumBis": "14.09.2024",
+    "status": "Aktiv"
+  },
+  {
+    "id": 121,
+    "liga": "DSG Liga",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025",
+    "runde": 3,
+    "datumVon": "20.09.2024",
+    "datumBis": "21.09.2024",
+    "status": "Aktiv"
+  },
+  {
+    "id": 122,
+    "liga": "DSG Liga",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025",
+    "runde": 4,
+    "datumVon": "27.09.2024",
+    "datumBis": "28.09.2024",
+    "status": "Aktiv"
+  },
+  {
+    "id": 123,
+    "liga": "DSG Liga",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025",
+    "runde": 5,
+    "datumVon": "04.10.2024",
+    "datumBis": "05.10.2024",
+    "status": "Aktiv"
+  },
+  {
+    "id": 124,
+    "liga": "DSG Liga",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025",
+    "runde": 6,
+    "datumVon": "11.10.2024",
+    "datumBis": "12.10.2024",
+    "status": "Aktiv"
+  },
+  {
+    "id": 125,
+    "liga": "DSG Liga",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025",
+    "runde": 7,
+    "datumVon": "18.10.2024",
+    "datumBis": "19.10.2024",
+    "status": "Aktiv"
+  },
+  {
+    "id": 126,
+    "liga": "DSG Liga",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025",
+    "runde": 8,
+    "datumVon": "25.10.2024",
+    "datumBis": "26.10.2024",
+    "status": "Aktiv"
+  },
+  {
+    "id": 127,
+    "liga": "DSG Liga",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025",
+    "runde": 9,
+    "datumVon": "01.11.2024",
+    "datumBis": "02.11.2024",
+    "status": "Aktiv"
+  },
+  {
+    "id": 128,
+    "liga": "DSG Liga",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025",
+    "runde": 10,
+    "datumVon": "04.04.2025",
+    "datumBis": "05.04.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 129,
+    "liga": "DSG Liga",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025",
+    "runde": 11,
+    "datumVon": "11.04.2025",
+    "datumBis": "12.04.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 130,
+    "liga": "Oberes Playoff",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025_oberes",
+    "runde": 1,
+    "datumVon": "25.04.2025",
+    "datumBis": "30.04.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 131,
+    "liga": "Oberes Playoff",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025_oberes",
+    "runde": 2,
+    "datumVon": "03.05.2025",
+    "datumBis": "30.05.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 132,
+    "liga": "Oberes Playoff",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025_oberes",
+    "runde": 3,
+    "datumVon": "07.05.2025",
+    "datumBis": "10.05.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 133,
+    "liga": "Oberes Playoff",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025_oberes",
+    "runde": 4,
+    "datumVon": "16.05.2025",
+    "datumBis": "17.05.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 134,
+    "liga": "Oberes Playoff",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025_oberes",
+    "runde": 5,
+    "datumVon": "23.05.2025",
+    "datumBis": "24.05.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 135,
+    "liga": "Unteres Playoff",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025_unteres",
+    "runde": 1,
+    "datumVon": "25.04.2025",
+    "datumBis": "25.04.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 136,
+    "liga": "Unteres Playoff",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025_unteres",
+    "runde": 2,
+    "datumVon": "30.04.2025",
+    "datumBis": "03.05.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 137,
+    "liga": "Unteres Playoff",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025_unteres",
+    "runde": 3,
+    "datumVon": "09.05.2025",
+    "datumBis": "09.05.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 138,
+    "liga": "Unteres Playoff",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025_unteres",
+    "runde": 4,
+    "datumVon": "16.05.2025",
+    "datumBis": "17.05.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 139,
+    "liga": "Unteres Playoff",
+    "jahr": "2024/2025",
+    "seasonKey": "2024/2025_unteres",
+    "runde": 5,
+    "datumVon": "23.05.2025",
+    "datumBis": "31.05.2025",
+    "status": "Aktiv"
   }
 ]

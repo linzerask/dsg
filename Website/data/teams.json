@@ -493,5 +493,82 @@
     "Aktiv seit": "2026-09-27",
     "Inaktiv seit": "",
     "Action": "Edit Delete Spieler"
+  },
+  {
+    "id": 1,
+    "name": "DSG St. Josef/Oed FC",
+    "status": "Aktiv",
+    "league": "DSG Liga",
+    "seasonKey": "2024/2025"
+  },
+  {
+    "id": 2,
+    "name": "DSG Union Traun",
+    "status": "Aktiv",
+    "league": "DSG Liga",
+    "seasonKey": "2024/2025"
+  },
+  {
+    "id": 3,
+    "name": "FC Gornjak",
+    "status": "Aktiv",
+    "league": "DSG Liga",
+    "seasonKey": "2024/2025"
+  },
+  {
+    "id": 4,
+    "name": "FC Hinzenbach",
+    "status": "Aktiv",
+    "league": "DSG Liga",
+    "seasonKey": "2024/2025"
+  },
+  {
+    "id": 5,
+    "name": "FC U. Schleißheim",
+    "status": "Aktiv",
+    "league": "DSG Liga",
+    "seasonKey": "2024/2025"
+  },
+  {
+    "id": 6,
+    "name": "Hrvatski centar Linz",
+    "status": "Aktiv",
+    "league": "DSG Liga",
+    "seasonKey": "2024/2025"
+  },
+  {
+    "id": 7,
+    "name": "SV Croatia Linz",
+    "status": "Aktiv",
+    "league": "DSG Liga",
+    "seasonKey": "2024/2025"
+  },
+  {
+    "id": 8,
+    "name": "Union Eschenau",
+    "status": "Aktiv",
+    "league": "DSG Liga",
+    "seasonKey": "2024/2025"
+  },
+  {
+    "id": 9,
+    "name": "Union Goldwörth",
+    "status": "Aktiv",
+    "league": "DSG Liga",
+    "seasonKey": "2024/2025"
+  },
+  {
+    "id": 10,
+    "name": "Union Heiligenberg",
+    "status": "Aktiv",
+    "league": "DSG Liga",
+    "seasonKey": "2024/2025"
+  },
+  {
+    "id": 11,
+    "name": "Walker FC",
+    "status": "Aktiv",
+    "league": "DSG Liga",
+    "seasonKey": "2024/2025"
   }
 ]
