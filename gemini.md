@@ -478,5 +478,8 @@ DSG Liga/
        1. **Roland Meindlhumer** (FC Hinzenbach): **65 Tore** (18 in 22/23 + 34 in 23/24 + 13 in 24/25 Oberes Playoff)
        2. **Thomas Paulmair** (DSG St. Josef/Oed FC): **37 Tore** (14 in 22/23 + 12 in 23/24 + 8 in 24/25 Grund + 3 in 24/25 Oberes)
        3. **Michael Haslehner** (Union Heiligenberg): **34 Tore** (21 in 22/23 + 2 in 23/24 + 11 in 24/25 Unteres)
-     - **Current Cache Keys:** `dsg_data_v81`, `dsg_admin_leagues_v37`, `dsg_admin_rounds_v36`, query string `?v=1790560110000`.
-
+## 42. All-Time Club Standings Goal Aggregation Property Mapping
+* **The Pitfall:** In `statistiken.js` (`computeAllTimeStats`), aggregating historical club statistics attempted to read `t.gf` and `t.ga` from season team objects. Because the canonical database keys defined in `liga.json` / `store.js` are `goalsFor` and `goalsAgainst`, `t.gf` and `t.ga` were `undefined`, causing the *Ewige Vereinstabelle* to display `0:0` for Tore and `0` for Diff for all teams.
+* **The Rule:**
+  1. **Canonical Property Resolution:** All team statistics aggregators must read `t.goalsFor ?? t.gf ?? 0` and `t.goalsAgainst ?? t.ga ?? 0`.
+  2. **Tiebreaker Sorting:** Club and champion sorting logic must consistently use `(t.goalsFor ?? t.gf ?? 0)` and `(t.goalsAgainst ?? t.ga ?? 0)` when comparing goal differences and goals scored.

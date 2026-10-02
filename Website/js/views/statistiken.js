@@ -253,8 +253,8 @@ export const computeAllTimeStats = () => {
       clubMap[name].won += (t.won || 0);
       clubMap[name].drawn += (t.drawn || 0);
       clubMap[name].lost += (t.lost || 0);
-      clubMap[name].gf += (t.gf || 0);
-      clubMap[name].ga += (t.ga || 0);
+      clubMap[name].gf += (t.goalsFor ?? t.gf ?? 0);
+      clubMap[name].ga += (t.goalsAgainst ?? t.ga ?? 0);
       clubMap[name].points += (t.points || 0);
       clubMap[name].seasonsCount++;
       clubMap[name].seasonsList.add(seasonKey);
@@ -262,7 +262,7 @@ export const computeAllTimeStats = () => {
 
     // Season honors for completed seasons
     if (teams.length > 0 && teams.some(t => (t.played || 0) > 0 || (t.points || 0) > 0)) {
-      const sortedTeams = [...teams].sort((a, b) => (b.points || 0) - (a.points || 0) || (((b.gf || 0) - (b.ga || 0)) - ((a.gf || 0) - (a.ga || 0))));
+      const sortedTeams = [...teams].sort((a, b) => (b.points || 0) - (a.points || 0) || (((b.goalsFor ?? b.gf ?? 0) - (b.goalsAgainst ?? b.ga ?? 0)) - ((a.goalsFor ?? a.gf ?? 0) - (a.goalsAgainst ?? a.ga ?? 0))));
       const champion = sortedTeams[0];
       const runnerUp = sortedTeams[1];
       const topScorer = s.stats?.topScorers?.[0] || null;
