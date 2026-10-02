@@ -450,8 +450,12 @@ DSG Liga/
        1. **Roland Meindlhumer** (FC Hinzenbach): **52 Tore** (18 in 22/23 + 34 in 23/24)
        2. **Thomas Paulmair** (DSG St. Josef/Oed FC): **26 Tore**
        3. **Michael Haslehner** (Union Heiligenberg): **23 Tore**
-     - **Current Cache Keys:** `dsg_data_v79`, `dsg_admin_leagues_v35`, `dsg_admin_rounds_v34`, query string `?v=1790560090000`.
+     - **Current Cache Keys:** `dsg_data_v80`, `dsg_admin_leagues_v36`, `dsg_admin_rounds_v35`, query string `?v=1790560100000`.
 
+---
 
-
-
+## 40. Top Scorer and Card Event Player Property Normalization
+* **The Pitfall:** In match event statistics and season datasets, individual scorer and card entries historically mapped the athlete's name under `player` (or in legacy views under `name`). Accessing only `s.name` in UI views (`liga.js`, `home.js`, `statistiken.js`, `adminLeagues.js`) caused the player name to render as `undefined` in the public Liga Top Torjäger / Karten tab.
+* **The Rule:**
+  1. **Dual Property Normalization:** `Store.getStats()` must always normalize all `topScorers` and `cards` entries to guarantee both `name: s.name || s.player || ''` and `player: s.player || s.name || ''`.
+  2. **Safe Template Literal Fallback:** All UI views rendering scorers and disciplinary cards must use `${s.player || s.name || ''}` to guarantee robust display across all historical seasons and newly filed match reports.

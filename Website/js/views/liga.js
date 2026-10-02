@@ -1,4 +1,4 @@
-import { Store, sortLeaguesByPriority } from '../store.js?v=1790560090000';
+import { Store, sortLeaguesByPriority } from '../store.js?v=1790560100000';
 
 
 let currentViewSeason = null;
@@ -180,8 +180,8 @@ export function viewLiga() {
       <div style="display: flex; gap: var(--space-md); align-items: center;">
         <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-secondary); width: 25px; display: inline-block;">${s._displayRank}</span>
         <div>
-          <div style="font-weight: 700; font-size: 1.1rem;">${s.name}</div>
-          <div style="font-size: 0.8rem; color: var(--color-text-secondary);">${s.team}</div>
+          <div style="font-weight: 700; font-size: 1.1rem;">${s.player || s.name || ''}</div>
+          <div style="font-size: 0.8rem; color: var(--color-text-secondary);">${s.team || ''}</div>
         </div>
       </div>
       <div style="font-weight: 900; font-size: 1.5rem; color: var(--color-accent);">${s.goals}</div>
@@ -193,8 +193,8 @@ export function viewLiga() {
       <div style="display: flex; gap: var(--space-md); align-items: center;">
         <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-secondary); width: 25px; display: inline-block;">${s._displayRank}</span>
         <div>
-          <div style="font-weight: 700; font-size: 1.1rem;">${s.name}</div>
-          <div style="font-size: 0.8rem; color: var(--color-text-secondary);">${s.team}</div>
+          <div style="font-weight: 700; font-size: 1.1rem;">${s.player || s.name || ''}</div>
+          <div style="font-size: 0.8rem; color: var(--color-text-secondary);">${s.team || ''}</div>
         </div>
       </div>
       <div style="font-weight: 900; font-size: 1.5rem; color: var(--color-accent);">${s.goals}</div>
@@ -206,7 +206,7 @@ export function viewLiga() {
   
   const generateCardsHTML = (typeKey, cssClass, iconHtml) => {
     // Sort descending by typeKey
-    let sorted = [...cardsData].sort((a, b) => b[typeKey] - a[typeKey]).filter(c => c[typeKey] > 0);
+    let sorted = [...cardsData].sort((a, b) => (b[typeKey] || 0) - (a[typeKey] || 0)).filter(c => (c[typeKey] || 0) > 0);
     
     // Dense Ranking
     let currentRank = 1;
@@ -225,9 +225,9 @@ export function viewLiga() {
       <div class="glass-card stagger-item ${extraClass}" style="margin-bottom: var(--space-sm); display: grid; grid-template-columns: 25px 1fr auto; align-items: center; gap: 10px; padding: var(--space-md);">
         <span style="font-weight: 900; font-size: 1.1rem; color: var(--color-text-secondary);">${s._displayRank}</span>
         <div style="min-width: 0;">
-          <div style="font-weight: 700; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.name}</div>
-          <div class="hide-mobile" style="font-size: 0.8rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team}</div>
-          <div class="show-mobile" style="font-size: 0.75rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team}</div>
+          <div style="font-weight: 700; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.player || s.name || ''}</div>
+          <div class="hide-mobile" style="font-size: 0.8rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</div>
+          <div class="show-mobile" style="font-size: 0.75rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
           <div style="display: flex; align-items: center;">

@@ -24,15 +24,15 @@ def populate_stats_in_liga():
                     scorers_map[(p, t)] = scorers_map.get((p, t), 0) + cnt
                 elif etype in ['yellow', 'gelb'] and p:
                     key = (p, t)
-                    if key not in cards_map: cards_map[key] = {"player": p, "team": t, "yellow": 0, "yellowRed": 0, "red": 0}
+                    if key not in cards_map: cards_map[key] = {"player": p, "name": p, "team": t, "yellow": 0, "yellowRed": 0, "red": 0}
                     cards_map[key]["yellow"] += cnt
                 elif etype in ['yellowRed', 'yellow-red', 'gelb-rot'] and p:
                     key = (p, t)
-                    if key not in cards_map: cards_map[key] = {"player": p, "team": t, "yellow": 0, "yellowRed": 0, "red": 0}
+                    if key not in cards_map: cards_map[key] = {"player": p, "name": p, "team": t, "yellow": 0, "yellowRed": 0, "red": 0}
                     cards_map[key]["yellowRed"] += cnt
                 elif etype in ['red', 'rot'] and p:
                     key = (p, t)
-                    if key not in cards_map: cards_map[key] = {"player": p, "team": t, "yellow": 0, "yellowRed": 0, "red": 0}
+                    if key not in cards_map: cards_map[key] = {"player": p, "name": p, "team": t, "yellow": 0, "yellowRed": 0, "red": 0}
                     cards_map[key]["red"] += cnt
 
         # Build list
@@ -40,6 +40,7 @@ def populate_stats_in_liga():
         for (p, t), g in scorers_map.items():
             top_scorers.append({
                 "player": p,
+                "name": p,
                 "team": t,
                 "goals": g
             })

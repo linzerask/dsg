@@ -1028,7 +1028,7 @@ const renderModalContent = () => {
                         <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
                             <span style="font-weight: 700; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; min-width: 20px; font-size: 0.9rem;">${i + 1}</span>
                             <div style="display: flex; flex-direction: column;">
-                                <strong style="color: var(--color-text-primary); font-size: 0.92rem;">${s.name}</strong>
+                                <strong style="color: var(--color-text-primary); font-size: 0.92rem;">${s.player || s.name || ''}</strong>
                                 <span style="color: var(--color-text-secondary); font-size: 0.78rem;">${s.team || '-'}</span>
                             </div>
                         </div>

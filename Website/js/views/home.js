@@ -1,6 +1,6 @@
-import { Store, sortLeaguesByPriority } from '../store.js?v=1790560090000';
-import { computeAllTimeStats } from './statistiken.js?v=1790560090000';
-import { renderIcon } from '../icons.js?v=1790560090000';
+import { Store, sortLeaguesByPriority } from '../store.js?v=1790560100000';
+import { computeAllTimeStats } from './statistiken.js?v=1790560100000';
+import { renderIcon } from '../icons.js?v=1790560100000';
 
 export const viewHome = () => {
   const data = Store.getData();
@@ -180,8 +180,8 @@ export const viewHome = () => {
     <div class="table-row">
       <span class="rank" style="min-width: 24px; font-weight: 700; color: ${index === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: inline-block;">${displayRank}</span>
       <div style="flex: 1; margin-left: var(--space-sm); display: flex; flex-direction: column;">
-        <span class="scorer-name" style="font-weight: 600; color: var(--color-text-primary);">${s.name}</span>
-        <span class="team-name" style="color: var(--color-text-secondary); font-size: 0.8rem;">${s.team}</span>
+        <span class="scorer-name" style="font-weight: 600; color: var(--color-text-primary);">${s.player || s.name || ''}</span>
+        <span class="team-name" style="color: var(--color-text-secondary); font-size: 0.8rem;">${s.team || ''}</span>
       </div>
       <span class="goals" style="font-weight: 700; color: var(--color-accent);">${s.goals} Tore</span>
     </div>
