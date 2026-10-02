@@ -416,5 +416,11 @@ DSG Liga/
      - **1. Klasse 2022/2023 (`2022/2023_1klasse`):** 14 rounds, 49 matches between 8/7 teams (*Auberg, Thalheim, Traun, Bruck, Gornjak, Eschenau, Walker FC*).
   3. **Data Integrity Verification:** Always verify that all 14 rounds are present in `rounds.json` (28 rounds total for Season 1) and that `Store.syncFirebase()` automatically migrates and writes full season datasets directly to Firebase Firestore without requiring manual Admin UI reactivation.
 
-
+## 37. Clean Match Score Formatting & Explicit Halftime Separation
+* **The Pitfall:** When match scores in the database or scraper files contain embedded halftime results in parentheses (e.g. `"4:6 (3:2)"`, `"5:2 (3:2)"`), rendering `m.score` directly inside the primary score pill badge while also rendering the secondary `.match-ht-badge` (`HT 3:2`) underneath causes the halftime score to be displayed twice (once inside the green badge and once in the small gray text below). Similarly, in the Admin Spiele table, this resulted in the `ERGEBNIS` column displaying `"4:6 (3:2)"` while the adjacent `HZ` column showed `"3:2"`.
+* **The Rule:**
+  1. **Primary Score Badge (`.match-score-badge`):** The main score pill badge must strictly display the clean full-time match score (e.g. `4:6`, `5:2`, `1:1`, `Abges. 3:0`, `Verschoben`, `-:-`), stripping out any parenthesized halftime suffix via `.replace(/\s*\([^)]*\)/g, '').trim()`.
+  2. **Dedicated Halftime Indicator (`.match-ht-badge`):** The halftime score is displayed exclusively via the small, elegant gray badge below the score (e.g. `HT 3:2`, `HT 1:1`), resolved from `m.ht || (m.score.match(/\(([^)]+)\)/)?.[1] || '')`.
+  3. **Admin Spiele Data Grid:** The `ERGEBNIS` column renders the clean full-time score (`1:1`, `5:1`), while the separate `HZ` column renders the distinct halftime score (`0:1`, `2:1`).
+  4. **Consistent Implementation:** This separation is enforced consistently across all public and administrative match views: Public Liga match center (`liga.js`), Homepage Match Center (`home.js`), Admin Spiele table & mobile cards (`adminGames.js`), Admin Spielrunden match inspection modal (`adminRounds.js`), and Admin Ligen inspection modal (`adminLeagues.js`).
 
