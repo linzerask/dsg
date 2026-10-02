@@ -1,0 +1,89 @@
+{
+  "total_games_tested": 376,
+  "perfect_modal_matches": 376,
+  "screenshots_taken": [
+    {
+      "season": "2022/2023",
+      "filename": "report_modal_bottom_2022_2023.png",
+      "match": "FC Hinzenbach vs FC U. Schleißheim"
+    },
+    {
+      "season": "2022/2023_1klasse",
+      "filename": "report_modal_bottom_2022_2023_1klasse.png",
+      "match": "DSG Union Traun vs DSG Thalheim"
+    },
+    {
+      "season": "2023/2024",
+      "filename": "report_modal_bottom_2023_2024.png",
+      "match": "Union Goldwörth vs Union Eschenau"
+    },
+    {
+      "season": "2024/2025",
+      "filename": "report_modal_bottom_2024_2025.png",
+      "match": "Walker FC vs Hrvatski centar Linz"
+    },
+    {
+      "season": "2024/2025_oberes",
+      "filename": "report_modal_bottom_2024_2025_oberes.png",
+      "match": "DSG St. Josef/Oed FC vs FC U. Schleißheim"
+    },
+    {
+      "season": "2024/2025_unteres",
+      "filename": "report_modal_bottom_2024_2025_unteres.png",
+      "match": "DSG Union Traun vs Union Goldwörth"
+    },
+    {
+      "season": "2025/2026",
+      "filename": "report_modal_bottom_2025_2026.png",
+      "match": "DSG St. Josef/Oed FC vs Walker FC"
+    },
+    {
+      "season": "2026/2027",
+      "filename": "report_modal_bottom_2026_2027.png",
+      "match": "DSG Union Traun vs Union Heiligenberg"
+    }
+  ],
+  "mismatches": [],
+  "season_summaries": {
+    "2022/2023": {
+      "total": 56,
+      "perfect": 56,
+      "mismatches": []
+    },
+    "2022/2023_1klasse": {
+      "total": 49,
+      "perfect": 49,
+      "mismatches": []
+    },
+    "2023/2024": {
+      "total": 108,
+      "perfect": 108,
+      "mismatches": []
+    },
+    "2024/2025": {
+      "total": 55,
+      "perfect": 55,
+      "mismatches": []
+    },
+    "2024/2025_oberes": {
+      "total": 15,
+      "perfect": 15,
+      "mismatches": []
+    },
+    "2024/2025_unteres": {
+      "total": 10,
+      "perfect": 10,
+      "mismatches": []
+    },
+    "2025/2026": {
+      "total": 56,
+      "perfect": 56,
+      "mismatches": []
+    },
+    "2026/2027": {
+      "total": 27,
+      "perfect": 27,
+      "mismatches": []
+    }
+  }
+}

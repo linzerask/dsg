@@ -609,18 +609,11 @@ const renderGamesTable = () => {
 
         const roundDisplay = m.round ? m.round.replace(/\s+\d{2}\.\d{2}\..*$/, '') : '-';
 
-        const reportBtnHtml = isActive ? `
-            <button class="btn-report-game" data-idx="${rawIndex}" title="Spielbericht erfassen" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;">
+        const reportBtnHtml = `
+            <button class="btn-report-game" data-idx="${rawIndex}" title="Spielbericht ${isActive ? 'erfassen' : 'ansehen'}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
                 Bericht
             </button>
-        ` : `
-            <span class="tooltip-trigger" data-tooltip="${INACTIVE_GAME_TOOLTIP}" style="display: inline-flex; cursor: not-allowed;">
-                <button class="btn-report-game" data-idx="${rawIndex}" disabled style="background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 600; cursor: not-allowed; opacity: 0.45; display: inline-flex; align-items: center; gap: 3px; pointer-events: none;">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                    Bericht
-                </button>
-            </span>
         `;
 
         const editBtnHtml = isActive ? `
@@ -692,18 +685,11 @@ const renderGamesTable = () => {
                 else if (m.status === 'Postponed') noteBadge = '<span class="badge badge-secondary" style="font-size: 0.72rem;">Verschoben</span>';
                 else if (m.status === 'Canceled') noteBadge = '<span class="badge badge-danger" style="font-size: 0.72rem;">Abgesagt</span>';
 
-                const mReportBtn = isActive ? `
+                const mReportBtn = `
                     <button class="btn-report-game full-width" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                        Spielbericht erfassen
+                        Spielbericht ${isActive ? 'erfassen' : 'ansehen'}
                     </button>
-                ` : `
-                    <span class="tooltip-trigger" data-tooltip="${INACTIVE_GAME_TOOLTIP}" style="display: block; width: 100%; cursor: not-allowed;">
-                        <button class="btn-report-game full-width" data-idx="${rawIndex}" disabled style="width: 100%; background: rgba(0,0,0,0.04); color: var(--color-text-secondary); border: 1px solid var(--color-border); opacity: 0.45; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 6px; pointer-events: none;">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                            Spielbericht erfassen
-                        </button>
-                    </span>
                 `;
 
                 const mEditBtn = isActive ? `
@@ -1212,19 +1198,23 @@ const saveGameForm = (e) => {
 
 /* --- Spielbericht (Match Report) Logic --- */
 
-const openReportModal = (idx) => {
+const openReportModal = (idxOrMatch) => {
     ensureModalsInBody();
-    const match = gamesData[idx];
+    const match = (typeof idxOrMatch === 'object' && idxOrMatch !== null) ? idxOrMatch : gamesData[idxOrMatch];
     if (!match) return;
-
-    if (!isGameActive(match)) {
-        showToast('Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter "Ligen verwalten" auf "Aktiv".', true);
-        return;
-    }
 
     currentReportMatch = match;
     const modal = document.getElementById('report-modal');
     if (!modal) return;
+
+    const active = isGameActive(match);
+    const saveBtn = document.getElementById('btn-save-report');
+    if (saveBtn) {
+        saveBtn.disabled = !active;
+        saveBtn.innerText = active ? 'Spielbericht speichern' : 'Schreibgeschützt (Inaktive Liga)';
+        saveBtn.style.opacity = active ? '1' : '0.6';
+        saveBtn.style.cursor = active ? 'pointer' : 'not-allowed';
+    }
 
     // Set match summary info
     document.getElementById('report-match-title').innerText = `${match.home} gegen ${match.away}`;
@@ -1243,9 +1233,12 @@ const openReportModal = (idx) => {
     let scoreHome = '';
     let scoreAway = '';
     if (match.score && match.score.includes(':') && match.score !== '-:-' && match.score !== ':') {
-        const parts = match.score.split(':');
-        scoreHome = parts[0].trim();
-        scoreAway = parts[1].trim();
+        const cleanScore = match.score.replace(/\s*\([^)]*\)/g, '').replace(/[^\d:]/g, '').trim();
+        if (cleanScore.includes(':')) {
+            const parts = cleanScore.split(':');
+            scoreHome = parts[0]?.trim() || '';
+            scoreAway = parts[1]?.trim() || '';
+        }
     }
     document.getElementById('report-ft-home').value = scoreHome;
     document.getElementById('report-ft-away').value = scoreAway;
@@ -1253,15 +1246,37 @@ const openReportModal = (idx) => {
     let htHome = '';
     let htAway = '';
     if (match.ht && match.ht.includes(':') && match.ht !== ':') {
-        const parts = match.ht.split(':');
-        htHome = parts[0].trim();
-        htAway = parts[1].trim();
+        const cleanHt = match.ht.replace(/[()]/g, '').replace(/[^\d:]/g, '').trim();
+        if (cleanHt.includes(':')) {
+            const parts = cleanHt.split(':');
+            htHome = parts[0]?.trim() || '';
+            htAway = parts[1]?.trim() || '';
+        }
+    } else if (match.score && match.score.includes('(')) {
+        const mHt = match.score.match(/\(([^)]+)\)/);
+        if (mHt && mHt[1].includes(':')) {
+            const cleanHt = mHt[1].replace(/[^\d:]/g, '').trim();
+            const parts = cleanHt.split(':');
+            htHome = parts[0]?.trim() || '';
+            htAway = parts[1]?.trim() || '';
+        }
     }
     document.getElementById('report-ht-home').value = htHome;
     document.getElementById('report-ht-away').value = htAway;
 
     document.getElementById('report-note').value = match.note || '';
-    document.getElementById('report-cancel-select').value = (match.status && match.status !== 'Played' && match.status !== 'Upcoming') ? match.status : 'none';
+    
+    let cancelVal = 'none';
+    if (match.status === 'Abgesagt 3:0' || (match.status === 'Abgesagt' && match.score && match.score.includes('3:0'))) {
+        cancelVal = 'Abgesagt 3:0';
+    } else if (match.status === 'Abgesagt 0:3' || (match.status === 'Abgesagt' && match.score && match.score.includes('0:3'))) {
+        cancelVal = 'Abgesagt 0:3';
+    } else if (match.status === 'Postponed' || match.status === 'Verschoben') {
+        cancelVal = 'Postponed';
+    } else if (match.status === 'Canceled' || match.status === 'Abgesagt') {
+        cancelVal = 'Canceled';
+    }
+    document.getElementById('report-cancel-select').value = cancelVal;
 
     // Populate Player dropdowns for both teams
     const homePlayers = getTeamPlayersList(match.home);
@@ -1281,28 +1296,44 @@ const openReportModal = (idx) => {
     document.getElementById('report-scorer-player-home').innerHTML = buildPlayerOptions(homePlayers, true);
     document.getElementById('report-scorer-player-away').innerHTML = buildPlayerOptions(awayPlayers, true);
 
-    // Populate Scorers & Cards lists
+    // Populate Scorers & Cards lists (checking match.scorers/cards and match.events)
+    const rawScorers = (match.scorers && match.scorers.length > 0)
+        ? match.scorers
+        : (match.events || []).filter(e => e.type === 'goal');
+
     reportScorersHome = [];
     reportScorersAway = [];
-    (match.scorers || []).forEach(s => {
+    rawScorers.forEach(s => {
         const sName = s.name || s.player || '';
         const sTeam = s.team || '';
-        if (sTeam === match.home || normalizeTeamName(sTeam) === normalizeTeamName(match.home)) {
-            reportScorersHome.push(sName);
-        } else {
-            reportScorersAway.push(sName);
+        const count = s.count || 1;
+        const isHome = sTeam === match.home || normalizeTeamName(sTeam) === normalizeTeamName(match.home);
+        for (let i = 0; i < count; i++) {
+            if (isHome) {
+                reportScorersHome.push(sName);
+            } else {
+                reportScorersAway.push(sName);
+            }
         }
     });
 
+    const rawCards = (match.cards && match.cards.length > 0)
+        ? match.cards
+        : (match.events || []).filter(e => e.type === 'yellow' || e.type === 'yellowRed' || e.type === 'yellow-red' || e.type === 'gelbrot' || e.type === 'red');
+
     reportCardsHome = [];
     reportCardsAway = [];
-    (match.cards || []).forEach(c => {
+    rawCards.forEach(c => {
         const cTeam = c.team || '';
         const cObj = { player: c.name || c.player || '', type: c.type || 'yellow', reason: c.reason || '' };
-        if (cTeam === match.home || normalizeTeamName(cTeam) === normalizeTeamName(match.home)) {
-            reportCardsHome.push(cObj);
-        } else {
-            reportCardsAway.push(cObj);
+        const isHome = cTeam === match.home || normalizeTeamName(cTeam) === normalizeTeamName(match.home);
+        const count = c.count || 1;
+        for (let i = 0; i < count; i++) {
+            if (isHome) {
+                reportCardsHome.push({ ...cObj });
+            } else {
+                reportCardsAway.push({ ...cObj });
+            }
         }
     });
 
@@ -1414,6 +1445,11 @@ const renderReportLists = () => {
 const saveReportForm = (e) => {
     e.preventDefault();
     if (!currentReportMatch) return;
+
+    if (!isGameActive(currentReportMatch)) {
+        showToast('Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter "Ligen verwalten" auf "Aktiv".', true);
+        return;
+    }
 
     const ftHome = document.getElementById('report-ft-home').value.trim();
     const ftAway = document.getElementById('report-ft-away').value.trim();
@@ -1668,6 +1704,8 @@ const loadDataAndRender = async () => {
         });
 
         gamesData = allMatches;
+        window.adminGamesDataRef = gamesData;
+        window.openAdminReportModalForGame = openReportModal;
 
         populateFilterAndFormDropdowns();
         renderGamesTable();
