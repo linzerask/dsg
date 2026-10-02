@@ -1,5 +1,5 @@
-import { Store, sortLeaguesByPriority } from '../store.js?v=1790560300000';
-import { renderIcon } from '../icons.js?v=1790560300000';
+import { Store, sortLeaguesByPriority } from '../store.js?v=1790561000000';
+import { renderIcon } from '../icons.js?v=1790561000000';
 
 
 let currentViewSeason = null;
@@ -384,13 +384,108 @@ export function viewLiga() {
   const sortedRounds = Array.from(roundMap.values()).sort((a, b) => a.roundNr - b.roundNr);
   const maxRoundIdx = sortedRounds.length - 1;
 
+  // Helper: Parse Date & Time to Timestamp for accurate sorting
+  const parseMatchTimestamp = (dateStr, timeStr) => {
+    if (!dateStr) return Infinity;
+    let year = 1970, month = 0, day = 1;
+    if (dateStr.includes('-')) {
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        year = parseInt(parts[0]) || 1970;
+        month = (parseInt(parts[1]) || 1) - 1;
+        day = parseInt(parts[2]) || 1;
+      }
+    } else if (dateStr.includes('.')) {
+      const parts = dateStr.split('.');
+      if (parts.length === 3) {
+        day = parseInt(parts[0]) || 1;
+        month = (parseInt(parts[1]) || 1) - 1;
+        year = parseInt(parts[2]) || 1970;
+        if (year < 100) year += 2000;
+      }
+    }
+
+    let hours = 12, minutes = 0;
+    if (timeStr) {
+      const cleanTime = String(timeStr).replace(/[^\d:]/g, '');
+      const tParts = cleanTime.split(':');
+      if (tParts.length >= 2) {
+        hours = parseInt(tParts[0]) || 0;
+        minutes = parseInt(tParts[1]) || 0;
+      }
+    }
+
+    const t = new Date(year, month, day, hours, minutes).getTime();
+    return isNaN(t) ? Infinity : t;
+  };
+
+  const isMatchUpcoming = (m) => {
+    if (!m) return false;
+    const status = (m.status || '').trim();
+    if (status.startsWith('Abgesagt') || status === 'Gespielt' || status === 'Played' || status === 'Beendet') {
+      return false;
+    }
+    const score = (m.score || '').trim();
+    if (score && score !== '-:-' && score !== '- : -' && !score.includes('Abgesagt')) {
+      return false;
+    }
+    return true;
+  };
+
+  // Determine initial round to show: the round with the NEXT playing game, sorted by date & time
+  const now = Date.now();
+  const futureUpcomingMatches = [];
+  const allUpcomingMatches = [];
+
+  sortedRounds.forEach((rObj, rIdx) => {
+    (rObj.matches || []).forEach(m => {
+      if (isMatchUpcoming(m)) {
+        const ts = parseMatchTimestamp(m.date, m.time);
+        allUpcomingMatches.push({
+          match: m,
+          roundIdx: rIdx,
+          roundNr: rObj.roundNr,
+          timestamp: ts
+        });
+        if (ts >= now - (24 * 3600 * 1000)) {
+          futureUpcomingMatches.push({
+            match: m,
+            roundIdx: rIdx,
+            roundNr: rObj.roundNr,
+            timestamp: ts
+          });
+        }
+      }
+    });
+  });
+
   let initialRoundIdx = 0;
-  for (let i = 0; i <= maxRoundIdx; i++) {
-     const roundMatches = sortedRounds[i].matches;
-     if (roundMatches && roundMatches.some(m => m.status === 'Played' || (!m.status && m.score && m.score !== '- : -' && m.score !== '-:-'))) {
-        initialRoundIdx = i;
-     }
+  if (futureUpcomingMatches.length > 0) {
+    futureUpcomingMatches.sort((a, b) => {
+      if (a.timestamp !== b.timestamp) return a.timestamp - b.timestamp;
+      return a.roundNr - b.roundNr;
+    });
+    initialRoundIdx = futureUpcomingMatches[0].roundIdx;
+  } else if (allUpcomingMatches.length > 0 && currentSeason === (data.currentSeason || "2026/2027")) {
+    allUpcomingMatches.sort((a, b) => {
+      if (a.timestamp !== b.timestamp) return a.timestamp - b.timestamp;
+      return a.roundNr - b.roundNr;
+    });
+    initialRoundIdx = allUpcomingMatches[0].roundIdx;
+  } else {
+    // For finished/past seasons, default to the last round of the season
+    let lastPlayedIdx = 0;
+    for (let i = 0; i <= maxRoundIdx; i++) {
+      const roundMatches = sortedRounds[i].matches;
+      if (roundMatches && roundMatches.length > 0) {
+        lastPlayedIdx = i;
+      }
+    }
+    initialRoundIdx = lastPlayedIdx;
   }
+
+  if (initialRoundIdx < 0) initialRoundIdx = 0;
+  if (initialRoundIdx > maxRoundIdx) initialRoundIdx = Math.max(0, maxRoundIdx);
 
   const spieleSlider = sortedRounds.map((roundObj, idx) => {
     let roundMatchesHtml = '';
@@ -797,27 +892,30 @@ export function bindLigaTabs() {
   const btns = document.querySelectorAll('.tab-btn');
   btns.forEach(btn => {
     btn.addEventListener('click', (e) => {
+      const clickedBtn = e.currentTarget || e.target;
       btns.forEach(b => {
         b.classList.remove('active');
         b.classList.remove('liga-tab-active');
         b.style.color = 'var(--color-text-secondary)';
       });
-      e.target.classList.add('active');
-      e.target.classList.add('liga-tab-active');
-      e.target.style.color = 'var(--color-text-primary)';
+      clickedBtn.classList.add('active');
+      clickedBtn.classList.add('liga-tab-active');
+      clickedBtn.style.color = 'var(--color-text-primary)';
       
       document.querySelectorAll('.tab-content').forEach(tc => tc.style.display = 'none');
-      const target = document.getElementById('tab-' + e.target.dataset.target);
-      target.style.display = 'block';
-      
-      anime({
-        targets: target.children,
-        opacity: [0, 1],
-        translateY: [10, 0],
-        delay: anime.stagger(25),
-        duration: 300,
-        easing: 'easeOutCubic'
-      });
+      const targetId = clickedBtn.dataset.target || clickedBtn.getAttribute('data-target');
+      const target = document.getElementById('tab-' + targetId);
+      if (target) {
+        target.style.display = 'block';
+        anime({
+          targets: target.children,
+          opacity: [0, 1],
+          translateY: [10, 0],
+          delay: anime.stagger(25),
+          duration: 300,
+          easing: 'easeOutCubic'
+        });
+      }
     });
   });
 

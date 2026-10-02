@@ -560,4 +560,22 @@ DSG Liga/
      - If bTime > localTime: apply the cloud state locally and update localStorage.
      - If localTime > fbTime: push the local modifications to Firestore.
      - **Only Fallback on Empty:** Fetch from data/leagues.json / data/rounds.json if and only if neither local storage nor Firestore contains any data.
-  3. **Version Key Parity:** Always ensure cache version keys match strictly across Store.init() cleanup whitelists, loadLocal, 	rySetLocal, and save methods (dsg_admin_leagues_v40, dsg_admin_rounds_v40).
+  3. **Version Key Parity:** Always ensure cache version keys match strictly across Store.init() cleanup whitelists, loadLocal, trySetLocal, and save methods (dsg_admin_leagues_v40, dsg_admin_rounds_v40).
+
+---
+
+## 48. Dynamic Next-Match Round Selection Algorithm (Spiele Round Slider)
+* **The Pitfall:** Defaulting the public matchday round slider (`#tab-spiele` in `liga.js`) to round index `0` (Round 1) or an arbitrary round forced visitors to manually click through the slider to find the current upcoming match during an active season. Conversely, naively taking `rounds[rounds.length - 1]` caused unplayed rounds in active seasons to jump to the very end of the year instead of the immediate next matchday.
+* **The Rule:**
+  1. **Active Season Chronological Next-Match Resolution:**
+     - For active/ongoing seasons (`isCurrent` or active match schedule), scan all rounds and unplayed matches (`score === '-:-'`, unplayed status).
+     - Parse match date and time into exact epoch timestamps (`parseMatchTimestamp(m.date, m.time)`).
+     - Sort unplayed matches chronologically by timestamp ascending (with round number as tiebreaker).
+     - Dynamically set the default selected slide (`initialRoundIdx`) and dropdown value to the round containing the **earliest upcoming match**.
+     - *Example:* For season 2026/2027, matches in Round 5 on `02.10.2026` / `03.10.2026` precede the rescheduled Round 4 match on `13.10.2026`, correctly opening **5. Runde** by default.
+  2. **Completed Seasons Fallback:** For past or finished seasons (where all matches have completed scores or forfeit status), default `initialRoundIdx` to the **final round of the season** (`lastPlayedIdx`) so visitors immediately see the championship finale and final match results.
+  3. **Dropdown & Arrow State Synchronization:**
+     - The custom round dropdown (`.round-select-dropdown`) and navigation chevrons (`.prev-round`, `.next-round`) must automatically synchronize their selected index, button opacities, and pointer-event states on initialization and whenever switching rounds.
+  4. **Fast First-Visit Eager Population:**
+     - `Store.syncFirebase()` must eagerly populate `state.memoryData`, `dsg_admin_leagues_v40`, and `dsg_admin_rounds_v40` from static JSON files on first visit and dispatch `data-updated` / `rounds-updated` / `leagues-updated` so that the round slider renders immediately without waiting for cloud timeouts.
+

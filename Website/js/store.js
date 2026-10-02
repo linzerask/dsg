@@ -333,20 +333,55 @@ export const Store = {
     const leagueRef = doc(db, 'system', 'leagues_data');
     const roundsRef = doc(db, 'system', 'rounds_data');
 
+    // Fast local file pre-fetch to immediately populate in-memory state on first visit
+    let fileLiga = null;
+    let fileLeagues = null;
+    let fileRounds = null;
     try {
-      const [dataSnap, newsSnap, gallerySnap, leagueSnap, roundsSnap] = await Promise.all([
-        getDoc(dataRef), getDoc(newsRef), getDoc(galleryRef), getDoc(leagueRef), getDoc(roundsRef)
+      const [resL, resLeagues, resRounds] = await Promise.all([
+        fetch('data/liga.json' + DATA_VERSION_STRING),
+        fetch('data/leagues.json' + DATA_VERSION_STRING),
+        fetch('data/rounds.json' + DATA_VERSION_STRING)
       ]);
+      if (resL.ok) fileLiga = await resL.json();
+      if (resLeagues.ok) fileLeagues = await resLeagues.json();
+      if (resRounds.ok) fileRounds = await resRounds.json();
+    } catch(e) {}
+
+    // Eagerly populate memoryData and localStorage if empty or unpopulated
+    const hasActualData = state.memoryData?.seasons && Object.values(state.memoryData.seasons).some(s => (s.matches && s.matches.length > 0) || (s.teams && s.teams.length > 0));
+    if (!hasActualData && fileLiga) {
+      state.memoryData = fileLiga;
+      trySetLocal('dsg_data_v83', JSON.stringify(fileLiga));
+      window.dispatchEvent(new CustomEvent('data-updated'));
+    }
+    if ((!loadLocal('dsg_admin_leagues', 40) || loadLocal('dsg_admin_leagues', 40).length === 0) && fileLeagues) {
+      const cleanLeagues = sortLeaguesByPriority(fileLeagues);
+      trySetLocal('dsg_admin_leagues_v40', JSON.stringify(cleanLeagues));
+      window.dispatchEvent(new CustomEvent('leagues-updated'));
+    }
+    if ((!loadLocal('dsg_admin_rounds', 40) || loadLocal('dsg_admin_rounds', 40).length === 0) && fileRounds) {
+      trySetLocal('dsg_admin_rounds_v40', JSON.stringify(fileRounds));
+      window.dispatchEvent(new CustomEvent('rounds-updated'));
+    }
+
+    try {
+      const withTimeout = (promise, ms = 4000) => {
+        return Promise.race([
+          promise,
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), ms))
+        ]);
+      };
+
+      const [dataSnap, newsSnap, gallerySnap, leagueSnap, roundsSnap] = await withTimeout(
+        Promise.all([
+          getDoc(dataRef), getDoc(newsRef), getDoc(galleryRef), getDoc(leagueRef), getDoc(roundsRef)
+        ]),
+        4000
+      ).catch(() => [ { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false } ]);
 
       let needsMigration = false;
       let hasUpdates = false;
-
-      // Fetch canonical fileLiga
-      let fileLiga = null;
-      try {
-        const res = await fetch('data/liga.json' + DATA_VERSION_STRING);
-        if (res.ok) fileLiga = await res.json();
-      } catch(e) {}
 
       // Sync Liga Data
       if (dataSnap.exists() && dataSnap.data()?.data) {
@@ -379,6 +414,7 @@ export const Store = {
 
         state.memoryData = targetData;
         trySetLocal('dsg_data_v83', JSON.stringify(targetData));
+        hasUpdates = true;
         if (needsMigration || localTime > fbTime) {
           await setDoc(dataRef, { data: targetData, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (liga):", e));
         }
@@ -386,6 +422,7 @@ export const Store = {
         if (fileLiga) {
           state.memoryData = fileLiga;
           trySetLocal('dsg_data_v83', JSON.stringify(fileLiga));
+          hasUpdates = true;
           await setDoc(dataRef, { data: fileLiga, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (liga):", e));
         }
       }
@@ -601,8 +638,9 @@ export const Store = {
       trySetLocal('dsg_gallery_v26', JSON.stringify(state.memoryGallery));
 
       if (hasUpdates || needsMigration) {
-        window.dispatchEvent(new Event('data-updated'));
-        window.dispatchEvent(new Event('leagues-updated'));
+        window.dispatchEvent(new CustomEvent('data-updated'));
+        window.dispatchEvent(new CustomEvent('leagues-updated'));
+        window.dispatchEvent(new CustomEvent('rounds-updated'));
       }
     } catch(e) {
       console.error("Firebase sync failed or timed out. Relying on local cache.", e);

@@ -1,11 +1,11 @@
-import { Router } from './router.js?v=1790560800000';
-import { Store } from './store.js?v=1790560800000';
+import { Router } from './router.js?v=1790561000000';
+import { Store } from './store.js?v=1790561000000';
 
 window.Store = Store;
 
 const initApp = () => {
-  Store.init();
   Router.init();
+  Store.init();
 
   // Mobile Drawer logic
   const drawer = document.getElementById('mobile-drawer');
