@@ -432,3 +432,23 @@ DSG Liga/
   1. **Commit & Push After Every Task:** Whenever a feature, bugfix, UI enhancement, or dataset ingestion (e.g. adding a new season) is completed and verified, immediately stage all changed and newly created files (`git add -A`), create a descriptive conventional commit (`git commit -m "..."`), and push directly to `origin/main` (`git push origin main`).
   2. **GitHub Pages Real-Time Synchronization:** Always confirm that `origin/main` is up-to-date with local changes so that GitHub Pages and remote clients reflect the current state without manual intervention.
 
+---
+
+## 39. Season 2025/2026 Ingestion & All-Time Historical Record Totals
+* **The Milestone:** DSG Liga Season 2025/2026 is fully ingested with all 14 rounds, 56 matches, 8 teams (*SV Croatia Linz, DSG St. Josef/Oed FC, Union Heiligenberg, FC Hinzenbach, Walker FC, FC Gornjak, DSG Union Traun, Union Eschenau*), 303 goal events, and 143 card events.
+* **The Statistics & Milestones:**
+  1. **Champion:** SV Croatia Linz (38 Pkt, 12-2-0, 63:19 Tore, +44 Diff).
+  2. **Season Top Scorer:** Roland Meindlhumer (FC Hinzenbach) with 20 goals.
+  3. **All-Time Historical Totals Across Ingested Seasons (2022/2023 - 2025/2026):**
+     - **Total Played Matches:** 329
+     - **Total Goals:** 1,761 (1,638 individual goal events recorded)
+     - **Average Goals / Match:** 5.35
+     - **Total Unique Scorers:** 340
+     - **All-Time Top 3 Scorers:**
+       1. **Roland Meindlhumer** (FC Hinzenbach): **85 Tore** (5 Seasons)
+       2. **Thomas Paulmair** (DSG St. Josef/Oed FC): **51 Tore** (5 Seasons)
+       3. **Michael Haslehner** (Union Heiligenberg): **47 Tore** (5 Seasons)
+     - **Current Cache Keys:** `dsg_data_v77`, `dsg_admin_leagues_v33`, `dsg_admin_rounds_v32`, query string `?v=1790560070000`.
+
+
+

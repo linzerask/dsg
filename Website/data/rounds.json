@@ -760,5 +760,159 @@
     "datumVon": "23.05.2025",
     "datumBis": "31.05.2025",
     "status": "Aktiv"
+  },
+  {
+    "id": 140,
+    "runde": "1",
+    "name": "1. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "29.08.2025",
+    "datumBis": "24.10.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 141,
+    "runde": "2",
+    "name": "2. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "05.09.2025",
+    "datumBis": "18.10.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 142,
+    "runde": "3",
+    "name": "3. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "12.09.2025",
+    "datumBis": "13.09.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 143,
+    "runde": "4",
+    "name": "4. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "19.09.2025",
+    "datumBis": "20.09.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 144,
+    "runde": "5",
+    "name": "5. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "02.09.2025",
+    "datumBis": "25.10.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 145,
+    "runde": "6",
+    "name": "6. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "03.10.2025",
+    "datumBis": "04.10.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 146,
+    "runde": "7",
+    "name": "7. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "10.10.2025",
+    "datumBis": "11.10.2025",
+    "status": "Aktiv"
+  },
+  {
+    "id": 147,
+    "runde": "8",
+    "name": "8. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "10.04.2026",
+    "datumBis": "11.04.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 148,
+    "runde": "9",
+    "name": "9. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "17.04.2026",
+    "datumBis": "18.04.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 149,
+    "runde": "10",
+    "name": "10. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "24.04.2026",
+    "datumBis": "25.04.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 150,
+    "runde": "11",
+    "name": "11. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "01.05.2026",
+    "datumBis": "13.05.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 151,
+    "runde": "12",
+    "name": "12. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "08.05.2026",
+    "datumBis": "15.05.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 152,
+    "runde": "13",
+    "name": "13. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "22.05.2026",
+    "datumBis": "12.06.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 153,
+    "runde": "14",
+    "name": "14. Runde",
+    "liga": "DSG Liga",
+    "jahr": "2025/2026",
+    "seasonKey": "2025/2026",
+    "datumVon": "29.05.2026",
+    "datumBis": "03.06.2026",
+    "status": "Aktiv"
   }
 ]
