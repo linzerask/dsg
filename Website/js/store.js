@@ -129,7 +129,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1790560300000';
+const DATA_VERSION_STRING = '?v=1790560800000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -291,8 +291,8 @@ export const Store = {
         if (i !== 26) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 12) localStorage.removeItem(`dsg_admin_players_v${i}`);
         if (i !== 12) localStorage.removeItem(`dsg_admin_teams_v${i}`);
-        if (i !== 38) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
-        if (i !== 39) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
+        if (i !== 40) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
+        if (i !== 40) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
       }
     } catch(e) {}
 
@@ -432,43 +432,95 @@ export const Store = {
         }
       }
 
-      // Sync Leagues
-      let fileLeagues = null;
-      try {
-        const res = await fetch('data/leagues.json' + DATA_VERSION_STRING);
-        if (res.ok) fileLeagues = await res.json();
-      } catch(e) {}
-      
-      const canonicalLeagues = fileLeagues || [
-        { id: 1, name: "DSG Liga", year: "2022/2023", seasonKey: "2022/2023", status: "Aktiv", showOnHomepage: true },
-        { id: 2, name: "1. Klasse", year: "2022/2023", seasonKey: "2022/2023_1klasse", status: "Aktiv", showOnHomepage: true },
-        { id: 3, name: "DSG Liga", year: "2023/2024", seasonKey: "2023/2024", status: "Aktiv", showOnHomepage: true },
-        { id: 4, name: "DSG Liga", year: "2024/2025", seasonKey: "2024/2025", status: "Aktiv", showOnHomepage: true },
-        { id: 5, name: "Oberes Playoff", year: "2024/2025", seasonKey: "2024/2025_oberes", status: "Aktiv", showOnHomepage: true },
-        { id: 6, name: "Unteres Playoff", year: "2024/2025", seasonKey: "2024/2025_unteres", status: "Aktiv", showOnHomepage: true }
-      ];
+      // Sync Leagues - authoritative timestamp comparison
+      if (leagueSnap.exists() && leagueSnap.data() && Array.isArray(leagueSnap.data().data)) {
+        const fbLeagues = leagueSnap.data().data;
+        const fbTime = leagueSnap.data().lastUpdated || 0;
+        const localTime = parseInt(localStorage.getItem('dsg_leagues_last_updated')) || 0;
+        const localLeagues = loadLocal('dsg_admin_leagues', 40);
 
-      const cleanLeagues = sortLeaguesByPriority(canonicalLeagues);
-      cleanLeagues.forEach(l => {
-        if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
-          const yr = parseInt(String(l.year).trim());
-          l.year = `${yr}/${yr + 1}`;
+        if (fbTime > localTime || !localLeagues || localLeagues.length === 0) {
+          const cleanLeagues = sortLeaguesByPriority(fbLeagues);
+          cleanLeagues.forEach(l => {
+            if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
+              const yr = parseInt(String(l.year).trim());
+              l.year = `${yr}/${yr + 1}`;
+            }
+          });
+          trySetLocal('dsg_admin_leagues_v40', JSON.stringify(cleanLeagues));
+          localStorage.setItem('dsg_leagues_last_updated', String(fbTime));
+          hasUpdates = true;
+        } else if (localTime > fbTime) {
+          await setDoc(leagueRef, { data: localLeagues, lastUpdated: localTime }).catch(e => console.error("Firebase save error (leagues):", e));
         }
-      });
-      trySetLocal('dsg_admin_leagues_v39', JSON.stringify(cleanLeagues));
-      await setDoc(leagueRef, { data: cleanLeagues, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (leagues):", e));
+      } else {
+        const localLeagues = loadLocal('dsg_admin_leagues', 40);
+        if (localLeagues && localLeagues.length > 0) {
+          await setDoc(leagueRef, { data: localLeagues, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (leagues):", e));
+        } else {
+          let fileLeagues = null;
+          try {
+            const res = await fetch('data/leagues.json' + DATA_VERSION_STRING);
+            if (res.ok) fileLeagues = await res.json();
+          } catch(e) {}
+          
+          const canonicalLeagues = fileLeagues || [
+            { id: 1, name: "DSG Liga", year: "2022/2023", seasonKey: "2022/2023", status: "Aktiv", showOnHomepage: true },
+            { id: 2, name: "1. Klasse", year: "2022/2023", seasonKey: "2022/2023_1klasse", status: "Aktiv", showOnHomepage: true },
+            { id: 3, name: "DSG Liga", year: "2023/2024", seasonKey: "2023/2024", status: "Aktiv", showOnHomepage: true },
+            { id: 4, name: "DSG Liga", year: "2024/2025", seasonKey: "2024/2025", status: "Aktiv", showOnHomepage: true },
+            { id: 5, name: "Oberes Playoff", year: "2024/2025", seasonKey: "2024/2025_oberes", status: "Aktiv", showOnHomepage: true },
+            { id: 6, name: "Unteres Playoff", year: "2024/2025", seasonKey: "2024/2025_unteres", status: "Aktiv", showOnHomepage: true },
+            { id: 7, name: "DSG Liga", year: "2025/2026", seasonKey: "2025/2026", status: "Aktiv", showOnHomepage: true },
+            { id: 8, name: "DSG Liga", year: "2026/2027", seasonKey: "2026/2027", status: "Aktiv", showOnHomepage: true, isCurrent: true }
+          ];
 
-      // Sync Rounds
-      let fileRounds = null;
-      try {
-        const res = await fetch('data/rounds.json' + DATA_VERSION_STRING);
-        if (res.ok) fileRounds = await res.json();
-      } catch(e) {}
+          const cleanLeagues = sortLeaguesByPriority(canonicalLeagues);
+          cleanLeagues.forEach(l => {
+            if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
+              const yr = parseInt(String(l.year).trim());
+              l.year = `${yr}/${yr + 1}`;
+            }
+          });
+          const now = Date.now();
+          trySetLocal('dsg_admin_leagues_v40', JSON.stringify(cleanLeagues));
+          localStorage.setItem('dsg_leagues_last_updated', String(now));
+          await setDoc(leagueRef, { data: cleanLeagues, lastUpdated: now }).catch(e => console.error("Firebase save error (leagues):", e));
+        }
+      }
 
-      const canonicalRounds = fileRounds || [];
-      const cleanRounds = canonicalRounds;
-      trySetLocal('dsg_admin_rounds_v38', JSON.stringify(cleanRounds));
-      await setDoc(roundsRef, { data: cleanRounds, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (rounds):", e));
+      // Sync Rounds - authoritative timestamp comparison
+      if (roundsSnap.exists() && roundsSnap.data() && Array.isArray(roundsSnap.data().data)) {
+        const fbRounds = roundsSnap.data().data;
+        const fbTime = roundsSnap.data().lastUpdated || 0;
+        const localTime = parseInt(localStorage.getItem('dsg_rounds_last_updated')) || 0;
+        const localRounds = loadLocal('dsg_admin_rounds', 40);
+
+        if (fbTime > localTime || !localRounds || localRounds.length === 0) {
+          trySetLocal('dsg_admin_rounds_v40', JSON.stringify(fbRounds));
+          localStorage.setItem('dsg_rounds_last_updated', String(fbTime));
+          hasUpdates = true;
+        } else if (localTime > fbTime) {
+          await setDoc(roundsRef, { data: localRounds, lastUpdated: localTime }).catch(e => console.error("Firebase save error (rounds):", e));
+        }
+      } else {
+        const localRounds = loadLocal('dsg_admin_rounds', 40);
+        if (localRounds && localRounds.length > 0) {
+          await setDoc(roundsRef, { data: localRounds, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (rounds):", e));
+        } else {
+          let fileRounds = null;
+          try {
+            const res = await fetch('data/rounds.json' + DATA_VERSION_STRING);
+            if (res.ok) fileRounds = await res.json();
+          } catch(e) {}
+
+          const canonicalRounds = fileRounds || [];
+          const now = Date.now();
+          trySetLocal('dsg_admin_rounds_v40', JSON.stringify(canonicalRounds));
+          localStorage.setItem('dsg_rounds_last_updated', String(now));
+          await setDoc(roundsRef, { data: canonicalRounds, lastUpdated: now }).catch(e => console.error("Firebase save error (rounds):", e));
+        }
+      }
 
       // Sync Teams
       const localTeams = loadLocal('dsg_admin_teams', 12);
@@ -1062,7 +1114,7 @@ export const Store = {
   },
 
   getAdminLeaguesSync() {
-    const local = loadLocal('dsg_admin_leagues', 39);
+    const local = loadLocal('dsg_admin_leagues', 40);
     if (local && Array.isArray(local) && local.length >= 2 && local.some(l => l.seasonKey === '2022/2023_1klasse')) {
       const clean = local.map(l => {
         if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
@@ -1092,7 +1144,7 @@ export const Store = {
       if (res.ok) fileLeagues = await res.json();
     } catch(e) {}
 
-    const local = loadLocal('dsg_admin_leagues', 39);
+    const local = loadLocal('dsg_admin_leagues', 40);
     if (local && Array.isArray(local) && local.length >= (fileLeagues?.length || 8)) {
       const clean = local.map(l => {
         if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
@@ -1128,8 +1180,8 @@ export const Store = {
           }
 
           fbLeagues = sortLeaguesByPriority(fbLeagues);
-          trySetLocal('dsg_admin_leagues_v39', JSON.stringify(fbLeagues));
-          setDoc(doc(db, 'system', 'leagues_data'), { data: fbLeagues, lastUpdated: Date.now() }).catch(e => {});
+          trySetLocal('dsg_admin_leagues_v40', JSON.stringify(fbLeagues));
+          localStorage.setItem('dsg_leagues_last_updated', String(leaguesSnap.data().lastUpdated || Date.now()));
           return fbLeagues;
         }
       }
@@ -1139,30 +1191,24 @@ export const Store = {
 
     if (fileLeagues && Array.isArray(fileLeagues)) {
       const cleanLeagues = sortLeaguesByPriority(fileLeagues);
-      trySetLocal('dsg_admin_leagues_v39', JSON.stringify(cleanLeagues));
-      setDoc(doc(db, 'system', 'leagues_data'), { data: cleanLeagues, lastUpdated: Date.now() })
+      const now = Date.now();
+      trySetLocal('dsg_admin_leagues_v40', JSON.stringify(cleanLeagues));
+      localStorage.setItem('dsg_leagues_last_updated', String(now));
+      setDoc(doc(db, 'system', 'leagues_data'), { data: cleanLeagues, lastUpdated: now })
         .catch(e => console.error("Firebase save error (leagues initial):", e));
       return cleanLeagues;
     }
 
-    return [
-      {
-        id: 1,
-        name: "DSG Liga",
-        year: "2022/2023",
-        seasonKey: "2022/2023",
-        status: "Inaktiv",
-        showOnHomepage: true
-      },
-      {
-        id: 2,
-        name: "1. Klasse",
-        year: "2022/2023",
-        seasonKey: "2022/2023_1klasse",
-        status: "Inaktiv",
-        showOnHomepage: true
-      }
-    ];
+    return sortLeaguesByPriority([
+      { id: 1, name: "DSG Liga", year: "2022/2023", seasonKey: "2022/2023", status: "Aktiv", showOnHomepage: true },
+      { id: 2, name: "1. Klasse", year: "2022/2023", seasonKey: "2022/2023_1klasse", status: "Aktiv", showOnHomepage: true },
+      { id: 3, name: "DSG Liga", year: "2023/2024", seasonKey: "2023/2024", status: "Aktiv", showOnHomepage: true },
+      { id: 4, name: "DSG Liga", year: "2024/2025", seasonKey: "2024/2025", status: "Aktiv", showOnHomepage: true },
+      { id: 5, name: "Oberes Playoff", year: "2024/2025", seasonKey: "2024/2025_oberes", status: "Aktiv", showOnHomepage: true },
+      { id: 6, name: "Unteres Playoff", year: "2024/2025", seasonKey: "2024/2025_unteres", status: "Aktiv", showOnHomepage: true },
+      { id: 7, name: "DSG Liga", year: "2025/2026", seasonKey: "2025/2026", status: "Aktiv", showOnHomepage: true },
+      { id: 8, name: "DSG Liga", year: "2026/2027", seasonKey: "2026/2027", status: "Aktiv", showOnHomepage: true, isCurrent: true }
+    ]);
   },
 
   saveAdminLeagues(leagues) {
@@ -1173,8 +1219,10 @@ export const Store = {
       }
       return l;
     });
-    trySetLocal('dsg_admin_leagues_v38', JSON.stringify(cleanLeagues));
-    setDoc(doc(db, 'system', 'leagues_data'), { data: cleanLeagues, lastUpdated: Date.now() })
+    const now = Date.now();
+    localStorage.setItem('dsg_leagues_last_updated', String(now));
+    trySetLocal('dsg_admin_leagues_v40', JSON.stringify(cleanLeagues));
+    setDoc(doc(db, 'system', 'leagues_data'), { data: cleanLeagues, lastUpdated: now })
       .catch(e => console.error("Firebase save error (leagues):", e));
     window.dispatchEvent(new CustomEvent('leagues-updated'));
   },
@@ -1258,7 +1306,7 @@ export const Store = {
   },
 
   getAdminRoundsSync(seasonName = null) {
-    const local = loadLocal('dsg_admin_rounds', 38);
+    const local = loadLocal('dsg_admin_rounds', 40);
     if (local && Array.isArray(local) && local.length > 0) {
       if (!seasonName) return local;
       return local.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2022/2023'));
@@ -1273,7 +1321,7 @@ export const Store = {
       if (res.ok) fileRounds = await res.json();
     } catch(e) {}
 
-    const local = loadLocal('dsg_admin_rounds', 38);
+    const local = loadLocal('dsg_admin_rounds', 40);
     if (local && Array.isArray(local) && local.length >= (fileRounds?.length || 80)) {
       if (!seasonName) return local;
       return local.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2022/2023'));
@@ -1291,9 +1339,8 @@ export const Store = {
               }
             });
           }
-          trySetLocal('dsg_admin_rounds_v38', JSON.stringify(fbRounds));
+          trySetLocal('dsg_admin_rounds_v40', JSON.stringify(fbRounds));
           localStorage.setItem('dsg_rounds_last_updated', String(roundsSnap.data().lastUpdated || Date.now()));
-          setDoc(doc(db, 'system', 'rounds_data'), { data: fbRounds, lastUpdated: Date.now() }).catch(e => {});
           if (!seasonName) return fbRounds;
           return fbRounds.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2022/2023'));
         }
@@ -1303,8 +1350,10 @@ export const Store = {
     }
 
     if (fileRounds && Array.isArray(fileRounds)) {
-      trySetLocal('dsg_admin_rounds_v38', JSON.stringify(fileRounds));
-      setDoc(doc(db, 'system', 'rounds_data'), { data: fileRounds, lastUpdated: Date.now() })
+      const now = Date.now();
+      trySetLocal('dsg_admin_rounds_v40', JSON.stringify(fileRounds));
+      localStorage.setItem('dsg_rounds_last_updated', String(now));
+      setDoc(doc(db, 'system', 'rounds_data'), { data: fileRounds, lastUpdated: now })
         .catch(e => console.error("Firebase save error (rounds initial):", e));
       if (!seasonName) return fileRounds;
       return fileRounds.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2022/2023'));
@@ -1317,7 +1366,7 @@ export const Store = {
     const cleanRounds = Array.isArray(rounds) ? rounds : [];
     const now = Date.now();
     localStorage.setItem('dsg_rounds_last_updated', String(now));
-    trySetLocal('dsg_admin_rounds_v38', JSON.stringify(cleanRounds));
+    trySetLocal('dsg_admin_rounds_v40', JSON.stringify(cleanRounds));
     setDoc(doc(db, 'system', 'rounds_data'), { data: cleanRounds, lastUpdated: now })
       .catch(e => console.error("Firebase save error (rounds):", e));
     window.dispatchEvent(new CustomEvent('rounds-updated'));

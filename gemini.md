@@ -548,5 +548,16 @@ DSG Liga/
        1. **Roland Meindlhumer** (FC Hinzenbach): **85 Tore**
        2. **Thomas Paulmair** (DSG St. Josef/Oed FC): **51 Tore**
        3. **Michael Haslehner** (Union Heiligenberg): **47 Tore**
-     - **Current Cache Keys:** `dsg_data_v83`, `dsg_admin_leagues_v39`, `dsg_admin_rounds_v38`, query string `?v=1790560300000`.
+     - **Current Cache Keys:** dsg_data_v83, dsg_admin_leagues_v40, dsg_admin_rounds_v40, query string ?v=1790560800000.
 
+---
+
+## 47. Non-Destructive Firebase Synchronization & Admin Status Persistence (Leagues & Rounds)
+* **The Pitfall:** When an administrator toggled a league's status (e.g. from Aktiv to Inaktiv), the updated status reverted back to Aktiv upon refreshing the browser page. This occurred because Store.init() / syncFirebase() unconditionally fetched the static JSON seed files (data/leagues.json and data/rounds.json) on every page reload, overwriting local storage and Firestore with the static default status (Aktiv). Additionally, cache version keys were mismatched (dsg_admin_leagues_v38 in save vs 39 in load).
+* **The Rule:**
+  1. **Authoritative Timestamp Synchronization:** syncFirebase() must never unconditionally overwrite leagues or rounds from static seed files. Instead, it compares the local update timestamp (dsg_leagues_last_updated, dsg_rounds_last_updated) with the Firestore timestamp (lastUpdated).
+  2. **Timestamp Evaluation Flow:**
+     - If bTime > localTime: apply the cloud state locally and update localStorage.
+     - If localTime > fbTime: push the local modifications to Firestore.
+     - **Only Fallback on Empty:** Fetch from data/leagues.json / data/rounds.json if and only if neither local storage nor Firestore contains any data.
+  3. **Version Key Parity:** Always ensure cache version keys match strictly across Store.init() cleanup whitelists, loadLocal, 	rySetLocal, and save methods (dsg_admin_leagues_v40, dsg_admin_rounds_v40).
