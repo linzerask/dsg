@@ -244,7 +244,7 @@ export const viewHome = () => {
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
             <span style="font-weight: 600; font-size: 0.95rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${m.home}</span>
             <span style="font-weight: 700; font-size: ${isResult ? '1rem' : '0.85rem'}; color: ${isCanceled ? '#e74c3c' : (isResult ? 'var(--color-accent)' : 'var(--color-text-secondary)')}; margin-left: 8px; flex-shrink: 0;">
-              ${isCanceled ? m.status : (isResult ? m.score : (m.time ? `${m.time} Uhr` : '-:-'))}
+              ${isCanceled ? m.status : (isResult ? (m.score ? m.score.replace(/\s*\([^)]*\)/g, '').trim() : '-:-') : (m.time ? `${m.time} Uhr` : '-:-'))}
             </span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">

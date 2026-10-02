@@ -759,6 +759,12 @@ const renderModalContent = () => {
                                 else if (m.status === 'Abgesagt 0:3') displayScore = "Abges. 0:3";
                                 else if (m.status === 'Postponed' || (m.status || '').toLowerCase().includes('verschoben')) displayScore = "Verschoben";
 
+                                if (displayScore && displayScore !== "- : -" && displayScore !== "-:-" && !displayScore.startsWith("Abges.") && displayScore !== "Verschoben") {
+                                  displayScore = displayScore.replace(/\s*\([^)]*\)/g, '').trim();
+                                }
+
+                                const htScore = (m.ht && m.ht !== ':') ? m.ht : (m.halftime && m.halftime !== ':' ? m.halftime : (m.score ? (m.score.match(/\(([^)]+)\)/)?.[1] || '') : ''));
+
                                 let scoreBadgeClass = 'score-normal';
                                 if (isAbgesagtStatus || isAbgesagt) {
                                   scoreBadgeClass = 'score-abgesagt';
@@ -901,7 +907,7 @@ const renderModalContent = () => {
                                                 <span class="match-score-badge ${scoreBadgeClass}">
                                                     ${displayScore}
                                                 </span>
-                                                ${(m.ht && !isAbgesagtStatus) ? `<span class="match-ht-badge">HT ${m.ht}</span>` : (m.halftime && !isAbgesagtStatus ? `<span class="match-ht-badge">HT ${m.halftime}</span>` : '')}
+                                                ${(htScore && !isAbgesagtStatus) ? `<span class="match-ht-badge">HT ${htScore}</span>` : ''}
                                             </div>
                                             
                                             <div class="match-team match-team-away">

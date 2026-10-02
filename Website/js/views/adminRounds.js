@@ -990,6 +990,15 @@ const openViewRoundGamesModal = (idx) => {
 
                     const locationStr = m.location || m.venue || '';
 
+                    let displayScore = m.score || '-:-';
+                    if (m.status === 'Abgesagt 3:0') displayScore = 'Abges. 3:0';
+                    if (m.status === 'Abgesagt 0:3') displayScore = 'Abges. 0:3';
+                    if (m.status === 'Postponed') displayScore = 'Verschoben';
+                    if (displayScore && displayScore !== '-:-' && displayScore !== '- : -' && !displayScore.startsWith('Abges.') && displayScore !== 'Verschoben') {
+                        displayScore = displayScore.replace(/\s*\([^)]*\)/g, '').trim();
+                    }
+                    const htScore = (m.ht && m.ht !== ':') ? m.ht : (m.score ? (m.score.match(/\(([^)]+)\)/)?.[1] || '') : '');
+
                     return `
                         <div class="match-card glass-card ${hasEvents ? 'has-events-accordion' : ''}" style="cursor: ${hasEvents ? 'pointer' : 'default'};">
                             <div class="match-card-meta">
@@ -1029,9 +1038,9 @@ const openViewRoundGamesModal = (idx) => {
                                 
                                 <div class="match-score-center">
                                     <span class="match-score-badge">
-                                        ${m.score || '-:-'}
+                                        ${displayScore}
                                     </span>
-                                    ${(m.ht && !isAbgesagtStatus) ? `<span class="match-ht-badge">HT ${m.ht}</span>` : ''}
+                                    ${(htScore && !isAbgesagtStatus) ? `<span class="match-ht-badge">HT ${htScore}</span>` : ''}
                                 </div>
                                 
                                 <div class="match-team match-team-away">

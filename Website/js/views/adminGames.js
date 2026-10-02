@@ -592,8 +592,12 @@ const renderGamesTable = () => {
     tbody.innerHTML = pageRows.map(m => {
         const rawIndex = gamesData.indexOf(m);
         const isActive = isGameActive(m);
-        const scoreDisplay = (m.score && m.score !== '-:-') ? m.score : ':';
-        const htDisplay = m.ht ? m.ht : ':';
+        let scoreDisplay = (m.score && m.score !== '-:-') ? m.score : ':';
+        if (scoreDisplay !== ':' && !scoreDisplay.toLowerCase().includes('abgesagt') && !scoreDisplay.toLowerCase().includes('verschoben')) {
+            scoreDisplay = scoreDisplay.replace(/\s*\([^)]*\)/g, '').trim();
+        }
+        let htDisplay = (m.ht && m.ht !== ':') ? m.ht : (m.score ? (m.score.match(/\(([^)]+)\)/)?.[1] || ':') : ':');
+        if (!htDisplay || htDisplay.trim() === '') htDisplay = ':';
         const venue = m.venue || m.location || 'DSG-Platz';
         const dateDisplay = formatDisplayDate(m.date, m.time);
 
@@ -673,8 +677,12 @@ const renderGamesTable = () => {
             mobileCardsContainer.innerHTML = pageRows.map(m => {
                 const rawIndex = gamesData.indexOf(m);
                 const isActive = isGameActive(m);
-                const scoreDisplay = (m.score && m.score !== '-:-') ? m.score : ':';
-                const htDisplay = m.ht ? m.ht : ':';
+                let scoreDisplay = (m.score && m.score !== '-:-') ? m.score : ':';
+                if (scoreDisplay !== ':' && !scoreDisplay.toLowerCase().includes('abgesagt') && !scoreDisplay.toLowerCase().includes('verschoben')) {
+                    scoreDisplay = scoreDisplay.replace(/\s*\([^)]*\)/g, '').trim();
+                }
+                let htDisplay = (m.ht && m.ht !== ':') ? m.ht : (m.score ? (m.score.match(/\(([^)]+)\)/)?.[1] || ':') : ':');
+                if (!htDisplay || htDisplay.trim() === '') htDisplay = ':';
                 const venue = m.venue || m.location || 'DSG-Platz';
                 const dateDisplay = formatDisplayDate(m.date, m.time);
 

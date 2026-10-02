@@ -1,14 +1,14 @@
-import { viewHome, bindHome } from './views/home.js?v=1790560041000';
-import { viewNews, bindNews } from './views/news.js?v=1790560041000';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560041000';
-import { viewArchiv } from './views/simpleViews.js?v=1790560041000';
-import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560041000';
-import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560041000';
-import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560041000';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560041000';
-import { viewArticle, bindArticle } from './views/article.js?v=1790560041000';
-import { viewImpressum } from './views/impressum.js?v=1790560041000';
-import { viewDatenschutz } from './views/datenschutz.js?v=1790560041000';
+import { viewHome, bindHome } from './views/home.js?v=1790560042000';
+import { viewNews, bindNews } from './views/news.js?v=1790560042000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1790560042000';
+import { viewArchiv } from './views/simpleViews.js?v=1790560042000';
+import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1790560042000';
+import { viewGalerie, bindGalerie } from './views/galerie.js?v=1790560042000';
+import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1790560042000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1790560042000';
+import { viewArticle, bindArticle } from './views/article.js?v=1790560042000';
+import { viewImpressum } from './views/impressum.js?v=1790560042000';
+import { viewDatenschutz } from './views/datenschutz.js?v=1790560042000';
 
 const routes = {
   '/': { render: () => viewHome(), bind: () => bindHome() },
