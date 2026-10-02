@@ -519,3 +519,34 @@ DSG Liga/
      - **Current Cache Keys:** `dsg_data_v82`, `dsg_admin_leagues_v38`, `dsg_admin_rounds_v37`, query string `?v=1790560210000`.
 
 
+---
+
+## 46. Database Step-by-Step State: Current Season 2026/2027 Ingested & Verified
+* **The Milestone:** The database now contains all **8 competitions** spanning 4 academic football years (2022/2023, 2023/2024, 2024/2025, 2025/2026, 2026/2027). Season 2026/2027 is the active current championship.
+* **The Exact Statistics & Current Standings for 2026/2027:**
+  1. **Season 2026/2027 DSG Liga (`2026/2027`):** 7 teams, 9 rounds, 27 matches (11 completed/decided, 16 scheduled/upcoming).
+  2. **Teams (7 Clubs):** Union Heiligenberg, SV Croatia Linz, Etehad Linz (new club), DSG Union Traun, FC Gornjak, Walker FC, DSG St. Josef/Oed FC.
+  3. **Current Standings (Active Season):**
+     - #1 **Union Heiligenberg** (9 Pkt, 3 Sp, 18:0 Tore, Diff: +18)
+     - #2 **SV Croatia Linz** (9 Pkt, 3 Sp, 15:4 Tore, Diff: +11)
+     - #3 **Etehad Linz** (6 Pkt, 3 Sp, 12:8 Tore, Diff: +4)
+     - #4 **DSG Union Traun** (4 Pkt, 4 Sp, 9:15 Tore, Diff: -6)
+     - #5 **FC Gornjak** (3 Pkt, 3 Sp, 4:12 Tore, Diff: -8)
+     - #6 **Walker FC** (1 Pkt, 3 Sp, 0:11 Tore, Diff: -11)
+     - #7 **DSG St. Josef/Oed FC** (0 Pkt, 3 Sp, 2:10 Tore, Diff: -8)
+  4. **Top 5 Scorers (2026/2027):**
+     1. **Leonardo Glavas** (SV Croatia Linz): **5 Tore**
+     2. **Dominik Penninger** (Union Heiligenberg): **4 Tore**
+     3. **Zia Ghaderi** (Etehad Linz): **4 Tore**
+     4. **Hamid Fouladi** (Etehad Linz): **4 Tore**
+     5. **Dominik Prilmüller** (DSG Union Traun): **3 Tore**
+  5. **Disciplinary Cards (2026/2027):** 26 cards recorded (25 Yellow, 1 Red).
+  6. **All-Time Historical Totals Across All 8 Competitions:**
+     - **Total Documented Competitions:** 8 Leagues (`2022/2023`, `2022/2023_1klasse`, `2023/2024`, `2024/2025`, `2024/2025_oberes`, `2024/2025_unteres`, `2025/2026`, `2026/2027`)
+     - **Total Matches in Database:** 376 matches (353 played/forfeit, 16 unplayed)
+     - **All-Time Top 3 Scorers:**
+       1. **Roland Meindlhumer** (FC Hinzenbach): **85 Tore**
+       2. **Thomas Paulmair** (DSG St. Josef/Oed FC): **51 Tore**
+       3. **Michael Haslehner** (Union Heiligenberg): **47 Tore**
+     - **Current Cache Keys:** `dsg_data_v83`, `dsg_admin_leagues_v39`, `dsg_admin_rounds_v38`, query string `?v=1790560300000`.
+

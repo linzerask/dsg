@@ -5,7 +5,8 @@
     "year": "2022/2023",
     "seasonKey": "2022/2023",
     "status": "Aktiv",
-    "showOnHomepage": true
+    "showOnHomepage": true,
+    "isCurrent": false
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@
     "year": "2022/2023",
     "seasonKey": "2022/2023_1klasse",
     "status": "Aktiv",
-    "showOnHomepage": true
+    "showOnHomepage": true,
+    "isCurrent": false
   },
   {
     "id": 3,
@@ -21,7 +23,8 @@
     "year": "2023/2024",
     "seasonKey": "2023/2024",
     "status": "Aktiv",
-    "showOnHomepage": true
+    "showOnHomepage": true,
+    "isCurrent": false
   },
   {
     "id": 4,
@@ -29,7 +32,8 @@
     "year": "2024/2025",
     "seasonKey": "2024/2025",
     "status": "Aktiv",
-    "showOnHomepage": true
+    "showOnHomepage": true,
+    "isCurrent": false
   },
   {
     "id": 5,
@@ -37,7 +41,8 @@
     "year": "2024/2025",
     "seasonKey": "2024/2025_oberes",
     "status": "Aktiv",
-    "showOnHomepage": true
+    "showOnHomepage": true,
+    "isCurrent": false
   },
   {
     "id": 6,
@@ -45,7 +50,8 @@
     "year": "2024/2025",
     "seasonKey": "2024/2025_unteres",
     "status": "Aktiv",
-    "showOnHomepage": true
+    "showOnHomepage": true,
+    "isCurrent": false
   },
   {
     "id": 7,
@@ -53,6 +59,16 @@
     "year": "2025/2026",
     "seasonKey": "2025/2026",
     "status": "Aktiv",
-    "showOnHomepage": true
+    "showOnHomepage": true,
+    "isCurrent": false
+  },
+  {
+    "id": 8,
+    "name": "DSG Liga",
+    "year": "2026/2027",
+    "seasonKey": "2026/2027",
+    "status": "Aktiv",
+    "showOnHomepage": true,
+    "isCurrent": true
   }
 ]

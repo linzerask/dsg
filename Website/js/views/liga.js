@@ -1,4 +1,5 @@
-import { Store, sortLeaguesByPriority } from '../store.js?v=1790560210000';
+import { Store, sortLeaguesByPriority } from '../store.js?v=1790560300000';
+import { renderIcon } from '../icons.js?v=1790560300000';
 
 
 let currentViewSeason = null;
@@ -6,7 +7,7 @@ let currentViewSeason = null;
 export function viewLiga() {
   const data = Store.getData();
   const rawLeagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
-  const leagues = sortLeaguesByPriority((rawLeagues || []).filter(l => l.year !== '2026/2027' && l.seasonKey !== '2026/2027' && l.name !== '2026/2027' && l.showOnHomepage !== false));
+  const leagues = sortLeaguesByPriority((rawLeagues || []).filter(l => l.showOnHomepage !== false));
 
   if (leagues.length === 0) {
     return `

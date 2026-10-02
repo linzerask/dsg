@@ -1,5 +1,5 @@
 {
-  "currentSeason": "2025/2026",
+  "currentSeason": "2026/2027",
   "seasons": {
     "2022/2023": {
       "teams": [
@@ -36709,6 +36709,1547 @@
             "yellow": 1,
             "yellowRed": 0,
             "red": 0
+          }
+        ]
+      }
+    },
+    "2026/2027": {
+      "teams": [
+        {
+          "name": "Union Heiligenberg",
+          "played": 3,
+          "won": 3,
+          "drawn": 0,
+          "lost": 0,
+          "goalsFor": 18,
+          "goalsAgainst": 0,
+          "goalDiff": 18,
+          "points": 9,
+          "rank": 1
+        },
+        {
+          "name": "SV Croatia Linz",
+          "played": 3,
+          "won": 3,
+          "drawn": 0,
+          "lost": 0,
+          "goalsFor": 15,
+          "goalsAgainst": 4,
+          "goalDiff": 11,
+          "points": 9,
+          "rank": 2
+        },
+        {
+          "name": "Etehad Linz",
+          "played": 3,
+          "won": 2,
+          "drawn": 0,
+          "lost": 1,
+          "goalsFor": 12,
+          "goalsAgainst": 8,
+          "goalDiff": 4,
+          "points": 6,
+          "rank": 3
+        },
+        {
+          "name": "DSG Union Traun",
+          "played": 4,
+          "won": 1,
+          "drawn": 1,
+          "lost": 2,
+          "goalsFor": 9,
+          "goalsAgainst": 15,
+          "goalDiff": -6,
+          "points": 4,
+          "rank": 4
+        },
+        {
+          "name": "FC Gornjak",
+          "played": 3,
+          "won": 1,
+          "drawn": 0,
+          "lost": 2,
+          "goalsFor": 4,
+          "goalsAgainst": 12,
+          "goalDiff": -8,
+          "points": 3,
+          "rank": 5
+        },
+        {
+          "name": "Walker FC",
+          "played": 3,
+          "won": 0,
+          "drawn": 1,
+          "lost": 2,
+          "goalsFor": 0,
+          "goalsAgainst": 11,
+          "goalDiff": -11,
+          "points": 1,
+          "rank": 6
+        },
+        {
+          "name": "DSG St. Josef/Oed FC",
+          "played": 3,
+          "won": 0,
+          "drawn": 0,
+          "lost": 3,
+          "goalsFor": 2,
+          "goalsAgainst": 10,
+          "goalDiff": -8,
+          "points": 0,
+          "rank": 7
+        }
+      ],
+      "matches": [
+        {
+          "round": "1. Runde",
+          "date": "29.08.2026",
+          "time": "18:00",
+          "weekday": "Sa",
+          "home": "DSG Union Traun",
+          "away": "Union Heiligenberg",
+          "score": "0:7",
+          "ht": "0:4",
+          "status": "Gespielt",
+          "location": "Sportplatz Traun",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": [
+            {
+              "type": "yellow",
+              "player": "Georgia Adrian Melci",
+              "name": "Georgia Adrian Melci",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "yellow",
+              "player": "Thomas Mathis",
+              "name": "Thomas Mathis",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Johannes Steinbock",
+              "name": "Johannes Steinbock",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Johannes Steinbock",
+              "name": "Johannes Steinbock",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Paul Steininger",
+              "name": "Paul Steininger",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Dominik Penninger",
+              "name": "Dominik Penninger",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Manuel Zauner-Wagner",
+              "name": "Manuel Zauner-Wagner",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Benedict Humer",
+              "name": "Benedict Humer",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Ernst Zahrer",
+              "name": "Ernst Zahrer",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "yellow",
+              "player": "Thomas Wagner",
+              "name": "Thomas Wagner",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            }
+          ]
+        },
+        {
+          "round": "1. Runde",
+          "date": "05.09.2026",
+          "time": "15:00",
+          "weekday": "Sa",
+          "home": "SV Croatia Linz",
+          "away": "Etehad Linz",
+          "score": "6:2",
+          "ht": "2:0",
+          "status": "Gespielt",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Leonardo Glavas",
+              "name": "Leonardo Glavas",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Leonardo Glavas",
+              "name": "Leonardo Glavas",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Leonardo Glavas",
+              "name": "Leonardo Glavas",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Josip Peric",
+              "name": "Josip Peric",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Josip Peric",
+              "name": "Josip Peric",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Ante Zuljevic",
+              "name": "Ante Zuljevic",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Zia Ghaderi",
+              "name": "Zia Ghaderi",
+              "count": 1,
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Mohammad Sharifi",
+              "name": "Mohammad Sharifi",
+              "count": 1,
+              "team": "Etehad Linz"
+            }
+          ]
+        },
+        {
+          "round": "1. Runde",
+          "date": "05.09.2026",
+          "time": "17:00",
+          "weekday": "Sa",
+          "home": "DSG St. Josef/Oed FC",
+          "away": "FC Gornjak",
+          "score": "0:1",
+          "ht": "0:1",
+          "status": "Gespielt",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": [
+            {
+              "type": "yellow",
+              "player": "Christoph Doleschal",
+              "name": "Christoph Doleschal",
+              "count": 1,
+              "team": "DSG St. Josef/Oed FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Nicolaus Steurer",
+              "name": "Nicolaus Steurer",
+              "count": 1,
+              "team": "DSG St. Josef/Oed FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Kevin Tiepelt",
+              "name": "Kevin Tiepelt",
+              "count": 1,
+              "team": "DSG St. Josef/Oed FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Manuel Stadler",
+              "name": "Manuel Stadler",
+              "count": 1,
+              "team": "DSG St. Josef/Oed FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Paul Feichtenschlager",
+              "name": "Paul Feichtenschlager",
+              "count": 1,
+              "team": "DSG St. Josef/Oed FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Florian Trefflinger",
+              "name": "Florian Trefflinger",
+              "count": 1,
+              "team": "DSG St. Josef/Oed FC"
+            },
+            {
+              "type": "goal",
+              "player": "Ilija Stojchovski",
+              "name": "Ilija Stojchovski",
+              "count": 1,
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Tobias Loizenbauer",
+              "name": "Tobias Loizenbauer",
+              "count": 1,
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Sasa Nedic",
+              "name": "Sasa Nedic",
+              "count": 1,
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Sani Stancic",
+              "name": "Sani Stancic",
+              "count": 1,
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Vladica Petrovic",
+              "name": "Vladica Petrovic",
+              "count": 1,
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "red",
+              "player": "Aleksandar Kostic",
+              "name": "Aleksandar Kostic",
+              "count": 1,
+              "team": "FC Gornjak"
+            }
+          ]
+        },
+        {
+          "round": "2. Runde",
+          "date": "11.09.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "Union Heiligenberg",
+          "away": "Walker FC",
+          "score": "8:0",
+          "ht": "2:0",
+          "status": "Gespielt",
+          "location": "Sportplatz Heiligenberg",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Dominik Penninger",
+              "name": "Dominik Penninger",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Dominik Penninger",
+              "name": "Dominik Penninger",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Dominik Penninger",
+              "name": "Dominik Penninger",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Wolfgang Lehner",
+              "name": "Wolfgang Lehner",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Wolfgang Lehner",
+              "name": "Wolfgang Lehner",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Lorenz Moser",
+              "name": "Lorenz Moser",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Thomas Wagner",
+              "name": "Thomas Wagner",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Sebastian Boubenicek",
+              "name": "Sebastian Boubenicek",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "yellow",
+              "player": "Lorenz Moser",
+              "name": "Lorenz Moser",
+              "count": 1,
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "yellow",
+              "player": "Martin Brenner",
+              "name": "Martin Brenner",
+              "count": 1,
+              "team": "Walker FC"
+            }
+          ]
+        },
+        {
+          "round": "2. Runde",
+          "date": "12.09.2026",
+          "time": "15:00",
+          "weekday": "Sa",
+          "home": "Etehad Linz",
+          "away": "DSG Union Traun",
+          "score": "6:1",
+          "ht": "2:1",
+          "status": "Gespielt",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Abdullah Temori",
+              "name": "Abdullah Temori",
+              "count": 1,
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Abdullah Temori",
+              "name": "Abdullah Temori",
+              "count": 1,
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Zia Ghaderi",
+              "name": "Zia Ghaderi",
+              "count": 1,
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Zia Ghaderi",
+              "name": "Zia Ghaderi",
+              "count": 1,
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Hamid Fouladi",
+              "name": "Hamid Fouladi",
+              "count": 1,
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Askraf Laeli",
+              "name": "Askraf Laeli",
+              "count": 1,
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Manuel Winklehner",
+              "name": "Manuel Winklehner",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "yellow",
+              "player": "Manuel Kapfhammer",
+              "name": "Manuel Kapfhammer",
+              "count": 1,
+              "team": "DSG Union Traun"
+            }
+          ]
+        },
+        {
+          "round": "2. Runde",
+          "date": "12.09.2026",
+          "time": "17:00",
+          "weekday": "Sa",
+          "home": "DSG St. Josef/Oed FC",
+          "away": "SV Croatia Linz",
+          "score": "2:6",
+          "ht": "0:4",
+          "status": "Gespielt",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Paul Feichtenschlager",
+              "name": "Paul Feichtenschlager",
+              "count": 1,
+              "team": "DSG St. Josef/Oed FC"
+            },
+            {
+              "type": "goal",
+              "player": "Paul Feichtenschlager",
+              "name": "Paul Feichtenschlager",
+              "count": 1,
+              "team": "DSG St. Josef/Oed FC"
+            },
+            {
+              "type": "goal",
+              "player": "Leonardo Glavas",
+              "name": "Leonardo Glavas",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Leonardo Glavas",
+              "name": "Leonardo Glavas",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Robert Matisic",
+              "name": "Robert Matisic",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Robert Matisic",
+              "name": "Robert Matisic",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Branko Marin",
+              "name": "Branko Marin",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Darko Dovoda",
+              "name": "Darko Dovoda",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "yellow",
+              "player": "Marko Burg",
+              "name": "Marko Burg",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "yellow",
+              "player": "Robert Matisic",
+              "name": "Robert Matisic",
+              "count": 1,
+              "team": "SV Croatia Linz"
+            }
+          ]
+        },
+        {
+          "round": "3. Runde",
+          "date": "18.09.2026",
+          "time": "",
+          "weekday": "Fr",
+          "home": "Union Heiligenberg",
+          "away": "DSG St. Josef/Oed FC",
+          "score": "3:0",
+          "ht": "",
+          "status": "Abgesagt 3:0",
+          "location": "",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "3. Runde",
+          "date": "19.09.2026",
+          "time": "15:00",
+          "weekday": "Sa",
+          "home": "Walker FC",
+          "away": "DSG Union Traun",
+          "score": "0:0",
+          "ht": "0:0",
+          "status": "Gespielt",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": [
+            {
+              "type": "yellow",
+              "player": "Christoph MÃ¼hlbacher",
+              "name": "Christoph MÃ¼hlbacher",
+              "count": 1,
+              "team": "Walker FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Ioan Gafincu",
+              "name": "Ioan Gafincu",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "yellow",
+              "player": "Sebastian GÃ¶ttfert",
+              "name": "Sebastian GÃ¶ttfert",
+              "count": 1,
+              "team": "DSG Union Traun"
+            }
+          ]
+        },
+        {
+          "round": "3. Runde",
+          "date": "19.09.2026",
+          "time": "17:00",
+          "weekday": "Sa",
+          "home": "FC Gornjak",
+          "away": "Etehad Linz",
+          "score": "1:4",
+          "ht": "1:1",
+          "status": "Gespielt",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": [
+            {
+              "type": "yellow",
+              "player": "Vladica Petrovic",
+              "name": "Vladica Petrovic",
+              "count": 1,
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Marco Rajcic",
+              "name": "Marco Rajcic",
+              "count": 1,
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "goal",
+              "player": "Hamid Fouladi",
+              "name": "Hamid Fouladi",
+              "count": 1,
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Hamid Fouladi",
+              "name": "Hamid Fouladi",
+              "count": 1,
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Hamid Fouladi",
+              "name": "Hamid Fouladi",
+              "count": 1,
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Zia Ghaderi",
+              "name": "Zia Ghaderi",
+              "count": 1,
+              "team": "Etehad Linz"
+            }
+          ]
+        },
+        {
+          "round": "4. Runde",
+          "date": "25.09.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "DSG Union Traun",
+          "away": "FC Gornjak",
+          "score": "8:2",
+          "ht": "4:1",
+          "status": "Gespielt",
+          "location": "Sportplatz Traun",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Dominik PrilmÃ¼ller",
+              "name": "Dominik PrilmÃ¼ller",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Dominik PrilmÃ¼ller",
+              "name": "Dominik PrilmÃ¼ller",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Dominik PrilmÃ¼ller",
+              "name": "Dominik PrilmÃ¼ller",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Ioan Gafincu",
+              "name": "Ioan Gafincu",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Ioan Gafincu",
+              "name": "Ioan Gafincu",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Michael Mayr",
+              "name": "Michael Mayr",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Taher Akbar",
+              "name": "Taher Akbar",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Lukas Wahl",
+              "name": "Lukas Wahl",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "yellow",
+              "player": "Taher Akbar",
+              "name": "Taher Akbar",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "yellow",
+              "player": "Ninoslav Matanovic",
+              "name": "Ninoslav Matanovic",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "yellow",
+              "player": "SÃ¼leyman Targil",
+              "name": "SÃ¼leyman Targil",
+              "count": 1,
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Ilija Stojchovski",
+              "name": "Ilija Stojchovski",
+              "count": 1,
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Vladica Petrovic",
+              "name": "Vladica Petrovic",
+              "count": 1,
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Sani Stancic",
+              "name": "Sani Stancic",
+              "count": 1,
+              "team": "FC Gornjak"
+            }
+          ]
+        },
+        {
+          "round": "4. Runde",
+          "date": "26.09.2026",
+          "time": "",
+          "weekday": "Sa",
+          "home": "Walker FC",
+          "away": "SV Croatia Linz",
+          "score": "0:3",
+          "ht": "",
+          "status": "Abgesagt 0:3",
+          "location": "",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "4. Runde",
+          "date": "13.10.2026",
+          "time": "18:00",
+          "weekday": "Di",
+          "home": "DSG St. Josef/Oed FC",
+          "away": "Etehad Linz",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "Sportplatz Traun",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "5. Runde",
+          "date": "02.10.2026",
+          "time": "16:30",
+          "weekday": "Fr",
+          "home": "Etehad Linz",
+          "away": "Walker FC",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "5. Runde",
+          "date": "02.10.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "DSG Union Traun",
+          "away": "SV Croatia Linz",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "Sportplatz Traun",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "5. Runde",
+          "date": "03.10.2026",
+          "time": "16:00",
+          "weekday": "Sa",
+          "home": "FC Gornjak",
+          "away": "Union Heiligenberg",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "6. Runde",
+          "date": "09.10.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "DSG Union Traun",
+          "away": "DSG St. Josef/Oed FC",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "Sportplatz Traun",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "6. Runde",
+          "date": "10.10.2026",
+          "time": "15:00",
+          "weekday": "Sa",
+          "home": "Walker FC",
+          "away": "FC Gornjak",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "6. Runde",
+          "date": "07.11.2026",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "Union Heiligenberg",
+          "away": "SV Croatia Linz",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "Sportplatz Heiligenberg",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "7. Runde",
+          "date": "16.10.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "Union Heiligenberg",
+          "away": "FC Gornjak",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "Sportplatz Heiligenberg",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "7. Runde",
+          "date": "17.10.2026",
+          "time": "14:00",
+          "weekday": "Sa",
+          "home": "SV Croatia Linz",
+          "away": "DSG Union Traun",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "7. Runde",
+          "date": "17.10.2026",
+          "time": "16:00",
+          "weekday": "Sa",
+          "home": "Walker FC",
+          "away": "Etehad Linz",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "8. Runde",
+          "date": "24.10.2026",
+          "time": "14:00",
+          "weekday": "Sa",
+          "home": "SV Croatia Linz",
+          "away": "FC Gornjak",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "8. Runde",
+          "date": "24.10.2026",
+          "time": "16:00",
+          "weekday": "Sa",
+          "home": "DSG St. Josef/Oed FC",
+          "away": "Walker FC",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "8. Runde",
+          "date": "24.10.2026",
+          "time": "18:00",
+          "weekday": "Sa",
+          "home": "Etehad Linz",
+          "away": "Union Heiligenberg",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "Sportplatz Traun",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "9. Runde",
+          "date": "30.10.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "Union Heiligenberg",
+          "away": "DSG St. Josef/Oed FC",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "Sportplatz Heiligenberg",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "9. Runde",
+          "date": "31.10.2026",
+          "time": "14:00",
+          "weekday": "Sa",
+          "home": "FC Gornjak",
+          "away": "Etehad Linz",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        },
+        {
+          "round": "9. Runde",
+          "date": "31.10.2026",
+          "time": "16:00",
+          "weekday": "Sa",
+          "home": "Walker FC",
+          "away": "DSG Union Traun",
+          "score": "-:-",
+          "ht": "",
+          "status": "Ausstehend",
+          "location": "DSG-Platz",
+          "referee": "",
+          "league": "DSG Liga",
+          "seasonKey": "2026/2027",
+          "events": []
+        }
+      ],
+      "stats": {
+        "topScorers": [
+          {
+            "player": "Leonardo Glavas",
+            "name": "Leonardo Glavas",
+            "team": "SV Croatia Linz",
+            "goals": 5,
+            "rank": 1
+          },
+          {
+            "player": "Dominik Penninger",
+            "name": "Dominik Penninger",
+            "team": "Union Heiligenberg",
+            "goals": 4,
+            "rank": 2
+          },
+          {
+            "player": "Zia Ghaderi",
+            "name": "Zia Ghaderi",
+            "team": "Etehad Linz",
+            "goals": 4,
+            "rank": 3
+          },
+          {
+            "player": "Hamid Fouladi",
+            "name": "Hamid Fouladi",
+            "team": "Etehad Linz",
+            "goals": 4,
+            "rank": 4
+          },
+          {
+            "player": "Dominik PrilmÃ¼ller",
+            "name": "Dominik PrilmÃ¼ller",
+            "team": "DSG Union Traun",
+            "goals": 3,
+            "rank": 5
+          },
+          {
+            "player": "Johannes Steinbock",
+            "name": "Johannes Steinbock",
+            "team": "Union Heiligenberg",
+            "goals": 2,
+            "rank": 6
+          },
+          {
+            "player": "Josip Peric",
+            "name": "Josip Peric",
+            "team": "SV Croatia Linz",
+            "goals": 2,
+            "rank": 7
+          },
+          {
+            "player": "Ilija Stojchovski",
+            "name": "Ilija Stojchovski",
+            "team": "FC Gornjak",
+            "goals": 2,
+            "rank": 8
+          },
+          {
+            "player": "Wolfgang Lehner",
+            "name": "Wolfgang Lehner",
+            "team": "Union Heiligenberg",
+            "goals": 2,
+            "rank": 9
+          },
+          {
+            "player": "Abdullah Temori",
+            "name": "Abdullah Temori",
+            "team": "Etehad Linz",
+            "goals": 2,
+            "rank": 10
+          },
+          {
+            "player": "Paul Feichtenschlager",
+            "name": "Paul Feichtenschlager",
+            "team": "DSG St. Josef/Oed FC",
+            "goals": 2,
+            "rank": 11
+          },
+          {
+            "player": "Robert Matisic",
+            "name": "Robert Matisic",
+            "team": "SV Croatia Linz",
+            "goals": 2,
+            "rank": 12
+          },
+          {
+            "player": "Ioan Gafincu",
+            "name": "Ioan Gafincu",
+            "team": "DSG Union Traun",
+            "goals": 2,
+            "rank": 13
+          },
+          {
+            "player": "Paul Steininger",
+            "name": "Paul Steininger",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 14
+          },
+          {
+            "player": "Manuel Zauner-Wagner",
+            "name": "Manuel Zauner-Wagner",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 15
+          },
+          {
+            "player": "Benedict Humer",
+            "name": "Benedict Humer",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 16
+          },
+          {
+            "player": "Ernst Zahrer",
+            "name": "Ernst Zahrer",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 17
+          },
+          {
+            "player": "Ante Zuljevic",
+            "name": "Ante Zuljevic",
+            "team": "SV Croatia Linz",
+            "goals": 1,
+            "rank": 18
+          },
+          {
+            "player": "Mohammad Sharifi",
+            "name": "Mohammad Sharifi",
+            "team": "Etehad Linz",
+            "goals": 1,
+            "rank": 19
+          },
+          {
+            "player": "Lorenz Moser",
+            "name": "Lorenz Moser",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 20
+          },
+          {
+            "player": "Thomas Wagner",
+            "name": "Thomas Wagner",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 21
+          },
+          {
+            "player": "Sebastian Boubenicek",
+            "name": "Sebastian Boubenicek",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 22
+          },
+          {
+            "player": "Askraf Laeli",
+            "name": "Askraf Laeli",
+            "team": "Etehad Linz",
+            "goals": 1,
+            "rank": 23
+          },
+          {
+            "player": "Manuel Winklehner",
+            "name": "Manuel Winklehner",
+            "team": "DSG Union Traun",
+            "goals": 1,
+            "rank": 24
+          },
+          {
+            "player": "Branko Marin",
+            "name": "Branko Marin",
+            "team": "SV Croatia Linz",
+            "goals": 1,
+            "rank": 25
+          },
+          {
+            "player": "Darko Dovoda",
+            "name": "Darko Dovoda",
+            "team": "SV Croatia Linz",
+            "goals": 1,
+            "rank": 26
+          },
+          {
+            "player": "Michael Mayr",
+            "name": "Michael Mayr",
+            "team": "DSG Union Traun",
+            "goals": 1,
+            "rank": 27
+          },
+          {
+            "player": "Taher Akbar",
+            "name": "Taher Akbar",
+            "team": "DSG Union Traun",
+            "goals": 1,
+            "rank": 28
+          },
+          {
+            "player": "Lukas Wahl",
+            "name": "Lukas Wahl",
+            "team": "DSG Union Traun",
+            "goals": 1,
+            "rank": 29
+          }
+        ],
+        "cards": [
+          {
+            "player": "Aleksandar Kostic",
+            "name": "Aleksandar Kostic",
+            "team": "FC Gornjak",
+            "yellow": 0,
+            "yellowRed": 0,
+            "red": 1,
+            "rank": 1
+          },
+          {
+            "player": "Vladica Petrovic",
+            "name": "Vladica Petrovic",
+            "team": "FC Gornjak",
+            "yellow": 3,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 2
+          },
+          {
+            "player": "Sani Stancic",
+            "name": "Sani Stancic",
+            "team": "FC Gornjak",
+            "yellow": 2,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 3
+          },
+          {
+            "player": "Georgia Adrian Melci",
+            "name": "Georgia Adrian Melci",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 4
+          },
+          {
+            "player": "Thomas Mathis",
+            "name": "Thomas Mathis",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 5
+          },
+          {
+            "player": "Thomas Wagner",
+            "name": "Thomas Wagner",
+            "team": "Union Heiligenberg",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 6
+          },
+          {
+            "player": "Christoph Doleschal",
+            "name": "Christoph Doleschal",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 7
+          },
+          {
+            "player": "Nicolaus Steurer",
+            "name": "Nicolaus Steurer",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 8
+          },
+          {
+            "player": "Kevin Tiepelt",
+            "name": "Kevin Tiepelt",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 9
+          },
+          {
+            "player": "Manuel Stadler",
+            "name": "Manuel Stadler",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 10
+          },
+          {
+            "player": "Paul Feichtenschlager",
+            "name": "Paul Feichtenschlager",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 11
+          },
+          {
+            "player": "Florian Trefflinger",
+            "name": "Florian Trefflinger",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 12
+          },
+          {
+            "player": "Tobias Loizenbauer",
+            "name": "Tobias Loizenbauer",
+            "team": "FC Gornjak",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 13
+          },
+          {
+            "player": "Sasa Nedic",
+            "name": "Sasa Nedic",
+            "team": "FC Gornjak",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 14
+          },
+          {
+            "player": "Lorenz Moser",
+            "name": "Lorenz Moser",
+            "team": "Union Heiligenberg",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 15
+          },
+          {
+            "player": "Martin Brenner",
+            "name": "Martin Brenner",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 16
+          },
+          {
+            "player": "Manuel Kapfhammer",
+            "name": "Manuel Kapfhammer",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 17
+          },
+          {
+            "player": "Marko Burg",
+            "name": "Marko Burg",
+            "team": "SV Croatia Linz",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 18
+          },
+          {
+            "player": "Robert Matisic",
+            "name": "Robert Matisic",
+            "team": "SV Croatia Linz",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 19
+          },
+          {
+            "player": "Christoph MÃ¼hlbacher",
+            "name": "Christoph MÃ¼hlbacher",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 20
+          },
+          {
+            "player": "Ioan Gafincu",
+            "name": "Ioan Gafincu",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 21
+          },
+          {
+            "player": "Sebastian GÃ¶ttfert",
+            "name": "Sebastian GÃ¶ttfert",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 22
+          },
+          {
+            "player": "Marco Rajcic",
+            "name": "Marco Rajcic",
+            "team": "FC Gornjak",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 23
+          },
+          {
+            "player": "Taher Akbar",
+            "name": "Taher Akbar",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 24
+          },
+          {
+            "player": "Ninoslav Matanovic",
+            "name": "Ninoslav Matanovic",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 25
+          },
+          {
+            "player": "SÃ¼leyman Targil",
+            "name": "SÃ¼leyman Targil",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 26
           }
         ]
       }

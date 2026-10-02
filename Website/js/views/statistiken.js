@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560210000';
-import { renderIcon } from '../icons.js?v=1790560210000';
+import { Store } from '../store.js?v=1790560300000';
+import { renderIcon } from '../icons.js?v=1790560300000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -279,8 +279,9 @@ export const computeAllTimeStats = () => {
       clubMap[name].seasonsList.add(seasonKey);
     });
 
-    // Season honors for completed seasons
-    if (teams.length > 0 && teams.some(t => (t.played || 0) > 0 || (t.points || 0) > 0)) {
+    // Season honors only for completed seasons (all matches finished)
+    const isCompletedSeason = matches.length > 0 && matches.every(m => m.status === 'Gespielt' || m.status === 'Played' || (m.status && m.status.startsWith('Abgesagt')));
+    if (isCompletedSeason && teams.length > 0 && teams.some(t => (t.played || 0) > 0 || (t.points || 0) > 0)) {
       const sortedTeams = [...teams].sort((a, b) => (b.points || 0) - (a.points || 0) || (((b.goalsFor ?? b.gf ?? 0) - (b.goalsAgainst ?? b.ga ?? 0)) - ((a.goalsFor ?? a.gf ?? 0) - (a.goalsAgainst ?? a.ga ?? 0))));
       const champion = sortedTeams[0];
       const runnerUp = sortedTeams[1];
