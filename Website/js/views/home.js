@@ -303,7 +303,7 @@ export const viewHome = () => {
             <div style="margin-bottom: 6px; display: flex; justify-content: center;">${renderIcon('stadium', { size: 28, color: 'var(--color-accent)' })}</div>
             <div class="home-stat-number" data-target="${allTimeStats.totalMatches}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
             <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Gespielte Partien</div>
-            <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Seit 2021/2022</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Seit 2022/2023</div>
           </div>
 
           <div style="padding: var(--space-md) var(--space-sm); background: rgba(0,0,0,0.03); border-radius: 8px;">
@@ -328,7 +328,7 @@ export const viewHome = () => {
         </div>
 
         <div style="margin-top: var(--space-md); text-align: center; font-size: 0.78rem; color: var(--color-text-secondary); opacity: 0.85;">
-          * Sämtliche Statistiken und Rekorde basieren auf den digital erfassten Spielberichten seit Beginn der Aufzeichnungen in der Saison 2021/2022.
+          * Sämtliche Statistiken und Rekorde basieren auf den digital erfassten Spielberichten seit Beginn der Aufzeichnungen in der Saison 2022/2023.
         </div>
       </div>
 

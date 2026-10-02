@@ -424,3 +424,11 @@ DSG Liga/
   3. **Admin Spiele Data Grid:** The `ERGEBNIS` column renders the clean full-time score (`1:1`, `5:1`), while the separate `HZ` column renders the distinct halftime score (`0:1`, `2:1`).
   4. **Consistent Implementation:** This separation is enforced consistently across all public and administrative match views: Public Liga match center (`liga.js`), Homepage Match Center (`home.js`), Admin Spiele table & mobile cards (`adminGames.js`), Admin Spielrunden match inspection modal (`adminRounds.js`), and Admin Ligen inspection modal (`adminLeagues.js`).
 
+---
+
+## 38. Continuous Git Synchronization Protocol (Push After Every Change)
+* **The Pitfall:** Making local changes and verifying them only on `localhost:8000` leaves the remote repository and live GitHub Pages deployment (`linzerask.github.io/dsg/Website/`) in a stale state. This causes the user or external testing devices to see outdated data or missing features.
+* **The Rule:**
+  1. **Commit & Push After Every Task:** Whenever a feature, bugfix, UI enhancement, or dataset ingestion (e.g. adding a new season) is completed and verified, immediately stage all changed and newly created files (`git add -A`), create a descriptive conventional commit (`git commit -m "..."`), and push directly to `origin/main` (`git push origin main`).
+  2. **GitHub Pages Real-Time Synchronization:** Always confirm that `origin/main` is up-to-date with local changes so that GitHub Pages and remote clients reflect the current state without manual intervention.
+

@@ -14,5 +14,13 @@
     "seasonKey": "2022/2023_1klasse",
     "status": "Aktiv",
     "showOnHomepage": true
+  },
+  {
+    "id": 3,
+    "name": "DSG Liga",
+    "year": "2023/2024",
+    "seasonKey": "2023/2024",
+    "status": "Aktiv",
+    "showOnHomepage": true
   }
 ]

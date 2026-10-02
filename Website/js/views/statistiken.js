@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790560040000';
-import { renderIcon } from '../icons.js?v=1790560040000';
+import { Store } from '../store.js?v=1790560050000';
+import { renderIcon } from '../icons.js?v=1790560050000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -34,7 +34,7 @@ export const computeAllTimeStats = () => {
 
   // Iterate over all seasons
   const seasonKeys = Object.keys(seasons);
-  const mainSeasons = ['2021/2022', '2022/2023', '2023/2024', '2024/2025', '2025/2026', '2026/2027'];
+  const mainSeasons = ['2022/2023', '2023/2024', '2024/2025', '2025/2026', '2026/2027'];
 
   seasonKeys.forEach(seasonKey => {
     const s = seasons[seasonKey];
@@ -753,7 +753,7 @@ export const viewStatistiken = () => {
         <!-- Disclaimer Badge -->
         <div style="margin-top: var(--space-md); font-size: 0.8rem; color: var(--color-text-secondary); opacity: 0.85; display: flex; align-items: center; gap: 6px;">
           <span style="color: var(--color-accent); font-weight: 700;">*</span>
-          <span>Sämtliche Statistiken und Rekorde basieren auf den digital erfassten Spielberichten seit Beginn der Aufzeichnungen in der Saison 2021/2022.</span>
+          <span>Sämtliche Statistiken und Rekorde basieren auf den digital erfassten Spielberichten seit Beginn der Aufzeichnungen in der Saison 2022/2023.</span>
         </div>
       </div>
 
@@ -771,7 +771,7 @@ export const viewStatistiken = () => {
           <div style="margin-bottom: 6px; display: flex; justify-content: center;">${renderIcon('stadium', { size: 30, color: 'var(--color-accent)' })}</div>
           <div class="stat-number count-up" data-target="${stats.totalMatches}" style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent); line-height: 1.1;">0</div>
           <div style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-primary); margin-top: 4px;">Gespielte Partien</div>
-          <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Seit 2021/2022</div>
+          <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">Seit 2022/2023</div>
         </div>
 
         <div class="glass-card stat-counter-card" style="padding: var(--space-md); text-align: center; border-top: 3px solid var(--color-accent);">
@@ -868,7 +868,7 @@ export const viewStatistiken = () => {
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-md);">
             <div>
               <h3 style="margin: 0; font-size: 1.3rem;">Ewige Torschützenliste</h3>
-              <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--color-text-secondary);">Alle Torschützen der DSG-Liga seit der Saison 2021/2022</p>
+              <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--color-text-secondary);">Alle Torschützen der DSG-Liga seit der Saison 2022/2023</p>
             </div>
             <input type="text" id="stats-scorer-search" class="admin-input" placeholder="Spieler oder Verein suchen..." value="${scorerSearchQuery}" style="width: 100%; max-width: 280px; font-size: 0.9rem;">
           </div>
