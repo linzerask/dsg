@@ -434,21 +434,24 @@ DSG Liga/
 
 ---
 
-## 39. Season 2025/2026 Ingestion & All-Time Historical Record Totals
-* **The Milestone:** DSG Liga Season 2025/2026 is fully ingested with all 14 rounds, 56 matches, 8 teams (*SV Croatia Linz, DSG St. Josef/Oed FC, Union Heiligenberg, FC Hinzenbach, Walker FC, FC Gornjak, DSG Union Traun, Union Eschenau*), 303 goal events, and 143 card events.
-* **The Statistics & Milestones:**
-  1. **Champion:** SV Croatia Linz (38 Pkt, 12-2-0, 63:19 Tore, +44 Diff).
-  2. **Season Top Scorer:** Roland Meindlhumer (FC Hinzenbach) with 20 goals.
-  3. **All-Time Historical Totals Across Ingested Seasons (2022/2023 - 2025/2026):**
-     - **Total Played Matches:** 329
-     - **Total Goals:** 1,761 (1,638 individual goal events recorded)
-     - **Average Goals / Match:** 5.35
-     - **Total Unique Scorers:** 340
+## 39. Database Step-by-Step State: Seasons 2022/2023 & 2023/2024 Locked and Verified
+* **The Milestone:** The database is strictly locked and verified for **Season 2022/2023** (DSG Liga & 1. Klasse) and **Season 2023/2024** (DSG Liga).
+* **The Exact Statistics & Milestones (2022/2023 + 2023/2024):**
+  1. **Season 2022/2023 DSG Liga:** Champion Union Heiligenberg (30 Pkt), #2 DSG St. Josef/Oed FC (30 Pkt), #3 FC U. Schleißheim (27 Pkt). Top Scorer: Michael Haslehner (21 Tore).
+  2. **Season 2022/2023 1. Klasse:** Champion DSG Thalheim (31 Pkt), #2 Union Eschenau (24 Pkt), #3 Walker FC (23 Pkt). Top Scorer: Aaron Außermair (15 Tore).
+  3. **Season 2023/2024 DSG Liga:** Champion SV Croatia Linz (38 Pkt), #2 Union Heiligenberg (37 Pkt), #3 FC Hinzenbach (35 Pkt). Top Scorer: Roland Meindlhumer (34 Tore).
+  4. **All-Time Historical Totals Across Ingested Seasons (2022/2023 & 2023/2024):**
+     - **Total Documented Competitions:** 3 Leagues (`2022/2023`, `2022/2023_1klasse`, `2023/2024`)
+     - **Total Matches:** 213 matches (105 in 2022/23 across 2 leagues + 108 in 2023/24)
+     - **Total Played Matches:** 206
+     - **Total Goals Recorded:** 1,011
+     - **Total Unique Scorers:** 245
      - **All-Time Top 3 Scorers:**
-       1. **Roland Meindlhumer** (FC Hinzenbach): **85 Tore** (5 Seasons)
-       2. **Thomas Paulmair** (DSG St. Josef/Oed FC): **51 Tore** (5 Seasons)
-       3. **Michael Haslehner** (Union Heiligenberg): **47 Tore** (5 Seasons)
-     - **Current Cache Keys:** `dsg_data_v77`, `dsg_admin_leagues_v33`, `dsg_admin_rounds_v32`, query string `?v=1790560070000`.
+       1. **Roland Meindlhumer** (FC Hinzenbach): **52 Tore** (18 in 22/23 + 34 in 23/24)
+       2. **Thomas Paulmair** (DSG St. Josef/Oed FC): **26 Tore**
+       3. **Michael Haslehner** (Union Heiligenberg): **23 Tore**
+     - **Current Cache Keys:** `dsg_data_v79`, `dsg_admin_leagues_v35`, `dsg_admin_rounds_v34`, query string `?v=1790560090000`.
+
 
 
 

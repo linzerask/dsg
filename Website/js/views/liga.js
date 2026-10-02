@@ -1,4 +1,4 @@
-import { Store, sortLeaguesByPriority } from '../store.js?v=1790560070000';
+import { Store, sortLeaguesByPriority } from '../store.js?v=1790560090000';
 
 
 let currentViewSeason = null;
