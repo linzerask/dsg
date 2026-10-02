@@ -20,19 +20,19 @@ files_to_bump = [
 with open('Website/js/store.js', 'r', encoding='utf-8') as f:
     s = f.read()
 
-s = s.replace('dsg_data_v79', 'dsg_data_v80')
-s = s.replace("loadLocal('dsg_data', 79)", "loadLocal('dsg_data', 80)")
-s = s.replace('if (i !== 79) localStorage.removeItem(`dsg_data_v', 'if (i !== 80) localStorage.removeItem(`dsg_data_v')
+s = s.replace('dsg_data_v80', 'dsg_data_v81')
+s = s.replace("loadLocal('dsg_data', 80)", "loadLocal('dsg_data', 81)")
+s = s.replace('if (i !== 80) localStorage.removeItem(`dsg_data_v', 'if (i !== 81) localStorage.removeItem(`dsg_data_v')
 
-s = s.replace('dsg_admin_leagues_v35', 'dsg_admin_leagues_v36')
-s = s.replace("loadLocal('dsg_admin_leagues', 35)", "loadLocal('dsg_admin_leagues', 36)")
-s = s.replace('if (i !== 35) localStorage.removeItem(`dsg_admin_leagues', 'if (i !== 36) localStorage.removeItem(`dsg_admin_leagues')
+s = s.replace('dsg_admin_leagues_v36', 'dsg_admin_leagues_v37')
+s = s.replace("loadLocal('dsg_admin_leagues', 36)", "loadLocal('dsg_admin_leagues', 37)")
+s = s.replace('if (i !== 36) localStorage.removeItem(`dsg_admin_leagues', 'if (i !== 37) localStorage.removeItem(`dsg_admin_leagues')
 
-s = s.replace('dsg_admin_rounds_v34', 'dsg_admin_rounds_v35')
-s = s.replace("loadLocal('dsg_admin_rounds', 34)", "loadLocal('dsg_admin_rounds', 35)")
-s = s.replace('if (i !== 34) localStorage.removeItem(`dsg_admin_rounds', 'if (i !== 35) localStorage.removeItem(`dsg_admin_rounds')
+s = s.replace('dsg_admin_rounds_v35', 'dsg_admin_rounds_v36')
+s = s.replace("loadLocal('dsg_admin_rounds', 35)", "loadLocal('dsg_admin_rounds', 36)")
+s = s.replace('if (i !== 35) localStorage.removeItem(`dsg_admin_rounds', 'if (i !== 36) localStorage.removeItem(`dsg_admin_rounds')
 
-s = s.replace('1790560090000', '1790560100000')
+s = s.replace('1790560100000', '1790560110000')
 
 with open('Website/js/store.js', 'w', encoding='utf-8') as f:
     f.write(s)
@@ -42,8 +42,8 @@ for p in files_to_bump:
     try:
         with open(p, 'r', encoding='utf-8') as f:
             content = f.read()
-        if '1790560090000' in content:
-            content = content.replace('1790560090000', '1790560100000')
+        if '1790560100000' in content:
+            content = content.replace('1790560100000', '1790560110000')
             with open(p, 'w', encoding='utf-8') as f:
                 f.write(content)
             print(f'Bumped {p}')

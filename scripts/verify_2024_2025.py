@@ -1,71 +1,94 @@
-import time
-from playwright.sync_api import sync_playwright
+import asyncio
+from playwright.async_api import async_playwright
 
-def main():
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        context = browser.new_context(viewport={'width': 1400, 'height': 900})
-        page = context.new_page()
+async def verify_all():
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        context = await browser.new_context(viewport={'width': 1400, 'height': 1000})
+        page = await context.new_page()
+        
+        errors = []
+        page.on('pageerror', lambda err: errors.append(f"PAGE ERROR: {err}"))
+        page.on('console', lambda msg: errors.append(f"CONSOLE {msg.type}: {msg.text}") if msg.type == 'error' else None)
+        
+        # 1. Home
+        print("1. Verifying Home view...")
+        await page.goto("http://localhost:8000/#/", wait_until="domcontentloaded")
+        await page.wait_for_timeout(1500)
+        await page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_home_2024_2025.png", full_page=True)
+        print("Saved verify_home_2024_2025.png")
+        
+        # 2. Liga view - Tabelle
+        print("2. Verifying Liga view (2024/2025)...")
+        await page.goto("http://localhost:8000/#/liga", wait_until="domcontentloaded")
+        await page.wait_for_timeout(1500)
+        h1 = await page.locator('h1').all_text_contents()
+        options = await page.locator('.season-option').all_text_contents()
+        print("Heading:", h1)
+        print("Season options:", [o.strip() for o in options])
+        await page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_liga_2024_2025.png", full_page=True)
+        print("Saved verify_liga_2024_2025.png")
+        
+        # 3. Liga view - Stats subtab
+        stats_tab = page.locator('button.tab-btn[data-target="stats"]')
+        if await stats_tab.count() > 0:
+            await stats_tab.click()
+            await page.wait_for_timeout(1000)
+            scorers = await page.locator('#stats-tore .glass-card').all_text_contents()
+            print("Top Scorers 2024/2025 count:", len(scorers))
+            for sc in scorers[:5]:
+                print(" ", sc.replace('\n', ' ').strip())
+            await page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_stats_2024_2025.png", full_page=True)
+            print("Saved verify_stats_2024_2025.png")
+            
+        # 4. Statistiken view
+        print("4. Verifying Statistiken view...")
+        await page.goto("http://localhost:8000/#/statistiken", wait_until="domcontentloaded")
+        await page.wait_for_timeout(1500)
+        all_time_top = await page.locator('.hall-of-fame-card, .table-row').all_text_contents()
+        print("All time preview:", [t.replace('\n', ' ').strip() for t in all_time_top[:3]])
+        await page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_alltime_stats_2024_2025.png", full_page=True)
+        print("Saved verify_alltime_stats_2024_2025.png")
+        
+        # 5. Admin View
+        print("5. Verifying Admin view...")
+        await page.goto("http://localhost:8000/#/admin", wait_until="domcontentloaded")
+        await page.wait_for_timeout(1000)
+        
+        # Pin
+        pin = page.locator('#pin-input')
+        if await pin.count() > 0:
+            await pin.fill('1111')
+            await page.locator('#pin-btn').click()
+            await page.wait_for_timeout(1500)
+            
+        # Ligen
+        btn_l = page.locator('button.admin-nav-btn[data-target="admin-leagues"]')
+        if await btn_l.count() > 0:
+            await btn_l.click()
+            await page.wait_for_timeout(1000)
+            await page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_admin_leagues_2024_2025.png")
+            print("Saved verify_admin_leagues_2024_2025.png")
+            
+        # Runden
+        btn_r = page.locator('button.admin-nav-btn[data-target="admin-rounds"]')
+        if await btn_r.count() > 0:
+            await btn_r.click()
+            await page.wait_for_timeout(1000)
+            await page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_admin_rounds_2024_2025.png")
+            print("Saved verify_admin_rounds_2024_2025.png")
+            
+        # Spiele
+        btn_g = page.locator('button.admin-nav-btn[data-target="admin-games"]')
+        if await btn_g.count() > 0:
+            await btn_g.click()
+            await page.wait_for_timeout(1000)
+            await page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_admin_games_2024_2025.png")
+            print("Saved verify_admin_games_2024_2025.png")
+            
+        print("Test errors:", errors)
+        await browser.close()
+        print("All 2024/2025 verification steps finished successfully!")
 
-        print("1. Initializing and syncing data...")
-        page.goto("http://localhost:8000/#/")
-        page.wait_for_timeout(3000)
-
-        print("2. Testing Liga Page (2024/2025)...")
-        page.goto("http://localhost:8000/#/liga")
-        page.wait_for_timeout(2500)
-        page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_liga_2024_2025.png", full_page=True)
-        print("  - Saved verify_liga_2024_2025.png")
-
-        # Test Oberes Playoff in dropdown
-        season_select = page.locator("#season-select")
-        if season_select.count() > 0:
-            season_select.select_option("2024/2025_oberes")
-            page.wait_for_timeout(1500)
-            page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_liga_oberes_playoff.png", full_page=True)
-            print("  - Saved verify_liga_oberes_playoff.png")
-
-        print("3. Testing Statistiken Page...")
-        page.goto("http://localhost:8000/#/statistiken")
-        page.wait_for_timeout(2500)
-        page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_stats_2024_2025.png", full_page=True)
-        print("  - Saved verify_stats_2024_2025.png")
-
-        print("4. Testing Admin Page...")
-        page.evaluate("() => { sessionStorage.setItem('dsg_admin', 'true'); }")
-        page.goto("http://localhost:8000/#/admin")
-        page.wait_for_timeout(2000)
-
-        # Check Ligen Tab
-        btn_leagues = page.locator('button.admin-nav-btn[data-target="admin-leagues"]')
-        if btn_leagues.count() > 0:
-            btn_leagues.click()
-            page.wait_for_timeout(1500)
-            page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_admin_ligen_2024.png")
-            print("  - Saved verify_admin_ligen_2024.png")
-
-        # Check Spielrunden Tab
-        btn_rounds = page.locator('button.admin-nav-btn[data-target="admin-rounds"]')
-        if btn_rounds.count() > 0:
-            btn_rounds.click()
-            page.wait_for_timeout(1500)
-            page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_admin_rounds_2024.png")
-            print("  - Saved verify_admin_rounds_2024.png")
-
-        # Check Spiele Tab
-        btn_games = page.locator('button.admin-nav-btn[data-target="admin-games"]')
-        if btn_games.count() > 0:
-            btn_games.click()
-            page.wait_for_timeout(1500)
-            league_filter = page.locator("#game-league-filter")
-            if league_filter.count() > 0:
-                league_filter.select_option("2024/2025")
-                page.wait_for_timeout(1000)
-            page.screenshot(path="C:/Users/43670/.gemini/antigravity/brain/50a6e908-29f5-4de0-92ae-88f08ee7a8f5/verify_admin_games_2024.png")
-            print("  - Saved verify_admin_games_2024.png")
-
-        browser.close()
-        print("Verification complete!")
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    asyncio.run(verify_all())

@@ -459,3 +459,24 @@ DSG Liga/
 * **The Rule:**
   1. **Dual Property Normalization:** `Store.getStats()` must always normalize all `topScorers` and `cards` entries to guarantee both `name: s.name || s.player || ''` and `player: s.player || s.name || ''`.
   2. **Safe Template Literal Fallback:** All UI views rendering scorers and disciplinary cards must use `${s.player || s.name || ''}` to guarantee robust display across all historical seasons and newly filed match reports.
+
+---
+
+## 41. Database Step-by-Step State: Season 2024/2025 Ingested & Verified
+* **The Milestone:** The database now contains **Season 2022/2023**, **Season 2023/2024**, and **Season 2024/2025** (comprising Grunddurchgang, Oberes Playoff, and Unteres Playoff).
+* **The Exact Statistics & Milestones for 2024/2025:**
+  1. **Season 2024/2025 Grunddurchgang (`2024/2025`):** 11 teams, 11 rounds, 55 matches. #1 SV Croatia Linz (26 Pkt), #2 DSG St. Josef/Oed FC (22 Pkt), #3 FC U. Schleißheim (21 Pkt). Top Scorer: Julian Fischer (15 Tore).
+  2. **Season 2024/2025 Oberes Playoff (`2024/2025_oberes`):** 6 teams, 5 rounds, 15 matches. Champion SV Croatia Linz (12 Pkt), #2 DSG St. Josef/Oed FC (10 Pkt), #3 FC Hinzenbach (9 Pkt). Top Scorer: Roland Meindlhumer (13 Tore).
+  3. **Season 2024/2025 Unteres Playoff (`2024/2025_unteres`):** 5 teams, 5 rounds, 10 matches. #1 Union Eschenau (10 Pkt), #2 Union Heiligenberg (9 Pkt), #3 DSG Froschberg (6 Pkt). Top Scorer: Michael Haslehner (11 Tore).
+  4. **All-Time Historical Totals Across 6 Competitions (2022/2023, 2023/2024, 2024/2025):**
+     - **Total Documented Competitions:** 6 Leagues (`2022/2023`, `2022/2023_1klasse`, `2023/2024`, `2024/2025`, `2024/2025_oberes`, `2024/2025_unteres`)
+     - **Total Matches:** 293 matches
+     - **Total Played Matches:** 284 matches
+     - **Total Goals Recorded:** 1,433 goals
+     - **Total Unique Scorers:** 308 scorers
+     - **All-Time Top 3 Scorers:**
+       1. **Roland Meindlhumer** (FC Hinzenbach): **65 Tore** (18 in 22/23 + 34 in 23/24 + 13 in 24/25 Oberes Playoff)
+       2. **Thomas Paulmair** (DSG St. Josef/Oed FC): **37 Tore** (14 in 22/23 + 12 in 23/24 + 8 in 24/25 Grund + 3 in 24/25 Oberes)
+       3. **Michael Haslehner** (Union Heiligenberg): **34 Tore** (21 in 22/23 + 2 in 23/24 + 11 in 24/25 Unteres)
+     - **Current Cache Keys:** `dsg_data_v81`, `dsg_admin_leagues_v37`, `dsg_admin_rounds_v36`, query string `?v=1790560110000`.
+
