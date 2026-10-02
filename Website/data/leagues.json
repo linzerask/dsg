@@ -46,5 +46,13 @@
     "seasonKey": "2024/2025_unteres",
     "status": "Aktiv",
     "showOnHomepage": true
+  },
+  {
+    "id": 7,
+    "name": "DSG Liga",
+    "year": "2025/2026",
+    "seasonKey": "2025/2026",
+    "status": "Aktiv",
+    "showOnHomepage": true
   }
 ]

@@ -500,5 +500,22 @@ DSG Liga/
   1. **Dynamic Formatter (`formatSeasonDisplay`):** Always route competition keys through `formatSeasonDisplay(seasonKey)`. This resolves the canonical name and academic year from `Store.getAdminLeaguesSync()` (e.g. `DSG Liga 2023/2024`, `Oberes Playoff 2024/2025`, `1. Klasse 2022/2023`).
   2. **Consistency Across All Records:** Apply `formatSeasonDisplay` uniformly to `Saison-Torrekord`, `Torreichstes Spiel`, `Höchster Sieg`, `Rekordmeister`, `Die Schießbude`, and `Torreichster Spieltag`.
 
+---
+
+## 45. Database Step-by-Step State: Season 2025/2026 Ingested & Verified
+* **The Milestone:** The database now contains **7 competitions** spanning 3 academic football years (2022/2023, 2023/2024, 2024/2025, 2025/2026).
+* **The Exact Statistics & Milestones for 2025/2026:**
+  1. **Season 2025/2026 DSG Liga (`2025/2026`):** 8 teams, 14 rounds, 56 matches. Champion **SV Croatia Linz** (38 Pkt), #2 DSG St. Josef/Oed FC (33 Pkt), #3 Union Heiligenberg (24 Pkt). Top Scorer: **Roland Meindlhumer** (20 Tore).
+  2. **Teams:** SV Croatia Linz, DSG St. Josef/Oed FC, Union Heiligenberg, FC Hinzenbach, Walker FC, FC Gornjak, DSG Union Traun, Union Eschenau.
+  3. **Disciplinary Totals:** 138 Yellow, 5 Yellow-Red, 0 Red across 98 players.
+  4. **All-Time Historical Totals Across 7 Competitions:**
+     - **Total Documented Competitions:** 7 Leagues (`2022/2023`, `2022/2023_1klasse`, `2023/2024`, `2024/2025`, `2024/2025_oberes`, `2024/2025_unteres`, `2025/2026`)
+     - **Total Matches:** 349 matches
+     - **Total Goals Recorded:** ~1,800+
+     - **All-Time Top 3 Scorers:**
+       1. **Roland Meindlhumer** (FC Hinzenbach): **85 Tore** (18 in 22/23 + 34 in 23/24 + 13 in 24/25 Oberes + 20 in 25/26)
+       2. **Thomas Paulmair** (DSG St. Josef/Oed FC): **51 Tore** (14 in 22/23 + 12 in 23/24 + 8+3 in 24/25 + 14 in 25/26)
+       3. **Michael Haslehner** (Union Heiligenberg): **47 Tore** (21 in 22/23 + 2 in 23/24 + 11 in 24/25 Unteres + 13 in 25/26)
+     - **Current Cache Keys:** `dsg_data_v82`, `dsg_admin_leagues_v38`, `dsg_admin_rounds_v37`, query string `?v=1790560210000`.
 
 
