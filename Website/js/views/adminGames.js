@@ -1,5 +1,5 @@
-import { Store } from '../store.js?v=1790561000000';
-import { showToast } from './admin.js?v=1790561000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1790957000000';
+import { showToast } from './admin.js?v=1790957000000';
 
 let gamesData = [];
 let roundsData = [];
@@ -326,8 +326,8 @@ const getTeamPlayersList = (teamName) => {
         const pNorm = normalizeTeamName(p.Team || p.team);
         return pNorm === normTeam || (pNorm && normTeam && (pNorm.includes(normTeam) || normTeam.includes(pNorm)));
     }).map(p => {
-        const fn = (p.Vorname || p.firstName || '').trim();
-        const ln = (p.Nachname || p.lastName || '').trim();
+        const fn = sanitizeMojibake((p.Vorname || p.firstName || '').trim());
+        const ln = sanitizeMojibake((p.Nachname || p.lastName || '').trim());
         return `${fn} ${ln}`.trim();
     }).filter(Boolean).sort();
 };
@@ -1304,8 +1304,8 @@ const openReportModal = (idxOrMatch) => {
     reportScorersHome = [];
     reportScorersAway = [];
     rawScorers.forEach(s => {
-        const sName = s.name || s.player || '';
-        const sTeam = s.team || '';
+        const sName = sanitizeMojibake(s.name || s.player || '');
+        const sTeam = sanitizeMojibake(s.team || '');
         const count = s.count || 1;
         const isHome = sTeam === match.home || normalizeTeamName(sTeam) === normalizeTeamName(match.home);
         for (let i = 0; i < count; i++) {
@@ -1324,8 +1324,8 @@ const openReportModal = (idxOrMatch) => {
     reportCardsHome = [];
     reportCardsAway = [];
     rawCards.forEach(c => {
-        const cTeam = c.team || '';
-        const cObj = { player: c.name || c.player || '', type: c.type || 'yellow', reason: c.reason || '' };
+        const cTeam = sanitizeMojibake(c.team || '');
+        const cObj = { player: sanitizeMojibake(c.name || c.player || ''), type: c.type || 'yellow', reason: sanitizeMojibake(c.reason || '') };
         const isHome = cTeam === match.home || normalizeTeamName(cTeam) === normalizeTeamName(match.home);
         const count = c.count || 1;
         for (let i = 0; i < count; i++) {
@@ -1480,19 +1480,25 @@ const saveReportForm = (e) => {
     // Build unified scorers array
     const scorers = [];
     reportScorersHome.forEach(p => {
-        scorers.push({ name: p, player: p, team: currentReportMatch.home, type: 'goal' });
+        const cleanName = sanitizeMojibake(p);
+        scorers.push({ name: cleanName, player: cleanName, team: currentReportMatch.home, type: 'goal' });
     });
     reportScorersAway.forEach(p => {
-        scorers.push({ name: p, player: p, team: currentReportMatch.away, type: 'goal' });
+        const cleanName = sanitizeMojibake(p);
+        scorers.push({ name: cleanName, player: cleanName, team: currentReportMatch.away, type: 'goal' });
     });
 
     // Build unified cards array
     const cards = [];
     reportCardsHome.forEach(c => {
-        cards.push({ name: c.player, player: c.player, team: currentReportMatch.home, type: c.type, reason: c.reason });
+        const cleanPlayer = sanitizeMojibake(c.player);
+        const cleanReason = sanitizeMojibake(c.reason || '');
+        cards.push({ name: cleanPlayer, player: cleanPlayer, team: currentReportMatch.home, type: c.type, reason: cleanReason });
     });
     reportCardsAway.forEach(c => {
-        cards.push({ name: c.player, player: c.player, team: currentReportMatch.away, type: c.type, reason: c.reason });
+        const cleanPlayer = sanitizeMojibake(c.player);
+        const cleanReason = sanitizeMojibake(c.reason || '');
+        cards.push({ name: cleanPlayer, player: cleanPlayer, team: currentReportMatch.away, type: c.type, reason: cleanReason });
     });
 
     // Build events timeline
@@ -1512,7 +1518,7 @@ const saveReportForm = (e) => {
     };
 
     const targetSeasonKey = currentReportMatch.seasonKey || (Store.getData()?.currentSeason || '2022/2023');
-    Store.saveMatch(targetSeasonKey, updatedMatch);
+    Store.saveMatch(targetSeasonKey, deepSanitize(updatedMatch));
     Store.recalculateSeason(targetSeasonKey);
     closeReportModal();
     loadDataAndRender();

@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790561000000';
+import { Store, sanitizeMojibake } from '../store.js?v=1790957000000';
 import { renderIcon } from '../icons.js?v=1790561000000';
 
 let activeStatsTab = 'scorers';
@@ -124,7 +124,7 @@ export const computeAllTimeStats = () => {
       if (m.events && Array.isArray(m.events) && m.events.length > 0) {
         m.events.forEach(ev => {
           if (ev.type === 'goal' && ev.player) {
-            const name = (ev.player || '').trim();
+            const name = sanitizeMojibake((ev.player || '').trim());
             if (!name) return;
             if (!playerMap[name]) {
               playerMap[name] = {
@@ -136,15 +136,15 @@ export const computeAllTimeStats = () => {
               };
             }
             playerMap[name].goals += (parseInt(ev.count) || 1);
-            if (ev.team) playerMap[name].teams.add(ev.team.trim());
+            if (ev.team) playerMap[name].teams.add(sanitizeMojibake(ev.team.trim()));
             playerMap[name].seasons.add(seasonKey);
           } else if ((ev.type === 'yellow' || ev.type === 'red' || ev.type === 'yellowRed' || ev.type === 'yellow-red') && ev.player) {
-            const name = (ev.player || '').trim();
+            const name = sanitizeMojibake((ev.player || '').trim());
             if (!name) return;
             if (!seasonEventCards[name]) {
               seasonEventCards[name] = {
                 name,
-                team: ev.team ? ev.team.trim() : (m.home || ''),
+                team: ev.team ? sanitizeMojibake(ev.team.trim()) : sanitizeMojibake(m.home || ''),
                 yellow: 0,
                 red: 0
               };
@@ -161,7 +161,7 @@ export const computeAllTimeStats = () => {
         });
       } else if (m.scorers && Array.isArray(m.scorers) && m.scorers.length > 0) {
         m.scorers.forEach(sc => {
-          const name = (sc.name || '').trim();
+          const name = sanitizeMojibake((sc.name || '').trim());
           if (!name) return;
           if (!playerMap[name]) {
             playerMap[name] = {
@@ -173,7 +173,7 @@ export const computeAllTimeStats = () => {
             };
           }
           playerMap[name].goals += (parseInt(sc.count) || parseInt(sc.goals) || 1);
-          if (sc.team) playerMap[name].teams.add(sc.team.trim());
+          if (sc.team) playerMap[name].teams.add(sanitizeMojibake(sc.team.trim()));
           playerMap[name].seasons.add(seasonKey);
         });
       }
