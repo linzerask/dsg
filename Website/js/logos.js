@@ -1,4 +1,5 @@
 // Team Logos & Default Badges Resolver
+import { Store } from './store.js?v=1791070000000';
 
 export const DEFAULT_BADGES = [
   'Logos/Ready/standard/default/shield_01_classic_heater.png',
@@ -24,13 +25,46 @@ export function getTeamHash(name) {
 }
 
 export function getDefaultBadge(teamName) {
-  const idx = getTeamHash(teamName) % DEFAULT_BADGES.length;
+  const rawName = typeof teamName === 'object' ? (teamName.Name || teamName.name || '') : (teamName || '');
+  const idx = getTeamHash(rawName) % DEFAULT_BADGES.length;
   return DEFAULT_BADGES[idx];
+}
+
+export function getCustomTeamLogo(teamName) {
+  if (!teamName) return null;
+  const rawName = typeof teamName === 'object' ? (teamName.Name || teamName.name || '') : String(teamName);
+  const nameStr = rawName.trim().toLowerCase();
+  
+  if (typeof teamName === 'object' && (teamName.logoUrl || teamName.logo || teamName.Logo)) {
+    return teamName.logoUrl || teamName.logo || teamName.Logo;
+  }
+
+  try {
+    if (Store && typeof Store.getAdminTeamsSync === 'function') {
+      const teams = Store.getAdminTeamsSync();
+      if (Array.isArray(teams)) {
+        const found = teams.find(t => (t.Name || t.name || '').trim().toLowerCase() === nameStr);
+        if (found && (found.logoUrl || found.logo || found.Logo)) {
+          return found.logoUrl || found.logo || found.Logo;
+        }
+      }
+    }
+  } catch (e) {
+    // fallback gracefully
+  }
+  return null;
 }
 
 export function getTeamLogoUrl(teamName) {
   if (!teamName) return DEFAULT_BADGES[0];
-  const norm = String(teamName).toLowerCase()
+
+  // 1. Check if an admin uploaded a custom logo
+  const custom = getCustomTeamLogo(teamName);
+  if (custom) return custom;
+
+  // 2. Check standard presets
+  const rawName = typeof teamName === 'object' ? (teamName.Name || teamName.name || '') : String(teamName);
+  const norm = rawName.toLowerCase()
     .replace(/ä/g, 'ae')
     .replace(/ö/g, 'oe')
     .replace(/ü/g, 'ue')
@@ -54,12 +88,14 @@ export function getTeamLogoUrl(teamName) {
   if (norm.includes('heiligenberg')) return 'Logos/Ready/standard/unionheiligenberg.png';
   if (norm.includes('walker')) return 'Logos/Ready/standard/walker.png';
 
-  return getDefaultBadge(teamName);
+  // 3. Deterministic default shield badge fallback
+  return getDefaultBadge(rawName);
 }
 
 export function renderTeamLogo(teamName, size = 'sm', extraClass = '') {
-  const name = (teamName || '').trim();
-  const url = getTeamLogoUrl(name);
+  const rawName = typeof teamName === 'object' ? (teamName.Name || teamName.name || '') : (teamName || '');
+  const name = String(rawName).trim();
+  const url = getTeamLogoUrl(teamName);
   const fallback = getDefaultBadge(name);
   return `<img src="${url}" alt="${name || 'Team'}" class="team-logo team-logo-${size} ${extraClass}" onerror="this.onerror=null; this.src='${fallback}';" loading="lazy" />`;
 }

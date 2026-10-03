@@ -1,12 +1,67 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791020000000';
-import { showToast } from './admin.js?v=1791020000000';
-import { renderTeamLogo } from '../logos.js?v=1791060000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791070000000';
+import { showToast } from './admin.js?v=1791070000000';
+import { renderTeamLogo, getTeamLogoUrl, getDefaultBadge } from '../logos.js?v=1791070000000';
 
 let teamsData = [];
 let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 15;
 let currentSort = { column: 'Status', asc: true };
+
+const compressLogoImage = (file) => {
+    return new Promise((resolve, reject) => {
+        if (!file) return resolve(null);
+        if (file.type === 'image/svg+xml') {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = () => reject(new Error('Fehler beim Lesen der SVG-Datei'));
+            reader.readAsDataURL(file);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const dataUrl = e.target.result;
+            const img = new Image();
+            img.onload = () => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    const MAX_SIZE = 300;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_SIZE) {
+                            height = Math.round(height * (MAX_SIZE / width));
+                            width = MAX_SIZE;
+                        }
+                    } else {
+                        if (height > MAX_SIZE) {
+                            width = Math.round(width * (MAX_SIZE / height));
+                            height = MAX_SIZE;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, width, height);
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Retain PNG alpha transparency
+                    const result = canvas.toDataURL('image/png');
+                    resolve(result);
+                } catch (err) {
+                    resolve(dataUrl);
+                }
+            };
+            img.onerror = () => resolve(dataUrl);
+            img.src = dataUrl;
+        };
+        reader.onerror = () => reject(new Error('Fehler beim Lesen der Datei'));
+        reader.readAsDataURL(file);
+    });
+};
 
 export const renderAdminTeams = () => {
     return `
@@ -85,6 +140,33 @@ export const renderAdminTeams = () => {
                         <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Mannschaftsname</label>
                         <input type="text" id="edit-team-name" class="admin-input" style="width: 100%;" required>
                     </div>
+
+                    <!-- Logo Upload & Preview Section -->
+                    <div style="border: 1px solid var(--color-border); border-radius: 8px; padding: 14px; background: rgba(0,0,0,0.02);">
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--color-text-primary); display: block; margin-bottom: 8px;">Vereinswappen / Logo</label>
+                        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                            <div id="team-logo-preview-box" style="width: 64px; height: 64px; min-width: 64px; border: 1px dashed var(--color-border); border-radius: 10px; background: var(--color-surface); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); position: relative;">
+                                <img id="team-logo-preview-img" src="Logos/Ready/standard/default/shield_01_classic_heater.png" alt="Logo Vorschau" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                            </div>
+                            <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 6px;">
+                                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                    <button type="button" id="btn-upload-team-logo" class="btn-outline" style="padding: 6px 14px; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; cursor: pointer; border-radius: 6px; background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-text-primary);">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                        Logo hochladen
+                                    </button>
+                                    <button type="button" id="btn-remove-team-logo" class="btn-outline" style="display: none; padding: 6px 12px; font-size: 0.82rem; color: #dc3545; border-color: rgba(220,53,69,0.3); border-radius: 6px; background: transparent; cursor: pointer;">
+                                        Entfernen
+                                    </button>
+                                </div>
+                                <span style="font-size: 0.72rem; color: var(--color-text-secondary); line-height: 1.3;">
+                                    PNG, SVG, WebP oder JPG (Quadratisch empfohlen, transparenter Hintergrund)
+                                </span>
+                            </div>
+                        </div>
+                        <input type="file" id="edit-team-logo-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display: none;">
+                        <input type="hidden" id="edit-team-logo-val" value="">
+                    </div>
+
                     <div>
                         <label style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Status</label>
                         <select id="edit-team-status" class="admin-input" style="width: 100%;">
@@ -139,7 +221,8 @@ export const initAdminTeams = async () => {
         const teams = await Store.getAdminTeams();
         teamsData = teams.map(t => ({
             ...t,
-            Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv'
+            Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv',
+            logoUrl: t.logoUrl || t.logo || t.Logo || ''
         }));
     }
     
@@ -188,7 +271,7 @@ const renderTable = () => {
                 <td style="color: var(--color-text-secondary);">#${t.ID || '-'}</td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        ${renderTeamLogo(t.Name, 'sm')}
+                        ${renderTeamLogo(t, 'sm')}
                         <strong style="color: var(--color-text-primary);">${t.Name || '-'}</strong>
                     </div>
                 </td>
@@ -223,7 +306,7 @@ const renderTable = () => {
                             <div style="flex: 1; min-width: 0;">
                                 <div class="admin-m-title" style="display: flex; align-items: center; gap: 8px;">
                                     <span style="color: var(--color-accent); font-weight: 800; margin-right: 2px;">#${t.ID || '-'}</span>
-                                    ${renderTeamLogo(t.Name, 'sm')}
+                                    ${renderTeamLogo(t, 'sm')}
                                     <strong style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.Name || '-'}</strong>
                                 </div>
                                 <div class="admin-m-subtitle">
@@ -294,13 +377,34 @@ const formatDateForInput = (dateStr) => {
     return dateStr;
 };
 
+const updateModalLogoPreview = () => {
+    const previewImg = document.getElementById('team-logo-preview-img');
+    const removeBtn = document.getElementById('btn-remove-team-logo');
+    const logoVal = document.getElementById('edit-team-logo-val')?.value || '';
+    const nameVal = document.getElementById('edit-team-name')?.value || '';
+
+    if (!previewImg) return;
+
+    if (logoVal) {
+        previewImg.src = logoVal;
+        if (removeBtn) removeBtn.style.display = 'inline-flex';
+    } else {
+        const standardUrl = getTeamLogoUrl(nameVal);
+        previewImg.src = standardUrl;
+        if (removeBtn) removeBtn.style.display = 'none';
+    }
+};
+
 const openEditModal = (idx = null) => {
     const modal = ensureModalInBody();
     const title = document.getElementById('modal-team-title');
     const deleteBtn = document.getElementById('btn-delete-team');
-    
     const submitBtn = document.getElementById('btn-submit-team');
+    const logoValInput = document.getElementById('edit-team-logo-val');
+    const fileInput = document.getElementById('edit-team-logo-file');
     
+    if (fileInput) fileInput.value = '';
+
     if (idx !== null && teamsData[idx]) {
         const t = teamsData[idx];
         title.innerText = 'Mannschaft bearbeiten';
@@ -310,6 +414,7 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-team-aktiv-seit').value = formatDateForInput(t["Aktiv seit"]);
         document.getElementById('edit-team-inaktiv-seit').value = formatDateForInput(t["Inaktiv seit"]);
         document.getElementById('edit-team-status').value = t.Status === 'Aktiv' ? 'Aktiv' : 'Inaktiv';
+        if (logoValInput) logoValInput.value = t.logoUrl || t.logo || t.Logo || '';
         deleteBtn.style.display = 'block';
     } else {
         title.innerText = 'Neue Mannschaft anlegen';
@@ -317,8 +422,11 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-team-id').value = 'new';
         document.getElementById('team-edit-form').reset();
         document.getElementById('edit-team-status').value = 'Aktiv';
+        if (logoValInput) logoValInput.value = '';
         deleteBtn.style.display = 'none';
     }
+
+    updateModalLogoPreview();
 
     modal.style.display = 'flex';
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
@@ -389,9 +497,55 @@ const bindEvents = () => {
     const deleteBtn = document.getElementById('btn-delete-team');
     const form = document.getElementById('team-edit-form');
     const teamModal = document.getElementById('team-modal');
+    const nameInput = document.getElementById('edit-team-name');
+    const uploadBtn = document.getElementById('btn-upload-team-logo');
+    const removeLogoBtn = document.getElementById('btn-remove-team-logo');
+    const logoFileInput = document.getElementById('edit-team-logo-file');
+    const logoValInput = document.getElementById('edit-team-logo-val');
 
     if (search) search.oninput = applyFilters;
     if (status) status.onchange = applyFilters;
+
+    if (nameInput) {
+        nameInput.oninput = () => {
+            if (!logoValInput || !logoValInput.value) {
+                updateModalLogoPreview();
+            }
+        };
+    }
+
+    if (uploadBtn && logoFileInput) {
+        uploadBtn.onclick = () => {
+            logoFileInput.click();
+        };
+    }
+
+    if (removeLogoBtn && logoValInput) {
+        removeLogoBtn.onclick = () => {
+            logoValInput.value = '';
+            if (logoFileInput) logoFileInput.value = '';
+            updateModalLogoPreview();
+            showToast('Benutzerdefiniertes Logo entfernt.');
+        };
+    }
+
+    if (logoFileInput) {
+        logoFileInput.onchange = async () => {
+            const file = logoFileInput.files && logoFileInput.files[0];
+            if (file) {
+                try {
+                    const dataUrl = await compressLogoImage(file);
+                    if (dataUrl) {
+                        if (logoValInput) logoValInput.value = dataUrl;
+                        updateModalLogoPreview();
+                        showToast('Logo erfolgreich geladen.');
+                    }
+                } catch (err) {
+                    showToast('Fehler beim Laden des Bildes: ' + (err.message || err), true);
+                }
+            }
+        };
+    }
 
     if (sortSelect) {
         sortSelect.onchange = () => {
@@ -459,7 +613,8 @@ const bindEvents = () => {
                 Name: nameVal,
                 "Aktiv seit": document.getElementById('edit-team-aktiv-seit').value,
                 "Inaktiv seit": document.getElementById('edit-team-inaktiv-seit').value,
-                Status: document.getElementById('edit-team-status').value
+                Status: document.getElementById('edit-team-status').value,
+                logoUrl: (document.getElementById('edit-team-logo-val')?.value || '').trim()
             };
 
             const isNew = (idVal === 'new');

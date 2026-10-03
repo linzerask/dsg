@@ -1496,6 +1496,15 @@ main {
     }
 }
 
+#team-logo-preview-box {
+    transition: all 0.2s ease;
+}
+#team-logo-preview-box:hover {
+    border-color: var(--color-accent) !important;
+    background: rgba(0, 150, 64, 0.04) !important;
+}
+
+
 .sperre-badge {
     background: rgba(255, 77, 77, 0.15);
     color: #ff4d4d;
