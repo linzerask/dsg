@@ -1216,12 +1216,6 @@ export function bindLigaTabs() {
       });
     });
   }
-
-  // Check URL for specific tab
-  if (window.location.hash.includes('tab=stats')) {
-    const statsTabBtn = document.querySelector('.tab-btn[data-target="stats"]');
-    if (statsTabBtn) statsTabBtn.click();
-  }
 };
 
 

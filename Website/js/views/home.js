@@ -366,7 +366,7 @@ export const viewHome = () => {
             ${resultsHtml}
           </div>
           <div style="margin-top: var(--space-md); text-align: right;">
-            <a href="#/liga" class="text-btn">Alle Spielberichte &rarr;</a>
+            <a href="#/liga?tab=spiele" class="text-btn">Alle Spielberichte &rarr;</a>
           </div>
         </div>
 
@@ -381,7 +381,7 @@ export const viewHome = () => {
             ${fixturesHtml}
           </div>
           <div style="margin-top: var(--space-md); text-align: right;">
-            <a href="#/liga" class="text-btn">Gesamter Spielplan &rarr;</a>
+            <a href="#/liga?tab=spiele" class="text-btn">Gesamter Spielplan &rarr;</a>
           </div>
         </div>
       </div>

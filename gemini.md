@@ -646,10 +646,107 @@ ounds.json, rticles.json) in parallel before returning. The very first paint of
      - When Firestore returns its documents, syncFirebase() compares the incoming cloud dataset against current in-memory state.
      - If the cloud data is identical to local state (99% of regular visitor traffic), NO refresh events are dispatched (hasLigaUpdates = false).
      - If actual remote edits are detected, only the relevant targeted events are dispatched.
-  3. **Silent Background Route Updates (
-outer.js):**
-     - In 
-outer.js, the Anime.js page entry bounce animation is executed ONLY on explicit user navigation (!isDataRefresh). Background data sync updates the DOM silently in place without screen flicker.
+  3. **Silent Background Route Updates (router.js):**
+     - In router.js, the Anime.js page entry bounce animation is executed ONLY on explicit user navigation (!isDataRefresh). Background data sync updates the DOM silently in place without screen flicker.
   4. **Cache Key & Module Parity:**
      - Store versions: dsg_data_v86, dsg_admin_rounds_v43, dsg_admin_leagues_v43.
-     - ES module query strings: ?v=1791020000000.
+     - ES module query strings: ?v=1791030000000.
+
+---
+
+## 53. Searchable Player Combobox in Match Reports (`adminGames.js`)
+* **The Pitfall:** Selecting players for goals or cards in the Admin Spielbericht modal (`#report-modal`) previously used standard HTML `<select>` dropdowns containing 40–60+ players per team. Searching through long native OS select menus on desktop and mobile was slow and frustrating.
+* **The Rule:**
+  1. **Custom Searchable Combobox Component (`.searchable-player-picker`):**
+     - All 4 player selection inputs in `#report-modal` (`report-card-player-home`, `report-card-player-away`, `report-scorer-player-home`, `report-scorer-player-away`) are implemented as custom accessible comboboxes featuring real-time text filtering, animated SVG dropdown indicators, custom styled scrollable dropdown menus, and hidden input fields to preserve existing form submit and deletion contracts.
+  2. **Zero Unicode Emojis (Rule 3 Compliance):**
+     - Special options like `"Eigentor"` use crisp inline SVG soccer ball icons (`<svg width="13" height="13" viewBox="0 0 24 24"...>`) rather than emoji characters.
+  3. **Ergonomic Keyboard & Touch Navigation:**
+     - Supports `ArrowDown` / `ArrowUp` selection with visual highlighting, `Enter` to commit, and `Escape` to close.
+     - Automatically closes when clicking outside via a global event listener.
+     - Smoothly scrolls into view (`scrollIntoView({ behavior: 'smooth', block: 'nearest' })`) when opened to prevent clipping inside the modal container.
+  4. **Auto-Reset & Auto-Focus Ergonomics:**
+     - Clicking "+ Hinzufügen" to add a goal or card resets the search text and hidden input and automatically re-focuses the search field (`searchInput.focus()`) so administrators can rapidly enter consecutive scorers or cards without extra clicks.
+  5. **Cache Key & Module Parity:**
+     - ES module query strings: `?v=1791030000000` across `index.html`, `main.js`, `router.js`, `admin.js`, and `adminGames.js`.
+
+---
+
+## 54. Persistent In-Memory Season Statistics Mutation & Recalculation Integrity
+* **The Pitfall:** When match scores or reports were updated, `Store.recalculateSeason()` reset `season.stats = { topScorers: [], cards: [] }` and called `_applyMatchStats()`. However, `_applyMatchStats()` called `this.getStats(season)`, which returned a detached shallow-cloned object. Goal and card mutations were applied to the temporary clone, leaving `data.seasons[season].stats` as empty arrays in localStorage and Firestore. Additionally, `Store.getStats()` had no on-the-fly aggregation fallback from `season.matches`.
+* **The Rule:**
+  1. **Direct In-Memory Mutation & Persistence (`_applyMatchStats` & `_reverseMatchStats`):**
+     - Statistics mutations must operate directly on `data.seasons[season].stats.topScorers` and `data.seasons[season].stats.cards`.
+     - Ingest events from `match.events`, `match.scorers`, and `match.cards`.
+     - Always assign numeric ranking (`rank: index + 1`) to top scorers and card recipients.
+  2. **Dynamic Aggregation Fallback (`Store.getStats()`):**
+     - If `season.stats` is missing or empty, dynamically compute scorers and cards on the fly from `season.matches` (aggregating `m.events`, `m.scorers`, `m.cards`).
+     - Standardize returned items with both `player` and `name` properties for seamless template compatibility.
+  3. **Auto-Healing on Startup (`Store.init()`):**
+     - During `Store.init()`, iterate through all configured seasons. If any season has played match events but lacks populated stats arrays, automatically run `recalculateSeason(seasonKey)` to heal the dataset in memory and sync to storage.
+  4. **Cache Key & Module Parity:**
+     - Store version: `dsg_data_v87`.
+     - ES module query strings: `?v=1791040000000` across `index.html`, `main.js`, `router.js`, and view modules.
+
+---
+
+## 55. Unified Platzverweise (Red & Yellow-Red Dismissals) & CSS Badges in Season Statistics
+* **The Pitfall:** In `liga.js`, the `Rot` tab under `Statistiken -> Karten` only queried `c.red > 0` (straight red cards). Players who received a `yellowRed` card (Gelb-Rot / 2nd yellow card dismissal) were completely omitted from the `Rot` section. In seasons where all dismissals were `yellowRed` (such as 2025/2026), the `Rot` tab falsely showed "Keine Karten" despite red card sending-off badges appearing on match cards.
+* **The Rule:**
+  1. **Unified Dismissals Display (`Rot` Sub-tab):**
+     - The `Rot` sub-tab under `Statistiken -> Karten` must include ALL dismissals (`c.red > 0 || c.yellowRed > 0`).
+     - Sort dismissals prioritizing straight Red cards (`c.red`) first, followed by Yellow-Red cards (`c.yellowRed`), and total Yellow cards (`c.yellow`).
+  2. **Strict CSS Badge Mandate (Rule 3 Compliance):**
+     - Never use emojis.
+     - Straight Red cards render using `.card-icon-red`.
+     - Yellow-Red cards render using `.card-icon-yellow-red` (the dual-layered CSS yellow & red card component).
+     - If a player has both, render both badges cleanly side-by-side.
+  3. **Admin Modal Parity (`adminLeagues.js`):**
+     - The season inspection cards tab in `#league-data-modal` also displays `.card-icon-yellow-red` indicators when `c.yellowRed > 0`.
+
+---
+
+## 56. Team Logos & Deterministic Default Shield Badge Resolution Protocol
+* **The Architecture:** Seamless, non-distorting logo rendering across the whole site: Homepage (Topspiel banner, Top 5 standings, Top Scorers, Match Center), Public Liga (Standings, Matchday slider, Scorers, Cards), Statistics (All-Time Clubs table, Season Champions, Records), and Admin (Teams, Matches, League Inspection modal).
+* **The Rule:**
+  1. **Centralized Resolver (`Website/js/logos.js`):**
+     - `getTeamLogoUrl(teamName)` checks against normalized club names in `TEAM_LOGOS` (16 club crests in `Website/Logos/Ready/standard/`).
+     - If no custom crest exists, a deterministic hash algorithm (`Math.abs(hash) % 10`) assigns one of 10 default shields (`shield_01_classic_heater.png` through `shield_10_pointed_scutum.png` in `Website/Logos/Ready/standard/default/`). This guarantees that every unbadged team receives a permanent, consistent shield across all sessions and pages without flickering.
+     - `renderTeamLogo(teamName, size, extraClass)` outputs accessible semantic `<img>` tags with `loading="lazy"` and `onerror` fallback to shield #1.
+  2. **Responsive CSS Tokens (`Website/css/global.css`):**
+     - Standardized logo size classes: `.team-logo-xs` (16px), `.team-logo-sm` (22px), `.team-logo-md` (28px), `.team-logo-lg` (48px / 38px on mobile `<= 768px`).
+     - Always use `object-fit: contain; flex-shrink: 0;` so shields and circular badges maintain natural geometry without stretching.
+  3. **Cache Key & Module Parity:**
+     - ES module query strings: `?v=1791060000000` across `index.html`, `main.js`, `router.js`, and all view modules.
+
+
+---
+
+## 57. Match Venue & Location Property Resolution (`liga.js`)
+* **The Pitfall:** Match cards on the public Liga Spiele tab (`liga.js`) only checked `m.venue`. Because matches in 2026/2027 and newly created admin matches use `location` (or `ort`), the condition failed and match venues (e.g. DSG-Platz, Sportplatz Traun, Sportplatz Heiligenberg) disappeared from the cards.
+* **The Rule:**
+  1. **Comprehensive Venue Fallback:** Always resolve match venues using `const matchVenue = (m.location || m.venue || m.ort || '').trim();`.
+  2. **Responsive Rendering:** Display `matchVenue` on both desktop and mobile views with standard location pin SVG icons.
+  3. **Cache Key & Module Parity:**
+     - ES module query strings: `?v=1791080000000` across `router.js` and `liga.js`.
+
+---
+
+## 58. Homepage Top 5 Scorers & Liga Tab Deep-Linking
+* **The Rule:**
+  1. **Top 5 Scorers Parity (`home.js`):** The homepage Top Scorer card slices the top 5 goalscorers (`sortedScorers.slice(0, 5)`) to match the exact row count and height balance of the Top 5 Tabelle card.
+  2. **Direct Liga Tab Deep-Linking:** The footer button on the homepage Torschützen card is labeled **`Zu den Statistiken &rarr;`** and links to `#/liga?tab=stats`. In `liga.js`, `bindLigaTabs()` automatically detects `tab=stats` or `tab=spiele` from the URL hash and opens the corresponding sub-tab seamlessly.
+  3. **Cache Key & Module Parity:**
+     - ES module query strings: `?v=1791090000000` across `router.js`, `home.js`, and `liga.js`.
+
+---
+
+## 59. Homepage Match Center Deep-Linking to Liga "Spiele" Tab
+* **The Rule:**
+  1. **Match Center Action Links (`home.js`):**
+     - Both action buttons in the Homepage Match Center ("Letzte Ergebnisse" -> **`Alle Spielberichte &rarr;`** and "Nächste Spiele" -> **`Gesamter Spielplan &rarr;`**) must link directly to `#/liga?tab=spiele`.
+  2. **Hash Tab Detection & Dynamic Switch (`liga.js`):**
+     - When navigating to `#/liga?tab=spiele`, `bindLigaTabs()` automatically activates the `.tab-btn[data-target="spiele"]` button and renders the chronological round slider with the active matchday.
+  3. **Cache Key & Module Parity:**
+     - ES module query strings: `?v=1791100000000` across `index.html`, `main.js`, `router.js`, `home.js`, and `liga.js`.
+
