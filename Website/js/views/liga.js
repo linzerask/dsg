@@ -205,23 +205,68 @@ export function viewLiga() {
 
   const cardsData = stats.cards || [];
   
-  const generateCardsHTML = (typeKey, cssClass, iconHtml) => {
-    // Sort descending by typeKey
-    let sorted = [...cardsData].sort((a, b) => (b[typeKey] || 0) - (a[typeKey] || 0)).filter(c => (c[typeKey] || 0) > 0);
+  const generateCardsHTML = (typeKey) => {
+    let sorted = [];
+    if (typeKey === 'yellow') {
+      sorted = [...cardsData]
+        .filter(c => (c.yellow || 0) > 0)
+        .sort((a, b) => (b.yellow || 0) - (a.yellow || 0));
+    } else {
+      // Red / Dismissals (both straight Red and Yellow-Red)
+      sorted = [...cardsData]
+        .filter(c => (c.red || 0) > 0 || (c.yellowRed || 0) > 0)
+        .sort((a, b) => {
+          if ((b.red || 0) !== (a.red || 0)) return (b.red || 0) - (a.red || 0);
+          if ((b.yellowRed || 0) !== (a.yellowRed || 0)) return (b.yellowRed || 0) - (a.yellowRed || 0);
+          return (b.yellow || 0) - (a.yellow || 0);
+        });
+    }
     
     // Dense Ranking
     let currentRank = 1;
-    let currentVal = -1;
-    sorted.forEach(c => {
-      if (c[typeKey] !== currentVal) {
-        if (currentVal !== -1) currentRank++;
-        currentVal = c[typeKey];
-        c._displayRank = currentRank + '.';
-      } else {
-        c._displayRank = '';
+    let prevComp = null;
+    sorted.forEach((c, idx) => {
+      const comp = typeKey === 'yellow' 
+        ? `${c.yellow || 0}`
+        : `${c.red || 0}_${c.yellowRed || 0}`;
+      if (prevComp !== null && comp !== prevComp) {
+        currentRank++;
       }
+      prevComp = comp;
+      c._displayRank = (idx === 0 || comp !== sorted[idx - 1]?._comp) ? `${currentRank}.` : '';
+      c._comp = comp;
     });
     
+    const renderCardIcons = (c) => {
+      if (typeKey === 'yellow') {
+        return `
+          <div style="display: flex; align-items: center;">
+            <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${c.yellow || 0}</span>
+            <div class="card-icon card-icon-yellow" title="Gelbe Karte"></div>
+          </div>
+        `;
+      }
+      // Dismissals: render straight Red, Yellow-Red, or both
+      const badges = [];
+      if ((c.red || 0) > 0) {
+        badges.push(`
+          <div style="display: flex; align-items: center;" title="Rote Karte">
+            <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${c.red}</span>
+            <div class="card-icon card-icon-red"></div>
+          </div>
+        `);
+      }
+      if ((c.yellowRed || 0) > 0) {
+        badges.push(`
+          <div style="display: flex; align-items: center;" title="Gelb-Rote Karte">
+            <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${c.yellowRed}</span>
+            <div class="card-icon card-icon-yellow-red"></div>
+          </div>
+        `);
+      }
+      return `<div style="display: flex; align-items: center; gap: 12px;">${badges.join('')}</div>`;
+    };
+
     const renderRow = (s, extraClass) => `
       <div class="glass-card stagger-item ${extraClass}" style="margin-bottom: var(--space-sm); display: grid; grid-template-columns: 25px 1fr auto; align-items: center; gap: 10px; padding: var(--space-md);">
         <span style="font-weight: 900; font-size: 1.1rem; color: var(--color-text-secondary);">${s._displayRank}</span>
@@ -231,10 +276,7 @@ export function viewLiga() {
           <div class="show-mobile" style="font-size: 0.75rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
-          <div style="display: flex; align-items: center;">
-            <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${s[typeKey]}</span>
-            ${iconHtml}
-          </div>
+          ${renderCardIcons(s)}
           ${s.suspension ? '<span class="sperre-badge">' + s.suspension + '</span>' : ''}
         </div>
       </div>
@@ -254,8 +296,8 @@ export function viewLiga() {
   };
 
   const cardsHTML = {
-    gelb: generateCardsHTML('yellow', 'card-icon-yellow', '<div class="card-icon card-icon-yellow"></div>'),
-    rot: generateCardsHTML('red', 'card-icon-red', '<div class="card-icon card-icon-red"></div>')
+    gelb: generateCardsHTML('yellow'),
+    rot: generateCardsHTML('red')
   };
 
   const scorersHTML = topScorers.length > 0 ? `

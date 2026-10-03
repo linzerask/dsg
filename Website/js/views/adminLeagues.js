@@ -980,10 +980,11 @@ const renderModalContent = () => {
         }
 
         const sortedCards = [...cardsList].sort((a, b) => {
-            const ptsB = (b.red || 0) * 3 + (b.yellow || 0);
-            const ptsA = (a.red || 0) * 3 + (a.yellow || 0);
+            const ptsB = (b.red || 0) * 4 + (b.yellowRed || 0) * 2 + (b.yellow || 0);
+            const ptsA = (a.red || 0) * 4 + (a.yellowRed || 0) * 2 + (a.yellow || 0);
             if (ptsB !== ptsA) return ptsB - ptsA;
             if ((b.red || 0) !== (a.red || 0)) return (b.red || 0) - (a.red || 0);
+            if ((b.yellowRed || 0) !== (a.yellowRed || 0)) return (b.yellowRed || 0) - (a.yellowRed || 0);
             return (b.yellow || 0) - (a.yellow || 0);
         });
 
@@ -994,7 +995,7 @@ const renderModalContent = () => {
                         <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
                             <span style="font-weight: 700; color: var(--color-text-secondary); min-width: 20px; font-size: 0.9rem;">${i + 1}</span>
                             <div style="display: flex; flex-direction: column;">
-                                <strong style="color: var(--color-text-primary); font-size: 0.92rem;">${c.name}</strong>
+                                <strong style="color: var(--color-text-primary); font-size: 0.92rem;">${c.name || c.player || ''}</strong>
                                 <span style="color: var(--color-text-secondary); font-size: 0.78rem;">${c.team || '-'}</span>
                             </div>
                         </div>
@@ -1003,6 +1004,12 @@ const renderModalContent = () => {
                                 <span style="display:inline-block;width:9px;height:13px;background:#f1c40f;border-radius:2px;"></span>
                                 <span style="font-weight: 700; font-size: 0.9rem;">${c.yellow || 0}</span>
                             </div>
+                            ${(c.yellowRed || 0) > 0 ? `
+                            <div style="display: flex; align-items: center; gap: 4px;" title="Gelb-Rote Karten">
+                                <span style="display:inline-block;width:9px;height:13px;background:linear-gradient(135deg, #f1c40f 50%, #e74c3c 50%);border-radius:2px;"></span>
+                                <span style="font-weight: 700; font-size: 0.9rem; color: #e67e22;">${c.yellowRed}</span>
+                            </div>
+                            ` : ''}
                             <div style="display: flex; align-items: center; gap: 4px;" title="Rote Karten">
                                 <span style="display:inline-block;width:9px;height:13px;background:#e74c3c;border-radius:2px;"></span>
                                 <span style="font-weight: 700; font-size: 0.9rem; color: #e74c3c;">${c.red || 0}</span>
