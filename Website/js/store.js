@@ -414,7 +414,7 @@ export const Store = {
     // Clear all obsolete cache versions
     try {
       for (let i = 1; i <= 100; i++) {
-        if (i !== 86) localStorage.removeItem(`dsg_data_v${i}`);
+        if (i !== 87) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 38) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 27) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 13) localStorage.removeItem(`dsg_admin_players_v${i}`);
@@ -425,7 +425,7 @@ export const Store = {
     } catch(e) {}
 
     // Eagerly load synchronous local memory into shared singleton
-    state.memoryData = loadLocal('dsg_data', 86);
+    state.memoryData = loadLocal('dsg_data', 87);
     state.memoryNews = loadLocal('dsg_articles', 38) || sortArticles([...(INITIAL_DATA.news || [])]);
     state.memoryGallery = loadLocal('dsg_gallery', 27) || INITIAL_DATA.gallery || [];
 
@@ -452,7 +452,7 @@ export const Store = {
               }
             });
             state.memoryData = fileLiga;
-            trySetLocal('dsg_data_v86', JSON.stringify(fileLiga));
+            trySetLocal('dsg_data_v87', JSON.stringify(fileLiga));
           }
         }
         if (resLeagues && resLeagues.ok) {
@@ -487,8 +487,15 @@ export const Store = {
     // Ensure state.memoryData.seasons is initialized and deduplicated
     if (!state.memoryData.seasons) state.memoryData.seasons = {};
     Object.keys(state.memoryData.seasons).forEach(sKey => {
-      if (state.memoryData.seasons[sKey]?.matches) {
-        state.memoryData.seasons[sKey].matches = deduplicateMatches(state.memoryData.seasons[sKey].matches);
+      const s = state.memoryData.seasons[sKey];
+      if (s?.matches) {
+        s.matches = deduplicateMatches(s.matches);
+      }
+      // Auto-heal missing or empty statistics if matches have events/scorers/cards
+      const hasScorersOrCards = s?.stats && ((s.stats.topScorers && s.stats.topScorers.length > 0) || (s.stats.cards && s.stats.cards.length > 0));
+      const hasMatchEvents = s?.matches && s.matches.some(m => (m.events && m.events.length > 0) || (m.scorers && m.scorers.length > 0) || (m.cards && m.cards.length > 0));
+      if (!hasScorersOrCards && hasMatchEvents) {
+        this.recalculateSeason(sKey);
       }
     });
 
@@ -545,7 +552,7 @@ export const Store = {
       if (dataSnap.exists() && dataSnap.data()?.data) {
         const fbData = dataSnap.data().data;
         const fbTime = dataSnap.data().lastUpdated || fbData.lastUpdated || 0;
-        const localData = loadLocal('dsg_data', 86);
+        const localData = loadLocal('dsg_data', 87);
         const localTime = localData?.lastUpdated || 0;
         
         let targetData = (localTime > fbTime && localData && localData.seasons) ? localData : fbData;
@@ -569,7 +576,7 @@ export const Store = {
         const targetLigaStr = JSON.stringify(targetData?.seasons || {});
         if (currentLigaStr !== targetLigaStr) {
           state.memoryData = targetData;
-          trySetLocal('dsg_data_v86', JSON.stringify(targetData));
+          trySetLocal('dsg_data_v87', JSON.stringify(targetData));
           hasLigaUpdates = true;
         }
 
@@ -741,7 +748,7 @@ export const Store = {
         await setDoc(galleryRef, { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v86', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_data_v87', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v38', JSON.stringify(state.memoryNews));
       trySetLocal('dsg_gallery_v27', JSON.stringify(state.memoryGallery));
 
@@ -777,7 +784,7 @@ export const Store = {
     }
     const cleanData = deepSanitize(data);
     state.memoryData = cleanData;
-    trySetLocal('dsg_data_v86', JSON.stringify(cleanData));
+    trySetLocal('dsg_data_v87', JSON.stringify(cleanData));
     setDoc(doc(db, 'system', 'liga_data'), { data: cleanData, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
@@ -924,24 +931,114 @@ export const Store = {
     return [];
   },
 
-  getStats(season = (this.getData()?.currentSeason || "2023/2024")) {
+  getStats(season = (this.getData()?.currentSeason || "2026/2027")) {
     const data = this.getData();
     if (!data.seasons) return { topScorers: [], cards: [] };
-    if (data.seasons[season] && data.seasons[season].stats) {
-      const stats = data.seasons[season].stats;
-      const topScorers = (stats.topScorers || []).map(s => ({
-        ...s,
-        name: s.name || s.player || '',
-        player: s.player || s.name || ''
-      }));
-      const cards = (stats.cards || []).map(c => ({
-        ...c,
-        name: c.name || c.player || '',
-        player: c.player || c.name || ''
-      }));
-      return { ...stats, topScorers, cards };
+    const s = data.seasons[season];
+    if (!s) return { topScorers: [], cards: [] };
+
+    let stats = s.stats;
+    let topScorers = Array.isArray(stats?.topScorers) ? [...stats.topScorers] : [];
+    let cards = Array.isArray(stats?.cards) ? [...stats.cards] : [];
+
+    // Dynamic Fallback: If pre-calculated stats arrays are empty but matches exist with scorers/cards/events
+    if (topScorers.length === 0 && cards.length === 0 && Array.isArray(s.matches) && s.matches.length > 0) {
+      const scorersMap = new Map();
+      const cardsMap = new Map();
+
+      s.matches.forEach(m => {
+        const isPlayed = m.status === 'Gespielt' || m.status === 'Played';
+        if (!isPlayed) return;
+
+        // 1. Process match.events
+        if (Array.isArray(m.events)) {
+          m.events.forEach(ev => {
+            const playerName = (ev.player || ev.name || '').trim();
+            if (!playerName) return;
+            const key = `${playerName}__${(ev.team || '').trim()}`;
+
+            if (ev.type === 'goal') {
+              const count = parseInt(ev.count, 10) || 1;
+              if (!scorersMap.has(key)) {
+                scorersMap.set(key, { player: playerName, name: playerName, team: ev.team || '', goals: 0 });
+              }
+              scorersMap.get(key).goals += count;
+            } else if (['yellow', 'yellowRed', 'red'].includes(ev.type)) {
+              if (!cardsMap.has(key)) {
+                cardsMap.set(key, { player: playerName, name: playerName, team: ev.team || '', yellow: 0, yellowRed: 0, red: 0 });
+              }
+              const c = cardsMap.get(key);
+              if (ev.type === 'yellow') c.yellow += (parseInt(ev.count, 10) || 1);
+              else if (ev.type === 'yellowRed') {
+                c.yellowRed = (c.yellowRed || 0) + 1;
+                c.yellow += 2;
+              } else if (ev.type === 'red') {
+                c.red += (parseInt(ev.count, 10) || 1);
+              }
+            }
+          });
+        }
+
+        // 2. Process match.scorers fallback
+        if (Array.isArray(m.scorers) && (!m.events || m.events.length === 0)) {
+          m.scorers.forEach(sc => {
+            const playerName = (sc.player || sc.name || '').trim();
+            if (!playerName) return;
+            const key = `${playerName}__${(sc.team || '').trim()}`;
+            const count = parseInt(sc.goals || sc.count, 10) || 1;
+            if (!scorersMap.has(key)) {
+              scorersMap.set(key, { player: playerName, name: playerName, team: sc.team || '', goals: 0 });
+            }
+            scorersMap.get(key).goals += count;
+          });
+        }
+
+        // 3. Process match.cards fallback
+        if (Array.isArray(m.cards) && (!m.events || m.events.length === 0)) {
+          m.cards.forEach(cd => {
+            const playerName = (cd.player || cd.name || '').trim();
+            if (!playerName) return;
+            const key = `${playerName}__${(cd.team || '').trim()}`;
+            if (!cardsMap.has(key)) {
+              cardsMap.set(key, { player: playerName, name: playerName, team: cd.team || '', yellow: 0, yellowRed: 0, red: 0 });
+            }
+            const c = cardsMap.get(key);
+            c.yellow += (parseInt(cd.yellow, 10) || 0);
+            c.yellowRed = (c.yellowRed || 0) + (parseInt(cd.yellowRed, 10) || 0);
+            c.red += (parseInt(cd.red, 10) || 0);
+          });
+        }
+      });
+
+      topScorers = Array.from(scorersMap.values()).sort((a, b) => (b.goals || 0) - (a.goals || 0));
+      topScorers.forEach((sc, idx) => { sc.rank = idx + 1; });
+
+      cards = Array.from(cardsMap.values()).sort((a, b) => {
+        if ((b.red || 0) !== (a.red || 0)) return (b.red || 0) - (a.red || 0);
+        if ((b.yellowRed || 0) !== (a.yellowRed || 0)) return (b.yellowRed || 0) - (a.yellowRed || 0);
+        return (b.yellow || 0) - (a.yellow || 0);
+      });
+      cards.forEach((cd, idx) => { cd.rank = idx + 1; });
     }
-    return { topScorers: [], cards: [] };
+
+    topScorers = topScorers.map((s, idx) => ({
+      ...s,
+      rank: s.rank || (idx + 1),
+      name: s.name || s.player || '',
+      player: s.player || s.name || ''
+    }));
+
+    cards = cards.map((c, idx) => ({
+      ...c,
+      rank: c.rank || (idx + 1),
+      name: c.name || c.player || '',
+      player: c.player || c.name || '',
+      yellow: c.yellow || 0,
+      yellowRed: c.yellowRed || 0,
+      red: c.red || 0
+    }));
+
+    return { ...(stats || {}), topScorers, cards };
   },
 
   _applyMatchStats(season, match) {
@@ -999,34 +1096,84 @@ export const Store = {
       }
     }
 
-    if (isPlayed && match.events && Array.isArray(match.events)) {
-      const stats = this.getStats(season);
+    // Direct in-memory mutation of season.stats
+    const data = this.getData();
+    if (!data.seasons || !data.seasons[season]) return;
+    if (!data.seasons[season].stats) {
+      data.seasons[season].stats = { topScorers: [], cards: [] };
+    }
+    const seasonStats = data.seasons[season].stats;
+    if (!Array.isArray(seasonStats.topScorers)) seasonStats.topScorers = [];
+    if (!Array.isArray(seasonStats.cards)) seasonStats.cards = [];
+
+    if (isPlayed && match.events && Array.isArray(match.events) && match.events.length > 0) {
       match.events.forEach(ev => {
-        if (ev.type === 'goal' && ev.player) {
+        const playerName = (ev.player || ev.name || '').trim();
+        if (!playerName) return;
+
+        if (ev.type === 'goal') {
           const goalCount = parseInt(ev.count) || 1;
-          let scorer = stats.topScorers.find(s => s.name === ev.player && s.team === ev.team);
+          let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === ev.team);
           if (scorer) {
-            scorer.goals += goalCount;
+            scorer.goals = (scorer.goals || 0) + goalCount;
           } else {
-            stats.topScorers.push({ name: ev.player, team: ev.team, goals: goalCount });
+            seasonStats.topScorers.push({ player: playerName, name: playerName, team: ev.team, goals: goalCount });
           }
         }
-        if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red') && ev.player) {
-          let cardEntry = stats.cards.find(c => c.name === ev.player && c.team === ev.team);
+        if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red')) {
+          let cardEntry = seasonStats.cards.find(c => (c.name === playerName || c.player === playerName) && c.team === ev.team);
           if (!cardEntry) {
-            cardEntry = { name: ev.player, player: ev.player, team: ev.team, yellow: 0, red: 0 };
-            stats.cards.push(cardEntry);
+            cardEntry = { player: playerName, name: playerName, team: ev.team, yellow: 0, yellowRed: 0, red: 0 };
+            seasonStats.cards.push(cardEntry);
           }
-          if (ev.type === 'yellow') cardEntry.yellow += (parseInt(ev.count) || 1);
+          if (ev.type === 'yellow') cardEntry.yellow = (cardEntry.yellow || 0) + (parseInt(ev.count) || 1);
           if (ev.type === 'yellowRed') {
-            cardEntry.yellow += 2;
-            cardEntry.red += 1;
+            cardEntry.yellowRed = (cardEntry.yellowRed || 0) + 1;
+            cardEntry.yellow = (cardEntry.yellow || 0) + 2;
           }
-          if (ev.type === 'red') cardEntry.red += (parseInt(ev.count) || 1);
+          if (ev.type === 'red') cardEntry.red = (cardEntry.red || 0) + (parseInt(ev.count) || 1);
         }
       });
-      stats.topScorers.sort((a, b) => b.goals - a.goals);
+    } else if (isPlayed) {
+      // Check match.scorers and match.cards
+      if (Array.isArray(match.scorers)) {
+        match.scorers.forEach(sc => {
+          const playerName = (sc.player || sc.name || '').trim();
+          if (!playerName) return;
+          const count = parseInt(sc.goals || sc.count) || 1;
+          let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === sc.team);
+          if (scorer) {
+            scorer.goals = (scorer.goals || 0) + count;
+          } else {
+            seasonStats.topScorers.push({ player: playerName, name: playerName, team: sc.team, goals: count });
+          }
+        });
+      }
+      if (Array.isArray(match.cards)) {
+        match.cards.forEach(cd => {
+          const playerName = (cd.player || cd.name || '').trim();
+          if (!playerName) return;
+          let cardEntry = seasonStats.cards.find(c => (c.name === playerName || c.player === playerName) && c.team === cd.team);
+          if (!cardEntry) {
+            cardEntry = { player: playerName, name: playerName, team: cd.team, yellow: 0, yellowRed: 0, red: 0 };
+            seasonStats.cards.push(cardEntry);
+          }
+          cardEntry.yellow = (cardEntry.yellow || 0) + (parseInt(cd.yellow) || 0);
+          cardEntry.yellowRed = (cardEntry.yellowRed || 0) + (parseInt(cd.yellowRed) || 0);
+          cardEntry.red = (cardEntry.red || 0) + (parseInt(cd.red) || 0);
+        });
+      }
     }
+
+    seasonStats.topScorers.sort((a, b) => (b.goals || 0) - (a.goals || 0));
+    seasonStats.topScorers.forEach((s, idx) => { s.rank = idx + 1; });
+
+    seasonStats.cards.sort((a, b) => {
+      if ((b.red || 0) !== (a.red || 0)) return (b.red || 0) - (a.red || 0);
+      if ((b.yellowRed || 0) !== (a.yellowRed || 0)) return (b.yellowRed || 0) - (a.yellowRed || 0);
+      return (b.yellow || 0) - (a.yellow || 0);
+    });
+    seasonStats.cards.forEach((c, idx) => { c.rank = idx + 1; });
   },
 
   _reverseMatchStats(season, match) {
@@ -1084,31 +1231,74 @@ export const Store = {
       }
     }
 
-    if (isPlayed && match.events && Array.isArray(match.events)) {
-      const stats = this.getStats(season);
+    // Direct in-memory reversal of season.stats
+    const data = this.getData();
+    if (!data.seasons || !data.seasons[season] || !data.seasons[season].stats) return;
+    const seasonStats = data.seasons[season].stats;
+    if (!Array.isArray(seasonStats.topScorers)) seasonStats.topScorers = [];
+    if (!Array.isArray(seasonStats.cards)) seasonStats.cards = [];
+
+    if (isPlayed && match.events && Array.isArray(match.events) && match.events.length > 0) {
       match.events.forEach(ev => {
-        if (ev.type === 'goal' && ev.player) {
+        const playerName = (ev.player || ev.name || '').trim();
+        if (!playerName) return;
+
+        if (ev.type === 'goal') {
           const goalCount = parseInt(ev.count) || 1;
-          let scorer = stats.topScorers.find(s => s.name === ev.player && s.team === ev.team);
+          let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === ev.team);
           if (scorer) {
-            scorer.goals = Math.max(0, scorer.goals - goalCount);
+            scorer.goals = Math.max(0, (scorer.goals || 0) - goalCount);
           }
         }
-        if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red') && ev.player) {
-          let cardEntry = stats.cards.find(c => c.name === ev.player && c.team === ev.team);
+        if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red')) {
+          let cardEntry = seasonStats.cards.find(c => (c.name === playerName || c.player === playerName) && c.team === ev.team);
           if (cardEntry) {
-            if (ev.type === 'yellow') cardEntry.yellow = Math.max(0, cardEntry.yellow - (parseInt(ev.count) || 1));
+            if (ev.type === 'yellow') cardEntry.yellow = Math.max(0, (cardEntry.yellow || 0) - (parseInt(ev.count) || 1));
             if (ev.type === 'yellowRed') {
-              cardEntry.yellow = Math.max(0, cardEntry.yellow - 2);
-              cardEntry.red = Math.max(0, cardEntry.red - 1);
+              cardEntry.yellowRed = Math.max(0, (cardEntry.yellowRed || 0) - 1);
+              cardEntry.yellow = Math.max(0, (cardEntry.yellow || 0) - 2);
             }
-            if (ev.type === 'red') cardEntry.red = Math.max(0, cardEntry.red - (parseInt(ev.count) || 1));
+            if (ev.type === 'red') cardEntry.red = Math.max(0, (cardEntry.red || 0) - (parseInt(ev.count) || 1));
           }
         }
       });
-      stats.topScorers = stats.topScorers.filter(s => s.goals > 0);
-      stats.cards = stats.cards.filter(c => (c.yellow > 0 || c.red > 0));
+    } else if (isPlayed) {
+      if (Array.isArray(match.scorers)) {
+        match.scorers.forEach(sc => {
+          const playerName = (sc.player || sc.name || '').trim();
+          if (!playerName) return;
+          const count = parseInt(sc.goals || sc.count) || 1;
+          let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === sc.team);
+          if (scorer) {
+            scorer.goals = Math.max(0, (scorer.goals || 0) - count);
+          }
+        });
+      }
+      if (Array.isArray(match.cards)) {
+        match.cards.forEach(cd => {
+          const playerName = (cd.player || cd.name || '').trim();
+          if (!playerName) return;
+          let cardEntry = seasonStats.cards.find(c => (c.name === playerName || c.player === playerName) && c.team === cd.team);
+          if (cardEntry) {
+            cardEntry.yellow = Math.max(0, (cardEntry.yellow || 0) - (parseInt(cd.yellow) || 0));
+            cardEntry.yellowRed = Math.max(0, (cardEntry.yellowRed || 0) - (parseInt(cd.yellowRed) || 0));
+            cardEntry.red = Math.max(0, (cardEntry.red || 0) - (parseInt(cd.red) || 0));
+          }
+        });
+      }
     }
+
+    seasonStats.topScorers = seasonStats.topScorers.filter(s => (s.goals || 0) > 0);
+    seasonStats.topScorers.sort((a, b) => (b.goals || 0) - (a.goals || 0));
+    seasonStats.topScorers.forEach((s, idx) => { s.rank = idx + 1; });
+
+    seasonStats.cards = seasonStats.cards.filter(c => (c.yellow > 0 || c.yellowRed > 0 || c.red > 0));
+    seasonStats.cards.sort((a, b) => {
+      if ((b.red || 0) !== (a.red || 0)) return (b.red || 0) - (a.red || 0);
+      if ((b.yellowRed || 0) !== (a.yellowRed || 0)) return (b.yellowRed || 0) - (a.yellowRed || 0);
+      return (b.yellow || 0) - (a.yellow || 0);
+    });
+    seasonStats.cards.forEach((c, idx) => { c.rank = idx + 1; });
   },
 
   getMatch(season, id) {
@@ -1268,11 +1458,11 @@ export const Store = {
 
   recalculateSeason(season) {
     const data = this.getData();
-    if (!data.seasons[season]) return;
+    if (!data.seasons || !data.seasons[season]) return;
     const s = data.seasons[season];
     
     // Reset teams
-    s.teams.forEach(t => {
+    (s.teams || []).forEach(t => {
       t.played = 0; t.won = 0; t.drawn = 0; t.lost = 0;
       t.goalsFor = 0; t.goalsAgainst = 0; t.goalDiff = 0;
       t.points = 0;
@@ -1282,16 +1472,19 @@ export const Store = {
     s.stats = { topScorers: [], cards: [] };
 
     // Replay all played/cancelled matches
-    s.matches.forEach(m => {
+    (s.matches || []).forEach(m => {
       this._applyMatchStats(season, m);
     });
 
     // Sort teams
-    s.teams.sort((a, b) => {
-      if (b.points !== a.points) return b.points - a.points;
-      if (b.goalDiff !== a.goalDiff) return b.goalDiff - a.goalDiff;
-      return b.goalsFor - a.goalsFor;
-    });
+    if (Array.isArray(s.teams)) {
+      s.teams.sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        if (b.goalDiff !== a.goalDiff) return b.goalDiff - a.goalDiff;
+        return b.goalsFor - a.goalsFor;
+      });
+      s.teams.forEach((t, idx) => { t.rank = idx + 1; });
+    }
 
     this.saveData(data);
   },
