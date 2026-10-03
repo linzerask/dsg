@@ -1,5 +1,5 @@
-import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791010000000';
-import { renderIcon } from '../icons.js?v=1791010000000';
+import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791020000000';
+import { renderIcon } from '../icons.js?v=1791020000000';
 
 
 let currentViewSeason = null;

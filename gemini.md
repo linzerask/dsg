@@ -612,8 +612,8 @@ DSG Liga/
   3. **View-Level Defense-in-Depth:**
      - Match reports in `adminGames.js`, stats computations in `statistiken.js`, player listings in `adminPlayers.js`, and league tables in `liga.js` explicitly sanitize player names, team names, and card reasons during rendering and form processing.
   4. **Cache Key & Import Version Parity:**
-     - Store versions: `dsg_data_v85`, `dsg_articles_v38`, `dsg_gallery_v27`, `dsg_admin_players_v13`, `dsg_admin_teams_v13`, `dsg_admin_rounds_v42`, `dsg_admin_leagues_v42`.
-     - Script import query strings: `?v=1791010000000` across `index.html`, `main.js`, `router.js`, `admin.js`, and all view modules.
+     - Store versions: `dsg_data_v86`, `dsg_articles_v38`, `dsg_gallery_v27`, `dsg_admin_players_v13`, `dsg_admin_teams_v13`, `dsg_admin_rounds_v43`, `dsg_admin_leagues_v43`.
+     - Script import query strings: `?v=1791020000000` across `index.html`, `main.js`, `router.js`, `admin.js`, and all view modules.
 
 ---
 
@@ -629,5 +629,27 @@ DSG Liga/
      - `store.js` implements an automated deduplicator that merges duplicate entries sharing the same natural key. When merging an unplayed (`-:-`) and a played match, it preserves the played score, half-time score, goals, cards, and events while purging the unplayed duplicate.
      - `deduplicateMatches()` runs during `Store.init()`, `Store.saveData()`, and `Store.syncFirebase()`, automatically healing corrupted datasets in both local storage and cloud Firestore.
   4. **Cache Key & Module Parity:**
-     - Store versions: `dsg_data_v85`, `dsg_admin_rounds_v42`, `dsg_admin_leagues_v42`.
-     - ES module query strings: `?v=1791010000000`.
+     - Store versions: `dsg_data_v86`, `dsg_admin_rounds_v43`, `dsg_admin_leagues_v43`.
+     - ES module query strings: `?v=1791020000000`.
+
+---
+
+## 52. Instant Zero-Flicker Hybrid Cold Load & Background Cloud Diffing Protocol
+* **The Pitfall:** On a clean browser session (empty localStorage and cache), Router.init() rendered before data files were loaded, resulting in an empty initial view. Then at ~50ms, local JSON finished loading and triggered a full page entry animation. Then at ~4-5s, Firebase Firestore finished its cloud handshake and unconditionally set hasUpdates = true, broadcasting data-updated and forcing the entire page to re-render and replay the entry bounce animation a third time.
+* **The Rule:**
+  1. **Async Pre-Fetch on Startup (Store.init() & main.js):**
+     - main.js awaits Store.init() before calling Router.init().
+     - When localStorage is unpopulated, Store.init() eagerly waits local static JSON files (liga.json, leagues.json, 
+ounds.json, rticles.json) in parallel before returning. The very first paint of the app is 100% complete with zero blank flashes or preliminary renders.
+  2. **Intelligent Cloud Data Diffing (Store.syncFirebase()):**
+     - Firestore connects silently in the background.
+     - When Firestore returns its documents, syncFirebase() compares the incoming cloud dataset against current in-memory state.
+     - If the cloud data is identical to local state (99% of regular visitor traffic), NO refresh events are dispatched (hasLigaUpdates = false).
+     - If actual remote edits are detected, only the relevant targeted events are dispatched.
+  3. **Silent Background Route Updates (
+outer.js):**
+     - In 
+outer.js, the Anime.js page entry bounce animation is executed ONLY on explicit user navigation (!isDataRefresh). Background data sync updates the DOM silently in place without screen flicker.
+  4. **Cache Key & Module Parity:**
+     - Store versions: dsg_data_v86, dsg_admin_rounds_v43, dsg_admin_leagues_v43.
+     - ES module query strings: ?v=1791020000000.

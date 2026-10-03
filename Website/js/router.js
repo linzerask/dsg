@@ -1,14 +1,14 @@
-import { viewHome, bindHome } from './views/home.js?v=1791010000000';
-import { viewNews, bindNews } from './views/news.js?v=1791010000000';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1791010000000';
-import { viewArchiv } from './views/simpleViews.js?v=1791010000000';
-import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1791010000000';
-import { viewGalerie, bindGalerie } from './views/galerie.js?v=1791010000000';
-import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1791010000000';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1791010000000';
-import { viewArticle, bindArticle } from './views/article.js?v=1791010000000';
-import { viewImpressum } from './views/impressum.js?v=1791010000000';
-import { viewDatenschutz } from './views/datenschutz.js?v=1791010000000';
+import { viewHome, bindHome } from './views/home.js?v=1791020000000';
+import { viewNews, bindNews } from './views/news.js?v=1791020000000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1791020000000';
+import { viewArchiv } from './views/simpleViews.js?v=1791020000000';
+import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1791020000000';
+import { viewGalerie, bindGalerie } from './views/galerie.js?v=1791020000000';
+import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1791020000000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1791020000000';
+import { viewArticle, bindArticle } from './views/article.js?v=1791020000000';
+import { viewImpressum } from './views/impressum.js?v=1791020000000';
+import { viewDatenschutz } from './views/datenschutz.js?v=1791020000000';
 
 const routes = {
   '/': { render: () => viewHome(), bind: () => bindHome() },
@@ -162,14 +162,16 @@ export const Router = {
       // Ensure floating nav is visible on new page load
       floatingNav?.classList.remove('nav-hidden');
 
-      // Clean, reliable page entry animation
-      anime({
-        targets: '#app > *',
-        opacity: [0, 1],
-        translateY: [12, 0],
-        easing: 'easeOutCubic',
-        duration: 280
-      });
+      // Clean, reliable page entry animation (only on user navigation, silent on background refresh)
+      if (!isDataRefresh && typeof anime !== 'undefined') {
+        anime({
+          targets: '#app > *',
+          opacity: [0, 1],
+          translateY: [12, 0],
+          easing: 'easeOutCubic',
+          duration: 280
+        });
+      }
     };
 
     // Animate out if content exists and it's not a background data refresh

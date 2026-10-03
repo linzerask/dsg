@@ -1,11 +1,15 @@
-import { Router } from './router.js?v=1791010000000';
-import { Store } from './store.js?v=1791010000000';
+import { Router } from './router.js?v=1791020000000';
+import { Store } from './store.js?v=1791020000000';
 
 window.Store = Store;
 
-const initApp = () => {
+const initApp = async () => {
+  try {
+    await Store.init();
+  } catch (e) {
+    console.error("Store init error:", e);
+  }
   Router.init();
-  Store.init();
 
   // Mobile Drawer logic
   const drawer = document.getElementById('mobile-drawer');
