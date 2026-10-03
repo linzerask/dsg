@@ -1,4 +1,4 @@
-import { Router } from './router.js?v=1791110000000';
+import { Router } from './router.js?v=1791120000000';
 import { Store } from './store.js?v=1791110000000';
 
 window.Store = Store;

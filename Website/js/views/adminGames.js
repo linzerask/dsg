@@ -50,10 +50,10 @@ export const renderAdminGames = () => {
                     <option value="canceled">Abgesagt/Verschoben</option>
                 </select>
                 <select id="game-sort-select" class="admin-input" style="width: 175px;">
-                    <option value="season-desc">Saison (neueste)</option>
+                    <option value="season-desc" selected>Saison (neueste)</option>
                     <option value="season-asc">Saison (älteste)</option>
                     <option value="date-desc">Datum (neueste)</option>
-                    <option value="date-asc" selected>Datum (älteste)</option>
+                    <option value="date-asc">Datum (älteste)</option>
                     <option value="round-asc">Runde (1 → ..)</option>
                     <option value="round-desc">Runde (.. → 1)</option>
                     <option value="league-asc">Liga (A–Z)</option>
@@ -445,7 +445,7 @@ const filterAndSortGames = () => {
     const leagueFilter = document.getElementById('game-league-filter')?.value || 'all';
     const roundFilter = document.getElementById('game-round-filter')?.value || 'all';
     const statusFilter = document.getElementById('game-status-filter')?.value || 'all';
-    const sortVal = document.getElementById('game-sort-select')?.value || 'date-asc';
+    const sortVal = document.getElementById('game-sort-select')?.value || 'season-desc';
 
     filteredData = gamesData.filter(m => {
         const dispDate = formatDisplayDate(m.date, m.time).toLowerCase();

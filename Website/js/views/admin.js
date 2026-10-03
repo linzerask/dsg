@@ -3,7 +3,7 @@ import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=179107
 import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1791070000000';
 import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1791070000000';
 import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1791070000000';
-import { renderAdminGames, initAdminGames } from './adminGames.js?v=1791070000000';
+import { renderAdminGames, initAdminGames } from './adminGames.js?v=1791120000000';
 import { renderAdminNews, initAdminNews } from './adminNews.js?v=1791070000000';
 import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1791070000000';
 
