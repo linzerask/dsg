@@ -1,5 +1,5 @@
-import { Store, sanitizeMojibake } from '../store.js?v=1790957000000';
-import { renderIcon } from '../icons.js?v=1790561000000';
+import { Store, sanitizeMojibake } from '../store.js?v=1791010000000';
+import { renderIcon } from '../icons.js?v=1791010000000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';

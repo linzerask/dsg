@@ -612,5 +612,22 @@ DSG Liga/
   3. **View-Level Defense-in-Depth:**
      - Match reports in `adminGames.js`, stats computations in `statistiken.js`, player listings in `adminPlayers.js`, and league tables in `liga.js` explicitly sanitize player names, team names, and card reasons during rendering and form processing.
   4. **Cache Key & Import Version Parity:**
-     - Store versions: `dsg_data_v84`, `dsg_articles_v38`, `dsg_gallery_v27`, `dsg_admin_players_v13`, `dsg_admin_teams_v13`, `dsg_admin_rounds_v41`, `dsg_admin_leagues_v41`.
-     - Script import query strings: `?v=1790957000000` across `index.html`, `main.js`, `router.js`, `admin.js`, and all view modules.
+     - Store versions: `dsg_data_v85`, `dsg_articles_v38`, `dsg_gallery_v27`, `dsg_admin_players_v13`, `dsg_admin_teams_v13`, `dsg_admin_rounds_v42`, `dsg_admin_leagues_v42`.
+     - Script import query strings: `?v=1791010000000` across `index.html`, `main.js`, `router.js`, `admin.js`, and all view modules.
+
+---
+
+## 51. Match Natural Key Lookup & Automatic Deduplication Protocol
+* **The Pitfall:** Historical matches loaded from initial seed JSON files (`Website/data/liga.json`) lacked explicit `id` properties. When editing a match score or saving a match report in `adminGames.js`, `Store.saveMatch()` performed an existence check `const exists = matchData.id && matches.some(m => String(m.id) === String(matchData.id))`. Because `matchData.id` was `undefined`, the check evaluated to false, causing `saveMatch()` to fall into `Store.addMatch()` instead of `Store.updateMatch()`. This appended a duplicate match record (e.g. one unplayed `-:-` and one played `5:1`) while leaving the unplayed match intact.
+* **The Rule:**
+  1. **Explicit Match IDs Across All Datasets:**
+     - All matches in `Website/data/liga.json` and in memory state must have persistent sequential integer IDs (`id: 1, 2, 3...`).
+  2. **Multi-Tier Match Resolution (`Store.saveMatch()`, `Store.updateMatch()`, `Store.deleteMatch()`):**
+     - Matches must be resolved first by exact ID match (`m.id && String(m.id) === String(matchData.id)`).
+     - When ID is unassigned or legacy, matches must resolve using their **natural compound key** (`norm(round) + "_" + norm(home) + "_" + norm(away)`). This guarantees that match score edits and match reports always update in-place rather than creating duplicates.
+  3. **Universal Deduplication Engine (`deduplicateMatches()`):**
+     - `store.js` implements an automated deduplicator that merges duplicate entries sharing the same natural key. When merging an unplayed (`-:-`) and a played match, it preserves the played score, half-time score, goals, cards, and events while purging the unplayed duplicate.
+     - `deduplicateMatches()` runs during `Store.init()`, `Store.saveData()`, and `Store.syncFirebase()`, automatically healing corrupted datasets in both local storage and cloud Firestore.
+  4. **Cache Key & Module Parity:**
+     - Store versions: `dsg_data_v85`, `dsg_admin_rounds_v42`, `dsg_admin_leagues_v42`.
+     - ES module query strings: `?v=1791010000000`.

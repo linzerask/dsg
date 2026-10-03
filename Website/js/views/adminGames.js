@@ -1,5 +1,5 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1790957000000';
-import { showToast } from './admin.js?v=1790957000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791010000000';
+import { showToast } from './admin.js?v=1791010000000';
 
 let gamesData = [];
 let roundsData = [];
@@ -1027,7 +1027,7 @@ const openEditGameModal = (idx) => {
         return;
     }
 
-    editingMatchId = match.id !== undefined ? match.id : idx;
+    editingMatchId = (match.id !== undefined && match.id !== null) ? match.id : null;
     const modal = document.getElementById('game-modal');
     const title = document.getElementById('game-modal-title');
     const statusWrapper = document.getElementById('game-status-wrapper');
@@ -1113,7 +1113,7 @@ const deleteGame = (idx) => {
     const targetSeasonKey = match.seasonKey || (Store.getData()?.currentSeason || '2022/2023');
 
     if (confirm(`Möchten Sie das Spiel "${match.home} vs. ${match.away}" wirklich löschen?`)) {
-        Store.deleteMatch(targetSeasonKey, match.id);
+        Store.deleteMatch(targetSeasonKey, match.id, match);
         Store.recalculateSeason(targetSeasonKey);
         loadDataAndRender();
         showToast('Spiel gelöscht.');

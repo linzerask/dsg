@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1790957000000';
+import { Store } from '../store.js?v=1791010000000';
 
 const renderCard = (n) => `
     <div class="glass-card stagger-item news-item-card">

@@ -217,7 +217,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 1
         },
         {
           "date": "27.08.2022",
@@ -287,7 +288,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 2
         },
         {
           "date": "27.08.2022",
@@ -447,7 +449,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 3
         },
         {
           "date": "31.08.2022",
@@ -522,7 +525,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 4
         },
         {
           "date": "02.09.2022",
@@ -621,7 +625,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 5
         },
         {
           "date": "03.09.2022",
@@ -808,7 +813,8 @@
           ],
           "yellow": 6,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 6
         },
         {
           "date": "21.10.2022",
@@ -961,7 +967,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 7
         },
         {
           "date": "25.10.2022",
@@ -1094,7 +1101,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 8
         },
         {
           "date": "14.09.2022",
@@ -1226,7 +1234,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 9
         },
         {
           "date": "16.09.2022",
@@ -1457,7 +1466,8 @@
           ],
           "yellow": 5,
           "red": 1,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 10
         },
         {
           "date": "11.10.2022",
@@ -1586,7 +1596,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 11
         },
         {
           "date": "06.06.2023",
@@ -1756,7 +1767,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 12
         },
         {
           "date": "23.09.2022",
@@ -1873,7 +1885,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 13
         },
         {
           "date": "24.09.2022",
@@ -1894,7 +1907,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 14
         },
         {
           "date": "24.09.2022",
@@ -2095,7 +2109,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 15
         },
         {
           "date": "22.10.2022",
@@ -2244,7 +2259,8 @@
           ],
           "yellow": 5,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 16
         },
         {
           "date": "30.09.2022",
@@ -2482,7 +2498,8 @@
           ],
           "yellow": 5,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 17
         },
         {
           "date": "01.10.2022",
@@ -2606,7 +2623,8 @@
           ],
           "yellow": 2,
           "red": 1,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 18
         },
         {
           "date": "01.10.2022",
@@ -2759,7 +2777,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 19
         },
         {
           "date": "22.10.2022",
@@ -2897,7 +2916,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 1
+          "yellowRed": 1,
+          "id": 20
         },
         {
           "date": "05.10.2022",
@@ -3051,7 +3071,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 21
         },
         {
           "date": "07.10.2022",
@@ -3137,7 +3158,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 22
         },
         {
           "date": "08.10.2022",
@@ -3239,7 +3261,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 23
         },
         {
           "date": "08.10.2022",
@@ -3260,7 +3283,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 24
         },
         {
           "date": "14.10.2022",
@@ -3429,7 +3453,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 25
         },
         {
           "date": "15.10.2022",
@@ -3589,7 +3614,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 26
         },
         {
           "date": "15.10.2022",
@@ -3721,7 +3747,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 27
         },
         {
           "date": "05.11.2022",
@@ -3876,7 +3903,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 28
         },
         {
           "date": "08.04.2023",
@@ -4030,7 +4058,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 29
         },
         {
           "date": "23.05.2023",
@@ -4186,7 +4215,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 1
+          "yellowRed": 1,
+          "id": 30
         },
         {
           "date": "10.06.2023",
@@ -4363,7 +4393,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 31
         },
         {
           "date": "10.06.2023",
@@ -4384,7 +4415,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 32
         },
         {
           "date": "21.04.2023",
@@ -4544,7 +4576,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 33
         },
         {
           "date": "21.04.2023",
@@ -4626,7 +4659,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 34
         },
         {
           "date": "22.04.2023",
@@ -4797,7 +4831,8 @@
           ],
           "yellow": 5,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 35
         },
         {
           "date": "22.04.2023",
@@ -4968,7 +5003,8 @@
           ],
           "yellow": 5,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 36
         },
         {
           "date": "28.04.2023",
@@ -5105,7 +5141,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 37
         },
         {
           "date": "28.04.2023",
@@ -5220,7 +5257,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 38
         },
         {
           "date": "29.04.2023",
@@ -5398,7 +5436,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 39
         },
         {
           "date": "29.04.2023",
@@ -5567,7 +5606,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 40
         },
         {
           "date": "05.05.2023",
@@ -5717,7 +5757,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 41
         },
         {
           "date": "06.05.2023",
@@ -5849,7 +5890,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 42
         },
         {
           "date": "06.05.2023",
@@ -5919,7 +5961,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 43
         },
         {
           "date": "06.05.2023",
@@ -6020,7 +6063,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 44
         },
         {
           "date": "12.05.2023",
@@ -6142,7 +6186,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 45
         },
         {
           "date": "12.05.2023",
@@ -6305,7 +6350,8 @@
           ],
           "yellow": 5,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 46
         },
         {
           "date": "13.05.2023",
@@ -6326,7 +6372,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 47
         },
         {
           "date": "13.05.2023",
@@ -6451,7 +6498,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 1
+          "yellowRed": 1,
+          "id": 48
         },
         {
           "date": "17.05.2023",
@@ -6489,7 +6537,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 49
         },
         {
           "date": "19.05.2023",
@@ -6619,7 +6668,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 50
         },
         {
           "date": "20.05.2023",
@@ -6742,7 +6792,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 51
         },
         {
           "date": "31.05.2023",
@@ -6856,7 +6907,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 52
         },
         {
           "date": "27.05.2023",
@@ -6877,7 +6929,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 53
         },
         {
           "date": "27.05.2023",
@@ -6995,7 +7048,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 54
         },
         {
           "date": "02.06.2023",
@@ -7100,7 +7154,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 55
         },
         {
           "date": "03.06.2023",
@@ -7121,7 +7176,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 56
         }
       ],
       "stats": {
@@ -8733,7 +8789,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 1
         },
         {
           "date": "27.08.2022",
@@ -8879,7 +8936,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 2
         },
         {
           "date": "22.10.2022",
@@ -8900,7 +8958,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 3
         },
         {
           "date": "22.10.2022",
@@ -9144,7 +9203,8 @@
           ],
           "yellow": 9,
           "red": 0,
-          "yellowRed": 1
+          "yellowRed": 1,
+          "id": 4
         },
         {
           "date": "02.09.2022",
@@ -9261,7 +9321,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 5
         },
         {
           "date": "02.09.2022",
@@ -9462,7 +9523,8 @@
           ],
           "yellow": 5,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 6
         },
         {
           "date": "03.09.2022",
@@ -9596,7 +9658,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 7
         },
         {
           "date": "03.09.2022",
@@ -9617,7 +9680,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 8
         },
         {
           "date": "16.09.2022",
@@ -9771,7 +9835,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 9
         },
         {
           "date": "17.09.2022",
@@ -9888,7 +9953,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 10
         },
         {
           "date": "17.09.2022",
@@ -9909,7 +9975,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 11
         },
         {
           "date": "17.09.2022",
@@ -10043,7 +10110,8 @@
           ],
           "yellow": 4,
           "red": 1,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 12
         },
         {
           "date": "23.09.2022",
@@ -10328,7 +10396,8 @@
           ],
           "yellow": 8,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 13
         },
         {
           "date": "24.09.2022",
@@ -10405,7 +10474,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 14
         },
         {
           "date": "24.09.2022",
@@ -10525,7 +10595,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 15
         },
         {
           "date": "24.09.2022",
@@ -10546,7 +10617,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 16
         },
         {
           "date": "30.09.2022",
@@ -10712,7 +10784,8 @@
           ],
           "yellow": 6,
           "red": 0,
-          "yellowRed": 1
+          "yellowRed": 1,
+          "id": 17
         },
         {
           "date": "01.10.2022",
@@ -10827,7 +10900,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 18
         },
         {
           "date": "01.10.2022",
@@ -10951,7 +11025,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 19
         },
         {
           "date": "01.10.2022",
@@ -10972,7 +11047,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 20
         },
         {
           "date": "07.10.2022",
@@ -11105,7 +11181,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 21
         },
         {
           "date": "08.10.2022",
@@ -11207,7 +11284,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 2
+          "yellowRed": 2,
+          "id": 22
         },
         {
           "date": "08.10.2022",
@@ -11307,7 +11385,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 23
         },
         {
           "date": "08.10.2022",
@@ -11328,7 +11407,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 24
         },
         {
           "date": "14.10.2022",
@@ -11472,7 +11552,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 25
         },
         {
           "date": "15.10.2022",
@@ -11687,7 +11768,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 26
         },
         {
           "date": "26.10.2022",
@@ -11708,7 +11790,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 27
         },
         {
           "date": "08.04.2023",
@@ -11809,7 +11892,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 28
         },
         {
           "date": "02.06.2023",
@@ -11909,7 +11993,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 29
         },
         {
           "date": "10.06.2023",
@@ -11930,7 +12015,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 30
         },
         {
           "date": "10.06.2023",
@@ -12128,7 +12214,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 31
         },
         {
           "date": "21.04.2023",
@@ -12327,7 +12414,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 32
         },
         {
           "date": "22.04.2023",
@@ -12443,7 +12531,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 33
         },
         {
           "date": "07.06.2023",
@@ -12632,7 +12721,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 34
         },
         {
           "date": "29.04.2023",
@@ -12719,7 +12809,8 @@
           ],
           "yellow": 4,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 35
         },
         {
           "date": "31.05.2023",
@@ -12824,7 +12915,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 36
         },
         {
           "date": "03.06.2023",
@@ -12845,7 +12937,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 37
         },
         {
           "date": "05.05.2023",
@@ -12900,7 +12993,8 @@
           ],
           "yellow": 0,
           "red": 1,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 38
         },
         {
           "date": "06.05.2023",
@@ -12960,7 +13054,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 39
         },
         {
           "date": "06.05.2023",
@@ -13125,7 +13220,8 @@
           ],
           "yellow": 6,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 40
         },
         {
           "date": "13.05.2023",
@@ -13146,7 +13242,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 41
         },
         {
           "date": "13.05.2023",
@@ -13276,7 +13373,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 42
         },
         {
           "date": "03.06.2023",
@@ -13429,7 +13527,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 43
         },
         {
           "date": "19.05.2023",
@@ -13589,7 +13688,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 44
         },
         {
           "date": "20.05.2023",
@@ -13675,7 +13775,8 @@
           ],
           "yellow": 2,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 45
         },
         {
           "date": "14.06.2023",
@@ -13772,7 +13873,8 @@
           "cards": [],
           "yellow": 0,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 46
         },
         {
           "date": "26.05.2023",
@@ -13889,7 +13991,8 @@
           ],
           "yellow": 3,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 47
         },
         {
           "date": "27.05.2023",
@@ -13981,7 +14084,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 48
         },
         {
           "date": "27.05.2023",
@@ -14109,7 +14213,8 @@
           ],
           "yellow": 1,
           "red": 0,
-          "yellowRed": 0
+          "yellowRed": 0,
+          "id": 49
         }
       ],
       "stats": {
@@ -15554,7 +15659,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 1
         },
         {
           "round": "1. Runde",
@@ -15595,7 +15701,8 @@
               "count": 1,
               "team": "FC Bruck"
             }
-          ]
+          ],
+          "id": 2
         },
         {
           "round": "1. Runde",
@@ -15611,7 +15718,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 3
         },
         {
           "round": "1. Runde",
@@ -15700,7 +15808,8 @@
               "count": 1,
               "team": "Union Geboltskirchen"
             }
-          ]
+          ],
+          "id": 4
         },
         {
           "round": "1. Runde",
@@ -15729,7 +15838,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 5
         },
         {
           "round": "1. Runde",
@@ -15782,7 +15892,8 @@
               "count": 1,
               "team": "DSG Thalheim"
             }
-          ]
+          ],
+          "id": 6
         },
         {
           "round": "2. Runde",
@@ -15835,7 +15946,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 7
         },
         {
           "round": "2. Runde",
@@ -15882,7 +15994,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 8
         },
         {
           "round": "2. Runde",
@@ -15977,7 +16090,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 9
         },
         {
           "round": "2. Runde",
@@ -16024,7 +16138,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 10
         },
         {
           "round": "2. Runde",
@@ -16083,7 +16198,8 @@
               "count": 1,
               "team": "DSG UKJ Froschberg"
             }
-          ]
+          ],
+          "id": 11
         },
         {
           "round": "2. Runde",
@@ -16130,7 +16246,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 12
         },
         {
           "round": "3. Runde",
@@ -16189,7 +16306,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 13
         },
         {
           "round": "3. Runde",
@@ -16248,7 +16366,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 14
         },
         {
           "round": "3. Runde",
@@ -16337,7 +16456,8 @@
               "count": 1,
               "team": "DSG UKJ Froschberg"
             }
-          ]
+          ],
+          "id": 15
         },
         {
           "round": "3. Runde",
@@ -16402,7 +16522,8 @@
               "count": 1,
               "team": "FC Bruck"
             }
-          ]
+          ],
+          "id": 16
         },
         {
           "round": "3. Runde",
@@ -16455,7 +16576,8 @@
               "count": 1,
               "team": "DSG Thalheim"
             }
-          ]
+          ],
+          "id": 17
         },
         {
           "round": "3. Runde",
@@ -16568,7 +16690,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 18
         },
         {
           "round": "4. Runde",
@@ -16615,7 +16738,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 19
         },
         {
           "round": "4. Runde",
@@ -16692,7 +16816,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 20
         },
         {
           "round": "4. Runde",
@@ -16775,7 +16900,8 @@
               "count": 1,
               "team": "DSG UKJ Froschberg"
             }
-          ]
+          ],
+          "id": 21
         },
         {
           "round": "4. Runde",
@@ -16840,7 +16966,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 22
         },
         {
           "round": "4. Runde",
@@ -16941,7 +17068,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 23
         },
         {
           "round": "4. Runde",
@@ -17000,7 +17128,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 24
         },
         {
           "round": "5. Runde",
@@ -17077,7 +17206,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 25
         },
         {
           "round": "5. Runde",
@@ -17142,7 +17272,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 26
         },
         {
           "round": "5. Runde",
@@ -17207,7 +17338,8 @@
               "count": 1,
               "team": "Union Geboltskirchen"
             }
-          ]
+          ],
+          "id": 27
         },
         {
           "round": "5. Runde",
@@ -17266,7 +17398,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 28
         },
         {
           "round": "5. Runde",
@@ -17361,7 +17494,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 29
         },
         {
           "round": "5. Runde",
@@ -17402,7 +17536,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 30
         },
         {
           "round": "6. Runde",
@@ -17461,7 +17596,8 @@
               "count": 1,
               "team": "DSG Thalheim"
             }
-          ]
+          ],
+          "id": 31
         },
         {
           "round": "6. Runde",
@@ -17477,7 +17613,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 32
         },
         {
           "round": "6. Runde",
@@ -17542,7 +17679,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 33
         },
         {
           "round": "6. Runde",
@@ -17583,7 +17721,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 34
         },
         {
           "round": "6. Runde",
@@ -17690,7 +17829,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 35
         },
         {
           "round": "6. Runde",
@@ -17743,7 +17883,8 @@
               "count": 1,
               "team": "FC Bruck"
             }
-          ]
+          ],
+          "id": 36
         },
         {
           "round": "7. Runde",
@@ -17802,7 +17943,8 @@
               "count": 1,
               "team": "DSG UKJ Froschberg"
             }
-          ]
+          ],
+          "id": 37
         },
         {
           "round": "7. Runde",
@@ -17837,7 +17979,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 38
         },
         {
           "round": "7. Runde",
@@ -17896,7 +18039,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 39
         },
         {
           "round": "7. Runde",
@@ -17949,7 +18093,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 40
         },
         {
           "round": "7. Runde",
@@ -18020,7 +18165,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 41
         },
         {
           "round": "7. Runde",
@@ -18079,7 +18225,8 @@
               "count": 1,
               "team": "Union Geboltskirchen"
             }
-          ]
+          ],
+          "id": 42
         },
         {
           "round": "8. Runde",
@@ -18168,7 +18315,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 43
         },
         {
           "round": "8. Runde",
@@ -18227,7 +18375,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 44
         },
         {
           "round": "8. Runde",
@@ -18322,7 +18471,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 45
         },
         {
           "round": "8. Runde",
@@ -18363,7 +18513,8 @@
               "count": 1,
               "team": "DSG UKJ Froschberg"
             }
-          ]
+          ],
+          "id": 46
         },
         {
           "round": "8. Runde",
@@ -18428,7 +18579,8 @@
               "count": 1,
               "team": "Union Geboltskirchen"
             }
-          ]
+          ],
+          "id": 47
         },
         {
           "round": "8. Runde",
@@ -18444,7 +18596,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 48
         },
         {
           "round": "9. Runde",
@@ -18503,7 +18656,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 49
         },
         {
           "round": "9. Runde",
@@ -18544,7 +18698,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 50
         },
         {
           "round": "9. Runde",
@@ -18560,7 +18715,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 51
         },
         {
           "round": "9. Runde",
@@ -18613,7 +18769,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 52
         },
         {
           "round": "9. Runde",
@@ -18684,7 +18841,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 53
         },
         {
           "round": "9. Runde",
@@ -18773,7 +18931,8 @@
               "count": 1,
               "team": "Union Geboltskirchen"
             }
-          ]
+          ],
+          "id": 54
         },
         {
           "round": "10. Runde",
@@ -18844,7 +19003,8 @@
               "count": 1,
               "team": "FC Bruck"
             }
-          ]
+          ],
+          "id": 55
         },
         {
           "round": "10. Runde",
@@ -18891,7 +19051,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 56
         },
         {
           "round": "10. Runde",
@@ -18956,7 +19117,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 57
         },
         {
           "round": "10. Runde",
@@ -19021,7 +19183,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 58
         },
         {
           "round": "10. Runde",
@@ -19037,7 +19200,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 59
         },
         {
           "round": "10. Runde",
@@ -19114,7 +19278,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 60
         },
         {
           "round": "11. Runde",
@@ -19179,7 +19344,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 61
         },
         {
           "round": "11. Runde",
@@ -19195,7 +19361,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 62
         },
         {
           "round": "11. Runde",
@@ -19272,7 +19439,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 63
         },
         {
           "round": "11. Runde",
@@ -19343,7 +19511,8 @@
               "count": 1,
               "team": "FC Bruck"
             }
-          ]
+          ],
+          "id": 64
         },
         {
           "round": "11. Runde",
@@ -19414,7 +19583,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 65
         },
         {
           "round": "11. Runde",
@@ -19430,7 +19600,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 66
         },
         {
           "round": "12. Runde",
@@ -19495,7 +19666,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 67
         },
         {
           "round": "12. Runde",
@@ -19578,7 +19750,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 68
         },
         {
           "round": "12. Runde",
@@ -19594,7 +19767,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 69
         },
         {
           "round": "12. Runde",
@@ -19641,7 +19815,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 70
         },
         {
           "round": "12. Runde",
@@ -19718,7 +19893,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 71
         },
         {
           "round": "12. Runde",
@@ -19777,7 +19953,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 72
         },
         {
           "round": "13. Runde",
@@ -19824,7 +20001,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 73
         },
         {
           "round": "13. Runde",
@@ -19895,7 +20073,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 74
         },
         {
           "round": "13. Runde",
@@ -19984,7 +20163,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 75
         },
         {
           "round": "13. Runde",
@@ -20000,7 +20180,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 76
         },
         {
           "round": "13. Runde",
@@ -20016,7 +20197,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 77
         },
         {
           "round": "13. Runde",
@@ -20032,7 +20214,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 78
         },
         {
           "round": "14. Runde",
@@ -20109,7 +20292,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 79
         },
         {
           "round": "14. Runde",
@@ -20150,7 +20334,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 80
         },
         {
           "round": "14. Runde",
@@ -20227,7 +20412,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 81
         },
         {
           "round": "14. Runde",
@@ -20262,7 +20448,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 82
         },
         {
           "round": "14. Runde",
@@ -20333,7 +20520,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 83
         },
         {
           "round": "14. Runde",
@@ -20349,7 +20537,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 84
         },
         {
           "round": "15. Runde",
@@ -20426,7 +20615,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 85
         },
         {
           "round": "15. Runde",
@@ -20467,7 +20657,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 86
         },
         {
           "round": "15. Runde",
@@ -20526,7 +20717,8 @@
               "count": 1,
               "team": "DSG Thalheim"
             }
-          ]
+          ],
+          "id": 87
         },
         {
           "round": "15. Runde",
@@ -20542,7 +20734,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 88
         },
         {
           "round": "15. Runde",
@@ -20589,7 +20782,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 89
         },
         {
           "round": "15. Runde",
@@ -20672,7 +20866,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 90
         },
         {
           "round": "16. Runde",
@@ -20725,7 +20920,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 91
         },
         {
           "round": "16. Runde",
@@ -20790,7 +20986,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 92
         },
         {
           "round": "16. Runde",
@@ -20849,7 +21046,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 93
         },
         {
           "round": "16. Runde",
@@ -20920,7 +21118,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 94
         },
         {
           "round": "16. Runde",
@@ -20973,7 +21172,8 @@
               "count": 1,
               "team": "Union Geboltskirchen"
             }
-          ]
+          ],
+          "id": 95
         },
         {
           "round": "16. Runde",
@@ -21038,7 +21238,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 96
         },
         {
           "round": "17. Runde",
@@ -21091,7 +21292,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 97
         },
         {
           "round": "17. Runde",
@@ -21156,7 +21358,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 98
         },
         {
           "round": "17. Runde",
@@ -21172,7 +21375,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 99
         },
         {
           "round": "17. Runde",
@@ -21188,7 +21392,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 100
         },
         {
           "round": "17. Runde",
@@ -21204,7 +21409,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 101
         },
         {
           "round": "17. Runde",
@@ -21275,7 +21481,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 102
         },
         {
           "round": "18. Runde",
@@ -21291,7 +21498,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 103
         },
         {
           "round": "18. Runde",
@@ -21356,7 +21564,8 @@
               "count": 1,
               "team": "DSG Thalheim"
             }
-          ]
+          ],
+          "id": 104
         },
         {
           "round": "18. Runde",
@@ -21372,7 +21581,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2023/2024",
-          "events": []
+          "events": [],
+          "id": 105
         },
         {
           "round": "18. Runde",
@@ -21455,7 +21665,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 106
         },
         {
           "round": "18. Runde",
@@ -21562,7 +21773,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 107
         },
         {
           "round": "18. Runde",
@@ -21621,7 +21833,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 108
         }
       ],
       "stats": {
@@ -24128,7 +24341,8 @@
               "count": 1,
               "team": "Hrvatski centar Linz"
             }
-          ]
+          ],
+          "id": 1
         },
         {
           "round": "1. Runde",
@@ -24205,7 +24419,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 2
         },
         {
           "round": "1. Runde",
@@ -24221,7 +24436,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2024/2025",
-          "events": []
+          "events": [],
+          "id": 3
         },
         {
           "round": "1. Runde",
@@ -24268,7 +24484,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 4
         },
         {
           "round": "1. Runde",
@@ -24333,7 +24550,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 5
         },
         {
           "round": "2. Runde",
@@ -24416,7 +24634,8 @@
               "count": 1,
               "team": "FC U. Schleißheim"
             }
-          ]
+          ],
+          "id": 6
         },
         {
           "round": "2. Runde",
@@ -24475,7 +24694,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 7
         },
         {
           "round": "2. Runde",
@@ -24522,7 +24742,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 8
         },
         {
           "round": "2. Runde",
@@ -24581,7 +24802,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 9
         },
         {
           "round": "2. Runde",
@@ -24616,7 +24838,8 @@
               "count": 1,
               "team": "Hrvatski centar Linz"
             }
-          ]
+          ],
+          "id": 10
         },
         {
           "round": "3. Runde",
@@ -24675,7 +24898,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 11
         },
         {
           "round": "3. Runde",
@@ -24728,7 +24952,8 @@
               "count": 1,
               "team": "FC U. Schleißheim"
             }
-          ]
+          ],
+          "id": 12
         },
         {
           "round": "3. Runde",
@@ -24805,7 +25030,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 13
         },
         {
           "round": "3. Runde",
@@ -24894,7 +25120,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 14
         },
         {
           "round": "3. Runde",
@@ -24910,7 +25137,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2024/2025",
-          "events": []
+          "events": [],
+          "id": 15
         },
         {
           "round": "4. Runde",
@@ -24969,7 +25197,8 @@
               "count": 1,
               "team": "Hrvatski centar Linz"
             }
-          ]
+          ],
+          "id": 16
         },
         {
           "round": "4. Runde",
@@ -25052,7 +25281,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 17
         },
         {
           "round": "4. Runde",
@@ -25141,7 +25371,8 @@
               "count": 1,
               "team": "FC U. Schleißheim"
             }
-          ]
+          ],
+          "id": 18
         },
         {
           "round": "4. Runde",
@@ -25212,7 +25443,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 19
         },
         {
           "round": "4. Runde",
@@ -25271,7 +25503,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 20
         },
         {
           "round": "5. Runde",
@@ -25324,7 +25557,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 21
         },
         {
           "round": "5. Runde",
@@ -25413,7 +25647,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 22
         },
         {
           "round": "5. Runde",
@@ -25508,7 +25743,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 23
         },
         {
           "round": "5. Runde",
@@ -25603,7 +25839,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 24
         },
         {
           "round": "5. Runde",
@@ -25692,7 +25929,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 25
         },
         {
           "round": "6. Runde",
@@ -25733,7 +25971,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 26
         },
         {
           "round": "6. Runde",
@@ -25792,7 +26031,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 27
         },
         {
           "round": "6. Runde",
@@ -25857,7 +26097,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 28
         },
         {
           "round": "6. Runde",
@@ -25873,7 +26114,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2024/2025",
-          "events": []
+          "events": [],
+          "id": 29
         },
         {
           "round": "6. Runde",
@@ -25926,7 +26168,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 30
         },
         {
           "round": "7. Runde",
@@ -25979,7 +26222,8 @@
               "count": 1,
               "team": "FC U. Schleißheim"
             }
-          ]
+          ],
+          "id": 31
         },
         {
           "round": "7. Runde",
@@ -26068,7 +26312,8 @@
               "count": 1,
               "team": "Hrvatski centar Linz"
             }
-          ]
+          ],
+          "id": 32
         },
         {
           "round": "7. Runde",
@@ -26175,7 +26420,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 33
         },
         {
           "round": "7. Runde",
@@ -26191,7 +26437,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2024/2025",
-          "events": []
+          "events": [],
+          "id": 34
         },
         {
           "round": "7. Runde",
@@ -26274,7 +26521,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 35
         },
         {
           "round": "8. Runde",
@@ -26351,7 +26599,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 36
         },
         {
           "round": "8. Runde",
@@ -26434,7 +26683,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 37
         },
         {
           "round": "8. Runde",
@@ -26529,7 +26779,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 38
         },
         {
           "round": "8. Runde",
@@ -26582,7 +26833,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 39
         },
         {
           "round": "8. Runde",
@@ -26665,7 +26917,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 40
         },
         {
           "round": "9. Runde",
@@ -26784,7 +27037,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 41
         },
         {
           "round": "9. Runde",
@@ -26837,7 +27091,8 @@
               "count": 1,
               "team": "Hrvatski centar Linz"
             }
-          ]
+          ],
+          "id": 42
         },
         {
           "round": "9. Runde",
@@ -26896,7 +27151,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 43
         },
         {
           "round": "9. Runde",
@@ -26967,7 +27223,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 44
         },
         {
           "round": "9. Runde",
@@ -27032,7 +27289,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 45
         },
         {
           "round": "10. Runde",
@@ -27097,7 +27355,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 46
         },
         {
           "round": "10. Runde",
@@ -27144,7 +27403,8 @@
               "count": 1,
               "team": "FC U. Schleißheim"
             }
-          ]
+          ],
+          "id": 47
         },
         {
           "round": "10. Runde",
@@ -27203,7 +27463,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 48
         },
         {
           "round": "10. Runde",
@@ -27256,7 +27517,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 49
         },
         {
           "round": "10. Runde",
@@ -27327,7 +27589,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 50
         },
         {
           "round": "11. Runde",
@@ -27362,7 +27625,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 51
         },
         {
           "round": "11. Runde",
@@ -27451,7 +27715,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 52
         },
         {
           "round": "11. Runde",
@@ -27528,7 +27793,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 53
         },
         {
           "round": "11. Runde",
@@ -27611,7 +27877,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 54
         },
         {
           "round": "11. Runde",
@@ -27627,7 +27894,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2024/2025",
-          "events": []
+          "events": [],
+          "id": 55
         }
       ],
       "stats": {
@@ -29433,7 +29701,8 @@
           "referee": "",
           "league": "Oberes Playoff",
           "seasonKey": "2024/2025_oberes",
-          "events": []
+          "events": [],
+          "id": 1
         },
         {
           "round": "1. Runde",
@@ -29449,7 +29718,8 @@
           "referee": "",
           "league": "Oberes Playoff",
           "seasonKey": "2024/2025_oberes",
-          "events": []
+          "events": [],
+          "id": 2
         },
         {
           "round": "1. Runde",
@@ -29496,7 +29766,8 @@
               "count": 1,
               "team": "FC U. Schleißheim"
             }
-          ]
+          ],
+          "id": 3
         },
         {
           "round": "2. Runde",
@@ -29512,7 +29783,8 @@
           "referee": "",
           "league": "Oberes Playoff",
           "seasonKey": "2024/2025_oberes",
-          "events": []
+          "events": [],
+          "id": 4
         },
         {
           "round": "2. Runde",
@@ -29571,7 +29843,8 @@
               "count": 1,
               "team": "Hrvatski centar Linz"
             }
-          ]
+          ],
+          "id": 5
         },
         {
           "round": "2. Runde",
@@ -29654,7 +29927,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 6
         },
         {
           "round": "3. Runde",
@@ -29719,7 +29993,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 7
         },
         {
           "round": "3. Runde",
@@ -29808,7 +30083,8 @@
               "count": 1,
               "team": "Hrvatski centar Linz"
             }
-          ]
+          ],
+          "id": 8
         },
         {
           "round": "3. Runde",
@@ -29879,7 +30155,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 9
         },
         {
           "round": "4. Runde",
@@ -29895,7 +30172,8 @@
           "referee": "",
           "league": "Oberes Playoff",
           "seasonKey": "2024/2025_oberes",
-          "events": []
+          "events": [],
+          "id": 10
         },
         {
           "round": "4. Runde",
@@ -29990,7 +30268,8 @@
               "count": 1,
               "team": "FC U. Schleißheim"
             }
-          ]
+          ],
+          "id": 11
         },
         {
           "round": "4. Runde",
@@ -30061,7 +30340,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 12
         },
         {
           "round": "5. Runde",
@@ -30114,7 +30394,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 13
         },
         {
           "round": "5. Runde",
@@ -30130,7 +30411,8 @@
           "referee": "",
           "league": "Oberes Playoff",
           "seasonKey": "2024/2025_oberes",
-          "events": []
+          "events": [],
+          "id": 14
         },
         {
           "round": "5. Runde",
@@ -30201,7 +30483,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 15
         }
       ],
       "stats": {
@@ -30718,7 +31001,8 @@
               "count": 1,
               "team": "Union Goldwörth"
             }
-          ]
+          ],
+          "id": 1
         },
         {
           "round": "1. Runde",
@@ -30734,7 +31018,8 @@
           "referee": "",
           "league": "Unteres Playoff",
           "seasonKey": "2024/2025_unteres",
-          "events": []
+          "events": [],
+          "id": 2
         },
         {
           "round": "2. Runde",
@@ -30763,7 +31048,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 3
         },
         {
           "round": "2. Runde",
@@ -30779,7 +31065,8 @@
           "referee": "",
           "league": "Unteres Playoff",
           "seasonKey": "2024/2025_unteres",
-          "events": []
+          "events": [],
+          "id": 4
         },
         {
           "round": "3. Runde",
@@ -30814,7 +31101,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 5
         },
         {
           "round": "3. Runde",
@@ -30861,7 +31149,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 6
         },
         {
           "round": "4. Runde",
@@ -30932,7 +31221,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 7
         },
         {
           "round": "4. Runde",
@@ -31003,7 +31293,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 8
         },
         {
           "round": "5. Runde",
@@ -31098,7 +31389,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 9
         },
         {
           "round": "5. Runde",
@@ -31163,7 +31455,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 10
         }
       ],
       "stats": {
@@ -31641,7 +31934,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 1
         },
         {
           "round": "1. Runde",
@@ -31718,7 +32012,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 2
         },
         {
           "round": "1. Runde",
@@ -31734,7 +32029,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2025/2026",
-          "events": []
+          "events": [],
+          "id": 3
         },
         {
           "round": "1. Runde",
@@ -31841,7 +32137,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 4
         },
         {
           "round": "2. Runde",
@@ -31894,7 +32191,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 5
         },
         {
           "round": "2. Runde",
@@ -31983,7 +32281,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 6
         },
         {
           "round": "2. Runde",
@@ -32042,7 +32341,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 7
         },
         {
           "round": "2. Runde",
@@ -32101,7 +32401,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 8
         },
         {
           "round": "3. Runde",
@@ -32166,7 +32467,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 9
         },
         {
           "round": "3. Runde",
@@ -32249,7 +32551,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 10
         },
         {
           "round": "3. Runde",
@@ -32344,7 +32647,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 11
         },
         {
           "round": "3. Runde",
@@ -32415,7 +32719,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 12
         },
         {
           "round": "4. Runde",
@@ -32498,7 +32803,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 13
         },
         {
           "round": "4. Runde",
@@ -32551,7 +32857,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 14
         },
         {
           "round": "4. Runde",
@@ -32598,7 +32905,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 15
         },
         {
           "round": "4. Runde",
@@ -32705,7 +33013,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 16
         },
         {
           "round": "5. Runde",
@@ -32764,7 +33073,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 17
         },
         {
           "round": "5. Runde",
@@ -32847,7 +33157,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 18
         },
         {
           "round": "5. Runde",
@@ -32894,7 +33205,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 19
         },
         {
           "round": "5. Runde",
@@ -32989,7 +33301,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 20
         },
         {
           "round": "6. Runde",
@@ -33078,7 +33391,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 21
         },
         {
           "round": "6. Runde",
@@ -33119,7 +33433,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 22
         },
         {
           "round": "6. Runde",
@@ -33190,7 +33505,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 23
         },
         {
           "round": "6. Runde",
@@ -33279,7 +33595,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 24
         },
         {
           "round": "7. Runde",
@@ -33338,7 +33655,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 25
         },
         {
           "round": "7. Runde",
@@ -33409,7 +33727,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 26
         },
         {
           "round": "7. Runde",
@@ -33462,7 +33781,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 27
         },
         {
           "round": "7. Runde",
@@ -33527,7 +33847,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 28
         },
         {
           "round": "8. Runde",
@@ -33586,7 +33907,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 29
         },
         {
           "round": "8. Runde",
@@ -33602,7 +33924,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2025/2026",
-          "events": []
+          "events": [],
+          "id": 30
         },
         {
           "round": "8. Runde",
@@ -33655,7 +33978,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 31
         },
         {
           "round": "8. Runde",
@@ -33744,7 +34068,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 32
         },
         {
           "round": "9. Runde",
@@ -33815,7 +34140,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 33
         },
         {
           "round": "9. Runde",
@@ -33862,7 +34188,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 34
         },
         {
           "round": "9. Runde",
@@ -33939,7 +34266,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 35
         },
         {
           "round": "9. Runde",
@@ -34010,7 +34338,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 36
         },
         {
           "round": "10. Runde",
@@ -34045,7 +34374,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 37
         },
         {
           "round": "10. Runde",
@@ -34116,7 +34446,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 38
         },
         {
           "round": "10. Runde",
@@ -34181,7 +34512,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 39
         },
         {
           "round": "10. Runde",
@@ -34228,7 +34560,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 40
         },
         {
           "round": "11. Runde",
@@ -34244,7 +34577,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2025/2026",
-          "events": []
+          "events": [],
+          "id": 41
         },
         {
           "round": "11. Runde",
@@ -34303,7 +34637,8 @@
               "count": 1,
               "team": "FC Hinzenbach"
             }
-          ]
+          ],
+          "id": 42
         },
         {
           "round": "11. Runde",
@@ -34319,7 +34654,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2025/2026",
-          "events": []
+          "events": [],
+          "id": 43
         },
         {
           "round": "11. Runde",
@@ -34366,7 +34702,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 44
         },
         {
           "round": "12. Runde",
@@ -34419,7 +34756,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 45
         },
         {
           "round": "12. Runde",
@@ -34484,7 +34822,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 46
         },
         {
           "round": "12. Runde",
@@ -34543,7 +34882,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 47
         },
         {
           "round": "12. Runde",
@@ -34602,7 +34942,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 48
         },
         {
           "round": "13. Runde",
@@ -34697,7 +35038,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 49
         },
         {
           "round": "13. Runde",
@@ -34750,7 +35092,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 50
         },
         {
           "round": "13. Runde",
@@ -34863,7 +35206,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 51
         },
         {
           "round": "13. Runde",
@@ -34964,7 +35308,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 52
         },
         {
           "round": "14. Runde",
@@ -35011,7 +35356,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 53
         },
         {
           "round": "14. Runde",
@@ -35070,7 +35416,8 @@
               "count": 1,
               "team": "DSG St. Josef/Oed FC"
             }
-          ]
+          ],
+          "id": 54
         },
         {
           "round": "14. Runde",
@@ -35129,7 +35476,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 55
         },
         {
           "round": "14. Runde",
@@ -35212,7 +35560,8 @@
               "count": 1,
               "team": "Union Eschenau"
             }
-          ]
+          ],
+          "id": 56
         }
       ],
       "stats": {
@@ -36886,7 +37235,8 @@
               "count": 1,
               "team": "Union Heiligenberg"
             }
-          ]
+          ],
+          "id": 1
         },
         {
           "round": "1. Runde",
@@ -36959,7 +37309,8 @@
               "count": 1,
               "team": "Etehad Linz"
             }
-          ]
+          ],
+          "id": 2
         },
         {
           "round": "1. Runde",
@@ -37060,7 +37411,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 3
         },
         {
           "round": "2. Runde",
@@ -37147,7 +37499,8 @@
               "count": 1,
               "team": "Walker FC"
             }
-          ]
+          ],
+          "id": 4
         },
         {
           "round": "2. Runde",
@@ -37220,7 +37573,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 5
         },
         {
           "round": "2. Runde",
@@ -37307,7 +37661,8 @@
               "count": 1,
               "team": "SV Croatia Linz"
             }
-          ]
+          ],
+          "id": 6
         },
         {
           "round": "3. Runde",
@@ -37323,7 +37678,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 7
         },
         {
           "round": "3. Runde",
@@ -37361,7 +37717,8 @@
               "count": 1,
               "team": "DSG Union Traun"
             }
-          ]
+          ],
+          "id": 8
         },
         {
           "round": "3. Runde",
@@ -37420,7 +37777,8 @@
               "count": 1,
               "team": "Etehad Linz"
             }
-          ]
+          ],
+          "id": 9
         },
         {
           "round": "4. Runde",
@@ -37535,7 +37893,8 @@
               "count": 1,
               "team": "FC Gornjak"
             }
-          ]
+          ],
+          "id": 10
         },
         {
           "round": "4. Runde",
@@ -37551,7 +37910,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 11
         },
         {
           "round": "4. Runde",
@@ -37567,7 +37927,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 12
         },
         {
           "round": "5. Runde",
@@ -37583,7 +37944,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 13
         },
         {
           "round": "5. Runde",
@@ -37599,7 +37961,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 14
         },
         {
           "round": "5. Runde",
@@ -37615,7 +37978,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 15
         },
         {
           "round": "6. Runde",
@@ -37631,7 +37995,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 16
         },
         {
           "round": "6. Runde",
@@ -37647,7 +38012,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 17
         },
         {
           "round": "6. Runde",
@@ -37663,7 +38029,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 18
         },
         {
           "round": "7. Runde",
@@ -37679,7 +38046,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 19
         },
         {
           "round": "7. Runde",
@@ -37695,7 +38063,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 20
         },
         {
           "round": "7. Runde",
@@ -37711,7 +38080,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 21
         },
         {
           "round": "8. Runde",
@@ -37727,7 +38097,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 22
         },
         {
           "round": "8. Runde",
@@ -37743,7 +38114,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 23
         },
         {
           "round": "8. Runde",
@@ -37759,7 +38131,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 24
         },
         {
           "round": "9. Runde",
@@ -37775,7 +38148,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 25
         },
         {
           "round": "9. Runde",
@@ -37791,7 +38165,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 26
         },
         {
           "round": "9. Runde",
@@ -37807,7 +38182,8 @@
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": []
+          "events": [],
+          "id": 27
         }
       ],
       "stats": {
