@@ -1,5 +1,5 @@
 // Team Logos & Default Badges Resolver
-import { Store } from './store.js?v=1791150000000';
+import { Store } from './store.js?v=1791160000000';
 
 export const DEFAULT_BADGES = [
   'Logos/Ready/standard/default/shield_01_classic_heater.png',

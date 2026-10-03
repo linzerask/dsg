@@ -1,6 +1,6 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791150000000';
-import { showToast } from './admin.js?v=1791150000000';
-import { renderTeamLogo } from '../logos.js?v=1791150000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791160000000';
+import { showToast } from './admin.js?v=1791160000000';
+import { renderTeamLogo } from '../logos.js?v=1791160000000';
 
 let gamesData = [];
 let roundsData = [];
@@ -223,6 +223,52 @@ export const renderAdminGames = () => {
                         </div>
                     </div>
 
+                    <!-- Übersicht Tore (Scorers) -->
+                    <div>
+                        <h4 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Übersicht Tore</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+                            <!-- Home Goals -->
+                            <div class="glass-card" style="padding: var(--space-sm);">
+                                <h5 id="report-goal-heading-home" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Torschützen Heim</h5>
+                                <div style="display: flex; gap: 6px; align-items: stretch;">
+                                    <div class="searchable-player-picker" id="picker-report-scorer-player-home" style="flex: 1; position: relative;">
+                                        <input type="hidden" id="report-scorer-player-home" value="">
+                                        <div class="searchable-player-input-wrap">
+                                            <input type="text" id="input-search-report-scorer-player-home" class="admin-input searchable-player-search" placeholder="Torschütze suchen / wählen..." autocomplete="off" style="height: 34px;">
+                                            <span class="combobox-indicator-icon">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                            </span>
+                                        </div>
+                                        <div class="searchable-player-dropdown" id="dropdown-report-scorer-player-home" style="display: none;"></div>
+                                    </div>
+                                    <input type="number" id="report-goal-count-home" min="1" max="20" value="1" class="admin-input" title="Anzahl Tore" placeholder="1" style="width: 52px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                                    <button type="button" id="btn-add-goal-home" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px; white-space: nowrap;">+ Hinzufügen</button>
+                                </div>
+                                <div id="report-goals-list-home" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
+                            </div>
+
+                            <!-- Away Goals -->
+                            <div class="glass-card" style="padding: var(--space-sm);">
+                                <h5 id="report-goal-heading-away" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Torschützen Auswärts</h5>
+                                <div style="display: flex; gap: 6px; align-items: stretch;">
+                                    <div class="searchable-player-picker" id="picker-report-scorer-player-away" style="flex: 1; position: relative;">
+                                        <input type="hidden" id="report-scorer-player-away" value="">
+                                        <div class="searchable-player-input-wrap">
+                                            <input type="text" id="input-search-report-scorer-player-away" class="admin-input searchable-player-search" placeholder="Torschütze suchen / wählen..." autocomplete="off" style="height: 34px;">
+                                            <span class="combobox-indicator-icon">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                            </span>
+                                        </div>
+                                        <div class="searchable-player-dropdown" id="dropdown-report-scorer-player-away" style="display: none;"></div>
+                                    </div>
+                                    <input type="number" id="report-goal-count-away" min="1" max="20" value="1" class="admin-input" title="Anzahl Tore" placeholder="1" style="width: 52px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                                    <button type="button" id="btn-add-goal-away" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px; white-space: nowrap;">+ Hinzufügen</button>
+                                </div>
+                                <div id="report-goals-list-away" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Übersicht Karten (Disciplinary) -->
                     <div>
                         <h4 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Übersicht Karten</h4>
@@ -279,50 +325,6 @@ export const renderAdminGames = () => {
                                     <button type="button" id="btn-add-card-away" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700;">+ Hinzufügen</button>
                                 </div>
                                 <div id="report-cards-list-away" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Übersicht Tore (Scorers) -->
-                    <div>
-                        <h4 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Übersicht Tore</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
-                            <!-- Home Goals -->
-                            <div class="glass-card" style="padding: var(--space-sm);">
-                                <h5 id="report-goal-heading-home" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Torschützen Heim</h5>
-                                <div style="display: flex; gap: 6px; align-items: stretch;">
-                                    <div class="searchable-player-picker" id="picker-report-scorer-player-home" style="flex: 1; position: relative;">
-                                        <input type="hidden" id="report-scorer-player-home" value="">
-                                        <div class="searchable-player-input-wrap">
-                                            <input type="text" id="input-search-report-scorer-player-home" class="admin-input searchable-player-search" placeholder="Torschütze suchen / wählen..." autocomplete="off" style="height: 34px;">
-                                            <span class="combobox-indicator-icon">
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                            </span>
-                                        </div>
-                                        <div class="searchable-player-dropdown" id="dropdown-report-scorer-player-home" style="display: none;"></div>
-                                    </div>
-                                    <button type="button" id="btn-add-goal-home" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px;">+ Hinzufügen</button>
-                                </div>
-                                <div id="report-goals-list-home" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
-                            </div>
-
-                            <!-- Away Goals -->
-                            <div class="glass-card" style="padding: var(--space-sm);">
-                                <h5 id="report-goal-heading-away" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Torschützen Auswärts</h5>
-                                <div style="display: flex; gap: 6px; align-items: stretch;">
-                                    <div class="searchable-player-picker" id="picker-report-scorer-player-away" style="flex: 1; position: relative;">
-                                        <input type="hidden" id="report-scorer-player-away" value="">
-                                        <div class="searchable-player-input-wrap">
-                                            <input type="text" id="input-search-report-scorer-player-away" class="admin-input searchable-player-search" placeholder="Torschütze suchen / wählen..." autocomplete="off" style="height: 34px;">
-                                            <span class="combobox-indicator-icon">
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                                            </span>
-                                        </div>
-                                        <div class="searchable-player-dropdown" id="dropdown-report-scorer-player-away" style="display: none;"></div>
-                                    </div>
-                                    <button type="button" id="btn-add-goal-away" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px;">+ Hinzufügen</button>
-                                </div>
-                                <div id="report-goals-list-away" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
                             </div>
                         </div>
                     </div>
@@ -1595,52 +1597,107 @@ const openReportModal = (idxOrMatch) => {
         }
     });
 
+    // Reset goal counter inputs
+    const countHomeInput = document.getElementById('report-goal-count-home');
+    if (countHomeInput) countHomeInput.value = '1';
+    const countAwayInput = document.getElementById('report-goal-count-away');
+    if (countAwayInput) countAwayInput.value = '1';
+
     renderReportLists();
     modal.style.display = 'flex';
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
     if (content) content.scrollTop = 0;
 };
 
+const groupScorersList = (list) => {
+    const map = new Map();
+    list.forEach(p => {
+        const count = map.get(p) || 0;
+        map.set(p, count + 1);
+    });
+    return Array.from(map.entries()).map(([name, count]) => ({ name, count }));
+};
+
 const renderReportLists = () => {
-    // Render Home Scorers
+    // Render Home Scorers (grouped with stepper + delete)
     const homeGoalsDiv = document.getElementById('report-goals-list-home');
     if (homeGoalsDiv) {
-        homeGoalsDiv.innerHTML = reportScorersHome.map((p, i) => `
-            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
-                <span style="display: inline-flex; align-items: center; gap: 5px;">
+        const groupedHome = groupScorersList(reportScorersHome);
+        homeGoalsDiv.innerHTML = groupedHome.map((item) => `
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 5px 8px; border-radius: 4px; font-size: 0.85rem;">
+                <span style="display: inline-flex; align-items: center; gap: 6px;">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
-                    <strong>${p}</strong>
+                    <strong>${item.name}</strong>
+                    ${item.count > 1 ? `<span style="background: rgba(46, 125, 50, 0.12); color: #2e7d32; font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${item.count}x Tore</span>` : ''}
                 </span>
-                <button type="button" class="btn-del-goal-h" data-idx="${i}" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">X</button>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                    <button type="button" class="btn-step-goal-h" data-action="minus" data-player="${encodeURIComponent(item.name)}" title="1 Tor abziehen" style="background: #e9ecef; color: #333; border: 1px solid #ced4da; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">−</button>
+                    <button type="button" class="btn-step-goal-h" data-action="plus" data-player="${encodeURIComponent(item.name)}" title="1 Tor hinzufügen" style="background: var(--color-accent); color: #fff; border: none; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">+</button>
+                    <button type="button" class="btn-del-goal-h" data-player="${encodeURIComponent(item.name)}" title="Alle Tore von ${item.name} entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer; margin-left: 2px;">✕</button>
+                </div>
             </div>
         `).join('');
 
+        homeGoalsDiv.querySelectorAll('.btn-step-goal-h').forEach(btn => {
+            btn.onclick = (e) => {
+                const player = decodeURIComponent(e.currentTarget.getAttribute('data-player'));
+                const action = e.currentTarget.getAttribute('data-action');
+                if (action === 'plus') {
+                    reportScorersHome.push(player);
+                } else if (action === 'minus') {
+                    const idx = reportScorersHome.lastIndexOf(player);
+                    if (idx !== -1) reportScorersHome.splice(idx, 1);
+                }
+                renderReportLists();
+            };
+        });
+
         homeGoalsDiv.querySelectorAll('.btn-del-goal-h').forEach(btn => {
             btn.onclick = (e) => {
-                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-                reportScorersHome.splice(idx, 1);
+                const player = decodeURIComponent(e.currentTarget.getAttribute('data-player'));
+                reportScorersHome = reportScorersHome.filter(p => p !== player);
                 renderReportLists();
             };
         });
     }
 
-    // Render Away Scorers
+    // Render Away Scorers (grouped with stepper + delete)
     const awayGoalsDiv = document.getElementById('report-goals-list-away');
     if (awayGoalsDiv) {
-        awayGoalsDiv.innerHTML = reportScorersAway.map((p, i) => `
-            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
-                <span style="display: inline-flex; align-items: center; gap: 5px;">
+        const groupedAway = groupScorersList(reportScorersAway);
+        awayGoalsDiv.innerHTML = groupedAway.map((item) => `
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 5px 8px; border-radius: 4px; font-size: 0.85rem;">
+                <span style="display: inline-flex; align-items: center; gap: 6px;">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
-                    <strong>${p}</strong>
+                    <strong>${item.name}</strong>
+                    ${item.count > 1 ? `<span style="background: rgba(46, 125, 50, 0.12); color: #2e7d32; font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${item.count}x Tore</span>` : ''}
                 </span>
-                <button type="button" class="btn-del-goal-a" data-idx="${i}" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">X</button>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                    <button type="button" class="btn-step-goal-a" data-action="minus" data-player="${encodeURIComponent(item.name)}" title="1 Tor abziehen" style="background: #e9ecef; color: #333; border: 1px solid #ced4da; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">−</button>
+                    <button type="button" class="btn-step-goal-a" data-action="plus" data-player="${encodeURIComponent(item.name)}" title="1 Tor hinzufügen" style="background: var(--color-accent); color: #fff; border: none; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">+</button>
+                    <button type="button" class="btn-del-goal-a" data-player="${encodeURIComponent(item.name)}" title="Alle Tore von ${item.name} entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer; margin-left: 2px;">✕</button>
+                </div>
             </div>
         `).join('');
 
+        awayGoalsDiv.querySelectorAll('.btn-step-goal-a').forEach(btn => {
+            btn.onclick = (e) => {
+                const player = decodeURIComponent(e.currentTarget.getAttribute('data-player'));
+                const action = e.currentTarget.getAttribute('data-action');
+                if (action === 'plus') {
+                    reportScorersAway.push(player);
+                } else if (action === 'minus') {
+                    const idx = reportScorersAway.lastIndexOf(player);
+                    if (idx !== -1) reportScorersAway.splice(idx, 1);
+                }
+                renderReportLists();
+            };
+        });
+
         awayGoalsDiv.querySelectorAll('.btn-del-goal-a').forEach(btn => {
             btn.onclick = (e) => {
-                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
-                reportScorersAway.splice(idx, 1);
+                const player = decodeURIComponent(e.currentTarget.getAttribute('data-player'));
+                reportScorersAway = reportScorersAway.filter(p => p !== player);
                 renderReportLists();
             };
         });
@@ -1663,7 +1720,7 @@ const renderReportLists = () => {
                     <strong>${c.player}</strong>
                     ${c.reason ? `<span style="color: var(--color-text-secondary); font-size: 0.75rem;">(${c.reason})</span>` : ''}
                 </div>
-                <button type="button" class="btn-del-card-h" data-idx="${i}" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">X</button>
+                <button type="button" class="btn-del-card-h" data-idx="${i}" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
             </div>
         `).join('');
 
@@ -1686,7 +1743,7 @@ const renderReportLists = () => {
                     <strong>${c.player}</strong>
                     ${c.reason ? `<span style="color: var(--color-text-secondary); font-size: 0.75rem;">(${c.reason})</span>` : ''}
                 </div>
-                <button type="button" class="btn-del-card-a" data-idx="${i}" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">X</button>
+                <button type="button" class="btn-del-card-a" data-idx="${i}" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
             </div>
         `).join('');
 
@@ -1890,24 +1947,54 @@ const setupEventHandlers = () => {
 
     // Add Goal buttons
     const addGoalH = document.getElementById('btn-add-goal-home');
-    if (addGoalH) addGoalH.onclick = () => {
-        const val = getComboboxValue('report-scorer-player-home');
-        if (val) {
-            reportScorersHome.push(val);
-            renderReportLists();
-            resetPlayerCombobox('report-scorer-player-home', true);
-        }
-    };
+    const countInputH = document.getElementById('report-goal-count-home');
+    if (addGoalH) {
+        addGoalH.onclick = () => {
+            const val = getComboboxValue('report-scorer-player-home');
+            const count = Math.max(1, parseInt(countInputH?.value) || 1);
+            if (val) {
+                for (let i = 0; i < count; i++) {
+                    reportScorersHome.push(val);
+                }
+                renderReportLists();
+                resetPlayerCombobox('report-scorer-player-home', true);
+                if (countInputH) countInputH.value = '1';
+            }
+        };
+    }
+    if (countInputH) {
+        countInputH.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (addGoalH) addGoalH.click();
+            }
+        };
+    }
 
     const addGoalA = document.getElementById('btn-add-goal-away');
-    if (addGoalA) addGoalA.onclick = () => {
-        const val = getComboboxValue('report-scorer-player-away');
-        if (val) {
-            reportScorersAway.push(val);
-            renderReportLists();
-            resetPlayerCombobox('report-scorer-player-away', true);
-        }
-    };
+    const countInputA = document.getElementById('report-goal-count-away');
+    if (addGoalA) {
+        addGoalA.onclick = () => {
+            const val = getComboboxValue('report-scorer-player-away');
+            const count = Math.max(1, parseInt(countInputA?.value) || 1);
+            if (val) {
+                for (let i = 0; i < count; i++) {
+                    reportScorersAway.push(val);
+                }
+                renderReportLists();
+                resetPlayerCombobox('report-scorer-player-away', true);
+                if (countInputA) countInputA.value = '1';
+            }
+        };
+    }
+    if (countInputA) {
+        countInputA.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (addGoalA) addGoalA.click();
+            }
+        };
+    }
 
     // Add Card buttons
     const addCardH = document.getElementById('btn-add-card-home');

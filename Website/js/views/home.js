@@ -1,7 +1,7 @@
-import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791150000000';
-import { computeAllTimeStats } from './statistiken.js?v=1791150000000';
-import { renderIcon } from '../icons.js?v=1791150000000';
-import { renderTeamLogo } from '../logos.js?v=1791150000000';
+import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791160000000';
+import { computeAllTimeStats } from './statistiken.js?v=1791160000000';
+import { renderIcon } from '../icons.js?v=1791160000000';
+import { renderTeamLogo } from '../logos.js?v=1791160000000';
 
 export const viewHome = () => {
   const data = Store.getData();

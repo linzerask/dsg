@@ -750,3 +750,14 @@ ounds.json, rticles.json) in parallel before returning. The very first paint of
   3. **Cache Key & Module Parity:**
      - ES module query strings: `?v=1791100000000` across `index.html`, `main.js`, `router.js`, `home.js`, and `liga.js`.
 
+---
+
+## 60. Match Report Modal Layout & Multi-Goal Stepper Workflow (`adminGames.js`)
+* **The Rule:**
+  1. **Section Hierarchy:** In `#report-modal`, the **`Übersicht Tore` (Goal Scorers)** section is placed immediately above **`Übersicht Karten` (Cards / Disciplinary)** directly underneath the match score and status controls.
+  2. **Multi-Goal Quantity Selector:** Goal pickers for both Home and Away teams feature a compact numeric quantity input (`#report-goal-count-home`, `#report-goal-count-away`, default `1`, min `1`, max `20`). Typing a number $N$ and clicking `+ Hinzufügen` (or pressing Enter) adds $N$ goals in a single action and resets the count back to `1`.
+  3. **Grouped Scorer Badges & Steppers:** Added scorers render grouped by player with count badges (e.g. `Hamid Fouladi (3x Tore)`), inline `+` / `−` quantity steppers, and `✕` delete buttons for intuitive editing.
+  4. **Recalculation & Compatibility:** All added goals map directly to individual entries in `match.scorers` and `match.events`, ensuring 100% data integrity with `Store.recalculateSeason()` and player leaderboards.
+  5. **Cache Key & Module Parity:**
+     - ES module query strings: `?v=1791160000000` across `index.html`, `main.js`, `router.js`, `store.js`, and all view modules.
+
