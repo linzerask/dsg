@@ -1,6 +1,7 @@
 import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791020000000';
 import { computeAllTimeStats } from './statistiken.js?v=1791020000000';
 import { renderIcon } from '../icons.js?v=1791020000000';
+import { renderTeamLogo } from '../logos.js?v=1791060000000';
 
 export const viewHome = () => {
   const data = Store.getData();
@@ -144,8 +145,11 @@ export const viewHome = () => {
     <div class="table-row has-home-accordion" style="display: flex; flex-direction: column; cursor: pointer; transition: background 0.2s; padding: 10px 12px; border-radius: 6px; margin-bottom: 4px; border: 1px solid transparent;">
       <div style="display: flex; align-items: center; width: 100%;">
         <span class="rank" style="font-weight: 700; color: ${index === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; min-width: 22px;">${index + 1}</span>
-        <span class="team-name" style="font-weight: 600; flex: 1; margin-left: var(--space-sm); color: var(--color-text-primary);">${t.name}</span>
-        <div style="display: flex; align-items: center; gap: 8px;">
+        <div class="team-name" style="font-weight: 600; flex: 1; margin-left: var(--space-sm); color: var(--color-text-primary); display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden;">
+          ${renderTeamLogo(t.name, 'sm')}
+          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: 8px;">
           <span class="points" style="font-weight: 700; color: var(--color-accent);">${t.points} Pkt</span>
           <svg class="home-accordion-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>
@@ -179,11 +183,14 @@ export const viewHome = () => {
     return `
     <div class="table-row">
       <span class="rank" style="min-width: 24px; font-weight: 700; color: ${index === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; display: inline-block;">${displayRank}</span>
-      <div style="flex: 1; margin-left: var(--space-sm); display: flex; flex-direction: column;">
-        <span class="scorer-name" style="font-weight: 600; color: var(--color-text-primary);">${s.player || s.name || ''}</span>
-        <span class="team-name" style="color: var(--color-text-secondary); font-size: 0.8rem;">${s.team || ''}</span>
+      <div style="flex: 1; margin-left: var(--space-sm); display: flex; flex-direction: column; min-width: 0;">
+        <span class="scorer-name" style="font-weight: 600; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.player || s.name || ''}</span>
+        <div class="team-name" style="color: var(--color-text-secondary); font-size: 0.8rem; display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+          ${renderTeamLogo(s.team, 'xs')}
+          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
+        </div>
       </div>
-      <span class="goals" style="font-weight: 700; color: var(--color-accent);">${s.goals} Tore</span>
+      <span class="goals" style="font-weight: 700; color: var(--color-accent); flex-shrink: 0; margin-left: 8px;">${s.goals} Tore</span>
     </div>
   `;
   }).join('') : '<p style="color: var(--color-text-secondary); font-size: 0.9rem; padding: 12px 0; text-align: center;">Noch keine Torschützen vorhanden.</p>';
@@ -216,9 +223,15 @@ export const viewHome = () => {
           ${roundLabel} &bull; Topspiel
         </div>
         <div class="topspiel-teams">
-          <h3 class="topspiel-team home-team">${nextMatch.home}</h3>
+          <div class="topspiel-team home-team" style="display: flex; align-items: center; justify-content: flex-end; gap: 12px;">
+            <h3 style="margin: 0; font-size: inherit; font-weight: inherit;">${nextMatch.home}</h3>
+            ${renderTeamLogo(nextMatch.home, 'lg')}
+          </div>
           <span class="topspiel-vs">VS</span>
-          <h3 class="topspiel-team away-team">${nextMatch.away}</h3>
+          <div class="topspiel-team away-team" style="display: flex; align-items: center; justify-content: flex-start; gap: 12px;">
+            ${renderTeamLogo(nextMatch.away, 'lg')}
+            <h3 style="margin: 0; font-size: inherit; font-weight: inherit;">${nextMatch.away}</h3>
+          </div>
         </div>
         <div class="topspiel-meta">
           <div class="topspiel-meta-row topspiel-datetime">
@@ -242,13 +255,19 @@ export const viewHome = () => {
       <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--color-border); gap: 10px;">
         <div style="flex: 1; min-width: 0;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <span style="font-weight: 600; font-size: 0.95rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${m.home}</span>
+            <div style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.95rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              ${renderTeamLogo(m.home, 'xs')}
+              <span style="overflow: hidden; text-overflow: ellipsis;">${m.home}</span>
+            </div>
             <span style="font-weight: 700; font-size: ${isResult ? '1rem' : '0.85rem'}; color: ${isCanceled ? '#e74c3c' : (isResult ? 'var(--color-accent)' : 'var(--color-text-secondary)')}; margin-left: 8px; flex-shrink: 0;">
               ${isCanceled ? m.status : (isResult ? (m.score ? m.score.replace(/\s*\([^)]*\)/g, '').trim() : '-:-') : (m.time ? `${m.time} Uhr` : '-:-'))}
             </span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 600; font-size: 0.95rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${m.away}</span>
+            <div style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.95rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              ${renderTeamLogo(m.away, 'xs')}
+              <span style="overflow: hidden; text-overflow: ellipsis;">${m.away}</span>
+            </div>
             <span style="font-size: 0.75rem; color: var(--color-text-secondary); flex-shrink: 0; margin-left: 8px;">${formattedDate}</span>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { Store, sanitizeMojibake } from '../store.js?v=1791020000000';
 import { renderIcon } from '../icons.js?v=1791020000000';
+import { renderTeamLogo } from '../logos.js?v=1791060000000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -658,7 +659,10 @@ export const renderClubsTableRows = (filteredClubs) => {
       </td>
       <td style="padding: 10px; font-weight: 700; color: var(--color-text-primary);">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
-          <span>${c.name} ${c.titles > 0 ? `<span title="${c.titles}x Meister" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.85rem; color: #f59e0b; margin-left: 6px;">${renderIcon('trophy', { size: 15, color: '#f59e0b' })} ${c.titles > 1 ? c.titles + 'x' : ''}</span>` : ''}</span>
+          <div style="display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden;">
+            ${renderTeamLogo(c.name, 'sm')}
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name} ${c.titles > 0 ? `<span title="${c.titles}x Meister" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.85rem; color: #f59e0b; margin-left: 6px;">${renderIcon('trophy', { size: 15, color: '#f59e0b' })} ${c.titles > 1 ? c.titles + 'x' : ''}</span>` : ''}</span>
+          </div>
           <svg class="stats-club-chevron show-mobile" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); transition: transform 0.2s; flex-shrink: 0;"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>
       </td>
@@ -979,7 +983,10 @@ export const viewStatistiken = () => {
                 <!-- Meister Box -->
                 <div style="padding: 14px 16px; background: rgba(142, 198, 63, 0.09); border-radius: 8px; border: 1px solid rgba(142, 198, 63, 0.25);">
                   <div style="font-size: 0.72rem; font-weight: 800; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.6px;">Meister</div>
-                  <div style="font-size: 1.3rem; font-weight: 800; color: var(--color-text-primary); margin: 3px 0 2px 0;">${h.champion}</div>
+                  <div style="font-size: 1.3rem; font-weight: 800; color: var(--color-text-primary); margin: 4px 0; display: flex; align-items: center; gap: 8px;">
+                    ${renderTeamLogo(h.champion, 'md')}
+                    <span>${h.champion}</span>
+                  </div>
                   <div style="font-size: 0.85rem; color: var(--color-text-secondary); font-weight: 500;">
                     <strong style="color: var(--color-text-primary);">${h.championPoints} Punkte</strong> &bull; ${h.championPlayed} Spiele
                   </div>
@@ -993,9 +1000,10 @@ export const viewStatistiken = () => {
                     <span style="color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap;">
                       ${renderIcon('medal', { size: 15, color: '#94a3b8' })} Vizemeister:
                     </span>
-                    <span style="font-weight: 700; color: var(--color-text-primary); text-align: right;">
-                      ${h.runnerUp} <span style="font-weight: 500; color: var(--color-text-secondary); font-size: 0.8rem;">(${h.runnerUpPoints} Pkt)</span>
-                    </span>
+                    <div style="font-weight: 700; color: var(--color-text-primary); text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 6px;">
+                      ${renderTeamLogo(h.runnerUp, 'xs')}
+                      <span>${h.runnerUp}</span> <span style="font-weight: 500; color: var(--color-text-secondary); font-size: 0.8rem;">(${h.runnerUpPoints} Pkt)</span>
+                    </div>
                   </div>
                 ` : ''}
 
@@ -1008,7 +1016,7 @@ export const viewStatistiken = () => {
                       <div style="font-weight: 700; color: var(--color-accent);">
                         ${h.topScorer} <span style="font-weight: 800; color: var(--color-accent); font-size: 0.82rem;">(${h.topScorerGoals} Tore)</span>
                       </div>
-                      ${h.topScorerTeam ? `<div style="font-size: 0.75rem; font-weight: 500; color: var(--color-text-secondary);">${h.topScorerTeam}</div>` : ''}
+                      ${h.topScorerTeam ? `<div style="font-size: 0.75rem; font-weight: 500; color: var(--color-text-secondary); display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 2px;">${renderTeamLogo(h.topScorerTeam, 'xs')} <span>${h.topScorerTeam}</span></div>` : ''}
                     </div>
                   </div>
                 ` : ''}
@@ -1030,8 +1038,8 @@ export const viewStatistiken = () => {
             <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
               ${stats.records.bestSingleSeasonScorer.goals} <span style="font-size: 1rem; font-weight: 600;">Tore</span>
             </div>
-            <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
-              Erzielt für <strong>${stats.records.bestSingleSeasonScorer.team}</strong> in der Saison <strong>${formatSeasonDisplay(stats.records.bestSingleSeasonScorer.season)}</strong>.
+            <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+              <span>Erzielt für</span> ${renderTeamLogo(stats.records.bestSingleSeasonScorer.team, 'xs')} <strong>${stats.records.bestSingleSeasonScorer.team}</strong> <span>in der Saison</span> <strong>${formatSeasonDisplay(stats.records.bestSingleSeasonScorer.season)}</strong>.
             </p>
           </div>
 
@@ -1040,7 +1048,9 @@ export const viewStatistiken = () => {
             <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
               <div style="margin-bottom: 8px;">${renderIcon('zap', { size: 30, color: '#eab308' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Torreichstes Spiel</div>
-              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.highestScoringMatch.home} vs. ${stats.records.highestScoringMatch.away}</h3>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                ${renderTeamLogo(stats.records.highestScoringMatch.home, 'xs')} <span>${stats.records.highestScoringMatch.home}</span> vs. ${renderTeamLogo(stats.records.highestScoringMatch.away, 'xs')} <span>${stats.records.highestScoringMatch.away}</span>
+              </h3>
               <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
                 ${stats.records.highestScoringMatch.score} <span style="font-size: 1rem; font-weight: 600;">(${stats.records.highestScoringMatch.totalGoals} Tore)</span>
               </div>
@@ -1055,7 +1065,9 @@ export const viewStatistiken = () => {
             <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
               <div style="margin-bottom: 8px;">${renderIcon('target', { size: 30, color: '#ef4444' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Höchster Sieg</div>
-              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.biggestWin.home} vs. ${stats.records.biggestWin.away}</h3>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                ${renderTeamLogo(stats.records.biggestWin.home, 'xs')} <span>${stats.records.biggestWin.home}</span> vs. ${renderTeamLogo(stats.records.biggestWin.away, 'xs')} <span>${stats.records.biggestWin.away}</span>
+              </h3>
               <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
                 ${stats.records.biggestWin.score}
               </div>
@@ -1070,7 +1082,10 @@ export const viewStatistiken = () => {
             <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
               <div style="margin-bottom: 8px;">${renderIcon('trophy', { size: 30, color: '#f59e0b' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Rekordmeister</div>
-              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.rekordmeister.name}</h3>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0; display: flex; align-items: center; gap: 8px;">
+                ${renderTeamLogo(stats.records.rekordmeister.name, 'sm')}
+                <span>${stats.records.rekordmeister.name}</span>
+              </h3>
               <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
                 ${stats.records.rekordmeister.titles} <span style="font-size: 1rem; font-weight: 600;">${stats.records.rekordmeister.titles === 1 ? 'Meistertitel' : 'Meistertitel'}</span>
               </div>

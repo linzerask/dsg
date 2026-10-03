@@ -1,5 +1,6 @@
 import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791030000000';
 import { showToast } from './admin.js?v=1791030000000';
+import { renderTeamLogo } from '../logos.js?v=1791060000000';
 
 let gamesData = [];
 let roundsData = [];
@@ -671,8 +672,18 @@ const renderGamesTable = () => {
                 <td style="font-weight: 600; color: var(--color-text-primary); font-size: 0.82rem; white-space: nowrap;">${dateDisplay}</td>
                 <td style="color: var(--color-text-secondary); font-size: 0.82rem; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${venue}">${venue}</td>
                 <td style="font-weight: 600; color: var(--color-accent); font-size: 0.82rem; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.round || ''}">${roundDisplay}</td>
-                <td style="font-weight: 700; color: var(--color-text-primary); font-size: 0.85rem; max-width: 125px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.home || ''}">${m.home || '-'}</td>
-                <td style="font-weight: 700; color: var(--color-text-primary); font-size: 0.85rem; max-width: 125px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.away || ''}">${m.away || '-'}</td>
+                <td style="font-weight: 700; color: var(--color-text-primary); font-size: 0.85rem; max-width: 135px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.home || ''}">
+                    <div style="display: inline-flex; align-items: center; gap: 6px;">
+                        ${renderTeamLogo(m.home, 'xs')}
+                        <span>${m.home || '-'}</span>
+                    </div>
+                </td>
+                <td style="font-weight: 700; color: var(--color-text-primary); font-size: 0.85rem; max-width: 135px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.away || ''}">
+                    <div style="display: inline-flex; align-items: center; gap: 6px;">
+                        ${renderTeamLogo(m.away, 'xs')}
+                        <span>${m.away || '-'}</span>
+                    </div>
+                </td>
                 <td style="text-align: center; font-weight: 800; font-size: 1rem; color: var(--color-accent); white-space: nowrap;">${scoreDisplay}</td>
                 <td style="text-align: center; color: var(--color-text-secondary); font-size: 0.82rem; white-space: nowrap;">${htDisplay}</td>
                 <td style="max-width: 75px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.note || m.status || ''}">${noteBadge}</td>
@@ -750,9 +761,10 @@ const renderGamesTable = () => {
                     <div class="admin-m-card" data-idx="${rawIndex}">
                         <div class="admin-m-header">
                             <div style="flex: 1; min-width: 0;">
-                                <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 4px;">
-                                    <div class="admin-m-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                        <strong>${m.home || '-'}</strong> vs <strong>${m.away || '-'}</strong>
+                                <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                    <div class="admin-m-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px;">
+                                        ${renderTeamLogo(m.home, 'xs')}
+                                        <strong>${m.home || '-'}</strong> vs ${renderTeamLogo(m.away, 'xs')} <strong>${m.away || '-'}</strong>
                                     </div>
                                     <span style="font-weight: 900; font-size: 1.15rem; color: var(--color-accent); flex-shrink: 0;">${scoreDisplay}</span>
                                 </div>

@@ -1,5 +1,6 @@
 import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791020000000';
 import { showToast } from './admin.js?v=1791020000000';
+import { renderTeamLogo } from '../logos.js?v=1791060000000';
 
 let leaguesData = [];
 let filteredData = [];
@@ -594,7 +595,10 @@ const renderModalContent = () => {
                             <!-- Desktop Row View -->
                             <div class="hide-mobile" style="display: grid; grid-template-columns: 36px 1fr 45px 40px 40px 40px 65px 50px 55px; align-items: center; padding: 12px 14px; font-size: 0.9rem;">
                                 <span style="text-align: center; font-weight: 800; font-size: 1rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">${i + 1}</span>
-                                <span style="font-weight: 700; color: var(--color-text-primary);">${t.name}</span>
+                                <div style="font-weight: 700; color: var(--color-text-primary); display: flex; align-items: center; gap: 8px; min-width: 0;">
+                                    ${renderTeamLogo(t.name, 'sm')}
+                                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.name}</span>
+                                </div>
                                 <span style="text-align: center; color: var(--color-text-secondary);">${t.played ?? 0}</span>
                                 <span style="text-align: center; color: var(--color-text-secondary);">${t.won ?? 0}</span>
                                 <span style="text-align: center; color: var(--color-text-secondary);">${t.drawn ?? 0}</span>
@@ -607,8 +611,9 @@ const renderModalContent = () => {
                             <!-- Mobile Touch Card View -->
                             <div class="show-mobile" style="padding: 12px 14px;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%;">
-                                    <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
-                                        <span style="font-weight: 900; font-size: 1.05rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; min-width: 22px;">${i + 1}</span>
+                                    <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+                                        <span style="font-weight: 900; font-size: 1.05rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; min-width: 20px;">${i + 1}</span>
+                                        ${renderTeamLogo(t.name, 'sm')}
                                         <span style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
                                     </div>
                                     <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">

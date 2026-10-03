@@ -1,5 +1,6 @@
 import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791020000000';
 import { renderIcon } from '../icons.js?v=1791020000000';
+import { renderTeamLogo } from '../logos.js?v=1791060000000';
 
 
 let currentViewSeason = null;
@@ -140,7 +141,10 @@ export function viewLiga() {
     return `
       <div class="liga-row glass-card stagger-item ${i < 3 ? 'top-3-row' : ''} has-table-accordion" style="display: grid; grid-template-columns: 40px 1fr 100px 40px 35px 35px 35px 70px 50px 60px; align-items: center; margin-bottom: var(--space-sm); padding: var(--space-sm) var(--space-md); cursor: pointer; transition: background 0.3s;">
         <span style="font-weight: 900; font-size: 1.2rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">${i + 1}</span>
-        <span style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
+        <div style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 8px; min-width: 0;">
+          ${renderTeamLogo(t.name, 'sm')}
+          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
+        </div>
         ${generateForm(t.name)}
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.played || 0}</span>
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.won || 0}</span>
@@ -178,27 +182,33 @@ export function viewLiga() {
 
   const top10 = topScorers.slice(0, 10).map(s => `
     <div class="glass-card stagger-item" style="margin-bottom: var(--space-sm); display: flex; justify-content: space-between; align-items: center;">
-      <div style="display: flex; gap: var(--space-md); align-items: center;">
-        <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-secondary); width: 25px; display: inline-block;">${s._displayRank}</span>
-        <div>
-          <div style="font-weight: 700; font-size: 1.1rem;">${s.player || s.name || ''}</div>
-          <div style="font-size: 0.8rem; color: var(--color-text-secondary);">${s.team || ''}</div>
+      <div style="display: flex; gap: var(--space-md); align-items: center; min-width: 0;">
+        <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-secondary); width: 25px; display: inline-block; flex-shrink: 0;">${s._displayRank}</span>
+        <div style="min-width: 0;">
+          <div style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.player || s.name || ''}</div>
+          <div style="font-size: 0.8rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+            ${renderTeamLogo(s.team, 'xs')}
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
+          </div>
         </div>
       </div>
-      <div style="font-weight: 900; font-size: 1.5rem; color: var(--color-accent);">${s.goals}</div>
+      <div style="font-weight: 900; font-size: 1.5rem; color: var(--color-accent); flex-shrink: 0; margin-left: 10px;">${s.goals}</div>
     </div>
   `).join('');
 
   const restScorers = topScorers.slice(10).map(s => `
     <div class="glass-card extra-scorer" style="margin-bottom: var(--space-sm); display: flex; justify-content: space-between; align-items: center;">
-      <div style="display: flex; gap: var(--space-md); align-items: center;">
-        <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-secondary); width: 25px; display: inline-block;">${s._displayRank}</span>
-        <div>
-          <div style="font-weight: 700; font-size: 1.1rem;">${s.player || s.name || ''}</div>
-          <div style="font-size: 0.8rem; color: var(--color-text-secondary);">${s.team || ''}</div>
+      <div style="display: flex; gap: var(--space-md); align-items: center; min-width: 0;">
+        <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-secondary); width: 25px; display: inline-block; flex-shrink: 0;">${s._displayRank}</span>
+        <div style="min-width: 0;">
+          <div style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.player || s.name || ''}</div>
+          <div style="font-size: 0.8rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+            ${renderTeamLogo(s.team, 'xs')}
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
+          </div>
         </div>
       </div>
-      <div style="font-weight: 900; font-size: 1.5rem; color: var(--color-accent);">${s.goals}</div>
+      <div style="font-weight: 900; font-size: 1.5rem; color: var(--color-accent); flex-shrink: 0; margin-left: 10px;">${s.goals}</div>
     </div>
   `).join('');
 
@@ -269,11 +279,17 @@ export function viewLiga() {
 
     const renderRow = (s, extraClass) => `
       <div class="glass-card stagger-item ${extraClass}" style="margin-bottom: var(--space-sm); display: grid; grid-template-columns: 25px 1fr auto; align-items: center; gap: 10px; padding: var(--space-md);">
-        <span style="font-weight: 900; font-size: 1.1rem; color: var(--color-text-secondary);">${s._displayRank}</span>
+        <span style="font-weight: 900; font-size: 1.1rem; color: var(--color-text-secondary); flex-shrink: 0;">${s._displayRank}</span>
         <div style="min-width: 0;">
           <div style="font-weight: 700; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.player || s.name || ''}</div>
-          <div class="hide-mobile" style="font-size: 0.8rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</div>
-          <div class="show-mobile" style="font-size: 0.75rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</div>
+          <div class="hide-mobile" style="font-size: 0.8rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+            ${renderTeamLogo(s.team, 'xs')}
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
+          </div>
+          <div class="show-mobile" style="font-size: 0.75rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px; margin-top: 2px;">
+            ${renderTeamLogo(s.team, 'xs')}
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
+          </div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
           ${renderCardIcons(s)}
@@ -772,9 +788,10 @@ export function viewLiga() {
         </div>
 
         <div class="match-card-body">
-          <div class="match-team match-team-home">
+          <div class="match-team match-team-home" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
             <span class="team-name">${m.home}</span>
             ${renderTeamReds(homeReds)}
+            ${renderTeamLogo(m.home, 'md')}
           </div>
           
           <div class="match-score-center">
@@ -784,9 +801,10 @@ export function viewLiga() {
             ${(htScore && !isAbgesagtStatus) ? `<span class="match-ht-badge">HT ${htScore}</span>` : ''}
           </div>
           
-          <div class="match-team match-team-away">
-            ${renderTeamReds(awayReds)}
+          <div class="match-team match-team-away" style="display: flex; align-items: center; justify-content: flex-start; gap: 8px;">
+            ${renderTeamLogo(m.away, 'md')}
             <span class="team-name">${m.away}</span>
+            ${renderTeamReds(awayReds)}
           </div>
         </div>
 

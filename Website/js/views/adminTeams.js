@@ -1,5 +1,6 @@
 import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791020000000';
 import { showToast } from './admin.js?v=1791020000000';
+import { renderTeamLogo } from '../logos.js?v=1791060000000';
 
 let teamsData = [];
 let filteredData = [];
@@ -185,7 +186,12 @@ const renderTable = () => {
         return `
             <tr>
                 <td style="color: var(--color-text-secondary);">#${t.ID || '-'}</td>
-                <td><strong style="color: var(--color-text-primary);">${t.Name || '-'}</strong></td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        ${renderTeamLogo(t.Name, 'sm')}
+                        <strong style="color: var(--color-text-primary);">${t.Name || '-'}</strong>
+                    </div>
+                </td>
                 <td>${t["Aktive Spieler"] || '0'}</td>
                 <td>${t["Aktiv seit"] || '-'}</td>
                 <td>${t["Inaktiv seit"] || '-'}</td>
@@ -215,9 +221,10 @@ const renderTable = () => {
                     <div class="admin-m-card" data-idx="${rawIndex}">
                         <div class="admin-m-header">
                             <div style="flex: 1; min-width: 0;">
-                                <div class="admin-m-title">
-                                    <span style="color: var(--color-accent); font-weight: 800; margin-right: 4px;">#${t.ID || '-'}</span>
-                                    <strong>${t.Name || '-'}</strong>
+                                <div class="admin-m-title" style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="color: var(--color-accent); font-weight: 800; margin-right: 2px;">#${t.ID || '-'}</span>
+                                    ${renderTeamLogo(t.Name, 'sm')}
+                                    <strong style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.Name || '-'}</strong>
                                 </div>
                                 <div class="admin-m-subtitle">
                                     <span class="badge ${badgeClass}" style="font-size: 0.72rem;">${status}</span>

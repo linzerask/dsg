@@ -1455,6 +1455,47 @@ main {
     box-shadow: 0 1px 3px rgba(231, 76, 60, 0.35);
 }
 
+/* Team Logos & Shields */
+.team-logo {
+    display: inline-block;
+    vertical-align: middle;
+    object-fit: contain;
+    flex-shrink: 0;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.team-logo-xs {
+    width: 16px;
+    height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+}
+.team-logo-sm {
+    width: 22px;
+    height: 22px;
+    max-width: 22px;
+    max-height: 22px;
+}
+.team-logo-md {
+    width: 28px;
+    height: 28px;
+    max-width: 28px;
+    max-height: 28px;
+}
+.team-logo-lg {
+    width: 48px;
+    height: 48px;
+    max-width: 48px;
+    max-height: 48px;
+}
+@media (max-width: 768px) {
+    .team-logo-lg {
+        width: 38px;
+        height: 38px;
+        max-width: 38px;
+        max-height: 38px;
+    }
+}
+
 .sperre-badge {
     background: rgba(255, 77, 77, 0.15);
     color: #ff4d4d;
