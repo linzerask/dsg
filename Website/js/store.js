@@ -129,7 +129,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1791140000000';
+const DATA_VERSION_STRING = '?v=1791150000000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -828,7 +828,7 @@ export const Store = {
         await setDoc(galleryRef, { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v87', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_data_v88', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v38', JSON.stringify(state.memoryNews));
       trySetLocal('dsg_gallery_v27', JSON.stringify(state.memoryGallery));
 
@@ -864,7 +864,7 @@ export const Store = {
     }
     const cleanData = deepSanitize(data);
     state.memoryData = cleanData;
-    trySetLocal('dsg_data_v87', JSON.stringify(cleanData));
+    trySetLocal('dsg_data_v88', JSON.stringify(cleanData));
     setDoc(doc(db, 'system', 'liga_data'), { data: cleanData, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },

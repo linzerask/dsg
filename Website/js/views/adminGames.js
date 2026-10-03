@@ -1,6 +1,6 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791140000000';
-import { showToast } from './admin.js?v=1791140000000';
-import { renderTeamLogo } from '../logos.js?v=1791140000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791150000000';
+import { showToast } from './admin.js?v=1791150000000';
+import { renderTeamLogo } from '../logos.js?v=1791150000000';
 
 let gamesData = [];
 let roundsData = [];
@@ -1775,7 +1775,7 @@ const saveReportForm = (e) => {
         events: events
     };
 
-    const targetSeasonKey = currentReportMatch.seasonKey || (Store.getData()?.currentSeason || '2022/2023');
+    const targetSeasonKey = currentReportMatch.seasonKey || (Store.getData()?.currentSeason || '2026/2027');
     Store.saveMatch(targetSeasonKey, deepSanitize(updatedMatch));
     Store.recalculateSeason(targetSeasonKey);
     closeReportModal();
