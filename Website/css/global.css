@@ -3321,4 +3321,115 @@ main {
     letter-spacing: 0.01em;
 }
 
+/* ==========================================================================
+   Searchable Player Combobox Component (Admin Spielbericht)
+   ========================================================================== */
+.searchable-player-picker {
+  position: relative;
+  width: 100%;
+}
+
+.searchable-player-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.searchable-player-search {
+  width: 100%;
+  font-size: 0.82rem;
+  padding: 6px 28px 6px 10px;
+  border-radius: var(--border-radius-sm, 4px);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchable-player-search:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(0, 150, 64, 0.15);
+}
+
+.combobox-indicator-icon {
+  position: absolute;
+  right: 8px;
+  pointer-events: none;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.searchable-player-picker.is-open .combobox-indicator-icon {
+  transform: rotate(180deg);
+  color: var(--color-accent);
+}
+
+.searchable-player-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  z-index: 100005;
+  padding: 4px 0;
+  margin: 0;
+  list-style: none;
+}
+
+.player-option-item {
+  padding: 7px 10px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: background 0.12s ease, color 0.12s ease;
+  color: var(--color-text-primary);
+  user-select: none;
+}
+
+.player-option-item:hover,
+.player-option-item.highlighted {
+  background: rgba(0, 150, 64, 0.1);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.player-option-item.selected {
+  background: rgba(0, 150, 64, 0.18);
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.player-option-item .option-highlight {
+  color: var(--color-accent);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.player-option-special {
+  color: var(--color-accent);
+  font-weight: 700;
+  background: rgba(0, 150, 64, 0.05);
+}
+
+.player-option-empty {
+  padding: 10px 12px;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-style: italic;
+}
+
+
 

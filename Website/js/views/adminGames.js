@@ -1,5 +1,5 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791020000000';
-import { showToast } from './admin.js?v=1791020000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791030000000';
+import { showToast } from './admin.js?v=1791030000000';
 
 let gamesData = [];
 let roundsData = [];
@@ -179,7 +179,7 @@ export const renderAdminGames = () => {
                     <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 4px;" id="report-match-meta">2026 Herbst | 31.10.2026 16:00:00 | DSG-Platz</div>
                 </div>
 
-                <form id="report-form" style="display: flex; flex-direction: column; gap: var(--space-lg);">
+                <form id="report-form" style="display: flex; flex-direction: column; gap: var(--space-lg); padding-bottom: 24px;">
                     <!-- Score & Halftime Section -->
                     <div style="background: var(--color-surface-hover); padding: var(--space-md); border-radius: 6px; border: 1px solid var(--color-border);">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
@@ -229,15 +229,22 @@ export const renderAdminGames = () => {
                             <!-- Home Cards -->
                             <div class="glass-card" style="padding: var(--space-sm);">
                                 <h5 id="report-card-heading-home" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Karten Heim</h5>
-                                <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-                                    <select id="report-card-type-home" class="admin-input" style="width: 95px; font-size: 0.8rem;">
+                                <div style="display: flex; gap: 6px; margin-bottom: 6px; align-items: stretch;">
+                                    <select id="report-card-type-home" class="admin-input" style="width: 95px; font-size: 0.8rem; height: 34px;">
                                         <option value="yellow">Gelb</option>
                                         <option value="yellowRed">Gelb-Rot</option>
                                         <option value="red">Rot</option>
                                     </select>
-                                    <select id="report-card-player-home" class="admin-input" style="flex: 1; font-size: 0.8rem;">
-                                        <option value="">-- Spieler wählen --</option>
-                                    </select>
+                                    <div class="searchable-player-picker" id="picker-report-card-player-home" style="flex: 1; position: relative;">
+                                        <input type="hidden" id="report-card-player-home" value="">
+                                        <div class="searchable-player-input-wrap">
+                                            <input type="text" id="input-search-report-card-player-home" class="admin-input searchable-player-search" placeholder="Spieler suchen / wählen..." autocomplete="off" style="height: 34px;">
+                                            <span class="combobox-indicator-icon">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                            </span>
+                                        </div>
+                                        <div class="searchable-player-dropdown" id="dropdown-report-card-player-home" style="display: none;"></div>
+                                    </div>
                                 </div>
                                 <div style="display: flex; gap: 6px;">
                                     <input type="text" id="report-card-reason-home" class="admin-input" placeholder="Begründung (optional)..." style="flex: 1; font-size: 0.8rem;">
@@ -249,15 +256,22 @@ export const renderAdminGames = () => {
                             <!-- Away Cards -->
                             <div class="glass-card" style="padding: var(--space-sm);">
                                 <h5 id="report-card-heading-away" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Karten Auswärts</h5>
-                                <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-                                    <select id="report-card-type-away" class="admin-input" style="width: 95px; font-size: 0.8rem;">
+                                <div style="display: flex; gap: 6px; margin-bottom: 6px; align-items: stretch;">
+                                    <select id="report-card-type-away" class="admin-input" style="width: 95px; font-size: 0.8rem; height: 34px;">
                                         <option value="yellow">Gelb</option>
                                         <option value="yellowRed">Gelb-Rot</option>
                                         <option value="red">Rot</option>
                                     </select>
-                                    <select id="report-card-player-away" class="admin-input" style="flex: 1; font-size: 0.8rem;">
-                                        <option value="">-- Spieler wählen --</option>
-                                    </select>
+                                    <div class="searchable-player-picker" id="picker-report-card-player-away" style="flex: 1; position: relative;">
+                                        <input type="hidden" id="report-card-player-away" value="">
+                                        <div class="searchable-player-input-wrap">
+                                            <input type="text" id="input-search-report-card-player-away" class="admin-input searchable-player-search" placeholder="Spieler suchen / wählen..." autocomplete="off" style="height: 34px;">
+                                            <span class="combobox-indicator-icon">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                            </span>
+                                        </div>
+                                        <div class="searchable-player-dropdown" id="dropdown-report-card-player-away" style="display: none;"></div>
+                                    </div>
                                 </div>
                                 <div style="display: flex; gap: 6px;">
                                     <input type="text" id="report-card-reason-away" class="admin-input" placeholder="Begründung (optional)..." style="flex: 1; font-size: 0.8rem;">
@@ -275,12 +289,18 @@ export const renderAdminGames = () => {
                             <!-- Home Goals -->
                             <div class="glass-card" style="padding: var(--space-sm);">
                                 <h5 id="report-goal-heading-home" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Torschützen Heim</h5>
-                                <div style="display: flex; gap: 6px;">
-                                    <select id="report-scorer-player-home" class="admin-input" style="flex: 1; font-size: 0.8rem;">
-                                        <option value="">-- Torschütze wählen --</option>
-                                        <option value="Eigentor">Eigentor</option>
-                                    </select>
-                                    <button type="button" id="btn-add-goal-home" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700;">+ Hinzufügen</button>
+                                <div style="display: flex; gap: 6px; align-items: stretch;">
+                                    <div class="searchable-player-picker" id="picker-report-scorer-player-home" style="flex: 1; position: relative;">
+                                        <input type="hidden" id="report-scorer-player-home" value="">
+                                        <div class="searchable-player-input-wrap">
+                                            <input type="text" id="input-search-report-scorer-player-home" class="admin-input searchable-player-search" placeholder="Torschütze suchen / wählen..." autocomplete="off" style="height: 34px;">
+                                            <span class="combobox-indicator-icon">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                            </span>
+                                        </div>
+                                        <div class="searchable-player-dropdown" id="dropdown-report-scorer-player-home" style="display: none;"></div>
+                                    </div>
+                                    <button type="button" id="btn-add-goal-home" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px;">+ Hinzufügen</button>
                                 </div>
                                 <div id="report-goals-list-home" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
                             </div>
@@ -288,12 +308,18 @@ export const renderAdminGames = () => {
                             <!-- Away Goals -->
                             <div class="glass-card" style="padding: var(--space-sm);">
                                 <h5 id="report-goal-heading-away" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Torschützen Auswärts</h5>
-                                <div style="display: flex; gap: 6px;">
-                                    <select id="report-scorer-player-away" class="admin-input" style="flex: 1; font-size: 0.8rem;">
-                                        <option value="">-- Torschütze wählen --</option>
-                                        <option value="Eigentor">Eigentor</option>
-                                    </select>
-                                    <button type="button" id="btn-add-goal-away" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700;">+ Hinzufügen</button>
+                                <div style="display: flex; gap: 6px; align-items: stretch;">
+                                    <div class="searchable-player-picker" id="picker-report-scorer-player-away" style="flex: 1; position: relative;">
+                                        <input type="hidden" id="report-scorer-player-away" value="">
+                                        <div class="searchable-player-input-wrap">
+                                            <input type="text" id="input-search-report-scorer-player-away" class="admin-input searchable-player-search" placeholder="Torschütze suchen / wählen..." autocomplete="off" style="height: 34px;">
+                                            <span class="combobox-indicator-icon">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                            </span>
+                                        </div>
+                                        <div class="searchable-player-dropdown" id="dropdown-report-scorer-player-away" style="display: none;"></div>
+                                    </div>
+                                    <button type="button" id="btn-add-goal-away" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px;">+ Hinzufügen</button>
                                 </div>
                                 <div id="report-goals-list-away" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
                             </div>
@@ -1196,6 +1222,235 @@ const saveGameForm = (e) => {
     showToast(isEditing ? 'Spiel erfolgreich aktualisiert!' : 'Spiel erfolgreich erstellt!');
 };
 
+/* --- Searchable Player Combobox Component & Helpers --- */
+const playerComboboxState = {
+    'report-card-player-home': { players: [], includeOwnGoal: false, filtered: [], highlightedIndex: -1 },
+    'report-card-player-away': { players: [], includeOwnGoal: false, filtered: [], highlightedIndex: -1 },
+    'report-scorer-player-home': { players: [], includeOwnGoal: true, filtered: [], highlightedIndex: -1 },
+    'report-scorer-player-away': { players: [], includeOwnGoal: true, filtered: [], highlightedIndex: -1 }
+};
+
+const populatePlayerCombobox = (id, players, includeOwnGoal = false) => {
+    if (!playerComboboxState[id]) {
+        playerComboboxState[id] = { players: [], includeOwnGoal: false, filtered: [], highlightedIndex: -1 };
+    }
+    playerComboboxState[id].players = players || [];
+    playerComboboxState[id].includeOwnGoal = includeOwnGoal;
+    playerComboboxState[id].highlightedIndex = -1;
+
+    const hiddenInput = document.getElementById(id);
+    if (hiddenInput) hiddenInput.value = '';
+    const searchInput = document.getElementById('input-search-' + id);
+    if (searchInput) searchInput.value = '';
+
+    const dropdown = document.getElementById('dropdown-' + id);
+    if (dropdown) dropdown.style.display = 'none';
+    const picker = document.getElementById('picker-' + id);
+    if (picker) picker.classList.remove('is-open');
+
+    renderComboboxDropdown(id, '');
+};
+
+const renderComboboxDropdown = (id, filterText = '') => {
+    const state = playerComboboxState[id];
+    if (!state) return;
+
+    const dropdown = document.getElementById('dropdown-' + id);
+    if (!dropdown) return;
+
+    const cleanFilter = (filterText || '').toLowerCase().trim();
+    let allOptions = [];
+    if (state.includeOwnGoal) {
+        allOptions.push('Eigentor');
+    }
+    allOptions = allOptions.concat(state.players);
+
+    let filtered = allOptions;
+    if (cleanFilter) {
+        filtered = allOptions.filter(opt => opt.toLowerCase().includes(cleanFilter));
+    }
+    state.filtered = filtered;
+    state.highlightedIndex = -1;
+
+    if (filtered.length === 0) {
+        dropdown.innerHTML = '<div class="player-option-empty">Keine passenden Spieler gefunden</div>';
+        return;
+    }
+
+    dropdown.innerHTML = filtered.map((p, idx) => {
+        const isSelected = document.getElementById(id)?.value === p;
+        const isOwnGoal = p === 'Eigentor';
+
+        let labelHtml = p;
+        if (cleanFilter && !isOwnGoal) {
+            const startIdx = p.toLowerCase().indexOf(cleanFilter);
+            if (startIdx !== -1) {
+                const before = p.slice(0, startIdx);
+                const match = p.slice(startIdx, startIdx + cleanFilter.length);
+                const after = p.slice(startIdx + cleanFilter.length);
+                labelHtml = `${before}<span class="option-highlight">${match}</span>${after}`;
+            }
+        }
+
+        const iconHtml = isOwnGoal
+            ? `<span style="display: inline-flex; align-items: center; gap: 5px; color: var(--color-accent); font-weight: 700;">
+                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                 ${labelHtml}
+               </span>`
+            : labelHtml;
+
+        return `
+            <div class="player-option-item ${isSelected ? 'selected' : ''} ${isOwnGoal ? 'player-option-special' : ''}" data-idx="${idx}" data-val="${p}">
+                <span>${iconHtml}</span>
+                ${isSelected ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent);"><polyline points="20 6 9 17 4 12"></polyline></svg>` : ''}
+            </div>
+        `;
+    }).join('');
+
+    dropdown.querySelectorAll('.player-option-item').forEach(item => {
+        item.onmousedown = (e) => {
+            e.preventDefault();
+            const val = item.getAttribute('data-val');
+            selectComboboxOption(id, val);
+        };
+    });
+};
+
+const selectComboboxOption = (id, value) => {
+    const hiddenInput = document.getElementById(id);
+    if (hiddenInput) hiddenInput.value = value;
+    const searchInput = document.getElementById('input-search-' + id);
+    if (searchInput) searchInput.value = value;
+    const dropdown = document.getElementById('dropdown-' + id);
+    if (dropdown) dropdown.style.display = 'none';
+    const picker = document.getElementById('picker-' + id);
+    if (picker) picker.classList.remove('is-open');
+    renderComboboxDropdown(id, value);
+};
+
+const resetPlayerCombobox = (id, autoFocus = false) => {
+    const hiddenInput = document.getElementById(id);
+    if (hiddenInput) hiddenInput.value = '';
+    const searchInput = document.getElementById('input-search-' + id);
+    if (searchInput) {
+        searchInput.value = '';
+        if (autoFocus) {
+            setTimeout(() => {
+                searchInput.focus();
+            }, 60);
+        }
+    }
+    const dropdown = document.getElementById('dropdown-' + id);
+    if (dropdown) dropdown.style.display = 'none';
+    const picker = document.getElementById('picker-' + id);
+    if (picker) picker.classList.remove('is-open');
+    renderComboboxDropdown(id, '');
+};
+
+const getComboboxValue = (id) => {
+    const hiddenInput = document.getElementById(id);
+    const searchInput = document.getElementById('input-search-' + id);
+    return (hiddenInput?.value || searchInput?.value || '').trim();
+};
+
+const setupSearchableComboboxes = () => {
+    const ids = [
+        'report-card-player-home',
+        'report-card-player-away',
+        'report-scorer-player-home',
+        'report-scorer-player-away'
+    ];
+
+    ids.forEach(id => {
+        const searchInput = document.getElementById('input-search-' + id);
+        const dropdown = document.getElementById('dropdown-' + id);
+        const picker = document.getElementById('picker-' + id);
+        if (!searchInput || !dropdown || !picker) return;
+
+        const openPicker = () => {
+            ids.forEach(otherId => {
+                if (otherId !== id) {
+                    const otherDropdown = document.getElementById('dropdown-' + otherId);
+                    if (otherDropdown) otherDropdown.style.display = 'none';
+                    const otherPicker = document.getElementById('picker-' + otherId);
+                    if (otherPicker) otherPicker.classList.remove('is-open');
+                }
+            });
+            renderComboboxDropdown(id, searchInput.value);
+            dropdown.style.display = 'block';
+            picker.classList.add('is-open');
+            setTimeout(() => {
+                picker.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+        };
+
+        searchInput.onfocus = openPicker;
+        searchInput.onclick = openPicker;
+
+        searchInput.oninput = () => {
+            dropdown.style.display = 'block';
+            picker.classList.add('is-open');
+            const hiddenInput = document.getElementById(id);
+            if (hiddenInput) hiddenInput.value = searchInput.value.trim();
+            renderComboboxDropdown(id, searchInput.value);
+        };
+
+        searchInput.onkeydown = (e) => {
+            const state = playerComboboxState[id];
+            if (!state || !state.filtered || state.filtered.length === 0) return;
+
+            const items = dropdown.querySelectorAll('.player-option-item');
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                dropdown.style.display = 'block';
+                picker.classList.add('is-open');
+                state.highlightedIndex = (state.highlightedIndex + 1) % items.length;
+                items.forEach((it, idx) => {
+                    it.classList.toggle('highlighted', idx === state.highlightedIndex);
+                    if (idx === state.highlightedIndex) {
+                        it.scrollIntoView({ block: 'nearest' });
+                    }
+                });
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                dropdown.style.display = 'block';
+                picker.classList.add('is-open');
+                state.highlightedIndex = (state.highlightedIndex - 1 + items.length) % items.length;
+                items.forEach((it, idx) => {
+                    it.classList.toggle('highlighted', idx === state.highlightedIndex);
+                    if (idx === state.highlightedIndex) {
+                        it.scrollIntoView({ block: 'nearest' });
+                    }
+                });
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (state.highlightedIndex >= 0 && state.highlightedIndex < state.filtered.length) {
+                    selectComboboxOption(id, state.filtered[state.highlightedIndex]);
+                } else if (state.filtered.length === 1) {
+                    selectComboboxOption(id, state.filtered[0]);
+                } else if (searchInput.value.trim()) {
+                    selectComboboxOption(id, searchInput.value.trim());
+                }
+            } else if (e.key === 'Escape') {
+                dropdown.style.display = 'none';
+                picker.classList.remove('is-open');
+            }
+        };
+    });
+
+    // Global document outside-click handler
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.searchable-player-picker')) {
+            ids.forEach(id => {
+                const dropdown = document.getElementById('dropdown-' + id);
+                if (dropdown) dropdown.style.display = 'none';
+                const picker = document.getElementById('picker-' + id);
+                if (picker) picker.classList.remove('is-open');
+            });
+        }
+    });
+};
+
 /* --- Spielbericht (Match Report) Logic --- */
 
 const openReportModal = (idxOrMatch) => {
@@ -1278,23 +1533,14 @@ const openReportModal = (idxOrMatch) => {
     }
     document.getElementById('report-cancel-select').value = cancelVal;
 
-    // Populate Player dropdowns for both teams
+    // Populate Player Comboboxes for both teams
     const homePlayers = getTeamPlayersList(match.home);
     const awayPlayers = getTeamPlayersList(match.away);
 
-    const buildPlayerOptions = (players, includeOwnGoal = false) => {
-        let opts = '<option value="">-- Spieler wählen --</option>';
-        if (includeOwnGoal) opts += '<option value="Eigentor">Eigentor</option>';
-        players.forEach(p => {
-            opts += `<option value="${p}">${p}</option>`;
-        });
-        return opts;
-    };
-
-    document.getElementById('report-card-player-home').innerHTML = buildPlayerOptions(homePlayers);
-    document.getElementById('report-card-player-away').innerHTML = buildPlayerOptions(awayPlayers);
-    document.getElementById('report-scorer-player-home').innerHTML = buildPlayerOptions(homePlayers, true);
-    document.getElementById('report-scorer-player-away').innerHTML = buildPlayerOptions(awayPlayers, true);
+    populatePlayerCombobox('report-card-player-home', homePlayers, false);
+    populatePlayerCombobox('report-card-player-away', awayPlayers, false);
+    populatePlayerCombobox('report-scorer-player-home', homePlayers, true);
+    populatePlayerCombobox('report-scorer-player-away', awayPlayers, true);
 
     // Populate Scorers & Cards lists (checking match.scorers/cards and match.events)
     const rawScorers = (match.scorers && match.scorers.length > 0)
@@ -1627,26 +1873,27 @@ const setupEventHandlers = () => {
         };
     }
 
+    // Setup searchable player combobox interactions
+    setupSearchableComboboxes();
+
     // Add Goal buttons
     const addGoalH = document.getElementById('btn-add-goal-home');
     if (addGoalH) addGoalH.onclick = () => {
-        const select = document.getElementById('report-scorer-player-home');
-        const val = select ? select.value.trim() : '';
+        const val = getComboboxValue('report-scorer-player-home');
         if (val) {
             reportScorersHome.push(val);
             renderReportLists();
-            select.value = '';
+            resetPlayerCombobox('report-scorer-player-home', true);
         }
     };
 
     const addGoalA = document.getElementById('btn-add-goal-away');
     if (addGoalA) addGoalA.onclick = () => {
-        const select = document.getElementById('report-scorer-player-away');
-        const val = select ? select.value.trim() : '';
+        const val = getComboboxValue('report-scorer-player-away');
         if (val) {
             reportScorersAway.push(val);
             renderReportLists();
-            select.value = '';
+            resetPlayerCombobox('report-scorer-player-away', true);
         }
     };
 
@@ -1654,9 +1901,8 @@ const setupEventHandlers = () => {
     const addCardH = document.getElementById('btn-add-card-home');
     if (addCardH) addCardH.onclick = () => {
         const typeSelect = document.getElementById('report-card-type-home');
-        const playerSelect = document.getElementById('report-card-player-home');
         const reasonInput = document.getElementById('report-card-reason-home');
-        const player = playerSelect ? playerSelect.value.trim() : '';
+        const player = getComboboxValue('report-card-player-home');
         if (player) {
             reportCardsHome.push({
                 player: player,
@@ -1664,7 +1910,7 @@ const setupEventHandlers = () => {
                 reason: reasonInput ? reasonInput.value.trim() : ''
             });
             renderReportLists();
-            if (playerSelect) playerSelect.value = '';
+            resetPlayerCombobox('report-card-player-home', true);
             if (reasonInput) reasonInput.value = '';
         }
     };
@@ -1672,9 +1918,8 @@ const setupEventHandlers = () => {
     const addCardA = document.getElementById('btn-add-card-away');
     if (addCardA) addCardA.onclick = () => {
         const typeSelect = document.getElementById('report-card-type-away');
-        const playerSelect = document.getElementById('report-card-player-away');
         const reasonInput = document.getElementById('report-card-reason-away');
-        const player = playerSelect ? playerSelect.value.trim() : '';
+        const player = getComboboxValue('report-card-player-away');
         if (player) {
             reportCardsAway.push({
                 player: player,
@@ -1682,7 +1927,7 @@ const setupEventHandlers = () => {
                 reason: reasonInput ? reasonInput.value.trim() : ''
             });
             renderReportLists();
-            if (playerSelect) playerSelect.value = '';
+            resetPlayerCombobox('report-card-player-away', true);
             if (reasonInput) reasonInput.value = '';
         }
     };
