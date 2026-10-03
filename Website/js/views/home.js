@@ -223,14 +223,14 @@ export const viewHome = () => {
           ${roundLabel} &bull; Topspiel
         </div>
         <div class="topspiel-teams">
-          <div class="topspiel-team home-team" style="display: flex; align-items: center; justify-content: flex-end; gap: 12px;">
-            <h3 style="margin: 0; font-size: inherit; font-weight: inherit;">${nextMatch.home}</h3>
+          <div class="topspiel-team home-team">
+            <h3 class="topspiel-team-name">${nextMatch.home}</h3>
             ${renderTeamLogo(nextMatch.home, 'lg')}
           </div>
           <span class="topspiel-vs">VS</span>
-          <div class="topspiel-team away-team" style="display: flex; align-items: center; justify-content: flex-start; gap: 12px;">
+          <div class="topspiel-team away-team">
             ${renderTeamLogo(nextMatch.away, 'lg')}
-            <h3 style="margin: 0; font-size: inherit; font-weight: inherit;">${nextMatch.away}</h3>
+            <h3 class="topspiel-team-name">${nextMatch.away}</h3>
           </div>
         </div>
         <div class="topspiel-meta">

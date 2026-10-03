@@ -129,7 +129,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1791020000000';
+const DATA_VERSION_STRING = '?v=1791120000000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -557,6 +557,18 @@ export const Store = {
         
         let targetData = (localTime > fbTime && localData && localData.seasons) ? localData : fbData;
         if (!targetData || !targetData.seasons) targetData = state.memoryData || { currentSeason: "2026/2027", seasons: {} };
+
+        // Ensure canonical memory seasons exist in targetData
+        if (state.memoryData && state.memoryData.seasons) {
+          Object.keys(state.memoryData.seasons).forEach(sKey => {
+            const memSeason = state.memoryData.seasons[sKey];
+            const targetSeason = targetData.seasons[sKey];
+            if (!targetSeason || (!targetSeason.matches?.length && memSeason?.matches?.length)) {
+              targetData.seasons[sKey] = memSeason;
+              needsMigration = true;
+            }
+          });
+        }
 
         // Run match deduplication across all seasons in targetData
         if (targetData.seasons) {

@@ -1,4 +1,4 @@
-import { viewHome, bindHome } from './views/home.js?v=1791110000000';
+import { viewHome, bindHome } from './views/home.js?v=1791130000000';
 import { viewNews, bindNews } from './views/news.js?v=1791070000000';
 import { viewLiga, bindLigaTabs } from './views/liga.js?v=1791110000000';
 import { viewArchiv } from './views/simpleViews.js?v=1791070000000';
