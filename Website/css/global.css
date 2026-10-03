@@ -258,19 +258,39 @@ main {
 }
 
 .topspiel-teams {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: var(--space-lg);
+  gap: var(--space-md);
   margin-top: var(--space-sm);
-  flex-wrap: wrap;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 .topspiel-team {
-  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
   font-weight: 700;
   margin: 0;
   color: var(--color-text-primary);
+  min-width: 0;
+}
+
+.topspiel-team.home-team {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: right;
+  gap: 12px;
+}
+
+.topspiel-team.away-team {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  gap: 12px;
 }
 
 .topspiel-vs {
@@ -280,7 +300,27 @@ main {
   background: rgba(0, 0, 0, 0.04);
   padding: 4px 12px;
   border-radius: 6px;
+  justify-self: center;
+  flex-shrink: 0;
 }
+
+@media (max-width: 768px) {
+  .topspiel-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .topspiel-team.home-team,
+  .topspiel-team.away-team {
+    justify-content: center;
+    text-align: center;
+  }
+  .topspiel-meta {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
 
 .topspiel-meta {
   margin-top: var(--space-sm);
