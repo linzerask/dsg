@@ -242,6 +242,9 @@ export const viewHome = () => {
             <span class="meta-item">${renderIcon('pin', { size: 15, color: 'var(--color-text-secondary)' })}${loc}</span>
           </div>
         </div>
+        <div class="topspiel-action">
+          <a href="#/liga?tab=spiele" class="text-btn" style="font-weight: 700;">Zum Spieltag &rarr;</a>
+        </div>
       </div>
     `;
   }

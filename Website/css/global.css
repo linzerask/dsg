@@ -346,6 +346,12 @@ main {
   gap: 4px;
 }
 
+.topspiel-action {
+  margin-top: var(--space-md);
+  display: flex;
+  justify-content: center;
+}
+
 /* Utility */
 .accent-text {
   color: var(--color-accent);
