@@ -1,6 +1,6 @@
-import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791020000000';
-import { renderIcon } from '../icons.js?v=1791020000000';
-import { renderTeamLogo } from '../logos.js?v=1791070000000';
+import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791140000000';
+import { renderIcon } from '../icons.js?v=1791140000000';
+import { renderTeamLogo } from '../logos.js?v=1791140000000';
 
 
 let currentViewSeason = null;
@@ -25,7 +25,7 @@ export function viewLiga() {
   }
 
   const currentLeague = leagues.find(l => l.isCurrent) || leagues[0];
-  const defaultSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : (data.currentSeason || "2022/2023");
+  const defaultSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : (data.currentSeason || "2026/2027");
 
   let visibleItems = leagues.map(l => {
     const key = l.seasonKey || l.name;

@@ -1,5 +1,5 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791020000000';
-import { showToast } from './admin.js?v=1791020000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791140000000';
+import { showToast } from './admin.js?v=1791140000000';
 
 let roundsData = [];
 let leaguesData = [];
@@ -790,20 +790,8 @@ const openViewRoundGamesModal = (idx) => {
         subTitleEl.innerText = `${getDisplayLeagueName(round)} (${getDisplaySeason(round)})${dateRange}`;
     }
 
-    const targetSeasonKey = round.seasonKey || (Store.getData()?.currentSeason || '2022/2023');
-    let allSeasonMatches = Store.getMatches(targetSeasonKey) || [];
-
-    // Fallback: If no matches in targetSeasonKey, search across all seasons
-    if (allSeasonMatches.length === 0) {
-        const fullData = Store.getData();
-        if (fullData && fullData.seasons) {
-            for (let sKey in fullData.seasons) {
-                if (fullData.seasons[sKey]?.matches) {
-                    allSeasonMatches = allSeasonMatches.concat(fullData.seasons[sKey].matches);
-                }
-            }
-        }
-    }
+    const targetSeasonKey = round.seasonKey || (Store.getData()?.currentSeason || '2026/2027');
+    const allSeasonMatches = Store.getMatches(targetSeasonKey) || [];
 
     const roundNumStr = String(round.runde || '').trim();
     const roundMatches = allSeasonMatches.filter(m => {

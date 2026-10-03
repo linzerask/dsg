@@ -1,11 +1,11 @@
-import { Store } from '../store.js?v=1791070000000';
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1791070000000';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1791070000000';
-import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1791070000000';
-import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1791070000000';
-import { renderAdminGames, initAdminGames } from './adminGames.js?v=1791120000000';
-import { renderAdminNews, initAdminNews } from './adminNews.js?v=1791070000000';
-import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1791070000000';
+import { Store } from '../store.js?v=1791140000000';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1791140000000';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1791140000000';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1791140000000';
+import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1791140000000';
+import { renderAdminGames, initAdminGames } from './adminGames.js?v=1791140000000';
+import { renderAdminNews, initAdminNews } from './adminNews.js?v=1791140000000';
+import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1791140000000';
 
 export const showToast = (message, isError = false) => {
   let toast = document.getElementById('dsg-admin-toast');
@@ -383,7 +383,7 @@ export const bindAdmin = () => {
   // Populate Teams & Seasons
   const data = Store.getData();
   const seasons = Object.keys(data.seasons || {});
-  const activeSeason = data.currentSeason || seasons[0] || "2022/2023";
+  const activeSeason = data.currentSeason || seasons[0] || "2026/2027";
   const matchSeasonSelect = document.getElementById('match-season');
   const matchListSeasonSelect = document.getElementById('match-list-season');
   const teamSeasonSelect = document.getElementById('team-season-select');
