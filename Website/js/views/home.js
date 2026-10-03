@@ -28,7 +28,7 @@ export const viewHome = () => {
 
   const rawScorers = defaultHomeSeason ? ((Store.getStats(defaultHomeSeason) || { topScorers: [] }).topScorers || []) : [];
   const sortedScorers = [...rawScorers].sort((a, b) => (b.goals || 0) - (a.goals || 0));
-  const scorers = sortedScorers.slice(0, 4);
+  const scorers = sortedScorers.slice(0, 5);
 
   const news = Store.getNews().slice(0, 3);
   const allMatches = defaultHomeSeason ? (Store.getMatches(defaultHomeSeason) || []) : [];
@@ -414,7 +414,7 @@ export const viewHome = () => {
             ${scorerRows}
           </div>
           <div style="margin-top: var(--space-lg); text-align: right;">
-            <a href="#/statistiken" class="text-btn">Alle Statistiken &rarr;</a>
+            <a href="#/liga?tab=stats" class="text-btn">Zu den Statistiken &rarr;</a>
           </div>
         </div>
       </div>

@@ -982,6 +982,19 @@ export function bindLigaTabs() {
     });
   });
 
+  // Auto-switch tab if URL hash contains query like ?tab=stats or ?tab=spiele
+  try {
+    const hash = window.location.hash || '';
+    if (hash.includes('tab=stats') || hash.includes('tab=statistiken')) {
+      const statsBtn = document.querySelector('.tab-btn[data-target="stats"]');
+      if (statsBtn) statsBtn.click();
+    } else if (hash.includes('tab=spiele')) {
+      const spieleBtn = document.querySelector('.tab-btn[data-target="spiele"]');
+      if (spieleBtn) spieleBtn.click();
+    }
+  } catch(e) {}
+
+
   // Slider Logic with Dropdown & Arrow synchronization
   const slides = document.querySelectorAll('.round-slide');
   const maxRound = slides.length - 1;
