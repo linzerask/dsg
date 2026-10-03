@@ -757,6 +757,8 @@ export function viewLiga() {
         return `<span class="team-red-cards" title="${count > 1 ? count + ' Platzverweise' : 'Platzverweis'}">${cards}</span>`;
       };
 
+      const matchVenue = (m.location || m.venue || m.ort || '').trim();
+
       return `
       <div class="match-card glass-card ${hasEvents ? 'has-events-accordion' : ''}">
         <div class="match-card-meta">
@@ -765,17 +767,18 @@ export function viewLiga() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               ${weekdayStr}${m.date}${m.time ? ' • ' + m.time + ' Uhr' : ''}
             </span>
-            ${m.venue ? `
+            ${matchVenue ? `
               <span class="match-meta-item hide-mobile">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                ${m.venue}
+                ${matchVenue}
               </span>
             ` : ''}
           </div>
           <div class="match-meta-right">
-            ${m.venue ? `
+            ${matchVenue ? `
               <span class="match-meta-item show-mobile" style="opacity: 0.85;">
-                ${m.venue}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px; vertical-align: middle;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                ${matchVenue}
               </span>
             ` : ''}
             ${hasEvents ? `
