@@ -1,6 +1,7 @@
-﻿import { Store, sanitizeMojibake } from '../store.js?v=1791178000000';
-import { renderIcon } from '../icons.js?v=1791178000000';
-import { renderTeamLogo } from '../logos.js?v=1791178000000';
+import { Store, sanitizeMojibake } from '../store.js?v=1791179000000';
+import { renderIcon } from '../icons.js?v=1791179000000';
+import { renderTeamLogo } from '../logos.js?v=1791179000000';
+import { getPlayerLink } from '../playerUtils.js?v=1791179000000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -517,16 +518,18 @@ export const renderScorersTableRows = (pageScorers) => {
     else if (s.rank === 2) badge = `${renderIcon('medal', { size: 14, color: '#94a3b8', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
     else if (s.rank === 3) badge = `${renderIcon('medal', { size: 14, color: '#b45309', style: 'vertical-align: -2px; margin-right: 4px;' })}`;
 
+    const pLink = getPlayerLink(s.name, s.teams[0] || '');
+
     return `
       <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.95rem;">
         <td style="padding: 12px 10px; font-weight: 700; color: ${s.rank <= 3 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">
           ${badge}${s.rank}.
         </td>
         <td style="padding: 12px 10px; font-weight: 600; color: var(--color-text-primary);">
-          ${s.name}
+          <a href="${pLink}" class="player-link" style="display: inline-block;">${s.name}</a>
         </td>
         <td style="padding: 12px 10px; color: var(--color-text-secondary); font-size: 0.88rem;">
-          ${s.teams.join(', ') || '-'}
+          ${s.teams.map(t => `<a href="#/teams?team=${encodeURIComponent(t)}" class="team-link">${t}</a>`).join(', ') || '-'}
         </td>
         <td style="padding: 12px 10px; text-align: center; color: var(--color-text-secondary);">
           ${s.seasonsCount}
@@ -562,6 +565,8 @@ export const renderScorersMobileCards = (pageScorers) => {
       icon = `${renderIcon('medal', { size: 14, color: '#b45309', style: 'margin-right: 2px;' })}`;
     }
 
+    const pLink = getPlayerLink(s.name, s.teams[0] || '');
+
     return `
       <div class="glass-card" style="padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; border: 1px solid var(--color-border); gap: 10px;">
         <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; min-width: 0; flex: 1;">
@@ -569,9 +574,9 @@ export const renderScorersMobileCards = (pageScorers) => {
             ${icon}${s.rank}
           </div>
           <div style="display: flex; flex-direction: column; min-width: 0; overflow: hidden;">
-            <strong style="color: var(--color-text-primary); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.name}</strong>
+            <a href="${pLink}" class="player-link" style="color: var(--color-text-primary); font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${s.name}</a>
             <div style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-              <span style="overflow: hidden; text-overflow: ellipsis;">${s.teams.join(', ') || '-'}</span>
+              <span style="overflow: hidden; text-overflow: ellipsis;">${s.teams.map(t => `<a href="#/teams?team=${encodeURIComponent(t)}" class="team-link">${t}</a>`).join(', ') || '-'}</span>
               <span>&bull;</span>
               <span style="flex-shrink: 0;">${s.seasonsCount} ${s.seasonsCount === 1 ? 'Saison' : 'Saisons'}</span>
             </div>
@@ -660,8 +665,10 @@ export const renderClubsTableRows = (filteredClubs) => {
       <td style="padding: 10px; font-weight: 700; color: var(--color-text-primary);">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
           <div style="display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden;">
-            ${renderTeamLogo(c.name, 'sm')}
-            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name} ${c.titles > 0 ? `<span title="${c.titles}x Meister" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.85rem; color: #f59e0b; margin-left: 6px;">${renderIcon('trophy', { size: 15, color: '#f59e0b' })} ${c.titles > 1 ? c.titles + 'x' : ''}</span>` : ''}</span>
+            <a href="#/teams?team=${encodeURIComponent(c.name)}" class="team-link" style="display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; text-decoration: none;" onclick="event.stopPropagation();">
+              ${renderTeamLogo(c.name, 'sm')}
+              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name} ${c.titles > 0 ? `<span title="${c.titles}x Meister" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.85rem; color: #f59e0b; margin-left: 6px;">${renderIcon('trophy', { size: 15, color: '#f59e0b' })} ${c.titles > 1 ? c.titles + 'x' : ''}</span>` : ''}</span>
+            </a>
           </div>
           <svg class="stats-club-chevron show-mobile" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); transition: transform 0.2s; flex-shrink: 0;"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>

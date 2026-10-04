@@ -1,5 +1,5 @@
-﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791178000000';
-import { showToast } from './admin.js?v=1791178000000';
+﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791179000000';
+import { showToast } from './admin.js?v=1791179000000';
 
 let playersData = [];
 let teamsData = [];
@@ -132,6 +132,23 @@ export const renderAdminPlayers = () => {
                                 <option value="Inaktiv">Inaktiv</option>
                                 <option value="Archiviert">Archiviert</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Position (optional)</label>
+                            <select id="edit-position" class="admin-input" style="width: 100%;">
+                                <option value="">-- Nicht angegeben --</option>
+                                <option value="Torwart">Torwart</option>
+                                <option value="Abwehr">Abwehr</option>
+                                <option value="Mittelfeld">Mittelfeld</option>
+                                <option value="Sturm">Sturm</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Foto / Avatar URL (optional)</label>
+                            <input type="text" id="edit-photo-url" class="admin-input" placeholder="z.B. Spieler/1.jpg oder https://..." style="width: 100%;">
                         </div>
                     </div>
 
@@ -406,6 +423,8 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-mitglied').value = p.Mitglied === 'Nein' ? 'Nein' : 'Ja';
         document.getElementById('edit-seit').value = formatDateForInput(p.seit);
         document.getElementById('edit-status').value = p.Status || 'Aktiv';
+        document.getElementById('edit-position').value = p.Position || p.position || '';
+        document.getElementById('edit-photo-url').value = p.photoUrl || p.foto || p.avatar || '';
         document.getElementById('edit-ofb').value = p['ÖFB-Verein'] || '';
         document.getElementById('edit-sperre').value = p.Sperre || '';
         if (deleteBtn) deleteBtn.style.display = 'block';
@@ -416,6 +435,8 @@ const openEditModal = (idx = null) => {
         document.getElementById('player-edit-form').reset();
         document.getElementById('edit-mitglied').value = 'Ja';
         document.getElementById('edit-status').value = 'Aktiv';
+        document.getElementById('edit-position').value = '';
+        document.getElementById('edit-photo-url').value = '';
         document.getElementById('edit-seit').value = new Date().toISOString().split('T')[0];
         document.getElementById('edit-ofb').value = '';
         document.getElementById('edit-sperre').value = '';
@@ -626,6 +647,8 @@ const bindEvents = () => {
                 Mitglied: document.getElementById('edit-mitglied').value,
                 seit: document.getElementById('edit-seit').value || new Date().toISOString().split('T')[0],
                 Status: document.getElementById('edit-status').value,
+                Position: document.getElementById('edit-position').value,
+                photoUrl: document.getElementById('edit-photo-url').value.trim(),
                 'ÖFB-Verein': document.getElementById('edit-ofb').value.trim(),
                 Sperre: document.getElementById('edit-sperre').value.trim(),
                 Team: document.getElementById('edit-team').value
@@ -664,3 +687,4 @@ const bindEvents = () => {
         };
     });
 };
+

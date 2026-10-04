@@ -1,5 +1,5 @@
-﻿import { Store } from '../store.js?v=1791178000000';
-import { renderNewsFallbackHeader } from '../logos.js?v=1791178000000';
+﻿import { Store } from '../store.js?v=1791179000000';
+import { renderNewsFallbackHeader } from '../logos.js?v=1791179000000';
 
 export const sanitizeArticleContent = (html) => {
   if (!html) return '';
@@ -205,3 +205,4 @@ export const bindArticle = () => {
     }
   }
 };
+

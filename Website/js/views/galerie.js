@@ -1,4 +1,4 @@
-﻿import { Store } from '../store.js?v=1791178000000';
+﻿import { Store } from '../store.js?v=1791179000000';
 export let currentEvent = null;
 let currentLightboxIndex = 0;
 let currentImages = [];
@@ -201,3 +201,4 @@ export const bindGalerie = () => {
     });
   }
 };
+

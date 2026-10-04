@@ -1,5 +1,5 @@
-﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791178000000';
-import { showToast } from './admin.js?v=1791178000000';
+﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791179000000';
+import { showToast } from './admin.js?v=1791179000000';
 
 let roundsData = [];
 let leaguesData = [];
@@ -1308,3 +1308,4 @@ export const initAdminRounds = async () => {
         };
     }
 };
+

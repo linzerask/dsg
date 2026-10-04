@@ -1,18 +1,24 @@
-﻿import { viewHome, bindHome } from './views/home.js?v=1791178000000';
-import { viewNews, bindNews } from './views/news.js?v=1791178000000';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1791178000000';
-import { viewArchiv } from './views/simpleViews.js?v=1791178000000';
-import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1791178000000';
-import { viewGalerie, bindGalerie } from './views/galerie.js?v=1791178000000';
-import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1791178000000';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1791178000000';
-import { viewArticle, bindArticle } from './views/article.js?v=1791178000000';
-import { viewImpressum } from './views/impressum.js?v=1791178000000';
-import { viewDatenschutz } from './views/datenschutz.js?v=1791178000000';
+﻿import { viewHome, bindHome } from './views/home.js?v=1791179000000';
+import { viewNews, bindNews } from './views/news.js?v=1791179000000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1791179000000';
+import { viewSpieler, bindSpieler } from './views/spieler.js?v=1791179000000';
+import { viewTeams, bindTeams } from './views/teams.js?v=1791179000000';
+import { viewArchiv } from './views/simpleViews.js?v=1791179000000';
+import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1791179000000';
+import { viewGalerie, bindGalerie } from './views/galerie.js?v=1791179000000';
+import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1791179000000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1791179000000';
+import { viewArticle, bindArticle } from './views/article.js?v=1791179000000';
+import { viewImpressum } from './views/impressum.js?v=1791179000000';
+import { viewDatenschutz } from './views/datenschutz.js?v=1791179000000';
 
 const routes = {
   '/': { render: () => viewHome(), bind: () => bindHome() },
   '/liga': { render: () => viewLiga(), bind: () => bindLigaTabs() },
+  '/teams': { render: () => viewTeams(), bind: () => bindTeams() },
+  '/vereine': { render: () => viewTeams(), bind: () => bindTeams() },
+  '/spieler': { render: () => viewSpieler(), bind: () => bindSpieler() },
+  '/kader': { render: () => viewSpieler(), bind: () => bindSpieler() },
   '/news': { render: () => viewNews(), bind: () => bindNews() },
   '/statistiken': { render: () => viewStatistiken(), bind: () => bindStatistiken() },
   '/organisation': { render: () => viewOrganisation(), bind: () => bindOrganisation() },
@@ -197,3 +203,4 @@ export const Router = {
     }
   }
 };
+

@@ -129,7 +129,7 @@
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1791178000000';
+const DATA_VERSION_STRING = '?v=1791179000000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -1859,6 +1859,12 @@ export const Store = {
     window.dispatchEvent(new CustomEvent('rounds-updated'));
   },
 
+  getAdminPlayersSync() {
+    const local = loadLocal('dsg_admin_players', 13);
+    if (local && Array.isArray(local) && local.length > 0) return local;
+    return [];
+  },
+
   async getAdminPlayers() {
     const local = loadLocal('dsg_admin_players', 13);
     if (local && local.length > 0) return local;
@@ -2081,3 +2087,4 @@ export const Store = {
 if (typeof window !== 'undefined') {
   Store.init();
 }
+
