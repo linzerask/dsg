@@ -1,5 +1,13 @@
-﻿import { Store } from '../store.js?v=1791176000000';
-import { renderNewsFallbackHeader } from '../logos.js?v=1791176000000';
+﻿import { Store } from '../store.js?v=1791177000000';
+import { renderNewsFallbackHeader } from '../logos.js?v=1791177000000';
+
+export const sanitizeArticleContent = (html) => {
+  if (!html) return '';
+  return html
+    .replace(/padding-inline:\s*[^;"]+;?/gi, '')
+    .replace(/font-family:\s*futura-lt-w01-light[^;"]*;?/gi, '')
+    .replace(/color:\s*rgb\(65,\s*65,\s*65\);?/gi, '');
+};
 
 export const viewArticle = (id) => {
   const article = Store.getArticle(id);
@@ -39,6 +47,8 @@ export const viewArticle = (id) => {
     ? `background-image: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.3)), url('${article.image}');`
     : `background: linear-gradient(135deg, #0b2d18 0%, #06190e 100%);`;
 
+  const safeContent = sanitizeArticleContent(article.content);
+
   return `
     <div class="reading-progress-bar" id="reading-progress"></div>
     
@@ -53,7 +63,7 @@ export const viewArticle = (id) => {
 
       <div class="container">
         <div class="article-body stagger-item">
-          ${article.content}
+          ${safeContent}
         </div>
 
         ${galleryHTML}

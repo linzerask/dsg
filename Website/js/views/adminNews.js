@@ -1,7 +1,7 @@
-﻿import { Store } from '../store.js?v=1791176000000';
-import { storage } from '../firebase.js?v=1791176000000';
+﻿import { Store } from '../store.js?v=1791177000000';
+import { storage } from '../firebase.js?v=1791177000000';
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-storage.js";
-import { renderIcon } from '../icons.js?v=1791176000000';
+import { renderIcon } from '../icons.js?v=1791177000000';
 
 let stagedImages = []; // Array of { id, url, isCover, loading, fileName }
 let editingArticleId = null;
@@ -571,13 +571,19 @@ export const initAdminNews = () => {
       const readMinutes = Math.max(1, Math.ceil(words / 180));
       const readTime = `${readMinutes} min read`;
 
+      // Clean external CMS markup & paddings
+      const cleanContent = htmlContent
+        .replace(/padding-inline:\s*[^;"]+;?/gi, '')
+        .replace(/font-family:\s*futura-lt-w01-light[^;"]*;?/gi, '')
+        .replace(/color:\s*rgb\(65,\s*65,\s*65\);?/gi, '');
+
       if (id) {
         // Update existing article
-        Store.updateNews(id, title, excerpt, htmlContent, coverImage, galleryArray, author, date, readTime);
+        Store.updateNews(id, title, excerpt, cleanContent, coverImage, galleryArray, author, date, readTime);
         showToast('Artikel erfolgreich aktualisiert!');
       } else {
         // Create new article
-        Store.addNews(title, excerpt, htmlContent, coverImage, galleryArray, author, date, readTime);
+        Store.addNews(title, excerpt, cleanContent, coverImage, galleryArray, author, date, readTime);
         showToast('Artikel erfolgreich veröffentlicht!');
       }
 

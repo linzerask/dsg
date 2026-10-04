@@ -838,6 +838,26 @@ main {
   max-width: 800px;
   margin: 0 auto var(--space-xl);
   padding: 0 var(--space-md);
+  box-sizing: border-box;
+}
+
+/* Deep Reset for External CMS / Pasted HTML (Wix, WordPress, etc.) */
+.article-body [data-breakout],
+.article-body [data-hook],
+.article-body [data-ricos-paragraph],
+.article-body [data-ricos-container],
+.article-body [data-custom-style],
+.article-body div,
+.article-body p,
+.article-body section {
+  padding-inline: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: 100% !important;
+  width: auto !important;
+  box-sizing: border-box !important;
 }
 
 .article-body p,
@@ -892,6 +912,22 @@ main {
   border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
   font-style: italic;
   color: var(--color-text-primary);
+}
+
+@media (max-width: 768px) {
+  .article-hero {
+    min-height: 260px;
+    height: auto;
+    padding-top: 90px;
+  }
+  .article-hero-content {
+    padding: var(--space-lg) var(--space-sm);
+  }
+  .article-body {
+    padding: 0 var(--space-sm) !important;
+    font-size: 1rem;
+    line-height: 1.75;
+  }
 }
 
 /* Dark Mode High-Contrast Overrides (Fix for pasted HTML with dark inline colors) */
