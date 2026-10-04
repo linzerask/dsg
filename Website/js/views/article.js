@@ -1,4 +1,5 @@
-﻿import { Store } from '../store.js?v=1791170000000';
+﻿import { Store } from '../store.js?v=1791171000000';
+import { renderNewsFallbackHeader } from '../logos.js?v=1791171000000';
 
 export const viewArticle = (id) => {
   const article = Store.getArticle(id);
@@ -90,7 +91,7 @@ export const viewArticle = (id) => {
               const hasRelImg = a.image && a.image.trim() !== '' && a.image !== 'dsg.avif';
               return `
               <a href="#/article/${a.id}" class="related-card glass-card">
-                ${hasRelImg ? `<img src="${a.image}" alt="${a.title}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">` : `<div style="width: 100%; height: 100px; border-radius: 4px; margin-bottom: 10px; background: linear-gradient(135deg, #0b2d18, #06190e); display:flex; align-items:center; justify-content:center; color: var(--color-accent); font-weight:700; font-size:0.85rem;">DSG LIGA</div>`}
+                ${hasRelImg ? `<img src="${a.image}" alt="${a.title}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">` : `<div style="margin-bottom: 10px; border-radius: 4px; overflow: hidden;">${renderNewsFallbackHeader('NEWSLETTER')}</div>`}
                 <h4>${a.title}</h4>
               </a>
             `;

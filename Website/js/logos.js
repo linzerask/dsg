@@ -1,5 +1,5 @@
 ﻿// Team Logos & Default Badges Resolver
-import { Store } from './store.js?v=1791170000000';
+import { Store } from './store.js?v=1791171000000';
 
 export const DEFAULT_BADGES = [
   'Logos/Ready/standard/default/shield_01_classic_heater.png',
@@ -99,3 +99,34 @@ export function renderTeamLogo(teamName, size = 'sm', extraClass = '') {
   const fallback = getDefaultBadge(name);
   return `<img src="${url}" alt="${name || 'Team'}" class="team-logo team-logo-${size} ${extraClass}" onerror="this.onerror=null; this.src='${fallback}';" loading="lazy" />`;
 }
+
+export function renderNewsFallbackHeader(tag = 'NEWSLETTER') {
+  return `
+    <div class="news-fallback-header">
+      <svg class="pitch-svg" viewBox="0 0 350 180" fill="none" stroke="rgba(255, 255, 255, 0.9)" stroke-width="1.5">
+        <rect x="20" y="15" width="310" height="150" rx="2" />
+        <line x1="175" y1="15" x2="175" y2="165" />
+        <circle cx="175" cy="90" r="36" />
+        <circle cx="175" cy="90" r="2.5" fill="white" />
+        <rect x="20" y="45" width="55" height="90" />
+        <rect x="20" y="65" width="20" height="50" />
+        <circle cx="58" cy="90" r="2" fill="white" />
+        <path d="M 75 72 A 32 32 0 0 1 75 108" />
+        <rect x="10" y="72" width="10" height="36" stroke-dasharray="2 2" opacity="0.5" />
+        <rect x="275" y="45" width="55" height="90" />
+        <rect x="310" y="65" width="20" height="50" />
+        <circle cx="292" cy="90" r="2" fill="white" />
+        <path d="M 275 72 A 32 32 0 0 0 275 108" />
+        <rect x="330" y="72" width="10" height="36" stroke-dasharray="2 2" opacity="0.5" />
+        <path d="M 20 23 A 8 8 0 0 0 28 15" />
+        <path d="M 20 157 A 8 8 0 0 1 28 165" />
+        <path d="M 330 23 A 8 8 0 0 1 322 15" />
+        <path d="M 330 157 A 8 8 0 0 0 322 165" />
+      </svg>
+      <img class="news-fallback-logo" src="Logos/Ready/standard/DSGLiga_white.png" alt="DSG Liga">
+      <div class="news-fallback-tag">${tag}</div>
+      <div class="news-fallback-accent"></div>
+    </div>
+  `;
+}
+

@@ -1,7 +1,7 @@
-﻿import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791170000000';
-import { computeAllTimeStats } from './statistiken.js?v=1791170000000';
-import { renderIcon } from '../icons.js?v=1791170000000';
-import { renderTeamLogo } from '../logos.js?v=1791170000000';
+﻿import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791171000000';
+import { computeAllTimeStats } from './statistiken.js?v=1791171000000';
+import { renderIcon } from '../icons.js?v=1791171000000';
+import { renderTeamLogo, renderNewsFallbackHeader } from '../logos.js?v=1791171000000';
 
 export const viewHome = () => {
   const data = Store.getData();
@@ -196,19 +196,22 @@ export const viewHome = () => {
   }).join('') : '<p style="color: var(--color-text-secondary); font-size: 0.9rem; padding: 12px 0; text-align: center;">Noch keine Torschützen vorhanden.</p>';
 
   // Render News
-  const newsCards = news.map(n => `
+  const newsCards = news.map(n => {
+    const hasImage = n.image && n.image.trim() !== '' && n.image !== 'dsg.avif';
+    return `
     <a href="#/article/${n.id}" class="glass-card news-card stagger-item" style="display: flex; flex-direction: column; overflow: hidden; text-decoration: none;">
-      ${(n.image && n.image !== 'dsg.avif') ? `
+      ${hasImage ? `
         <div style="width: 100%; height: 160px; overflow: hidden; border-radius: 4px; margin-bottom: var(--space-sm);">
           <img src="${n.image}" alt="${n.title}" style="width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-fast);">
         </div>
-      ` : ''}
+      ` : renderNewsFallbackHeader('NEWSLETTER')}
       <div style="font-size: 0.75rem; color: var(--color-accent); font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">${n.date || ''}</div>
       <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: var(--space-xs); color: var(--color-text-primary);">${n.title}</h3>
       ${(n.excerpt || (n.content ? n.content.replace(/<[^>]+>/g, ' ').substring(0, 120) + '...' : '')) ? `<p style="color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md); flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${n.excerpt || n.content.replace(/<[^>]+>/g, ' ').substring(0, 120) + '...'}</p>` : '<div style="flex-grow: 1;"></div>'}
       <span class="text-btn" style="align-self: flex-start; margin-top: auto; color: var(--color-accent); font-weight: 600;">Mehr lesen &rarr;</span>
     </a>
-  `).join('');
+  `;
+  }).join('');
 
   // Render Upcoming Featured Match Banner
   let upcomingMatchHtml = '';

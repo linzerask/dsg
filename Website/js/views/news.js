@@ -1,11 +1,14 @@
-﻿import { Store } from '../store.js?v=1791170000000';
+﻿import { Store } from '../store.js?v=1791171000000';
+import { renderNewsFallbackHeader } from '../logos.js?v=1791171000000';
 
-const renderCard = (n) => `
+const renderCard = (n) => {
+  const hasImage = n.image && n.image.trim() !== '' && n.image !== 'dsg.avif';
+  return `
     <div class="glass-card stagger-item news-item-card">
-      ${(n.image && n.image !== 'dsg.avif') ? `
+      ${hasImage ? `
       <a href="#/article/${n.id}" class="news-img-link" aria-label="${n.title}" style="display: block; position: relative; overflow: hidden; border-radius: 6px; margin-bottom: var(--space-sm); text-decoration: none; cursor: pointer;">
         <img src="${n.image}" alt="${n.title}" style="width: 100%; height: 200px; object-fit: cover; display: block; transition: transform var(--transition-smooth);">
-      </a>` : ''}
+      </a>` : `<a href="#/article/${n.id}" class="news-img-link" aria-label="${n.title}" style="display: block; text-decoration: none; cursor: pointer;">${renderNewsFallbackHeader('NEWSLETTER')}</a>`}
       <div style="font-size: 0.8rem; color: var(--color-accent); font-weight: 700; margin-bottom: var(--space-xs); text-transform: uppercase; letter-spacing: 0.5px;">${n.date} &bull; ${n.readTime || ''}</div>
       <h3 style="margin-bottom: var(--space-sm); font-size: 1.2rem; line-height: 1.3;">
         <a href="#/article/${n.id}" class="news-title-link" style="color: inherit; text-decoration: none; transition: color var(--transition-fast); display: inline-block; cursor: pointer;">
