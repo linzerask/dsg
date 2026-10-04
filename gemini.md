@@ -97,6 +97,19 @@ For each round (e.g. Runde 4, 5, 6, 7, 8...), the following wallpaper types are 
 - **No Unwanted Default Images:** Never auto-assign placeholder/logo images (`dsg.avif`) to newly created articles. If no image was selected by the admin, store `image: ''`.
 - **Branded Pitch News Fallback Header:** When an article has no uploaded image (`!article.image || article.image === 'dsg.avif'`), render the standard authentic football pitch fallback header (`renderNewsFallbackHeader('NEWSLETTER')` via `logos.js`) featuring the official white DSG Liga logo (`Logos/Ready/standard/DSGLiga_white.png`), authentic pitch geometry, emerald radial gradient, glassmorphic `NEWSLETTER` tag, and bottom accent line.
 - **Graceful Image-less Rendering:** All article cards and detail views (`article.js`, `news.js`, `home.js`, `adminNews.js`) must check `a.image && a.image.trim() !== '' && a.image !== 'dsg.avif'` before rendering image elements or hero backgrounds.
-- **Cache Busting Protocol:** Any modifications to client-side JS or HTML files must increment the global version query string (e.g. `?v=1791171000000`) across all import declarations and script tags.
+- **Cache Busting Protocol:** Any modifications to client-side JS or HTML files must increment the global version query string (e.g. `?v=1791176000000`) across all import declarations and script tags.
+
+---
+
+## 8. Dynamic Monochrome Team Logos & Admin Upload Standard
+- **Monochrome Logo Directory:** `Website/Logos/monochrome/` contains the white vector transparent PNG logos for the active teams (`croatia.png`, `dsgtraun.png`, `etehad.png`, `fcgornjak.png`, `oed.png`, `unionheiligenberg.png`, `walker.png`).
+- **Dynamic Light/Dark Mode Color Switching:**
+  - **Light Mode:** Rendered in sharp black/charcoal via `.team-logo-monochrome` (`filter: brightness(0) opacity(0.88)`).
+  - **Dark Mode:** Rendered in pure radiant white via `[data-theme="dark"] .team-logo-monochrome` (`filter: brightness(0) invert(1) opacity(0.95)`).
+- **Universal Application:** Applied across all views: League Tables, Matchdays/Spiele, Topspiel Banner, Scorers, All-Time Stats (Ewige Tabelle), and Admin Panel.
+- **Admin Teams Management:**
+  - Standard Color Logo upload (`logoUrl`) and Monochrome Logo upload (`monochromeLogoUrl`) are both available with live previews and delete options in the Admin Teams tab (`adminTeams.js`).
+  - Fallbacks gracefully handle historical teams and custom uploaded badges without missing assets.
+
 
 
