@@ -1,5 +1,5 @@
-﻿import { Store } from '../store.js?v=1791177000000';
-import { renderNewsFallbackHeader } from '../logos.js?v=1791177000000';
+﻿import { Store } from '../store.js?v=1791178000000';
+import { renderNewsFallbackHeader } from '../logos.js?v=1791178000000';
 
 export const sanitizeArticleContent = (html) => {
   if (!html) return '';

@@ -1,5 +1,5 @@
 ﻿// Team Logos & Default Badges Resolver
-import { Store } from './store.js?v=1791177000000';
+import { Store } from './store.js?v=1791178000000';
 
 export const DEFAULT_BADGES = [
   'Logos/Ready/standard/default/shield_01_classic_heater.png',
@@ -98,32 +98,32 @@ export function getTeamLogoData(teamName) {
     return { url: custom, isMonochrome: false, isFallback: false };
   }
 
-  // 3. Check preset monochrome logos for active teams
+  // 3. Check preset monochrome logos (14 active and historic teams)
   const norm = rawName.toLowerCase()
-    .replace(/Ã¤/g, 'ae')
-    .replace(/Ã¶/g, 'oe')
-    .replace(/Ã¼/g, 'ue')
-    .replace(/ÃŸ/g, 'ss')
+    .replace(/ä|ae|ã¤/g, 'ae')
+    .replace(/ö|oe|ã¶/g, 'oe')
+    .replace(/ü|ue|ã¼/g, 'ue')
+    .replace(/ß|ss|ãŸ/g, 'ss')
     .replace(/[^a-z0-9]/g, '');
 
   if (norm.includes('croatia')) return { url: 'Logos/monochrome/croatia.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('auberg')) return { url: 'Logos/monochrome/dsgauberg.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('froschberg')) return { url: 'Logos/monochrome/dsgfroschberg.png', isMonochrome: true, isFallback: false };
   if (norm.includes('traun')) return { url: 'Logos/monochrome/dsgtraun.png', isMonochrome: true, isFallback: false };
   if (norm.includes('etehad')) return { url: 'Logos/monochrome/etehad.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('bruck')) return { url: 'Logos/monochrome/fcbruck.png', isMonochrome: true, isFallback: false };
   if (norm.includes('gornjak')) return { url: 'Logos/monochrome/fcgornjak.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('hinzenbach')) return { url: 'Logos/monochrome/fchinzenbach.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('geboltskirchen')) return { url: 'Logos/monochrome/geboltskirchen.png', isMonochrome: true, isFallback: false };
   if (norm.includes('oed') || norm.includes('josef')) return { url: 'Logos/monochrome/oed.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('schleissheim') || norm.includes('schleisheim')) return { url: 'Logos/monochrome/schleissheim.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('goldwoerth') || norm.includes('goldworth') || norm.includes('goldw')) return { url: 'Logos/monochrome/uniongoldwoerth.png', isMonochrome: true, isFallback: false };
   if (norm.includes('heiligenberg')) return { url: 'Logos/monochrome/unionheiligenberg.png', isMonochrome: true, isFallback: false };
   if (norm.includes('walker')) return { url: 'Logos/monochrome/walker.png', isMonochrome: true, isFallback: false };
 
   // 4. Other historic/preset standard logos
-  if (norm.includes('auberg')) return { url: 'Logos/Ready/standard/dsgauberg.png', isMonochrome: false, isFallback: false };
-  if (norm.includes('froschberg')) return { url: 'Logos/Ready/standard/dsgfroschberg.png', isMonochrome: false, isFallback: false };
   if (norm.includes('thalheim')) return { url: 'Logos/Ready/standard/dsgthalheim.png', isMonochrome: false, isFallback: false };
   if (norm.includes('eschenau')) return { url: 'Logos/Ready/standard/eschenau.png', isMonochrome: false, isFallback: false };
-  if (norm.includes('bruck')) return { url: 'Logos/Ready/standard/fcbruck.png', isMonochrome: false, isFallback: false };
-  if (norm.includes('hinzenbach')) return { url: 'Logos/Ready/standard/fchinzenbach.png', isMonochrome: false, isFallback: false };
-  if (norm.includes('geboltskirchen')) return { url: 'Logos/Ready/standard/geboltskirchen.png', isMonochrome: false, isFallback: false };
-  if (norm.includes('schleissheim') || norm.includes('schleisheim')) return { url: 'Logos/Ready/standard/schleissheim.png', isMonochrome: false, isFallback: false };
-  if (norm.includes('goldwoerth') || norm.includes('goldworth')) return { url: 'Logos/Ready/standard/uniongoldwoerth.png', isMonochrome: false, isFallback: false };
 
   // 5. Deterministic default shield badge fallback
   return { url: getDefaultBadge(rawName), isMonochrome: false, isFallback: true };
