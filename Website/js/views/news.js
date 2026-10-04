@@ -1,5 +1,5 @@
-﻿import { Store } from '../store.js?v=1791171000000';
-import { renderNewsFallbackHeader } from '../logos.js?v=1791171000000';
+﻿import { Store } from '../store.js?v=1791172000000';
+import { renderNewsFallbackHeader } from '../logos.js?v=1791172000000';
 
 const renderCard = (n) => {
   const hasImage = n.image && n.image.trim() !== '' && n.image !== 'dsg.avif';
@@ -20,7 +20,8 @@ const renderCard = (n) => {
       </div>
       <a href="#/article/${n.id}" class="text-btn" style="margin-top: auto; display: inline-block; color: var(--color-accent); font-weight: 600;">Weiterlesen &rarr;</a>
     </div>
-`;
+  `;
+};
 
 export const viewNews = () => {
   const news = Store.getNews();
