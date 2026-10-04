@@ -1,8 +1,8 @@
-import { Store } from '../store.js?v=1791160000000';
+﻿import { Store } from '../store.js?v=1791170000000';
 
 const renderCard = (n) => `
     <div class="glass-card stagger-item news-item-card">
-      ${n.image ? `
+      ${(n.image && n.image !== 'dsg.avif') ? `
       <a href="#/article/${n.id}" class="news-img-link" aria-label="${n.title}" style="display: block; position: relative; overflow: hidden; border-radius: 6px; margin-bottom: var(--space-sm); text-decoration: none; cursor: pointer;">
         <img src="${n.image}" alt="${n.title}" style="width: 100%; height: 200px; object-fit: cover; display: block; transition: transform var(--transition-smooth);">
       </a>` : ''}

@@ -1,6 +1,6 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791160000000';
-import { showToast } from './admin.js?v=1791160000000';
-import { renderTeamLogo, getTeamLogoUrl, getDefaultBadge } from '../logos.js?v=1791160000000';
+﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791170000000';
+import { showToast } from './admin.js?v=1791170000000';
+import { renderTeamLogo, getTeamLogoUrl, getDefaultBadge } from '../logos.js?v=1791170000000';
 
 let teamsData = [];
 let filteredData = [];

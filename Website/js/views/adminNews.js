@@ -1,7 +1,7 @@
-import { Store } from '../store.js?v=1791160000000';
-import { storage } from '../firebase.js?v=1791160000000';
+﻿import { Store } from '../store.js?v=1791170000000';
+import { storage } from '../firebase.js?v=1791170000000';
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-storage.js";
-import { renderIcon } from '../icons.js?v=1791160000000';
+import { renderIcon } from '../icons.js?v=1791170000000';
 
 let stagedImages = []; // Array of { id, url, isCover, loading, fileName }
 let editingArticleId = null;
@@ -529,7 +529,8 @@ export const initAdminNews = () => {
     const title = document.getElementById('news-title').value.trim();
     const author = document.getElementById('news-author').value.trim() || 'DSG Redaktion';
     const date = document.getElementById('news-date').value || new Date().toISOString().split('T')[0];
-    const htmlContent = editor.innerHTML.trim();
+    const liveEditor = document.getElementById('rte-editor') || editor;
+    const htmlContent = liveEditor ? liveEditor.innerHTML.trim() : '';
 
     if (!title) {
       showToast('Bitte gib einen Artikeltitel ein!', true);
@@ -544,7 +545,7 @@ export const initAdminNews = () => {
 
     if (!plainText) {
       showToast('Bitte gib einen Artikelinhalt ein!', true);
-      editor.focus();
+      if (liveEditor) liveEditor.focus();
       return;
     }
 
@@ -552,14 +553,14 @@ export const initAdminNews = () => {
     if (submitBtn) submitBtn.disabled = true;
 
     try {
-      // Determine cover and gallery
-      let coverImage = 'dsg.avif';
+      // Determine cover and gallery (no unwanted default image)
+      let coverImage = '';
       let galleryArray = [];
 
       if (stagedImages.length > 0) {
         const coverItem = stagedImages.find(img => img.isCover) || stagedImages[0];
-        coverImage = coverItem.url;
-        galleryArray = stagedImages.filter(img => img !== coverItem).map(img => ({ url: img.url }));
+        coverImage = coverItem.url || '';
+        galleryArray = stagedImages.filter(img => img !== coverItem && img.url).map(img => ({ url: img.url }));
       }
 
       // Excerpt for cards: strip HTML
@@ -594,7 +595,8 @@ export const initAdminNews = () => {
   const resetNewsForm = () => {
     form.reset();
     document.getElementById('news-id').value = '';
-    editor.innerHTML = '';
+    const liveEditor = document.getElementById('rte-editor');
+    if (liveEditor) liveEditor.innerHTML = '';
     stagedImages = [];
     editingArticleId = null;
     savedRange = null;
@@ -633,11 +635,12 @@ export const initAdminNews = () => {
       tempDiv.innerHTML = a.content || a.excerpt || '';
       const previewText = (tempDiv.textContent || tempDiv.innerText || '').substring(0, 100);
       const hasGallery = a.gallery && a.gallery.length > 0;
+      const hasCustomImage = a.image && a.image !== 'dsg.avif';
 
       return `
         <div class="admin-item-card glass-card">
           <div class="admin-item-main">
-            ${a.image ? `
+            ${hasCustomImage ? `
               <img src="${a.image}" alt="Cover" class="admin-item-thumb">
             ` : ''}
             <div class="admin-item-info">
@@ -681,12 +684,16 @@ export const initAdminNews = () => {
           dateInput.value = dVal;
         }
 
-        // Load rich text
-        editor.innerHTML = article.content || `<p>${article.excerpt || ''}</p>`;
+        // Freshly query active editor and populate content with robust fallbacks
+        const activeEditor = document.getElementById('rte-editor');
+        const bodyContent = article.content || article.body || article.text || (article.excerpt ? `<p>${article.excerpt}</p>` : '');
+        if (activeEditor) {
+          activeEditor.innerHTML = bodyContent;
+        }
 
-        // Load staged images
+        // Load staged images (ignore legacy dsg.avif fallback)
         stagedImages = [];
-        if (article.image) {
+        if (article.image && article.image !== 'dsg.avif') {
           stagedImages.push({
             id: 'cover_' + article.id,
             url: article.image,
@@ -697,7 +704,7 @@ export const initAdminNews = () => {
         if (article.gallery && Array.isArray(article.gallery)) {
           article.gallery.forEach((g, i) => {
             const imgUrl = typeof g === 'string' ? g : g.url;
-            if (imgUrl && imgUrl !== article.image) {
+            if (imgUrl && imgUrl !== article.image && imgUrl !== 'dsg.avif') {
               stagedImages.push({
                 id: 'gal_' + i + '_' + Date.now(),
                 url: imgUrl,

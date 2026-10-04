@@ -1,7 +1,7 @@
-import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791160000000';
-import { computeAllTimeStats } from './statistiken.js?v=1791160000000';
-import { renderIcon } from '../icons.js?v=1791160000000';
-import { renderTeamLogo } from '../logos.js?v=1791160000000';
+﻿import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791170000000';
+import { computeAllTimeStats } from './statistiken.js?v=1791170000000';
+import { renderIcon } from '../icons.js?v=1791170000000';
+import { renderTeamLogo } from '../logos.js?v=1791170000000';
 
 export const viewHome = () => {
   const data = Store.getData();
@@ -198,7 +198,7 @@ export const viewHome = () => {
   // Render News
   const newsCards = news.map(n => `
     <a href="#/article/${n.id}" class="glass-card news-card stagger-item" style="display: flex; flex-direction: column; overflow: hidden; text-decoration: none;">
-      ${n.image ? `
+      ${(n.image && n.image !== 'dsg.avif') ? `
         <div style="width: 100%; height: 160px; overflow: hidden; border-radius: 4px; margin-bottom: var(--space-sm);">
           <img src="${n.image}" alt="${n.title}" style="width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-fast);">
         </div>

@@ -1,6 +1,6 @@
-import { Store, sanitizeMojibake } from '../store.js?v=1791160000000';
-import { renderIcon } from '../icons.js?v=1791160000000';
-import { renderTeamLogo } from '../logos.js?v=1791160000000';
+﻿import { Store, sanitizeMojibake } from '../store.js?v=1791170000000';
+import { renderIcon } from '../icons.js?v=1791170000000';
+import { renderTeamLogo } from '../logos.js?v=1791170000000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';

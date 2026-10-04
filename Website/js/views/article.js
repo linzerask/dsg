@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1791160000000';
+﻿import { Store } from '../store.js?v=1791170000000';
 
 export const viewArticle = (id) => {
   const article = Store.getArticle(id);
@@ -33,11 +33,16 @@ export const viewArticle = (id) => {
     `;
   }
 
+  const hasHeroImage = article.image && article.image.trim() !== '' && article.image !== 'dsg.avif';
+  const heroStyle = hasHeroImage
+    ? `background-image: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.3)), url('${article.image}');`
+    : `background: linear-gradient(135deg, #0b2d18 0%, #06190e 100%);`;
+
   return `
     <div class="reading-progress-bar" id="reading-progress"></div>
     
     <article class="article-page">
-      <header class="article-hero stagger-item" style="background-image: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.3)), url('${article.image}')">
+      <header class="article-hero stagger-item" style="${heroStyle}">
         <div class="container article-hero-content">
           <span class="article-meta">${article.date} &bull; ${article.readTime}</span>
           <h1 class="article-title">${article.title}</h1>
@@ -81,12 +86,15 @@ export const viewArticle = (id) => {
         <div class="related-news stagger-item">
           <h3>Ähnliche Artikel</h3>
           <div class="related-grid">
-            ${Store.getNews().filter(a => String(a.id) !== String(id)).slice(0, 3).map(a => `
+            ${Store.getNews().filter(a => String(a.id) !== String(id)).slice(0, 3).map(a => {
+              const hasRelImg = a.image && a.image.trim() !== '' && a.image !== 'dsg.avif';
+              return `
               <a href="#/article/${a.id}" class="related-card glass-card">
-                <img src="${a.image}" alt="${a.title}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">
+                ${hasRelImg ? `<img src="${a.image}" alt="${a.title}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">` : `<div style="width: 100%; height: 100px; border-radius: 4px; margin-bottom: 10px; background: linear-gradient(135deg, #0b2d18, #06190e); display:flex; align-items:center; justify-content:center; color: var(--color-accent); font-weight:700; font-size:0.85rem;">DSG LIGA</div>`}
                 <h4>${a.title}</h4>
               </a>
-            `).join('')}
+            `;
+            }).join('')}
           </div>
           <a href="#/news" class="btn btn-outline" style="margin-top: 30px; display: inline-flex; align-items: center; gap: 6px;">&larr; Zurück zur Übersicht</a>
         </div>

@@ -1,4 +1,4 @@
-const INITIAL_DATA = {
+﻿const INITIAL_DATA = {
   "news": [
     {
       "id": 1,
@@ -129,7 +129,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1791160000000';
+const DATA_VERSION_STRING = '?v=1791170000000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -935,7 +935,7 @@ export const Store = {
       content: content || `<p>${excerpt || ''}</p>`,
       author: author || "DSG Redaktion",
       readTime: readTime || "2 min read",
-      image: image || 'dsg.avif',
+      image: (image && image !== 'dsg.avif') ? image : '',
       gallery: gallery || [],
       date: formattedDate,
       createdAt: now,
@@ -972,12 +972,13 @@ export const Store = {
     });
     if (index !== -1) {
       const now = Date.now();
+      const existingImage = (state.memoryNews[index].image && state.memoryNews[index].image !== 'dsg.avif') ? state.memoryNews[index].image : '';
       state.memoryNews[index] = {
         ...state.memoryNews[index],
         title,
         excerpt: excerpt || '',
         content: content || `<p>${excerpt}</p>`,
-        image: image || state.memoryNews[index].image || 'dsg.avif',
+        image: (image && image !== 'dsg.avif') ? image : existingImage,
         gallery: gallery || state.memoryNews[index].gallery || [],
         author: author || state.memoryNews[index].author || "DSG Redaktion",
         date: formattedDate || state.memoryNews[index].date,
