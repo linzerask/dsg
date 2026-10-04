@@ -1,5 +1,5 @@
-﻿import { Store } from '../store.js?v=1791172000000';
-import { renderNewsFallbackHeader } from '../logos.js?v=1791172000000';
+﻿import { Store } from '../store.js?v=1791173000000';
+import { renderNewsFallbackHeader } from '../logos.js?v=1791173000000';
 
 export const viewArticle = (id) => {
   const article = Store.getArticle(id);

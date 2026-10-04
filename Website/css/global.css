@@ -564,13 +564,21 @@ main {
   overflow: hidden;
   border-radius: 6px;
   margin-bottom: var(--space-sm);
-  background: radial-gradient(circle at 50% 40%, #1a6433 0%, #062613 65%, #011007 100%);
+  background: linear-gradient(145deg, #00c849 0%, #00a03a 50%, #00782c 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid rgba(0, 179, 65, 0.2);
+  border: 1px solid rgba(0, 179, 65, 0.3);
+}
+
+.news-fallback-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent, transparent 35px, rgba(255,255,255,0.06) 35px, rgba(255,255,255,0.06) 70px);
+  pointer-events: none;
 }
 
 .news-fallback-header .pitch-svg {
@@ -578,17 +586,17 @@ main {
   inset: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.22;
+  opacity: 0.45;
   pointer-events: none;
 }
 
 .news-fallback-logo {
-  height: 44px;
-  max-width: 165px;
+  height: 46px;
+  max-width: 170px;
   object-fit: contain;
   position: relative;
   z-index: 2;
-  filter: drop-shadow(0 2px 14px rgba(0, 230, 84, 0.45)) drop-shadow(0 4px 18px rgba(0, 0, 0, 0.7));
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.35));
   transition: transform var(--transition-fast);
 }
 
@@ -605,14 +613,14 @@ main {
   font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #38e27b;
-  background: rgba(0, 20, 10, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  background: rgba(0, 40, 15, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   padding: 3px 12px;
   border-radius: 20px;
-  border: 1px solid rgba(0, 230, 84, 0.3);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .news-fallback-accent {
@@ -621,7 +629,7 @@ main {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent 0%, #00b341 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.6) 50%, transparent 100%);
 }
 
 /* Marquee */
