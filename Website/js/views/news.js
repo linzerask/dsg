@@ -1,5 +1,5 @@
-﻿import { Store } from '../store.js?v=1791175000000';
-import { renderNewsFallbackHeader } from '../logos.js?v=1791175000000';
+﻿import { Store } from '../store.js?v=1791176000000';
+import { renderNewsFallbackHeader } from '../logos.js?v=1791176000000';
 
 const renderCard = (n) => {
   const hasImage = n.image && n.image.trim() !== '' && n.image !== 'dsg.avif';

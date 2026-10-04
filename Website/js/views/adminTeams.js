@@ -1,6 +1,6 @@
-﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791175000000';
-import { showToast } from './admin.js?v=1791175000000';
-import { renderTeamLogo, getTeamLogoUrl, getDefaultBadge } from '../logos.js?v=1791175000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791176000000';
+import { showToast } from './admin.js?v=1791176000000';
+import { renderTeamLogo, getTeamLogoUrl, getDefaultBadge, getTeamLogoData } from '../logos.js?v=1791176000000';
 
 let teamsData = [];
 let filteredData = [];
@@ -68,7 +68,7 @@ export const renderAdminTeams = () => {
     <div class="datagrid-container stagger-item">
         <div>
             <h2 style="margin: 0;">Teams verwalten</h2>
-            <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin-top: 4px;">Übersicht aller aktiven und inaktiven Mannschaften</p>
+            <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin-top: 4px;">Ãœbersicht aller aktiven und inaktiven Mannschaften</p>
         </div>
 
         <!-- Controls Toolbar immediately above table -->
@@ -99,12 +99,12 @@ export const renderAdminTeams = () => {
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th data-sort="ID" class="sortable">ID ↕</th>
-                        <th data-sort="Name" class="sortable">Name ↕</th>
-                        <th data-sort="Aktive Spieler" class="sortable">Aktive Spieler ↕</th>
-                        <th data-sort="Aktiv seit" class="sortable">Aktiv seit ↕</th>
-                        <th data-sort="Inaktiv seit" class="sortable">Inaktiv seit ↕</th>
-                        <th data-sort="Status" class="sortable">Status ↕</th>
+                        <th data-sort="ID" class="sortable">ID â†•</th>
+                        <th data-sort="Name" class="sortable">Name â†•</th>
+                        <th data-sort="Aktive Spieler" class="sortable">Aktive Spieler â†•</th>
+                        <th data-sort="Aktiv seit" class="sortable">Aktiv seit â†•</th>
+                        <th data-sort="Inaktiv seit" class="sortable">Inaktiv seit â†•</th>
+                        <th data-sort="Status" class="sortable">Status â†•</th>
                         <th style="width: 100px; text-align: center;">Aktion</th>
                     </tr>
                 </thead>
@@ -122,7 +122,7 @@ export const renderAdminTeams = () => {
         <div class="datagrid-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md);">
             <span id="teams-page-info" style="color: var(--color-text-secondary); font-size: 0.9rem;">Zeige 0 bis 0 von 0</span>
             <div style="display: flex; gap: var(--space-xs);">
-                <button id="btn-prev-page-t" class="btn-dsg" style="padding: 6px 14px; font-size: 0.85rem;">&laquo; Zurück</button>
+                <button id="btn-prev-page-t" class="btn-dsg" style="padding: 6px 14px; font-size: 0.85rem;">&laquo; ZurÃ¼ck</button>
                 <button id="btn-next-page-t" class="btn-dsg" style="padding: 6px 14px; font-size: 0.85rem;">Vor &raquo;</button>
             </div>
         </div>
@@ -141,9 +141,9 @@ export const renderAdminTeams = () => {
                         <input type="text" id="edit-team-name" class="admin-input" style="width: 100%;" required>
                     </div>
 
-                    <!-- Logo Upload & Preview Section -->
+                    <!-- Standard Color Logo Upload & Preview Section -->
                     <div style="border: 1px solid var(--color-border); border-radius: 8px; padding: 14px; background: rgba(0,0,0,0.02);">
-                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--color-text-primary); display: block; margin-bottom: 8px;">Vereinswappen / Logo</label>
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--color-text-primary); display: block; margin-bottom: 8px;">Vereinswappen (Farbig / Standard)</label>
                         <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
                             <div id="team-logo-preview-box" style="width: 64px; height: 64px; min-width: 64px; border: 1px dashed var(--color-border); border-radius: 10px; background: var(--color-surface); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); position: relative;">
                                 <img id="team-logo-preview-img" src="Logos/Ready/standard/default/shield_01_classic_heater.png" alt="Logo Vorschau" style="max-width: 100%; max-height: 100%; object-fit: contain;">
@@ -159,12 +159,38 @@ export const renderAdminTeams = () => {
                                     </button>
                                 </div>
                                 <span style="font-size: 0.72rem; color: var(--color-text-secondary); line-height: 1.3;">
-                                    PNG, SVG, WebP oder JPG (Quadratisch empfohlen, transparenter Hintergrund)
+                                    PNG, SVG, WebP oder JPG (Farbiges Standard-Wappen)
                                 </span>
                             </div>
                         </div>
                         <input type="file" id="edit-team-logo-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display: none;">
                         <input type="hidden" id="edit-team-logo-val" value="">
+                    </div>
+
+                    <!-- Monochrome Logo Upload & Preview Section -->
+                    <div style="border: 1px solid var(--color-border); border-radius: 8px; padding: 14px; background: rgba(0,0,0,0.02);">
+                        <label style="font-size: 0.82rem; font-weight: 700; color: var(--color-text-primary); display: block; margin-bottom: 8px;">Monochromes Wappen (Schwarz / Weiß Vektor)</label>
+                        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+                            <div id="team-mono-logo-preview-box" style="width: 64px; height: 64px; min-width: 64px; border: 1px dashed var(--color-border); border-radius: 10px; background: #222; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); position: relative;">
+                                <img id="team-mono-logo-preview-img" src="Logos/monochrome/croatia.png" alt="Monochrom Vorschau" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: brightness(0) invert(1);">
+                            </div>
+                            <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 6px;">
+                                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                    <button type="button" id="btn-upload-team-mono-logo" class="btn-outline" style="padding: 6px 14px; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; cursor: pointer; border-radius: 6px; background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-text-primary);">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                        Monochrom hochladen
+                                    </button>
+                                    <button type="button" id="btn-remove-team-mono-logo" class="btn-outline" style="display: none; padding: 6px 12px; font-size: 0.82rem; color: #dc3545; border-color: rgba(220,53,69,0.3); border-radius: 6px; background: transparent; cursor: pointer;">
+                                        Entfernen
+                                    </button>
+                                </div>
+                                <span style="font-size: 0.72rem; color: var(--color-text-secondary); line-height: 1.3;">
+                                    Weißes Vektor-PNG (wird auf der Website im Light Mode automatisch schwarz und im Dark Mode weiß dargestellt).
+                                </span>
+                            </div>
+                        </div>
+                        <input type="file" id="edit-team-mono-logo-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display: none;">
+                        <input type="hidden" id="edit-team-mono-logo-val" value="">
                     </div>
 
                     <div>
@@ -222,7 +248,8 @@ export const initAdminTeams = async () => {
         teamsData = teams.map(t => ({
             ...t,
             Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv',
-            logoUrl: t.logoUrl || t.logo || t.Logo || ''
+            logoUrl: t.logoUrl || t.logo || t.Logo || '',
+            monochromeLogoUrl: t.monochromeLogoUrl || t.monochromeLogo || t.MonochromeLogo || t.monoLogoUrl || ''
         }));
     }
     
@@ -311,7 +338,7 @@ const renderTable = () => {
                                 </div>
                                 <div class="admin-m-subtitle">
                                     <span class="badge ${badgeClass}" style="font-size: 0.72rem;">${status}</span>
-                                    <span>•</span>
+                                    <span>â€¢</span>
                                     <span>${t["Aktive Spieler"] || '0'} Spieler</span>
                                 </div>
                             </div>
@@ -328,7 +355,7 @@ const renderTable = () => {
                                     <span class="admin-m-value">${t["Inaktiv seit"] || '-'}</span>
                                 </div>
                                 <div class="admin-m-grid-item" style="grid-column: 1 / -1;">
-                                    <span class="admin-m-label">Kadergröße</span>
+                                    <span class="admin-m-label">KadergrÃ¶ÃŸe</span>
                                     <span class="admin-m-value">${t["Aktive Spieler"] || '0'} aktive registrierte Spieler</span>
                                 </div>
                             </div>
@@ -383,15 +410,30 @@ const updateModalLogoPreview = () => {
     const logoVal = document.getElementById('edit-team-logo-val')?.value || '';
     const nameVal = document.getElementById('edit-team-name')?.value || '';
 
-    if (!previewImg) return;
+    if (previewImg) {
+        if (logoVal) {
+            previewImg.src = logoVal;
+            if (removeBtn) removeBtn.style.display = 'inline-flex';
+        } else {
+            const standardUrl = getTeamLogoUrl(nameVal);
+            previewImg.src = standardUrl;
+            if (removeBtn) removeBtn.style.display = 'none';
+        }
+    }
 
-    if (logoVal) {
-        previewImg.src = logoVal;
-        if (removeBtn) removeBtn.style.display = 'inline-flex';
-    } else {
-        const standardUrl = getTeamLogoUrl(nameVal);
-        previewImg.src = standardUrl;
-        if (removeBtn) removeBtn.style.display = 'none';
+    const previewMonoImg = document.getElementById('team-mono-logo-preview-img');
+    const removeMonoBtn = document.getElementById('btn-remove-team-mono-logo');
+    const monoLogoVal = document.getElementById('edit-team-mono-logo-val')?.value || '';
+
+    if (previewMonoImg) {
+        if (monoLogoVal) {
+            previewMonoImg.src = monoLogoVal;
+            if (removeMonoBtn) removeMonoBtn.style.display = 'inline-flex';
+        } else {
+            const teamData = getTeamLogoData(nameVal);
+            previewMonoImg.src = teamData.url;
+            if (removeMonoBtn) removeMonoBtn.style.display = 'none';
+        }
     }
 };
 
@@ -401,9 +443,12 @@ const openEditModal = (idx = null) => {
     const deleteBtn = document.getElementById('btn-delete-team');
     const submitBtn = document.getElementById('btn-submit-team');
     const logoValInput = document.getElementById('edit-team-logo-val');
+    const monoLogoValInput = document.getElementById('edit-team-mono-logo-val');
     const fileInput = document.getElementById('edit-team-logo-file');
+    const monoFileInput = document.getElementById('edit-team-mono-logo-file');
     
     if (fileInput) fileInput.value = '';
+    if (monoFileInput) monoFileInput.value = '';
 
     if (idx !== null && teamsData[idx]) {
         const t = teamsData[idx];
@@ -415,6 +460,7 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-team-inaktiv-seit').value = formatDateForInput(t["Inaktiv seit"]);
         document.getElementById('edit-team-status').value = t.Status === 'Aktiv' ? 'Aktiv' : 'Inaktiv';
         if (logoValInput) logoValInput.value = t.logoUrl || t.logo || t.Logo || '';
+        if (monoLogoValInput) monoLogoValInput.value = t.monochromeLogoUrl || t.monochromeLogo || t.MonochromeLogo || '';
         deleteBtn.style.display = 'block';
     } else {
         title.innerText = 'Neue Mannschaft anlegen';
@@ -423,6 +469,7 @@ const openEditModal = (idx = null) => {
         document.getElementById('team-edit-form').reset();
         document.getElementById('edit-team-status').value = 'Aktiv';
         if (logoValInput) logoValInput.value = '';
+        if (monoLogoValInput) monoLogoValInput.value = '';
         deleteBtn.style.display = 'none';
     }
 
@@ -498,19 +545,25 @@ const bindEvents = () => {
     const form = document.getElementById('team-edit-form');
     const teamModal = document.getElementById('team-modal');
     const nameInput = document.getElementById('edit-team-name');
+    
+    // Standard Logo controls
     const uploadBtn = document.getElementById('btn-upload-team-logo');
     const removeLogoBtn = document.getElementById('btn-remove-team-logo');
     const logoFileInput = document.getElementById('edit-team-logo-file');
     const logoValInput = document.getElementById('edit-team-logo-val');
+
+    // Monochrome Logo controls
+    const uploadMonoBtn = document.getElementById('btn-upload-team-mono-logo');
+    const removeMonoLogoBtn = document.getElementById('btn-remove-team-mono-logo');
+    const monoLogoFileInput = document.getElementById('edit-team-mono-logo-file');
+    const monoLogoValInput = document.getElementById('edit-team-mono-logo-val');
 
     if (search) search.oninput = applyFilters;
     if (status) status.onchange = applyFilters;
 
     if (nameInput) {
         nameInput.oninput = () => {
-            if (!logoValInput || !logoValInput.value) {
-                updateModalLogoPreview();
-            }
+            updateModalLogoPreview();
         };
     }
 
@@ -525,7 +578,7 @@ const bindEvents = () => {
             logoValInput.value = '';
             if (logoFileInput) logoFileInput.value = '';
             updateModalLogoPreview();
-            showToast('Benutzerdefiniertes Logo entfernt.');
+            showToast('Standard-Logo entfernt.');
         };
     }
 
@@ -538,7 +591,40 @@ const bindEvents = () => {
                     if (dataUrl) {
                         if (logoValInput) logoValInput.value = dataUrl;
                         updateModalLogoPreview();
-                        showToast('Logo erfolgreich geladen.');
+                        showToast('Standard-Logo erfolgreich geladen.');
+                    }
+                } catch (err) {
+                    showToast('Fehler beim Laden des Bildes: ' + (err.message || err), true);
+                }
+            }
+        };
+    }
+
+    if (uploadMonoBtn && monoLogoFileInput) {
+        uploadMonoBtn.onclick = () => {
+            monoLogoFileInput.click();
+        };
+    }
+
+    if (removeMonoLogoBtn && monoLogoValInput) {
+        removeMonoLogoBtn.onclick = () => {
+            monoLogoValInput.value = '';
+            if (monoLogoFileInput) monoLogoFileInput.value = '';
+            updateModalLogoPreview();
+            showToast('Monochromes Logo entfernt.');
+        };
+    }
+
+    if (monoLogoFileInput) {
+        monoLogoFileInput.onchange = async () => {
+            const file = monoLogoFileInput.files && monoLogoFileInput.files[0];
+            if (file) {
+                try {
+                    const dataUrl = await compressLogoImage(file);
+                    if (dataUrl) {
+                        if (monoLogoValInput) monoLogoValInput.value = dataUrl;
+                        updateModalLogoPreview();
+                        showToast('Monochromes Logo erfolgreich geladen.');
                     }
                 } catch (err) {
                     showToast('Fehler beim Laden des Bildes: ' + (err.message || err), true);
@@ -585,12 +671,12 @@ const bindEvents = () => {
             if (idVal !== 'new') {
                 const idx = parseInt(idVal);
                 const t = teamsData[idx];
-                if (confirm(`Möchten Sie das Team "${t.Name}" wirklich löschen?`)) {
+                if (confirm(`MÃ¶chten Sie das Team "${t.Name}" wirklich lÃ¶schen?`)) {
                     teamsData.splice(idx, 1);
                     Store.saveAdminTeams(teamsData);
                     closeEditModal();
                     applyFilters();
-                    showToast('Mannschaft gelöscht.');
+                    showToast('Mannschaft gelÃ¶scht.');
                 }
             }
         };
@@ -614,7 +700,8 @@ const bindEvents = () => {
                 "Aktiv seit": document.getElementById('edit-team-aktiv-seit').value,
                 "Inaktiv seit": document.getElementById('edit-team-inaktiv-seit').value,
                 Status: document.getElementById('edit-team-status').value,
-                logoUrl: (document.getElementById('edit-team-logo-val')?.value || '').trim()
+                logoUrl: (document.getElementById('edit-team-logo-val')?.value || '').trim(),
+                monochromeLogoUrl: (document.getElementById('edit-team-mono-logo-val')?.value || '').trim()
             };
 
             const isNew = (idVal === 'new');

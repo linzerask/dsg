@@ -1,5 +1,5 @@
 ﻿// Team Logos & Default Badges Resolver
-import { Store } from './store.js?v=1791175000000';
+import { Store } from './store.js?v=1791176000000';
 
 export const DEFAULT_BADGES = [
   'Logos/Ready/standard/default/shield_01_classic_heater.png',
@@ -30,6 +30,31 @@ export function getDefaultBadge(teamName) {
   return DEFAULT_BADGES[idx];
 }
 
+export function getCustomMonochromeLogo(teamName) {
+  if (!teamName) return null;
+  const rawName = typeof teamName === 'object' ? (teamName.Name || teamName.name || '') : String(teamName);
+  const nameStr = rawName.trim().toLowerCase();
+
+  if (typeof teamName === 'object' && (teamName.monochromeLogoUrl || teamName.monochromeLogo || teamName.MonochromeLogo || teamName.monoLogoUrl)) {
+    return teamName.monochromeLogoUrl || teamName.monochromeLogo || teamName.MonochromeLogo || teamName.monoLogoUrl;
+  }
+
+  try {
+    if (Store && typeof Store.getAdminTeamsSync === 'function') {
+      const teams = Store.getAdminTeamsSync();
+      if (Array.isArray(teams)) {
+        const found = teams.find(t => (t.Name || t.name || '').trim().toLowerCase() === nameStr);
+        if (found && (found.monochromeLogoUrl || found.monochromeLogo || found.MonochromeLogo || found.monoLogoUrl)) {
+          return found.monochromeLogoUrl || found.monochromeLogo || found.MonochromeLogo || found.monoLogoUrl;
+        }
+      }
+    }
+  } catch (e) {
+    // fallback gracefully
+  }
+  return null;
+}
+
 export function getCustomTeamLogo(teamName) {
   if (!teamName) return null;
   const rawName = typeof teamName === 'object' ? (teamName.Name || teamName.name || '') : String(teamName);
@@ -55,49 +80,67 @@ export function getCustomTeamLogo(teamName) {
   return null;
 }
 
-export function getTeamLogoUrl(teamName) {
-  if (!teamName) return DEFAULT_BADGES[0];
+export function getTeamLogoData(teamName) {
+  const rawName = typeof teamName === 'object' ? (teamName.Name || teamName.name || '') : String(teamName || '');
+  if (!rawName.trim()) {
+    return { url: DEFAULT_BADGES[0], isMonochrome: false, isFallback: true };
+  }
 
-  // 1. Check if an admin uploaded a custom logo
+  // 1. Check if custom monochrome logo was uploaded
+  const customMono = getCustomMonochromeLogo(teamName);
+  if (customMono) {
+    return { url: customMono, isMonochrome: true, isFallback: false };
+  }
+
+  // 2. Check if custom standard logo was uploaded
   const custom = getCustomTeamLogo(teamName);
-  if (custom) return custom;
+  if (custom) {
+    return { url: custom, isMonochrome: false, isFallback: false };
+  }
 
-  // 2. Check standard presets
-  const rawName = typeof teamName === 'object' ? (teamName.Name || teamName.name || '') : String(teamName);
+  // 3. Check preset monochrome logos for active teams
   const norm = rawName.toLowerCase()
-    .replace(/ä/g, 'ae')
-    .replace(/ö/g, 'oe')
-    .replace(/ü/g, 'ue')
-    .replace(/ß/g, 'ss')
+    .replace(/Ã¤/g, 'ae')
+    .replace(/Ã¶/g, 'oe')
+    .replace(/Ã¼/g, 'ue')
+    .replace(/ÃŸ/g, 'ss')
     .replace(/[^a-z0-9]/g, '');
 
-  if (norm.includes('croatia')) return 'Logos/Ready/standard/croatia.png';
-  if (norm.includes('auberg')) return 'Logos/Ready/standard/dsgauberg.png';
-  if (norm.includes('froschberg')) return 'Logos/Ready/standard/dsgfroschberg.png';
-  if (norm.includes('thalheim')) return 'Logos/Ready/standard/dsgthalheim.png';
-  if (norm.includes('traun')) return 'Logos/Ready/standard/dsgtraun.png';
-  if (norm.includes('eschenau')) return 'Logos/Ready/standard/eschenau.png';
-  if (norm.includes('etehad')) return 'Logos/Ready/standard/etehad.png';
-  if (norm.includes('bruck')) return 'Logos/Ready/standard/fcbruck.png';
-  if (norm.includes('gornjak')) return 'Logos/Ready/standard/fcgornjak.png';
-  if (norm.includes('hinzenbach')) return 'Logos/Ready/standard/fchinzenbach.png';
-  if (norm.includes('geboltskirchen')) return 'Logos/Ready/standard/geboltskirchen.png';
-  if (norm.includes('oed') || norm.includes('josef')) return 'Logos/Ready/standard/oed.png';
-  if (norm.includes('schleissheim') || norm.includes('schleisheim')) return 'Logos/Ready/standard/schleissheim.png';
-  if (norm.includes('goldwoerth') || norm.includes('goldworth')) return 'Logos/Ready/standard/uniongoldwoerth.png';
-  if (norm.includes('heiligenberg')) return 'Logos/Ready/standard/unionheiligenberg.png';
-  if (norm.includes('walker')) return 'Logos/Ready/standard/walker.png';
+  if (norm.includes('croatia')) return { url: 'Logos/monochrome/croatia.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('traun')) return { url: 'Logos/monochrome/dsgtraun.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('etehad')) return { url: 'Logos/monochrome/etehad.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('gornjak')) return { url: 'Logos/monochrome/fcgornjak.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('oed') || norm.includes('josef')) return { url: 'Logos/monochrome/oed.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('heiligenberg')) return { url: 'Logos/monochrome/unionheiligenberg.png', isMonochrome: true, isFallback: false };
+  if (norm.includes('walker')) return { url: 'Logos/monochrome/walker.png', isMonochrome: true, isFallback: false };
 
-  // 3. Deterministic default shield badge fallback
-  return getDefaultBadge(rawName);
+  // 4. Other historic/preset standard logos
+  if (norm.includes('auberg')) return { url: 'Logos/Ready/standard/dsgauberg.png', isMonochrome: false, isFallback: false };
+  if (norm.includes('froschberg')) return { url: 'Logos/Ready/standard/dsgfroschberg.png', isMonochrome: false, isFallback: false };
+  if (norm.includes('thalheim')) return { url: 'Logos/Ready/standard/dsgthalheim.png', isMonochrome: false, isFallback: false };
+  if (norm.includes('eschenau')) return { url: 'Logos/Ready/standard/eschenau.png', isMonochrome: false, isFallback: false };
+  if (norm.includes('bruck')) return { url: 'Logos/Ready/standard/fcbruck.png', isMonochrome: false, isFallback: false };
+  if (norm.includes('hinzenbach')) return { url: 'Logos/Ready/standard/fchinzenbach.png', isMonochrome: false, isFallback: false };
+  if (norm.includes('geboltskirchen')) return { url: 'Logos/Ready/standard/geboltskirchen.png', isMonochrome: false, isFallback: false };
+  if (norm.includes('schleissheim') || norm.includes('schleisheim')) return { url: 'Logos/Ready/standard/schleissheim.png', isMonochrome: false, isFallback: false };
+  if (norm.includes('goldwoerth') || norm.includes('goldworth')) return { url: 'Logos/Ready/standard/uniongoldwoerth.png', isMonochrome: false, isFallback: false };
+
+  // 5. Deterministic default shield badge fallback
+  return { url: getDefaultBadge(rawName), isMonochrome: false, isFallback: true };
+}
+
+export function getTeamLogoUrl(teamName) {
+  return getTeamLogoData(teamName).url;
 }
 
 export function renderTeamLogo(teamName, size = 'sm', extraClass = '') {
   const rawName = typeof teamName === 'object' ? (teamName.Name || teamName.name || '') : (teamName || '');
   const name = String(rawName).trim();
-  const url = getTeamLogoUrl(teamName);
+  const data = getTeamLogoData(teamName);
   const fallback = getDefaultBadge(name);
-  return `<img src="${url}" alt="${name || 'Team'}" class="team-logo team-logo-${size} ${extraClass}" onerror="this.onerror=null; this.src='${fallback}';" loading="lazy" />`;
+  const monoClass = data.isMonochrome ? 'team-logo-monochrome' : '';
+  const classNames = `team-logo ${monoClass} team-logo-${size} ${extraClass}`.trim().replace(/\s+/g, ' ');
+  return `<img src="${data.url}" alt="${name || 'Team'}" class="${classNames}" onerror="this.onerror=null; this.classList.remove('team-logo-monochrome'); this.src='${fallback}';" loading="lazy" />`;
 }
 
 export function renderNewsFallbackHeader(tag = 'NEWSLETTER') {
