@@ -819,17 +819,89 @@ main {
 .article-body {
   font-family: var(--font-serif);
   font-size: 1.125rem;
-  line-height: 1.8;
+  line-height: 1.85;
   color: var(--color-text-primary);
   max-width: 800px;
   margin: 0 auto var(--space-xl);
   padding: 0 var(--space-md);
 }
 
+.article-body p,
+.article-body div,
+.article-body li,
+.article-body span {
+  color: var(--color-text-primary);
+  line-height: 1.85;
+  font-family: var(--font-serif);
+}
+
 .article-body p {
   margin-bottom: var(--space-md);
-  line-height: 1.8;
-  font-family: var(--font-serif);
+}
+
+.article-body h2,
+.article-body h3,
+.article-body h4 {
+  color: var(--color-text-primary);
+  font-family: var(--font-primary);
+  font-weight: 800;
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-sm);
+}
+
+.article-body ul,
+.article-body ol {
+  margin-bottom: var(--space-md);
+  padding-left: var(--space-lg);
+}
+
+.article-body li {
+  margin-bottom: var(--space-xs);
+}
+
+.article-body strong,
+.article-body b {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.article-body a {
+  color: var(--color-accent) !important;
+  text-decoration: underline;
+}
+
+.article-body blockquote {
+  border-left: 4px solid var(--color-accent);
+  padding: var(--space-sm) var(--space-md);
+  margin: var(--space-md) 0;
+  background: var(--color-surface);
+  border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+  font-style: italic;
+  color: var(--color-text-primary);
+}
+
+/* Dark Mode High-Contrast Overrides (Fix for pasted HTML with dark inline colors) */
+[data-theme="dark"] .article-body,
+[data-theme="dark"] .article-body p,
+[data-theme="dark"] .article-body div,
+[data-theme="dark"] .article-body li,
+[data-theme="dark"] .article-body span,
+[data-theme="dark"] .article-body strong,
+[data-theme="dark"] .article-body b,
+[data-theme="dark"] .article-body h1,
+[data-theme="dark"] .article-body h2,
+[data-theme="dark"] .article-body h3,
+[data-theme="dark"] .article-body h4 {
+  color: #f7fafc !important;
+}
+
+[data-theme="dark"] .article-body a {
+  color: var(--color-accent) !important;
+}
+
+[data-theme="dark"] .article-body blockquote {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0 !important;
 }
 
 .related-grid {
