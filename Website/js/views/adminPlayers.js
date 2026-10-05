@@ -221,20 +221,53 @@ export const renderAdminPlayers = () => {
                             <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Position (optional)</label>
                             <select id="edit-position" class="admin-input" style="width: 100%;">
                                 <option value="">-- Nicht angegeben --</option>
-                                <option value="Torwart">Torwart</option>
-                                <option value="Abwehr">Abwehr</option>
-                                <option value="Mittelfeld">Mittelfeld</option>
-                                <option value="Sturm">Sturm</option>
+                                
+                                <optgroup label="Torwart">
+                                    <option value="Torwart">Torwart (TW)</option>
+                                    <option value="Mitspielender Torwart">Mitspielender Torwart</option>
+                                </optgroup>
+                                
+                                <optgroup label="Abwehr / Verteidigung">
+                                    <option value="Innenverteidiger">Innenverteidiger (IV)</option>
+                                    <option value="Linksverteidiger">Linksverteidiger (LV)</option>
+                                    <option value="Rechtsverteidiger">Rechtsverteidiger (RV)</option>
+                                    <option value="Linker Schienenspieler">Linker Schienenspieler (LWB)</option>
+                                    <option value="Rechter Schienenspieler">Rechter Schienenspieler (RWB)</option>
+                                    <option value="Libero">Libero (LIB)</option>
+                                    <option value="Abwehr">Abwehr (Allround)</option>
+                                </optgroup>
+                                
+                                <optgroup label="Mittelfeld">
+                                    <option value="Defensives Mittelfeld">Defensives Mittelfeld (DM / 6er)</option>
+                                    <option value="Zentrales Mittelfeld">Zentrales Mittelfeld (ZM / 8er)</option>
+                                    <option value="Offensives Mittelfeld">Offensives Mittelfeld (OM / 10er)</option>
+                                    <option value="Linkes Mittelfeld">Linkes Mittelfeld (LM)</option>
+                                    <option value="Rechtes Mittelfeld">Rechtes Mittelfeld (RM)</option>
+                                    <option value="Flügelspieler">Flügelspieler (Winger)</option>
+                                    <option value="Mittelfeld">Mittelfeld (Allround)</option>
+                                </optgroup>
+                                
+                                <optgroup label="Angriff / Sturm">
+                                    <option value="Mittelstürmer">Mittelstürmer (MS / 9er)</option>
+                                    <option value="Linksaußen">Linksaußen (LA / LW)</option>
+                                    <option value="Rechtsaußen">Rechtsaußen (RA / RW)</option>
+                                    <option value="Hängende Spitze">Hängende Spitze (HS / CF)</option>
+                                    <option value="Zweiter Stürmer">Zweiter Stürmer (SS)</option>
+                                    <option value="Sturm">Sturm (Allround)</option>
+                                </optgroup>
                             </select>
                         </div>
                         <div>
-                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Seite / Detail (optional)</label>
+                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Spielfuß / Seite / Detail (optional)</label>
                             <select id="edit-position-side" class="admin-input" style="width: 100%;">
                                 <option value="">-- Nicht angegeben --</option>
+                                <option value="Rechtsfuß">Rechtsfuß (R)</option>
+                                <option value="Linksfuß">Linksfuß (L)</option>
+                                <option value="Beidfüßig">Beidfüßig (B)</option>
                                 <option value="Zentral">Zentral</option>
                                 <option value="Links">Links</option>
                                 <option value="Rechts">Rechts</option>
-                                <option value="Beidfüßig / Flexibel">Beidfüßig / Flexibel</option>
+                                <option value="Flexibel">Flexibel / Universal</option>
                             </select>
                         </div>
                     </div>
@@ -501,6 +534,20 @@ const openEditModal = (idx = null) => {
     const fileInput = document.getElementById('player-photo-file');
     if (fileInput) fileInput.value = '';
     
+    const setSelectOption = (el, val) => {
+        if (!el) return;
+        if (!val) { el.value = ''; return; }
+        const trimmedVal = val.trim();
+        const exists = Array.from(el.options).some(o => o.value === trimmedVal);
+        if (!exists && trimmedVal !== '') {
+            const opt = document.createElement('option');
+            opt.value = trimmedVal;
+            opt.textContent = trimmedVal;
+            el.appendChild(opt);
+        }
+        el.value = trimmedVal;
+    };
+
     let currentTeam = '';
     if (idx !== null && !isNaN(idx) && playersData[idx]) {
         const p = playersData[idx];
@@ -514,8 +561,8 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-mitglied').value = p.Mitglied === 'Nein' ? 'Nein' : 'Ja';
         document.getElementById('edit-seit').value = formatDateForInput(p.seit);
         document.getElementById('edit-status').value = p.Status || 'Aktiv';
-        document.getElementById('edit-position').value = p.Position || p.position || '';
-        document.getElementById('edit-position-side').value = p.positionSide || p.side || p.PositionSide || '';
+        setSelectOption(document.getElementById('edit-position'), p.Position || p.position || '');
+        setSelectOption(document.getElementById('edit-position-side'), p.positionSide || p.side || p.PositionSide || '');
         const currentPhoto = p.photoUrl || p.foto || p.avatar || '';
         document.getElementById('edit-photo-url').value = currentPhoto;
 

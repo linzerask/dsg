@@ -2,7 +2,7 @@
 import { Store, sanitizeMojibake } from '../store.js?v=1791182000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getPlayerPositionLabel } from '../playerUtils.js?v=1791182000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getPlayerPositionLabel, getPlayerPositionCategory } from '../playerUtils.js?v=1791183000000';
 
 let allActivePlayers = [];
 let activeSearchQuery = '';
@@ -409,7 +409,9 @@ export const bindSpieler = async () => {
 
       // Position filter
       if (activePositionFilter !== 'all') {
-        if (!p.position || !p.position.toLowerCase().includes(activePositionFilter.toLowerCase())) {
+        const rawPos = (p.position || p.raw?.Position || p.raw?.position || '');
+        const cat = getPlayerPositionCategory(rawPos);
+        if (cat !== activePositionFilter && !rawPos.toLowerCase().includes(activePositionFilter.toLowerCase())) {
           return false;
         }
       }

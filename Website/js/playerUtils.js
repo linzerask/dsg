@@ -66,6 +66,16 @@ export function formatMemberSince(sinceStr) {
   return `Seit ${sinceStr}`;
 }
 
+export function getPlayerPositionCategory(position) {
+  if (!position) return '';
+  const p = position.toLowerCase();
+  if (p.includes('torwart') || p.includes('tw') || p.includes('keeper')) return 'Torwart';
+  if (p.includes('innenverteidiger') || p.includes('verteidiger') || p.includes('abwehr') || p.includes('schienen') || p.includes('libero') || p.includes('iv') || p.includes('lv') || p.includes('rv') || p.includes('lwb') || p.includes('rwb')) return 'Abwehr';
+  if (p.includes('mittelfeld') || p.includes('sechser') || p.includes('achter') || p.includes('zehner') || p.includes('flügel') || p.includes('dm') || p.includes('zm') || p.includes('om') || p.includes('lm') || p.includes('rm')) return 'Mittelfeld';
+  if (p.includes('stürmer') || p.includes('sturm') || p.includes('spitze') || p.includes('angriff') || p.includes('linksaußen') || p.includes('rechtsaußen') || p.includes('ms') || p.includes('la') || p.includes('ra') || p.includes('hs') || p.includes('cf')) return 'Sturm';
+  return 'Mittelfeld';
+}
+
 export function getPlayerPositionLabel(player) {
   if (!player) return '';
   const pos = sanitizeMojibake((player.Position || player.position || '').trim());
@@ -74,7 +84,10 @@ export function getPlayerPositionLabel(player) {
   if (!pos && !side) return '';
   if (!pos) return side;
   if (!side) return pos;
-  if (pos === 'Torwart') return 'Torwart';
+  if (pos === 'Torwart' || pos.includes('Torwart')) return pos;
+  if (pos.toLowerCase().includes('links') && side.toLowerCase() === 'links') return pos;
+  if (pos.toLowerCase().includes('rechts') && side.toLowerCase() === 'rechts') return pos;
+  if (pos.toLowerCase().includes('zentral') && side.toLowerCase() === 'zentral') return pos;
   return `${pos} (${side})`;
 }
 
