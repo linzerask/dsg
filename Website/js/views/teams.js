@@ -1,8 +1,8 @@
-// Teams & Club Hub View
-import { Store, sanitizeMojibake } from '../store.js?v=1791179000000';
-import { renderIcon } from '../icons.js?v=1791179000000';
-import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791179000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey } from '../playerUtils.js?v=1791179000000';
+﻿// Teams & Club Hub View
+import { Store, sanitizeMojibake } from '../store.js?v=1791180000000';
+import { renderIcon } from '../icons.js?v=1791180000000';
+import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791180000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey } from '../playerUtils.js?v=1791180000000';
 
 let allTeams = [];
 let allPlayers = [];
@@ -408,4 +408,5 @@ export const bindTeams = async () => {
   renderSelector();
   renderTeamDetails(selectedTeamName);
 };
+
 

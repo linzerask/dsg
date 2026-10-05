@@ -1,5 +1,5 @@
 ﻿// Player Utilities & Automated Statistics Aggregator
-import { Store, sanitizeMojibake } from './store.js?v=1791179000000';
+import { Store, sanitizeMojibake } from './store.js?v=1791180000000';
 
 export function normalizePlayerKey(name) {
   if (!name) return '';
@@ -234,4 +234,5 @@ export function getPlayerLink(playerName, teamName = '') {
 
   return `#/spieler?search=${encodeURIComponent(playerName)}`;
 }
+
 

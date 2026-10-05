@@ -1,4 +1,4 @@
-export const viewDatenschutz = () => `
+﻿export const viewDatenschutz = () => `
   <div class="container stagger-item" style="padding-top: var(--space-xl);">
     <h1 style="color: var(--color-accent); margin-bottom: var(--space-md);">Datenschutzbestimmungen</h1>
     <div class="glass-card" style="line-height: 1.8;">
@@ -205,3 +205,4 @@ export const viewDatenschutz = () => `
     </div>
   </div>
 `;
+

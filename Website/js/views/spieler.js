@@ -1,8 +1,8 @@
-// Players Page View & Interactive Roster
-import { Store, sanitizeMojibake } from '../store.js?v=1791179000000';
-import { renderIcon } from '../icons.js?v=1791179000000';
-import { renderTeamLogo } from '../logos.js?v=1791179000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey } from '../playerUtils.js?v=1791179000000';
+﻿// Players Page View & Interactive Roster
+import { Store, sanitizeMojibake } from '../store.js?v=1791180000000';
+import { renderIcon } from '../icons.js?v=1791180000000';
+import { renderTeamLogo } from '../logos.js?v=1791180000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey } from '../playerUtils.js?v=1791180000000';
 
 let allActivePlayers = [];
 let activeSearchQuery = '';
@@ -135,22 +135,24 @@ export const viewSpieler = () => {
       }
       .spieler-card-header {
         position: relative;
-        height: 190px;
-        background: linear-gradient(135deg, #112a1c 0%, #06170d 100%);
+        height: 200px;
+        background: #ffffff;
         overflow: hidden;
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         justify-content: center;
+        border-bottom: 1px solid var(--color-border);
       }
       .spieler-card-avatar {
         width: 100%;
         height: 100%;
-        object-fit: cover;
-        object-position: top center;
+        object-fit: contain;
+        object-position: bottom center;
         transition: transform var(--transition-normal);
+        display: block;
       }
       .spieler-card:hover .spieler-card-avatar {
-        transform: scale(1.05);
+        transform: scale(1.03);
       }
       .spieler-card-team-badge {
         position: absolute;
@@ -540,9 +542,9 @@ export const bindSpieler = async () => {
       <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-md);">
         
         <!-- Avatar & Team Crest Showcase -->
-        <div style="position: relative; width: 130px; height: 130px; border-radius: 50%; overflow: visible; margin-top: 10px;">
-          <img src="${avatarUrl}" alt="${player.fullName}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--color-accent); box-shadow: 0 8px 24px rgba(0, 179, 65, 0.25);">
-          <div style="position: absolute; bottom: 0; right: -4px; width: 48px; height: 48px; background: var(--color-surface); border-radius: 50%; padding: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 2px solid var(--color-border); display: flex; align-items: center; justify-content: center;">
+        <div style="position: relative; width: 130px; height: 130px; border-radius: 50%; background: #ffffff; padding: 4px; border: 3px solid var(--color-accent); box-shadow: 0 8px 24px rgba(0, 179, 65, 0.25); display: flex; align-items: center; justify-content: center; overflow: visible; margin-top: 10px;">
+          <img src="${avatarUrl}" alt="${player.fullName}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: contain; object-position: bottom center;">
+          <div style="position: absolute; bottom: -2px; right: -4px; width: 44px; height: 44px; background: var(--color-surface); border-radius: 50%; padding: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 2px solid var(--color-border); display: flex; align-items: center; justify-content: center;">
             ${teamLogo}
           </div>
         </div>
@@ -691,4 +693,5 @@ export const bindSpieler = async () => {
     }, 100);
   }
 };
+
 

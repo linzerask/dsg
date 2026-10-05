@@ -1,8 +1,8 @@
-import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791179000000';
-import { computeAllTimeStats } from './statistiken.js?v=1791179000000';
-import { renderIcon } from '../icons.js?v=1791179000000';
-import { renderTeamLogo, renderNewsFallbackHeader } from '../logos.js?v=1791179000000';
-import { getPlayerLink } from '../playerUtils.js?v=1791179000000';
+﻿import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791180000000';
+import { computeAllTimeStats } from './statistiken.js?v=1791180000000';
+import { renderIcon } from '../icons.js?v=1791180000000';
+import { renderTeamLogo, renderNewsFallbackHeader } from '../logos.js?v=1791180000000';
+import { getPlayerLink } from '../playerUtils.js?v=1791180000000';
 
 export const viewHome = () => {
   const data = Store.getData();
@@ -532,3 +532,4 @@ export const bindHome = () => {
     });
   });
 };
+

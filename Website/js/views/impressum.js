@@ -1,4 +1,4 @@
-export const viewImpressum = () => `
+﻿export const viewImpressum = () => `
   <div class="container stagger-item" style="padding-top: var(--space-xl);">
     <h1 style="color: var(--color-accent); margin-bottom: var(--space-md);">Impressum</h1>
     <div class="glass-card" style="line-height: 1.8;">
@@ -52,3 +52,4 @@ export const viewImpressum = () => `
     </div>
   </div>
 `;
+

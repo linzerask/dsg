@@ -1,4 +1,4 @@
-// Standard authentic SVG icon definitions from Tabler & Lucide open-source libraries
+﻿// Standard authentic SVG icon definitions from Tabler & Lucide open-source libraries
 
 const ICON_PATHS = {
   ball: `<path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7l4.76 3.45l-1.76 5.55h-6l-1.76 -5.55l4.76 -3.45" /><path d="M12 7v-4m3 13l2.5 3m-.74 -8.55l3.74 -1.45m-11.44 7.05l-2.56 2.95m.74 -8.55l-3.74 -1.45" />`,
@@ -52,3 +52,4 @@ export const renderIcon = (name, options = {}) => {
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" class="${className}" style="display: inline-block; vertical-align: middle; ${style}">${innerPath}</svg>`;
 };
+

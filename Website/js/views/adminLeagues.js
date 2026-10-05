@@ -1,6 +1,6 @@
-﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791179000000';
-import { showToast } from './admin.js?v=1791179000000';
-import { renderTeamLogo } from '../logos.js?v=1791179000000';
+﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791180000000';
+import { showToast } from './admin.js?v=1791180000000';
+import { renderTeamLogo } from '../logos.js?v=1791180000000';
 
 let leaguesData = [];
 let filteredData = [];
@@ -1502,4 +1502,5 @@ const bindEvents = () => {
         };
     });
 };
+
 

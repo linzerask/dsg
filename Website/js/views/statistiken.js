@@ -1,7 +1,7 @@
-import { Store, sanitizeMojibake } from '../store.js?v=1791179000000';
-import { renderIcon } from '../icons.js?v=1791179000000';
-import { renderTeamLogo } from '../logos.js?v=1791179000000';
-import { getPlayerLink } from '../playerUtils.js?v=1791179000000';
+﻿import { Store, sanitizeMojibake } from '../store.js?v=1791180000000';
+import { renderIcon } from '../icons.js?v=1791180000000';
+import { renderTeamLogo } from '../logos.js?v=1791180000000';
+import { getPlayerLink } from '../playerUtils.js?v=1791180000000';
 
 let activeStatsTab = 'scorers';
 let scorerSearchQuery = '';
@@ -1353,3 +1353,4 @@ export const bindStatistiken = () => {
   bindPaginationButtons();
   bindClubAccordions();
 };
+
