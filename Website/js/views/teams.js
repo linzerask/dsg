@@ -1,7 +1,7 @@
-import { Store, sanitizeMojibake } from '../store.js?v=1791182000000';
-import { renderIcon } from '../icons.js?v=1791182000000';
-import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791182000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink, getPlayerPositionLabel } from '../playerUtils.js?v=1791182000000';
+import { Store, sanitizeMojibake } from '../store.js?v=1791197000000';
+import { renderIcon } from '../icons.js?v=1791197000000';
+import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791197000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink, getPlayerPositionLabel } from '../playerUtils.js?v=1791197000000';
 
 let allTeams = [];
 let allPlayers = [];
@@ -173,22 +173,33 @@ export const bindTeams = async () => {
     'Walker FC'
   ];
 
-  const activeTeamsList = defaultActiveTeams.filter(tName => {
-    return allPlayers.some(p => sanitizeMojibake((p.Team || p.team || '').trim()) === tName);
+  let activeTeamsList = defaultActiveTeams.filter(tName => {
+    return allPlayers.some(p => {
+      const tm = sanitizeMojibake((p.Team || p.team || '').trim());
+      return tm === tName || normalizePlayerKey(tm) === normalizePlayerKey(tName);
+    });
   });
+
+  if (activeTeamsList.length === 0) {
+    activeTeamsList = [...defaultActiveTeams];
+  }
 
   // Add any additional active teams from admin teams with registered active players
   allTeams.forEach(t => {
     const name = sanitizeMojibake((t.Name || t.name || '').trim());
-    const hasActivePlayers = allPlayers.some(p => sanitizeMojibake((p.Team || p.team || '').trim()) === name);
-    if (name && (t.Status === 'Aktiv' || t.status === 'Aktiv') && hasActivePlayers && !activeTeamsList.includes(name)) {
+    const hasActivePlayers = allPlayers.some(p => {
+      const tm = sanitizeMojibake((p.Team || p.team || '').trim());
+      return tm === name || normalizePlayerKey(tm) === normalizePlayerKey(name);
+    });
+    const isActiveStatus = (t.Status === 'Aktiv' || t.status === 'Aktiv');
+    if (name && isActiveStatus && hasActivePlayers && !activeTeamsList.includes(name)) {
       activeTeamsList.push(name);
     }
   });
 
   // Check URL query parameters (e.g. #/teams?team=SV+Croatia+Linz or #/teams?name=Traun)
   const hash = window.location.hash || '';
-  let targetTeam = activeTeamsList[0];
+  let targetTeam = activeTeamsList[0] || 'SV Croatia Linz';
 
   if (hash.includes('?')) {
     const queryString = hash.split('?')[1];
@@ -205,10 +216,14 @@ export const bindTeams = async () => {
   selectedTeamName = targetTeam;
 
   const renderTeamDetails = (teamName) => {
-    if (!teamContainer) return;
+    if (!teamContainer || !teamName) return;
 
     // Filter squad for this team
-    const squad = allPlayers.filter(p => sanitizeMojibake((p.Team || p.team || '').trim()) === teamName).map(p => {
+    const teamNorm = normalizePlayerKey(teamName);
+    const squad = allPlayers.filter(p => {
+      const tm = sanitizeMojibake((p.Team || p.team || '').trim());
+      return tm === teamName || normalizePlayerKey(tm) === teamNorm;
+    }).map(p => {
       const fn = sanitizeMojibake((p.Vorname || p.vorname || '').trim());
       const ln = sanitizeMojibake((p.Nachname || p.nachname || '').trim());
       const bDate = (p.Geburtsdatum || p.geburtsdatum || '').trim();
@@ -235,7 +250,11 @@ export const bindTeams = async () => {
     });
 
     const logoLarge = renderTeamLogo(teamName, 'xl');
-    const teamRecord = allTeams.find(t => (t.Name || t.name) === teamName) || {};
+    const teamBadgeSm = renderTeamLogo(teamName, 'xs');
+    const teamRecord = allTeams.find(t => {
+      const n = (t.Name || t.name || '').trim();
+      return n === teamName || normalizePlayerKey(n) === teamNorm;
+    }) || {};
     const activeSince = teamRecord['Aktiv seit'] || teamRecord.activeSince || 'Traditionsverein';
 
     // League table row for 2026/27
