@@ -1,7 +1,7 @@
-import { Store, sanitizeMojibake } from '../store.js?v=1791181000000';
-import { renderIcon } from '../icons.js?v=1791181000000';
-import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791181000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink } from '../playerUtils.js?v=1791181000000';
+import { Store, sanitizeMojibake } from '../store.js?v=1791182000000';
+import { renderIcon } from '../icons.js?v=1791182000000';
+import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791182000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink } from '../playerUtils.js?v=1791182000000';
 
 let allTeams = [];
 let allPlayers = [];
@@ -92,16 +92,22 @@ export const viewTeams = () => {
         margin-bottom: var(--space-xl);
       }
       .team-hero-crest-wrap {
-        width: 110px;
-        height: 110px;
+        width: 120px;
+        height: 120px;
         background: rgba(0, 0, 0, 0.03);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 14px;
+        padding: 12px;
         border: 1px solid var(--color-border);
         flex-shrink: 0;
+      }
+      .team-hero-crest-wrap .team-logo {
+        width: 84px;
+        height: 84px;
+        max-width: 84px;
+        max-height: 84px;
       }
       [data-theme="dark"] .team-hero-crest-wrap {
         background: rgba(255, 255, 255, 0.04);
@@ -120,6 +126,17 @@ export const viewTeams = () => {
           flex-direction: column;
           text-align: center;
           padding: var(--space-md);
+        }
+        .team-hero-crest-wrap {
+          width: 105px;
+          height: 105px;
+          padding: 10px;
+        }
+        .team-hero-crest-wrap .team-logo {
+          width: 74px;
+          height: 74px;
+          max-width: 74px;
+          max-height: 74px;
         }
         .team-kader-grid {
           grid-template-columns: 1fr;
@@ -217,15 +234,22 @@ export const bindTeams = async () => {
       return a.fullName.localeCompare(b.fullName, 'de');
     });
 
-    const logoLarge = renderTeamLogo(teamName, 'lg');
+    const logoLarge = renderTeamLogo(teamName, 'xl');
     const teamRecord = allTeams.find(t => (t.Name || t.name) === teamName) || {};
     const activeSince = teamRecord['Aktiv seit'] || teamRecord.activeSince || 'Traditionsverein';
 
     // League table row for 2026/27
     const currentSeason = Store.getData()?.seasons?.['2026/2027'] || {};
-    const teamTableEntry = (currentSeason.teams || []).find(t => normalizePlayerKey(t.name) === normalizePlayerKey(teamName)) || {
-      played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0
+    const leagueTeams = Store.getLiga ? Store.getLiga('2026/2027') : (currentSeason.teams || []);
+    const teamTableEntry = (leagueTeams || []).find(t => normalizePlayerKey(t.name || t.Name) === normalizePlayerKey(teamName)) || {
+      played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, goalDiff: 0, points: 0
     };
+
+    const gf = teamTableEntry.goalsFor !== undefined ? Number(teamTableEntry.goalsFor) : (teamTableEntry.gf !== undefined ? Number(teamTableEntry.gf) : 0);
+    const ga = teamTableEntry.goalsAgainst !== undefined ? Number(teamTableEntry.goalsAgainst) : (teamTableEntry.ga !== undefined ? Number(teamTableEntry.ga) : 0);
+    const gd = teamTableEntry.goalDiff !== undefined ? Number(teamTableEntry.goalDiff) : (teamTableEntry.gd !== undefined ? Number(teamTableEntry.gd) : (gf - ga));
+    const pts = teamTableEntry.points !== undefined ? Number(teamTableEntry.points) : 0;
+    const played = teamTableEntry.played !== undefined ? Number(teamTableEntry.played) : 0;
 
     // Fixtures / Matches for this team in 2026/27
     const teamMatches = (currentSeason.matches || []).filter(m => {
@@ -279,19 +303,19 @@ export const bindTeams = async () => {
         <!-- 2026/27 Season Stats Summary -->
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; min-width: 260px;">
           <div style="background: rgba(0,0,0,0.03); border: 1px solid var(--color-border); border-radius: 6px; padding: 8px 4px;">
-            <div style="font-size: 1.2rem; font-weight: 800; color: var(--color-text-primary);">${teamTableEntry.points || 0}</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: var(--color-text-primary);">${pts}</div>
             <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary);">Punkte</div>
           </div>
           <div style="background: rgba(0,0,0,0.03); border: 1px solid var(--color-border); border-radius: 6px; padding: 8px 4px;">
-            <div style="font-size: 1.2rem; font-weight: 800; color: var(--color-text-primary);">${teamTableEntry.played || 0}</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: var(--color-text-primary);">${played}</div>
             <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary);">Spiele</div>
           </div>
           <div style="background: rgba(0,0,0,0.03); border: 1px solid var(--color-border); border-radius: 6px; padding: 8px 4px;">
-            <div style="font-size: 1.2rem; font-weight: 800; color: var(--color-accent);">${teamTableEntry.gf || 0}:${teamTableEntry.ga || 0}</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: var(--color-accent);">${gf}:${ga}</div>
             <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary);">Tore</div>
           </div>
           <div style="background: rgba(0,0,0,0.03); border: 1px solid var(--color-border); border-radius: 6px; padding: 8px 4px;">
-            <div style="font-size: 1.2rem; font-weight: 800; color: ${teamTableEntry.gd > 0 ? 'var(--color-accent)' : (teamTableEntry.gd < 0 ? '#ef4444' : 'var(--color-text-primary)')};">${teamTableEntry.gd > 0 ? '+' : ''}${teamTableEntry.gd || 0}</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: ${gd > 0 ? 'var(--color-accent)' : (gd < 0 ? '#ef4444' : 'var(--color-text-primary)')};">${gd > 0 ? '+' : ''}${gd}</div>
             <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary);">Diff</div>
           </div>
         </div>
@@ -308,7 +332,7 @@ export const bindTeams = async () => {
         <!-- Matches & Results -->
         <div class="glass-card" style="padding: var(--space-md); border-radius: var(--border-radius-md);">
           <h3 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
-            <span>📅</span> Spielplan & Ergebnisse
+            ${renderIcon('calendar', { size: 18, color: 'var(--color-accent)' })} Spielplan & Ergebnisse
           </h3>
           ${teamMatches.length === 0 ? `
             <div style="color: var(--color-text-secondary); font-size: 0.9rem; padding: 16px 0;">Keine aktuellen Begegnungen gelistet.</div>
@@ -363,15 +387,21 @@ export const bindTeams = async () => {
                     </div>
                     <div class="spieler-stat-pills">
                       <div class="spieler-stat-pill">
-                        <span class="spieler-stat-val" style="color: var(--color-accent); font-size: 0.95rem;">⚽ ${p.goals}</span>
+                        <span class="spieler-stat-val" style="color: var(--color-accent); font-size: 0.95rem; display: inline-flex; align-items: center; gap: 4px;">
+                          ${renderIcon('ball', { size: 13, color: 'var(--color-accent)' })} ${p.goals}
+                        </span>
                         <span class="spieler-stat-lbl">Tore</span>
                       </div>
                       <div class="spieler-stat-pill">
-                        <span class="spieler-stat-val" style="color: #eab308; font-size: 0.95rem;">🟨 ${p.yellow}</span>
+                        <span class="spieler-stat-val" style="color: #eab308; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 4px;">
+                          <span style="display:inline-block;width:9px;height:12px;background:#eab308;border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.yellow}
+                        </span>
                         <span class="spieler-stat-lbl">Gelb</span>
                       </div>
                       <div class="spieler-stat-pill">
-                        <span class="spieler-stat-val" style="color: #ef4444; font-size: 0.95rem;">🟥 ${p.red}</span>
+                        <span class="spieler-stat-val" style="color: #ef4444; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 4px;">
+                          <span style="display:inline-block;width:9px;height:12px;background:#ef4444;border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.red}
+                        </span>
                         <span class="spieler-stat-lbl">Rot</span>
                       </div>
                     </div>
@@ -409,7 +439,7 @@ export const bindTeams = async () => {
       scorersWidgetEl.innerHTML = `
         <div class="team-scorer-header-wrap">
           <h3 style="margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
-            <span>⚽</span> Vereins-Torschützen ${!showAllScorers && totalCount > 5 ? '<span style="font-size: 0.8rem; color: var(--color-text-secondary); font-weight: normal;">(Top 5)</span>' : ''}
+            ${renderIcon('ball', { size: 18, color: 'var(--color-accent)' })} Vereins-Torschützen ${!showAllScorers && totalCount > 5 ? '<span style="font-size: 0.8rem; color: var(--color-text-secondary); font-weight: normal;">(Top 5)</span>' : ''}
           </h3>
           <select id="team-scorer-season-select" style="background: var(--color-surface); color: var(--color-text-primary); border: 1px solid var(--color-border); border-radius: 6px; padding: 6px 10px; font-size: 0.82rem; font-weight: 600; cursor: pointer; max-width: 180px; outline: none;">
             ${seasonOptions.map(opt => `<option value="${opt.key}" ${opt.key === scorerSeasonFilter ? 'selected' : ''}>${opt.label}</option>`).join('')}

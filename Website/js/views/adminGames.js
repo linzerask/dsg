@@ -1,6 +1,6 @@
-﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791181000000';
-import { showToast } from './admin.js?v=1791181000000';
-import { renderTeamLogo } from '../logos.js?v=1791181000000';
+﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791182000000';
+import { showToast } from './admin.js?v=1791182000000';
+import { renderTeamLogo } from '../logos.js?v=1791182000000';
 
 let gamesData = [];
 let roundsData = [];
