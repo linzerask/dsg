@@ -1,6 +1,6 @@
-﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791182000000';
-import { showToast } from './admin.js?v=1791182000000';
-import { renderTeamLogo } from '../logos.js?v=1791182000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791198000000';
+import { showToast } from './admin.js?v=1791198000000';
+import { renderTeamLogo } from '../logos.js?v=1791198000000';
 
 let leaguesData = [];
 let filteredData = [];
@@ -559,11 +559,20 @@ const renderModalContent = () => {
 
     if (currentModalTab === 'table') {
         const teams = [...(seasonData.teams || [])].sort((a, b) => {
-            if (b.points !== a.points) return b.points - a.points;
-            const diffB = (b.gf || 0) - (b.ga || 0);
-            const diffA = (a.gf || 0) - (a.ga || 0);
+            const ptsA = Number(a.points) || 0;
+            const ptsB = Number(b.points) || 0;
+            if (ptsB !== ptsA) return ptsB - ptsA;
+
+            const gfA = Number(a.goalsFor !== undefined ? a.goalsFor : (a.gf !== undefined ? a.gf : 0));
+            const gaA = Number(a.goalsAgainst !== undefined ? a.goalsAgainst : (a.ga !== undefined ? a.ga : 0));
+            const diffA = (a.goalDiff !== undefined && !isNaN(Number(a.goalDiff))) ? Number(a.goalDiff) : ((a.diff !== undefined && !isNaN(Number(a.diff))) ? Number(a.diff) : (gfA - gaA));
+
+            const gfB = Number(b.goalsFor !== undefined ? b.goalsFor : (b.gf !== undefined ? b.gf : 0));
+            const gaB = Number(b.goalsAgainst !== undefined ? b.goalsAgainst : (b.ga !== undefined ? b.ga : 0));
+            const diffB = (b.goalDiff !== undefined && !isNaN(Number(b.goalDiff))) ? Number(b.goalDiff) : ((b.diff !== undefined && !isNaN(Number(b.diff))) ? Number(b.diff) : (gfB - gaB));
+
             if (diffB !== diffA) return diffB - diffA;
-            return (b.gf || 0) - (a.gf || 0);
+            return gfB - gfA;
         });
 
         if (teams.length === 0) {
@@ -588,7 +597,9 @@ const renderModalContent = () => {
 
                 <!-- Teams List -->
                 ${teams.map((t, i) => {
-                    const diff = (t.gf || 0) - (t.ga || 0);
+                    const gf = Number(t.goalsFor !== undefined ? t.goalsFor : (t.gf !== undefined ? t.gf : 0));
+                    const ga = Number(t.goalsAgainst !== undefined ? t.goalsAgainst : (t.ga !== undefined ? t.ga : 0));
+                    const diff = (t.goalDiff !== undefined && !isNaN(Number(t.goalDiff))) ? Number(t.goalDiff) : ((t.diff !== undefined && !isNaN(Number(t.diff))) ? Number(t.diff) : (gf - ga));
                     const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
                     return `
                         <div class="has-league-table-accordion" style="border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface); overflow: hidden; cursor: pointer; transition: all 0.2s;">
@@ -603,7 +614,7 @@ const renderModalContent = () => {
                                 <span style="text-align: center; color: var(--color-text-secondary);">${t.won ?? 0}</span>
                                 <span style="text-align: center; color: var(--color-text-secondary);">${t.drawn ?? 0}</span>
                                 <span style="text-align: center; color: var(--color-text-secondary);">${t.lost ?? 0}</span>
-                                <span style="text-align: center; color: var(--color-text-secondary);">${t.gf ?? 0}:${t.ga ?? 0}</span>
+                                <span style="text-align: center; color: var(--color-text-secondary);">${gf}:${ga}</span>
                                 <span style="text-align: center; color: var(--color-text-secondary);">${diffStr}</span>
                                 <span style="text-align: right; font-weight: 900; color: var(--color-accent); font-size: 1.1rem;">${t.points ?? 0}</span>
                             </div>
@@ -643,7 +654,7 @@ const renderModalContent = () => {
                                         </div>
                                         <div style="background: rgba(0,0,0,0.03); padding: 6px 2px; border-radius: 6px;">
                                             <div style="font-size: 0.62rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 700;">Tore</div>
-                                            <div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.92rem; margin-top: 2px;">${t.gf ?? 0}:${t.ga ?? 0}</div>
+                                            <div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.92rem; margin-top: 2px;">${gf}:${ga}</div>
                                         </div>
                                         <div style="background: rgba(0,0,0,0.03); padding: 6px 2px; border-radius: 6px;">
                                             <div style="font-size: 0.62rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 700;">Diff</div>
