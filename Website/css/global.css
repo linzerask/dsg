@@ -3875,3 +3875,32 @@ main {
   margin-top: 3px;
 }
 
+.scorer-row-hover {
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+.scorer-row-hover:hover {
+  background: rgba(0, 179, 65, 0.08) !important;
+  transform: translateX(3px);
+}
+
+.team-scorer-header-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+@media (max-width: 480px) {
+  .team-scorer-header-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .team-scorer-header-wrap select {
+    max-width: 100% !important;
+    width: 100%;
+  }
+}
+
+
+

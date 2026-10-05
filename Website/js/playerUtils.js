@@ -1,5 +1,5 @@
-﻿// Player Utilities & Automated Statistics Aggregator
-import { Store, sanitizeMojibake } from './store.js?v=1791180000000';
+// Player Utilities & Automated Statistics Aggregator
+import { Store, sanitizeMojibake } from './store.js?v=1791181000000';
 
 export function normalizePlayerKey(name) {
   if (!name) return '';
@@ -234,5 +234,97 @@ export function getPlayerLink(playerName, teamName = '') {
 
   return `#/spieler?search=${encodeURIComponent(playerName)}`;
 }
+
+// Compute club top scorers for a given team, filtered by season ('all' or specific seasonKey)
+export function getTeamScorers(teamName, seasonFilter = 'all') {
+  if (!teamName) return [];
+  const teamNorm = normalizePlayerKey(teamName);
+  const data = Store.getData();
+  const seasons = data.seasons || {};
+  const scorersMap = {};
+
+  const targetSeasons = (seasonFilter === 'all' || !seasonFilter)
+    ? Object.keys(seasons)
+    : (seasons[seasonFilter] ? [seasonFilter] : []);
+
+  targetSeasons.forEach(sKey => {
+    const s = seasons[sKey];
+    if (!s) return;
+
+    // 1. Matches events
+    (s.matches || []).forEach(m => {
+      const hNorm = normalizePlayerKey(m.home);
+      const aNorm = normalizePlayerKey(m.away);
+      const isTeamMatch = hNorm.includes(teamNorm) || teamNorm.includes(hNorm) || aNorm.includes(teamNorm) || teamNorm.includes(aNorm);
+
+      if (m.events && Array.isArray(m.events)) {
+        m.events.forEach(ev => {
+          if (ev.type === 'goal') {
+            const evTeamNorm = normalizePlayerKey(ev.team || '');
+            const belongsToTeam = evTeamNorm ? (evTeamNorm.includes(teamNorm) || teamNorm.includes(evTeamNorm)) : isTeamMatch;
+            if (belongsToTeam) {
+              const pName = sanitizeMojibake((ev.player || '').trim());
+              const key = normalizePlayerKey(pName);
+              const count = parseInt(ev.count) || 1;
+              if (key) {
+                if (!scorersMap[key]) {
+                  scorersMap[key] = { name: pName, goals: 0 };
+                }
+                scorersMap[key].goals += count;
+              }
+            }
+          }
+        });
+      } else if (m.scorers && Array.isArray(m.scorers)) {
+        m.scorers.forEach(sc => {
+          const scTeamNorm = normalizePlayerKey(sc.team || '');
+          const belongsToTeam = scTeamNorm ? (scTeamNorm.includes(teamNorm) || teamNorm.includes(scTeamNorm)) : isTeamMatch;
+          if (belongsToTeam) {
+            const pName = sanitizeMojibake((sc.name || sc.player || '').trim());
+            const key = normalizePlayerKey(pName);
+            const count = parseInt(sc.count || sc.goals) || 1;
+            if (key) {
+              if (!scorersMap[key]) {
+                scorersMap[key] = { name: pName, goals: 0 };
+              }
+              scorersMap[key].goals += count;
+            }
+          }
+        });
+      }
+    });
+
+    // 2. Season aggregated stats scorers table (fallback/override for single season if match events weren't detailed)
+    if (s.stats && s.stats.scorers && Array.isArray(s.stats.scorers)) {
+      s.stats.scorers.forEach(sc => {
+        const scTeamNorm = normalizePlayerKey(sc.team || '');
+        if (scTeamNorm && (scTeamNorm.includes(teamNorm) || teamNorm.includes(scTeamNorm))) {
+          const pName = sanitizeMojibake((sc.player || sc.name || '').trim());
+          const key = normalizePlayerKey(pName);
+          const g = parseInt(sc.goals || sc.count) || 0;
+          if (key && g > 0) {
+            if (!scorersMap[key]) {
+              scorersMap[key] = { name: pName, goals: g };
+            } else if (seasonFilter !== 'all' && scorersMap[key].goals < g) {
+              scorersMap[key].goals = g;
+            }
+          }
+        }
+      });
+    }
+  });
+
+  return Object.values(scorersMap)
+    .filter(p => p.goals > 0)
+    .sort((a, b) => {
+      if (b.goals !== a.goals) return b.goals - a.goals;
+      return a.name.localeCompare(b.name, 'de');
+    })
+    .map(p => ({
+      ...p,
+      link: getPlayerLink(p.name, teamName)
+    }));
+}
+
 
 

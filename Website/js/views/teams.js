@@ -1,12 +1,15 @@
-﻿// Teams & Club Hub View
-import { Store, sanitizeMojibake } from '../store.js?v=1791180000000';
-import { renderIcon } from '../icons.js?v=1791180000000';
-import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791180000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey } from '../playerUtils.js?v=1791180000000';
+import { Store, sanitizeMojibake } from '../store.js?v=1791181000000';
+import { renderIcon } from '../icons.js?v=1791181000000';
+import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791181000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink } from '../playerUtils.js?v=1791181000000';
 
 let allTeams = [];
 let allPlayers = [];
 let selectedTeamName = '';
+let scorerSeasonFilter = 'all';
+let showAllScorers = false;
+let scorerCurrentPage = 1;
+const SCORERS_PER_PAGE = 5;
 
 export const viewTeams = () => {
   return `
@@ -184,33 +187,6 @@ export const bindTeams = async () => {
 
   selectedTeamName = targetTeam;
 
-  const renderSelector = () => {
-    if (!selectorGrid) return;
-    selectorGrid.innerHTML = activeTeamsList.map(tName => {
-      const isSelected = tName === selectedTeamName;
-      const logoHTML = renderTeamLogo(tName, 'sm');
-      const count = allPlayers.filter(p => sanitizeMojibake((p.Team || p.team || '').trim()) === tName).length;
-
-      return `
-        <div class="team-selector-card ${isSelected ? 'active' : ''}" data-team-name="${tName}">
-          <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-            ${logoHTML}
-          </div>
-          <div class="team-selector-name">${tName}</div>
-          <div style="font-size: 0.72rem; color: var(--color-accent); font-weight: 700;">${count} Spieler</div>
-        </div>
-      `;
-    }).join('');
-
-    selectorGrid.querySelectorAll('.team-selector-card').forEach(card => {
-      card.addEventListener('click', () => {
-        selectedTeamName = card.getAttribute('data-team-name');
-        renderSelector();
-        renderTeamDetails(selectedTeamName);
-      });
-    });
-  };
-
   const renderTeamDetails = (teamName) => {
     if (!teamContainer) return;
 
@@ -259,8 +235,29 @@ export const bindTeams = async () => {
       return h.includes(t) || a.includes(t) || t.includes(h) || t.includes(a);
     });
 
-    // Club Top Scorers
-    const topScorers = squad.filter(p => p.goals > 0).slice(0, 5);
+    // Available Seasons for Scorer Dropdown
+    const seasonsData = Store.getData()?.seasons || {};
+    const rawLeagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
+    const seasonKeysSet = new Set(Object.keys(seasonsData));
+    rawLeagues.forEach(l => {
+      if (l.seasonKey) seasonKeysSet.add(l.seasonKey);
+    });
+    const sortedKeys = Array.from(seasonKeysSet).sort((a, b) => b.localeCompare(a));
+    const seasonOptions = [
+      { key: 'all', label: 'Alle Saisons (Ewige)' },
+      ...sortedKeys.map(k => {
+        let label = k;
+        if (/^\d{4}\/\d{4}$/.test(k)) {
+          const parts = k.split('/');
+          label = `Saison ${parts[0]}/${parts[1].slice(2)}`;
+        } else if (k.includes('_')) {
+          label = `Saison ${k.replace('_', ' ')}`;
+        } else if (/^\d{4}$/.test(k)) {
+          label = `Saison ${k}`;
+        }
+        return { key: k, label };
+      })
+    ];
 
     teamContainer.innerHTML = `
       <!-- Hero Banner -->
@@ -303,26 +300,9 @@ export const bindTeams = async () => {
       <!-- Top Scorers & Recent Matches 2-Column Grid -->
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-lg); margin-bottom: var(--space-xl);">
         
-        <!-- Internal Top Scorers -->
-        <div class="glass-card" style="padding: var(--space-md); border-radius: var(--border-radius-md);">
-          <h3 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
-            <span>⚽</span> Vereins-Torschützen (Top 5)
-          </h3>
-          ${topScorers.length === 0 ? `
-            <div style="color: var(--color-text-secondary); font-size: 0.9rem; padding: 16px 0;">Noch keine registrierten Torschützen in den Spielberichten.</div>
-          ` : `
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              ${topScorers.map((p, idx) => `
-                <a href="#/spieler?id=${p.id}" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(0,0,0,0.02); border-radius: 6px; text-decoration: none; color: var(--color-text-primary); transition: background var(--transition-fast);">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="font-weight: 800; color: var(--color-text-secondary); width: 18px;">${idx + 1}.</span>
-                    <span style="font-weight: 700;">${p.fullName}</span>
-                  </div>
-                  <span style="font-weight: 800; color: var(--color-accent); font-size: 1rem;">${p.goals} Tore</span>
-                </a>
-              `).join('')}
-            </div>
-          `}
+        <!-- Internal Top Scorers Interactive Widget -->
+        <div id="team-scorers-widget" class="glass-card" style="padding: var(--space-md); border-radius: var(--border-radius-md);">
+          <!-- Populated dynamically by renderScorersWidget -->
         </div>
 
         <!-- Matches & Results -->
@@ -403,6 +383,172 @@ export const bindTeams = async () => {
         </div>
       </div>
     `;
+
+    // Render interactive scorers widget
+    const renderScorersWidget = () => {
+      const scorersWidgetEl = document.getElementById('team-scorers-widget');
+      if (!scorersWidgetEl) return;
+
+      const scorers = getTeamScorers(teamName, scorerSeasonFilter);
+      const totalCount = scorers.length;
+      const totalPages = Math.max(1, Math.ceil(totalCount / SCORERS_PER_PAGE));
+
+      if (scorerCurrentPage > totalPages) scorerCurrentPage = totalPages;
+      if (scorerCurrentPage < 1) scorerCurrentPage = 1;
+
+      let displayedScorers = [];
+      let startIndex = 0;
+
+      if (!showAllScorers) {
+        displayedScorers = scorers.slice(0, 5);
+      } else {
+        startIndex = (scorerCurrentPage - 1) * SCORERS_PER_PAGE;
+        displayedScorers = scorers.slice(startIndex, startIndex + SCORERS_PER_PAGE);
+      }
+
+      scorersWidgetEl.innerHTML = `
+        <div class="team-scorer-header-wrap">
+          <h3 style="margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+            <span>⚽</span> Vereins-Torschützen ${!showAllScorers && totalCount > 5 ? '<span style="font-size: 0.8rem; color: var(--color-text-secondary); font-weight: normal;">(Top 5)</span>' : ''}
+          </h3>
+          <select id="team-scorer-season-select" style="background: var(--color-surface); color: var(--color-text-primary); border: 1px solid var(--color-border); border-radius: 6px; padding: 6px 10px; font-size: 0.82rem; font-weight: 600; cursor: pointer; max-width: 180px; outline: none;">
+            ${seasonOptions.map(opt => `<option value="${opt.key}" ${opt.key === scorerSeasonFilter ? 'selected' : ''}>${opt.label}</option>`).join('')}
+          </select>
+        </div>
+
+        ${totalCount === 0 ? `
+          <div style="color: var(--color-text-secondary); font-size: 0.9rem; padding: 20px 0; text-align: center;">
+            Keine registrierten Torschützen für diesen Filter.
+          </div>
+        ` : `
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            ${displayedScorers.map((p, idx) => {
+              const absoluteRank = showAllScorers ? (startIndex + idx + 1) : (idx + 1);
+              let rankColor = 'var(--color-text-secondary)';
+              if (absoluteRank === 1) rankColor = '#eab308';
+              else if (absoluteRank === 2) rankColor = '#94a3b8';
+              else if (absoluteRank === 3) rankColor = '#d97706';
+
+              return `
+                <a href="${p.link}" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(0,0,0,0.02); border-radius: 6px; text-decoration: none; color: var(--color-text-primary); transition: background var(--transition-fast);" class="scorer-row-hover">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-weight: 800; color: ${rankColor}; width: 22px; text-align: right;">${absoluteRank}.</span>
+                    <span style="font-weight: 700;">${p.name}</span>
+                  </div>
+                  <span style="font-weight: 800; color: var(--color-accent); font-size: 0.95rem;">
+                    ${p.goals} ${p.goals === 1 ? 'Tor' : 'Tore'}
+                  </span>
+                </a>
+              `;
+            }).join('')}
+          </div>
+        `}
+
+        ${totalCount > 5 ? `
+          <div style="margin-top: 12px;">
+            ${!showAllScorers ? `
+              <button id="btn-toggle-all-scorers" style="width: 100%; padding: 7px 12px; font-size: 0.82rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; color: var(--color-accent); border: 1px solid rgba(0, 179, 65, 0.35); background: rgba(0, 179, 65, 0.06); transition: all var(--transition-fast);">
+                Alle ${totalCount} Torschützen anzeigen ▾
+              </button>
+            ` : `
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-top: 8px; border-top: 1px solid var(--color-border); gap: 6px;">
+                <button id="btn-prev-scorers" ${scorerCurrentPage <= 1 ? 'disabled' : ''} style="padding: 4px 10px; font-size: 0.78rem; font-weight: 600; cursor: ${scorerCurrentPage <= 1 ? 'not-allowed' : 'pointer'}; opacity: ${scorerCurrentPage <= 1 ? '0.4' : '1'}; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 4px; color: var(--color-text-primary);">
+                  &larr; Zurück
+                </button>
+                <span style="font-size: 0.78rem; color: var(--color-text-secondary); font-weight: 600; text-align: center;">
+                  Seite ${scorerCurrentPage} / ${totalPages} (${totalCount} Spieler)
+                </span>
+                <button id="btn-next-scorers" ${scorerCurrentPage >= totalPages ? 'disabled' : ''} style="padding: 4px 10px; font-size: 0.78rem; font-weight: 600; cursor: ${scorerCurrentPage >= totalPages ? 'not-allowed' : 'pointer'}; opacity: ${scorerCurrentPage >= totalPages ? '0.4' : '1'}; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 4px; color: var(--color-text-primary);">
+                  Weiter &rarr;
+                </button>
+              </div>
+              <button id="btn-toggle-top5-scorers" style="width: 100%; padding: 5px 12px; font-size: 0.78rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; color: var(--color-text-secondary); border: 1px dashed var(--color-border); background: transparent; transition: all var(--transition-fast);">
+                Nur Top 5 anzeigen ▴
+              </button>
+            `}
+          </div>
+        ` : ''}
+      `;
+
+      // Event listeners
+      const selectEl = document.getElementById('team-scorer-season-select');
+      if (selectEl) {
+        selectEl.addEventListener('change', (e) => {
+          scorerSeasonFilter = e.target.value;
+          scorerCurrentPage = 1;
+          renderScorersWidget();
+        });
+      }
+
+      const btnShowAll = document.getElementById('btn-toggle-all-scorers');
+      if (btnShowAll) {
+        btnShowAll.addEventListener('click', () => {
+          showAllScorers = true;
+          scorerCurrentPage = 1;
+          renderScorersWidget();
+        });
+      }
+
+      const btnShowTop5 = document.getElementById('btn-toggle-top5-scorers');
+      if (btnShowTop5) {
+        btnShowTop5.addEventListener('click', () => {
+          showAllScorers = false;
+          scorerCurrentPage = 1;
+          renderScorersWidget();
+        });
+      }
+
+      const btnPrev = document.getElementById('btn-prev-scorers');
+      if (btnPrev) {
+        btnPrev.addEventListener('click', () => {
+          if (scorerCurrentPage > 1) {
+            scorerCurrentPage--;
+            renderScorersWidget();
+          }
+        });
+      }
+
+      const btnNext = document.getElementById('btn-next-scorers');
+      if (btnNext) {
+        btnNext.addEventListener('click', () => {
+          if (scorerCurrentPage < totalPages) {
+            scorerCurrentPage++;
+            renderScorersWidget();
+          }
+        });
+      }
+    };
+
+    renderScorersWidget();
+  };
+
+  const renderSelector = () => {
+    if (!selectorGrid) return;
+    selectorGrid.innerHTML = activeTeamsList.map(tName => {
+      const isSelected = tName === selectedTeamName;
+      const logoHTML = renderTeamLogo(tName, 'sm');
+      const count = allPlayers.filter(p => sanitizeMojibake((p.Team || p.team || '').trim()) === tName).length;
+
+      return `
+        <div class="team-selector-card ${isSelected ? 'active' : ''}" data-team-name="${tName}">
+          <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+            ${logoHTML}
+          </div>
+          <div class="team-selector-name">${tName}</div>
+          <div style="font-size: 0.72rem; color: var(--color-accent); font-weight: 700;">${count} Spieler</div>
+        </div>
+      `;
+    }).join('');
+
+    selectorGrid.querySelectorAll('.team-selector-card').forEach(card => {
+      card.addEventListener('click', () => {
+        selectedTeamName = card.getAttribute('data-team-name');
+        showAllScorers = false;
+        scorerCurrentPage = 1;
+        renderSelector();
+        renderTeamDetails(selectedTeamName);
+      });
+    });
   };
 
   renderSelector();

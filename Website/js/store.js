@@ -129,7 +129,7 @@
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1791180000000';
+const DATA_VERSION_STRING = '?v=1791181000000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
