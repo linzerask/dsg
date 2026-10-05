@@ -526,10 +526,12 @@ export const Store = {
       if (s?.matches) {
         s.matches = deduplicateMatches(s.matches);
       }
-      // Auto-heal missing or empty statistics if matches have events/scorers/cards
+      // Auto-heal missing or empty statistics or zeroed goals if played matches exist
+      const hasPlayedMatches = s?.matches && s.matches.some(m => (m.status === 'Gespielt' || m.status === 'Played' || m.status?.startsWith('Abgesagt') || (m.score && m.score !== '-:-' && m.score !== '- : -')));
+      const allGoalsZero = s?.teams && s.teams.length > 0 && s.teams.some(t => (t.played || 0) > 0) && s.teams.every(t => (Number(t.goalsFor || t.gf || 0) === 0) && (Number(t.goalsAgainst || t.ga || 0) === 0));
       const hasScorersOrCards = s?.stats && ((s.stats.topScorers && s.stats.topScorers.length > 0) || (s.stats.cards && s.stats.cards.length > 0));
       const hasMatchEvents = s?.matches && s.matches.some(m => (m.events && m.events.length > 0) || (m.scorers && m.scorers.length > 0) || (m.cards && m.cards.length > 0));
-      if (!hasScorersOrCards && hasMatchEvents) {
+      if ((hasPlayedMatches && allGoalsZero) || (!hasScorersOrCards && hasMatchEvents)) {
         this.recalculateSeason(sKey);
       }
     });
@@ -611,15 +613,22 @@ export const Store = {
           });
         }
 
-        // Run match deduplication across all seasons in targetData
+        // Run match deduplication & heal zeroed team goals across all seasons in targetData
         if (targetData.seasons) {
           Object.keys(targetData.seasons).forEach(sKey => {
-            if (targetData.seasons[sKey]?.matches) {
-              const prevLen = targetData.seasons[sKey].matches.length;
-              targetData.seasons[sKey].matches = deduplicateMatches(targetData.seasons[sKey].matches);
-              if (targetData.seasons[sKey].matches.length !== prevLen) {
+            const s = targetData.seasons[sKey];
+            if (s?.matches) {
+              const prevLen = s.matches.length;
+              s.matches = deduplicateMatches(s.matches);
+              if (s.matches.length !== prevLen) {
                 needsMigration = true;
               }
+            }
+            const hasPlayedMatches = s?.matches && s.matches.some(m => (m.status === 'Gespielt' || m.status === 'Played' || m.status?.startsWith('Abgesagt') || (m.score && m.score !== '-:-' && m.score !== '- : -')));
+            const allGoalsZero = s?.teams && s.teams.length > 0 && s.teams.some(t => (t.played || 0) > 0) && s.teams.every(t => (Number(t.goalsFor || t.gf || 0) === 0) && (Number(t.goalsAgainst || t.ga || 0) === 0));
+            if (hasPlayedMatches && allGoalsZero) {
+              this.recalculateSeason(sKey);
+              needsMigration = true;
             }
           });
         }
@@ -1012,10 +1021,20 @@ export const Store = {
   getLiga(season = (this.getData()?.currentSeason || "2026/2027")) {
     const data = this.getData();
     if (!data.seasons) return [];
-    if (data.seasons[season] && data.seasons[season].teams) {
-      return data.seasons[season].teams;
+    const s = data.seasons[season];
+    if (!s) return [];
+
+    let teams = Array.isArray(s.teams) ? s.teams : [];
+
+    const hasPlayedMatches = Array.isArray(s.matches) && s.matches.some(m => (m.status === 'Gespielt' || m.status === 'Played' || m.status?.startsWith('Abgesagt') || (m.score && m.score !== '-:-' && m.score !== '- : -')));
+    const allGoalsZero = teams.length > 0 && teams.some(t => (t.played || 0) > 0) && teams.every(t => (Number(t.goalsFor || t.gf || 0) === 0) && (Number(t.goalsAgainst || t.ga || 0) === 0));
+
+    if (hasPlayedMatches && (teams.length === 0 || allGoalsZero)) {
+      this.recalculateSeason(season);
+      return (this.getData()?.seasons?.[season]?.teams) || teams;
     }
-    return [];
+
+    return teams;
   },
 
   getMatches(season = (this.getData()?.currentSeason || "2026/2027")) {

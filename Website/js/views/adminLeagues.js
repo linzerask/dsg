@@ -522,6 +522,102 @@ const getMatchCards = (m) => {
     return [];
 };
 
+const computeSeasonTable = (teamsList, matchesList) => {
+    const teamMap = new Map();
+    (teamsList || []).forEach(t => {
+        const name = (t.name || '').trim();
+        if (name) {
+            teamMap.set(name, {
+                id: t.id,
+                name: name,
+                logo: t.logo || 'stadion.png',
+                played: 0,
+                won: 0,
+                drawn: 0,
+                lost: 0,
+                goalsFor: 0,
+                goalsAgainst: 0,
+                goalDiff: 0,
+                points: 0
+            });
+        }
+    });
+
+    const matches = Array.isArray(matchesList) ? matchesList : [];
+    let hasPlayedMatches = false;
+
+    matches.forEach(m => {
+        const homeName = (m.home || '').trim();
+        const awayName = (m.away || '').trim();
+        if (!homeName || !awayName) return;
+
+        if (!teamMap.has(homeName)) {
+            teamMap.set(homeName, { name: homeName, logo: 'stadion.png', played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, goalDiff: 0, points: 0 });
+        }
+        if (!teamMap.has(awayName)) {
+            teamMap.set(awayName, { name: awayName, logo: 'stadion.png', played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, goalDiff: 0, points: 0 });
+        }
+
+        const homeTeam = teamMap.get(homeName);
+        const awayTeam = teamMap.get(awayName);
+
+        let sHome = 0, sAway = 0;
+        let isPlayed = false;
+
+        if (m.status === 'Abgesagt 3:0') {
+            sHome = 3; sAway = 0; isPlayed = true;
+        } else if (m.status === 'Abgesagt 0:3') {
+            sHome = 0; sAway = 3; isPlayed = true;
+        } else if (m.score && m.score !== '-:-' && m.score !== '- : -') {
+            const cleanScore = m.score.split(' ')[0].replace('*', '');
+            const parts = cleanScore.split(':');
+            if (parts.length === 2 && !isNaN(parseInt(parts[0])) && !isNaN(parseInt(parts[1]))) {
+                sHome = parseInt(parts[0]);
+                sAway = parseInt(parts[1]);
+                isPlayed = true;
+            }
+        }
+
+        if (isPlayed) {
+            hasPlayedMatches = true;
+            homeTeam.played += 1;
+            awayTeam.played += 1;
+            homeTeam.goalsFor += sHome;
+            homeTeam.goalsAgainst += sAway;
+            homeTeam.goalDiff = homeTeam.goalsFor - homeTeam.goalsAgainst;
+
+            awayTeam.goalsFor += sAway;
+            awayTeam.goalsAgainst += sHome;
+            awayTeam.goalDiff = awayTeam.goalsFor - awayTeam.goalsAgainst;
+
+            if (sHome > sAway) {
+                homeTeam.won += 1;
+                homeTeam.points += 3;
+                awayTeam.lost += 1;
+            } else if (sAway > sHome) {
+                awayTeam.won += 1;
+                awayTeam.points += 3;
+                homeTeam.lost += 1;
+            } else {
+                homeTeam.drawn += 1;
+                homeTeam.points += 1;
+                awayTeam.drawn += 1;
+                awayTeam.points += 1;
+            }
+        }
+    });
+
+    if (hasPlayedMatches || teamMap.size > 0) {
+        return Array.from(teamMap.values()).sort((a, b) => {
+            if (b.points !== a.points) return b.points - a.points;
+            if (b.goalDiff !== a.goalDiff) return b.goalDiff - a.goalDiff;
+            return b.goalsFor - a.goalsFor;
+        });
+    }
+
+    return (teamsList || []);
+};
+
 const renderModalContent = () => {
     const container = document.getElementById('league-data-content');
     if (!container || !selectedLeague) return;
@@ -558,22 +654,12 @@ const renderModalContent = () => {
     }
 
     if (currentModalTab === 'table') {
-        const teams = [...(seasonData.teams || [])].sort((a, b) => {
-            const ptsA = Number(a.points) || 0;
-            const ptsB = Number(b.points) || 0;
-            if (ptsB !== ptsA) return ptsB - ptsA;
-
-            const gfA = Number(a.goalsFor !== undefined ? a.goalsFor : (a.gf !== undefined ? a.gf : 0));
-            const gaA = Number(a.goalsAgainst !== undefined ? a.goalsAgainst : (a.ga !== undefined ? a.ga : 0));
-            const diffA = (a.goalDiff !== undefined && !isNaN(Number(a.goalDiff))) ? Number(a.goalDiff) : ((a.diff !== undefined && !isNaN(Number(a.diff))) ? Number(a.diff) : (gfA - gaA));
-
-            const gfB = Number(b.goalsFor !== undefined ? b.goalsFor : (b.gf !== undefined ? b.gf : 0));
-            const gaB = Number(b.goalsAgainst !== undefined ? b.goalsAgainst : (b.ga !== undefined ? b.ga : 0));
-            const diffB = (b.goalDiff !== undefined && !isNaN(Number(b.goalDiff))) ? Number(b.goalDiff) : ((b.diff !== undefined && !isNaN(Number(b.diff))) ? Number(b.diff) : (gfB - gaB));
-
-            if (diffB !== diffA) return diffB - diffA;
-            return gfB - gfA;
-        });
+        const matchesList = seasonData.schedule || seasonData.matches || [];
+        const rawTeams = (seasonData.teams && seasonData.teams.length > 0) ? seasonData.teams : (Store.getLiga(seasonKey) || []);
+        
+        // Dynamically compute standings from matches to guarantee correct Tore & Diff even with stale cache
+        const computedTeams = computeSeasonTable(rawTeams, matchesList);
+        const teams = (computedTeams && computedTeams.length > 0) ? computedTeams : rawTeams;
 
         if (teams.length === 0) {
             container.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary); padding: 20px;">Keine Mannschaften eingetragen.</p>';
