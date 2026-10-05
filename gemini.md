@@ -111,5 +111,35 @@ For each round (e.g. Runde 4, 5, 6, 7, 8...), the following wallpaper types are 
   - Standard Color Logo upload (`logoUrl`) and Monochrome Logo upload (`monochromeLogoUrl`) are both available with live previews and delete options in the Admin Teams tab (`adminTeams.js`).
   - Fallbacks gracefully handle historical teams and custom uploaded badges without missing assets.
 
+---
+
+## 9. Players & Teams Architecture & Deep Linking Standards
+- **Players Page (`#/spieler`) & Team Rosters (`#/teams`):**
+  - Displays exclusively active registered players from the database.
+  - **Avatar Display Standard:** Renders deterministic avatars (`Spieler/1.jpg` to `Spieler/20.jpg` via `getPlayerHash()`) or custom uploaded photos (`player.photoUrl`). Avatars MUST use `object-fit: contain` and `object-position: bottom center` to prevent clipping or excessive zooming.
+  - **No-Emoji Rule:** Strictly prohibited to use raw Unicode emojis anywhere on the site. Use only SVG icons via `renderIcon()` or pure CSS geometric tags.
+  - **Deep Linking Protocol:** All goalscorer and booking entries across Matchdays/Spiele (`liga.js`) and Top Scorer widgets link directly to individual player profiles via their database ID: `#/spieler?id=ID` (or `#/spieler?search=Name` as fallback).
+  - **Interactive Team Scorers Widget (`teams.js`):**
+    - Season Selector: Toggles between active seasons (e.g. `Saison 2026/27`) and All-Time club stats (`Gesamt (Alle Saisons)`).
+    - Compact Initial View: Renders the Top 5 club scorers with a toggle button to expand all club scorers.
+    - Clean Pagination: Shows 5 players per page when expanded with responsive mobile layout.
+
+---
+
+## 10. Admin Player Management & Modern Positions Architecture
+- **Firebase Storage Photo Upload (`adminPlayers.js`):**
+  - Features a dedicated avatar upload card with live image preview circle, "Foto hochladen", "Entfernen", and dynamic status feedback.
+  - Uploads directly to Firebase Storage bucket under `players/` with automated client-side canvas compression fallback (`MAX_SIZE = 600px`, JPEG 0.75).
+- **Comprehensive Modern Football Positions:**
+  - Organized in `<optgroup>`s in the admin position selector:
+    - **Torwart:** Torwart (TW), Mitspielender Torwart.
+    - **Abwehr / Verteidigung:** Innenverteidiger (IV), Linksverteidiger (LV), Rechtsverteidiger (RV), Linker Schienenspieler (LWB), Rechter Schienenspieler (RWB), Libero (LIB), Abwehr (Allround).
+    - **Mittelfeld:** Defensives Mittelfeld (DM / 6er), Zentrales Mittelfeld (ZM / 8er), Offensives Mittelfeld (OM / 10er), Linkes Mittelfeld (LM), Rechtes Mittelfeld (RM), Flügelspieler, Mittelfeld (Allround).
+    - **Angriff / Sturm:** Mittelstürmer (MS / 9er), Linksaußen (LA / LW), Rechtsaußen (RA / RW), Hängende Spitze (HS / CF), Zweiter Stürmer (SS), Sturm (Allround).
+  - **Spielfuß / Seite / Detail:** Rechtsfuß (R), Linksfuß (L), Beidfüßig (B), Zentral, Links, Rechts, Flexibel / Universal.
+- **Intelligent Category Mapping:**
+  - Public position filter buttons (`Torwart`, `Abwehr`, `Mittelfeld`, `Sturm`) use `getPlayerPositionCategory()` to map all respective subpositions automatically.
+
+
 
 
