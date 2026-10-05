@@ -66,6 +66,18 @@ export function formatMemberSince(sinceStr) {
   return `Seit ${sinceStr}`;
 }
 
+export function getPlayerPositionLabel(player) {
+  if (!player) return '';
+  const pos = sanitizeMojibake((player.Position || player.position || '').trim());
+  const side = sanitizeMojibake((player.positionSide || player.side || player.PositionSide || '').trim());
+  
+  if (!pos && !side) return '';
+  if (!pos) return side;
+  if (!side) return pos;
+  if (pos === 'Torwart') return 'Torwart';
+  return `${pos} (${side})`;
+}
+
 // Compute live goals and cards for all players across all match reports in Store
 let cachedPlayerStats = null;
 let lastStatsComputeTime = 0;

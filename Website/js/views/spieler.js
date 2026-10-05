@@ -2,7 +2,7 @@
 import { Store, sanitizeMojibake } from '../store.js?v=1791182000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey } from '../playerUtils.js?v=1791182000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getPlayerPositionLabel } from '../playerUtils.js?v=1791182000000';
 
 let allActivePlayers = [];
 let activeSearchQuery = '';
@@ -482,7 +482,8 @@ export const bindSpieler = async () => {
       const teamLogo = renderTeamLogo(p.team, 'xs');
       const ageText = p.age ? `${p.age} Jahre` : '';
       const sinceText = formatMemberSince(p.memberSince);
-      const posLabel = p.position ? `<span class="spieler-card-pos-tag">${p.position}</span>` : '';
+      const posLabelText = getPlayerPositionLabel(p.raw || p);
+      const posLabel = posLabelText ? `<span class="spieler-card-pos-tag">${posLabelText}</span>` : '';
 
       return `
         <div class="spieler-card" data-player-id="${p.id}">
@@ -543,6 +544,7 @@ export const bindSpieler = async () => {
     const ageText = player.age ? `${player.age} Jahre` : 'Unbekannt';
     const bDateFormatted = player.birthDate ? player.birthDate.split('-').reverse().join('.') : '-';
     const sinceText = formatMemberSince(player.memberSince) || '-';
+    const positionLabel = getPlayerPositionLabel(player.raw || player);
 
     modalBody.innerHTML = `
       <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-md);">
@@ -561,7 +563,7 @@ export const bindSpieler = async () => {
           <a href="#/teams?team=${encodeURIComponent(player.team)}" class="player-modal-team-link" style="font-size: 1.05rem; font-weight: 700; color: var(--color-accent); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
             ${player.team} &rarr;
           </a>
-          ${player.position ? `<div style="display: inline-block; margin-top: 6px; background: rgba(0, 179, 65, 0.15); color: var(--color-accent); font-weight: 800; font-size: 0.78rem; padding: 4px 12px; border-radius: 999px; text-transform: uppercase;">${player.position}</div>` : ''}
+          ${positionLabel ? `<div style="display: inline-block; margin-top: 6px; background: rgba(0, 179, 65, 0.15); color: var(--color-accent); font-weight: 800; font-size: 0.78rem; padding: 4px 12px; border-radius: 999px; text-transform: uppercase;">${positionLabel}</div>` : ''}
         </div>
 
         <!-- Stats Overview Grid -->

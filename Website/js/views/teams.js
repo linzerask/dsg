@@ -1,7 +1,7 @@
 import { Store, sanitizeMojibake } from '../store.js?v=1791182000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791182000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink } from '../playerUtils.js?v=1791182000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink, getPlayerPositionLabel } from '../playerUtils.js?v=1791182000000';
 
 let allTeams = [];
 let allPlayers = [];
@@ -367,13 +367,14 @@ export const bindTeams = async () => {
             const avatar = getPlayerAvatar(p.raw);
             const ageText = p.age ? `${p.age} J.` : '';
             const sinceText = formatMemberSince(p.memberSince);
-            const teamBadgeSm = renderTeamLogo(teamName, 'xs');
+            const posLabelText = getPlayerPositionLabel(p.raw || p);
+            const posLabel = posLabelText ? `<span class="spieler-card-pos-tag">${posLabelText}</span>` : '';
 
             return `
               <a href="#/spieler?id=${p.id}" style="text-decoration: none; color: inherit; display: block;">
                 <div class="spieler-card" style="height: 100%;">
                   <div class="spieler-card-header" style="height: 170px;">
-                    ${p.position ? `<span class="spieler-card-pos-tag">${p.position}</span>` : ''}
+                    ${posLabel}
                     <img src="${avatar}" alt="${p.fullName}" class="spieler-card-avatar">
                     <div class="spieler-card-team-badge" title="${teamName}" style="width: 36px; height: 36px; bottom: 8px; right: 8px;">
                       ${teamBadgeSm}

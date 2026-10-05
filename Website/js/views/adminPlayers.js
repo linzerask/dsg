@@ -1,5 +1,9 @@
-﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791182000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791182000000';
 import { showToast } from './admin.js?v=1791182000000';
+import { storage } from '../firebase.js?v=1791182000000';
+import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-storage.js";
+import { getPlayerAvatar, getPlayerPositionLabel } from '../playerUtils.js?v=1791182000000';
+import { renderIcon } from '../icons.js?v=1791182000000';
 
 let playersData = [];
 let teamsData = [];
@@ -7,6 +11,60 @@ let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 15;
 let currentSort = { column: 'seit', asc: false };
+
+const compressPlayerPhoto = (file) => {
+  return new Promise((resolve) => {
+    if (!file) return resolve(null);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 600;
+          const MAX_HEIGHT = 600;
+          let width = img.width;
+          let height = img.height;
+          if (width > height) {
+            if (width > MAX_WIDTH) { height = Math.round(height * (MAX_WIDTH / width)); width = MAX_WIDTH; }
+          } else {
+            if (height > MAX_HEIGHT) { width = Math.round(height * (MAX_HEIGHT / height)); height = MAX_HEIGHT; }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.75));
+        } catch (err) {
+          resolve(dataUrl);
+        }
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    };
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  });
+};
+
+const uploadPlayerPhotoToStorage = async (file) => {
+  if (!file) return null;
+  try {
+    const cleanName = (file.name || 'player')
+      .replace(/[^a-zA-Z0-9.-]/g, '_')
+      .toLowerCase();
+    const storagePath = `players/${Date.now()}_${Math.random().toString(36).substring(2, 7)}_${cleanName}`;
+    const storageRef = ref(storage, storagePath);
+
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadUrl = await getDownloadURL(snapshot.ref);
+    return downloadUrl;
+  } catch (err) {
+    console.warn("Firebase storage upload error, falling back to local compression:", err);
+    return null;
+  }
+};
 
 export const renderAdminPlayers = () => {
     return `
@@ -94,14 +152,37 @@ export const renderAdminPlayers = () => {
                 
                 <form id="player-edit-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
                     <input type="hidden" id="edit-player-id">
+
+                    <!-- Player Photo Upload Box -->
+                    <div style="display: flex; gap: var(--space-md); align-items: center; background: rgba(0,0,0,0.03); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: var(--space-md);">
+                        <div id="player-avatar-preview-box" style="width: 72px; height: 72px; border-radius: 50%; overflow: hidden; background: var(--color-surface); border: 2px solid var(--color-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                            <img id="player-avatar-preview-img" src="Spieler/1.jpg" alt="Preview" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center;">
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                            <label style="font-size: 0.85rem; font-weight: 700; color: var(--color-text-primary);">Spielerfoto (optional)</label>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                                <input type="file" id="player-photo-file" accept="image/*" style="display: none;">
+                                <input type="hidden" id="edit-photo-url">
+                                <button type="button" id="btn-upload-player-photo" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                    <span>Foto hochladen</span>
+                                </button>
+                                <button type="button" id="btn-remove-player-photo" class="btn btn-outline" style="padding: 6px 12px; font-size: 0.82rem; color: #ef4444; border-color: rgba(239,68,68,0.3); display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    <span>Entfernen</span>
+                                </button>
+                            </div>
+                            <span id="player-photo-upload-status" style="font-size: 0.75rem; color: var(--color-text-secondary);">Unterstützt PNG, JPG, WebP (wird optimiert)</span>
+                        </div>
+                    </div>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
                         <div>
-                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Vorname</label>
+                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Vorname *</label>
                             <input type="text" id="edit-vorname" class="admin-input" placeholder="Vorname" style="width: 100%;" required>
                         </div>
                         <div>
-                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Nachname</label>
+                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Nachname *</label>
                             <input type="text" id="edit-nachname" class="admin-input" placeholder="Nachname" style="width: 100%;" required>
                         </div>
                     </div>
@@ -147,8 +228,14 @@ export const renderAdminPlayers = () => {
                             </select>
                         </div>
                         <div>
-                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Foto / Avatar URL (optional)</label>
-                            <input type="text" id="edit-photo-url" class="admin-input" placeholder="z.B. Spieler/1.jpg oder https://..." style="width: 100%;">
+                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Seite / Detail (optional)</label>
+                            <select id="edit-position-side" class="admin-input" style="width: 100%;">
+                                <option value="">-- Nicht angegeben --</option>
+                                <option value="Zentral">Zentral</option>
+                                <option value="Links">Links</option>
+                                <option value="Rechts">Rechts</option>
+                                <option value="Beidfüßig / Flexibel">Beidfüßig / Flexibel</option>
+                            </select>
                         </div>
                     </div>
 
@@ -409,6 +496,10 @@ const openEditModal = (idx = null) => {
     const title = document.getElementById('modal-player-title');
     const deleteBtn = document.getElementById('btn-delete-player');
     const submitBtn = document.getElementById('btn-submit-player');
+    const previewImg = document.getElementById('player-avatar-preview-img');
+    const statusText = document.getElementById('player-photo-upload-status');
+    const fileInput = document.getElementById('player-photo-file');
+    if (fileInput) fileInput.value = '';
     
     let currentTeam = '';
     if (idx !== null && !isNaN(idx) && playersData[idx]) {
@@ -424,7 +515,16 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-seit').value = formatDateForInput(p.seit);
         document.getElementById('edit-status').value = p.Status || 'Aktiv';
         document.getElementById('edit-position').value = p.Position || p.position || '';
-        document.getElementById('edit-photo-url').value = p.photoUrl || p.foto || p.avatar || '';
+        document.getElementById('edit-position-side').value = p.positionSide || p.side || p.PositionSide || '';
+        const currentPhoto = p.photoUrl || p.foto || p.avatar || '';
+        document.getElementById('edit-photo-url').value = currentPhoto;
+
+        if (previewImg) previewImg.src = getPlayerAvatar(p);
+        if (statusText) {
+            statusText.innerText = currentPhoto ? 'Individuelles Foto aktiv' : 'Standard-Avatar aktiv';
+            statusText.style.color = 'var(--color-text-secondary)';
+        }
+
         document.getElementById('edit-ofb').value = p['ÖFB-Verein'] || '';
         document.getElementById('edit-sperre').value = p.Sperre || '';
         if (deleteBtn) deleteBtn.style.display = 'block';
@@ -436,7 +536,13 @@ const openEditModal = (idx = null) => {
         document.getElementById('edit-mitglied').value = 'Ja';
         document.getElementById('edit-status').value = 'Aktiv';
         document.getElementById('edit-position').value = '';
+        document.getElementById('edit-position-side').value = '';
         document.getElementById('edit-photo-url').value = '';
+        if (previewImg) previewImg.src = 'Spieler/1.jpg';
+        if (statusText) {
+            statusText.innerText = 'Standard-Avatar wird verwendet (oder Foto hochladen)';
+            statusText.style.color = 'var(--color-text-secondary)';
+        }
         document.getElementById('edit-seit').value = new Date().toISOString().split('T')[0];
         document.getElementById('edit-ofb').value = '';
         document.getElementById('edit-sperre').value = '';
@@ -565,6 +671,84 @@ const bindEvents = () => {
     const deleteBtn = document.getElementById('btn-delete-player');
     const form = document.getElementById('player-edit-form');
     const playerModal = document.getElementById('player-modal');
+    const uploadBtn = document.getElementById('btn-upload-player-photo');
+    const removeBtn = document.getElementById('btn-remove-player-photo');
+    const photoFileInput = document.getElementById('player-photo-file');
+
+    if (uploadBtn && photoFileInput) {
+        uploadBtn.onclick = () => photoFileInput.click();
+    }
+
+    if (photoFileInput) {
+        photoFileInput.onchange = async (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            const previewImg = document.getElementById('player-avatar-preview-img');
+            const photoUrlInput = document.getElementById('edit-photo-url');
+            const statusText = document.getElementById('player-photo-upload-status');
+
+            if (statusText) {
+                statusText.innerText = 'Lade hoch...';
+                statusText.style.color = 'var(--color-accent)';
+            }
+
+            let downloadUrl = null;
+            try {
+                downloadUrl = await uploadPlayerPhotoToStorage(file);
+            } catch (err) {
+                console.warn('Firebase upload failed:', err);
+            }
+
+            if (!downloadUrl) {
+                downloadUrl = await compressPlayerPhoto(file);
+            }
+
+            if (downloadUrl) {
+                if (photoUrlInput) photoUrlInput.value = downloadUrl;
+                if (previewImg) previewImg.src = downloadUrl;
+                if (statusText) {
+                    statusText.innerText = 'Foto erfolgreich hochgeladen!';
+                    statusText.style.color = 'var(--color-accent)';
+                }
+                showToast('Foto erfolgreich hochgeladen!');
+            } else {
+                if (statusText) {
+                    statusText.innerText = 'Fehler beim Hochladen.';
+                    statusText.style.color = '#ef4444';
+                }
+                showToast('Fehler beim Foto-Upload.', true);
+            }
+        };
+    }
+
+    if (removeBtn) {
+        removeBtn.onclick = () => {
+            const previewImg = document.getElementById('player-avatar-preview-img');
+            const photoUrlInput = document.getElementById('edit-photo-url');
+            const fileInput = document.getElementById('player-photo-file');
+            const statusText = document.getElementById('player-photo-upload-status');
+
+            if (photoUrlInput) photoUrlInput.value = '';
+            if (fileInput) fileInput.value = '';
+
+            const idVal = document.getElementById('edit-player-id')?.value;
+            let fallbackAvatar = 'Spieler/1.jpg';
+            if (idVal && idVal !== 'new') {
+                const idx = parseInt(idVal);
+                const p = playersData[idx];
+                if (p) {
+                    fallbackAvatar = getPlayerAvatar({ ...p, photoUrl: '', foto: '', avatar: '' });
+                }
+            }
+
+            if (previewImg) previewImg.src = fallbackAvatar;
+            if (statusText) {
+                statusText.innerText = 'Standard-Avatar wird verwendet.';
+                statusText.style.color = 'var(--color-text-secondary)';
+            }
+        };
+    }
 
     if (search) search.oninput = applyFilters;
     if (teamFilter) teamFilter.onchange = applyFilters;
@@ -648,6 +832,7 @@ const bindEvents = () => {
                 seit: document.getElementById('edit-seit').value || new Date().toISOString().split('T')[0],
                 Status: document.getElementById('edit-status').value,
                 Position: document.getElementById('edit-position').value,
+                positionSide: document.getElementById('edit-position-side').value,
                 photoUrl: document.getElementById('edit-photo-url').value.trim(),
                 'ÖFB-Verein': document.getElementById('edit-ofb').value.trim(),
                 Sperre: document.getElementById('edit-sperre').value.trim(),
