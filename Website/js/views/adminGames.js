@@ -1,6 +1,6 @@
-﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791182000000';
-import { showToast } from './admin.js?v=1791182000000';
-import { renderTeamLogo } from '../logos.js?v=1791182000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791200000000';
+import { showToast } from './admin.js?v=1791200000000';
+import { renderTeamLogo } from '../logos.js?v=1791200000000';
 
 let gamesData = [];
 let roundsData = [];
@@ -1221,7 +1221,9 @@ const saveGameForm = (e) => {
         away: away,
         note: note,
         score: existingMatch ? existingMatch.score : '-:-',
-        ht: existingMatch ? existingMatch.ht : '',
+        ht: existingMatch ? (existingMatch.ht || existingMatch.htScore || existingMatch.halfTime || '') : '',
+        htScore: existingMatch ? (existingMatch.htScore || existingMatch.ht || existingMatch.halfTime || '') : '',
+        halfTime: existingMatch ? (existingMatch.halfTime || existingMatch.ht || existingMatch.htScore || '') : '',
         status: status,
         scorers: existingMatch ? (existingMatch.scorers || []) : [],
         cards: existingMatch ? (existingMatch.cards || []) : [],
@@ -1825,6 +1827,8 @@ const saveReportForm = (e) => {
         ...currentReportMatch,
         score: score,
         ht: ht,
+        htScore: ht,
+        halfTime: ht,
         status: status,
         note: note,
         scorers: scorers,

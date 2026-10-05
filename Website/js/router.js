@@ -1,16 +1,16 @@
-import { viewHome, bindHome } from './views/home.js?v=1791197000000';
-import { viewNews, bindNews } from './views/news.js?v=1791197000000';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1791197000000';
-import { viewSpieler, bindSpieler } from './views/spieler.js?v=1791197000000';
-import { viewTeams, bindTeams } from './views/teams.js?v=1791197000000';
-import { viewArchiv } from './views/simpleViews.js?v=1791197000000';
-import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1791197000000';
-import { viewGalerie, bindGalerie } from './views/galerie.js?v=1791197000000';
-import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1791197000000';
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1791197000000';
-import { viewArticle, bindArticle } from './views/article.js?v=1791197000000';
-import { viewImpressum } from './views/impressum.js?v=1791197000000';
-import { viewDatenschutz } from './views/datenschutz.js?v=1791197000000';
+import { viewHome, bindHome } from './views/home.js?v=1791200000000';
+import { viewNews, bindNews } from './views/news.js?v=1791200000000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1791200000000';
+import { viewSpieler, bindSpieler } from './views/spieler.js?v=1791200000000';
+import { viewTeams, bindTeams } from './views/teams.js?v=1791200000000';
+import { viewArchiv } from './views/simpleViews.js?v=1791200000000';
+import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1791200000000';
+import { viewGalerie, bindGalerie } from './views/galerie.js?v=1791200000000';
+import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1791200000000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1791200000000';
+import { viewArticle, bindArticle } from './views/article.js?v=1791200000000';
+import { viewImpressum } from './views/impressum.js?v=1791200000000';
+import { viewDatenschutz } from './views/datenschutz.js?v=1791200000000';
 
 const routes = {
   '/': { render: () => viewHome(), bind: () => bindHome() },

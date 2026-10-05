@@ -37066,14 +37066,14 @@
       "teams": [
         {
           "name": "Union Heiligenberg",
-          "played": 3,
-          "won": 3,
+          "played": 4,
+          "won": 4,
           "drawn": 0,
           "lost": 0,
-          "goalsFor": 18,
+          "goalsFor": 23,
           "goalsAgainst": 0,
-          "goalDiff": 18,
-          "points": 9,
+          "goalDiff": 23,
+          "points": 12,
           "rank": 1
         },
         {
@@ -37114,13 +37114,13 @@
         },
         {
           "name": "FC Gornjak",
-          "played": 3,
+          "played": 4,
           "won": 1,
           "drawn": 0,
-          "lost": 2,
+          "lost": 3,
           "goalsFor": 4,
-          "goalsAgainst": 12,
-          "goalDiff": -8,
+          "goalsAgainst": 17,
+          "goalDiff": -13,
           "points": 3,
           "rank": 5
         },
@@ -37971,15 +37971,100 @@
           "weekday": "Sa",
           "home": "FC Gornjak",
           "away": "Union Heiligenberg",
-          "score": "-:-",
-          "ht": "",
-          "status": "Ausstehend",
+          "score": "0:5",
+          "ht": "0:2",
+          "status": "Gespielt",
           "location": "DSG-Platz",
           "referee": "",
           "league": "DSG Liga",
           "seasonKey": "2026/2027",
-          "events": [],
-          "id": 15
+          "events": [
+            {
+              "type": "goal",
+              "player": "Dominik Penninger",
+              "name": "Dominik Penninger",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Dominik Penninger",
+              "name": "Dominik Penninger",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Dominik Penninger",
+              "name": "Dominik Penninger",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Simon Penninger",
+              "name": "Simon Penninger",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Wolfgang Lehner",
+              "name": "Wolfgang Lehner",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Sani Stancic",
+              "name": "Sani Stancic",
+              "team": "FC Gornjak",
+              "reason": "",
+              "count": 1
+            }
+          ],
+          "id": 15,
+          "scorers": [
+            {
+              "player": "Dominik Penninger",
+              "name": "Dominik Penninger",
+              "team": "Union Heiligenberg",
+              "type": "goal"
+            },
+            {
+              "player": "Dominik Penninger",
+              "name": "Dominik Penninger",
+              "team": "Union Heiligenberg",
+              "type": "goal"
+            },
+            {
+              "player": "Dominik Penninger",
+              "name": "Dominik Penninger",
+              "team": "Union Heiligenberg",
+              "type": "goal"
+            },
+            {
+              "player": "Simon Penninger",
+              "name": "Simon Penninger",
+              "team": "Union Heiligenberg",
+              "type": "goal"
+            },
+            {
+              "player": "Wolfgang Lehner",
+              "name": "Wolfgang Lehner",
+              "team": "Union Heiligenberg",
+              "type": "goal"
+            }
+          ],
+          "cards": [
+            {
+              "player": "Sani Stancic",
+              "name": "Sani Stancic",
+              "team": "FC Gornjak",
+              "type": "yellow",
+              "reason": ""
+            }
+          ]
         },
         {
           "round": "6. Runde",
@@ -38189,17 +38274,17 @@
       "stats": {
         "topScorers": [
           {
+            "player": "Dominik Penninger",
+            "name": "Dominik Penninger",
+            "team": "Union Heiligenberg",
+            "goals": 7,
+            "rank": 1
+          },
+          {
             "player": "Leonardo Glavas",
             "name": "Leonardo Glavas",
             "team": "SV Croatia Linz",
             "goals": 5,
-            "rank": 1
-          },
-          {
-            "player": "Dominik Penninger",
-            "name": "Dominik Penninger",
-            "team": "Union Heiligenberg",
-            "goals": 4,
             "rank": 2
           },
           {
@@ -38217,37 +38302,37 @@
             "rank": 4
           },
           {
+            "player": "Wolfgang Lehner",
+            "name": "Wolfgang Lehner",
+            "team": "Union Heiligenberg",
+            "goals": 3,
+            "rank": 5
+          },
+          {
             "player": "Dominik Prilmüller",
             "name": "Dominik Prilmüller",
             "team": "DSG Union Traun",
             "goals": 3,
-            "rank": 5
+            "rank": 6
           },
           {
             "player": "Johannes Steinbock",
             "name": "Johannes Steinbock",
             "team": "Union Heiligenberg",
             "goals": 2,
-            "rank": 6
+            "rank": 7
           },
           {
             "player": "Josip Peric",
             "name": "Josip Peric",
             "team": "SV Croatia Linz",
             "goals": 2,
-            "rank": 7
+            "rank": 8
           },
           {
             "player": "Ilija Stojchovski",
             "name": "Ilija Stojchovski",
             "team": "FC Gornjak",
-            "goals": 2,
-            "rank": 8
-          },
-          {
-            "player": "Wolfgang Lehner",
-            "name": "Wolfgang Lehner",
-            "team": "Union Heiligenberg",
             "goals": 2,
             "rank": 9
           },
@@ -38390,6 +38475,13 @@
             "team": "DSG Union Traun",
             "goals": 1,
             "rank": 29
+          },
+          {
+            "player": "Simon Penninger",
+            "name": "Simon Penninger",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 30
           }
         ],
         "cards": [
@@ -38403,8 +38495,8 @@
             "rank": 1
           },
           {
-            "player": "Vladica Petrovic",
-            "name": "Vladica Petrovic",
+            "player": "Sani Stancic",
+            "name": "Sani Stancic",
             "team": "FC Gornjak",
             "yellow": 3,
             "yellowRed": 0,
@@ -38412,10 +38504,10 @@
             "rank": 2
           },
           {
-            "player": "Sani Stancic",
-            "name": "Sani Stancic",
+            "player": "Vladica Petrovic",
+            "name": "Vladica Petrovic",
             "team": "FC Gornjak",
-            "yellow": 2,
+            "yellow": 3,
             "yellowRed": 0,
             "red": 0,
             "rank": 3

@@ -1,4 +1,4 @@
-﻿const INITIAL_DATA = {
+const INITIAL_DATA = {
   "news": [
     {
       "id": 1,
@@ -399,12 +399,15 @@ export const deduplicateMatches = (matches = []) => {
                                existing.status === 'Played' || existing.status === 'Gespielt' || 
                                (existing.status && existing.status.startsWith('Abgesagt'));
       
+      const mergedHt = (m.ht && m.ht.trim() !== '' && m.ht !== ':') ? m.ht : 
+                       ((existing.ht && existing.ht.trim() !== '' && existing.ht !== ':') ? existing.ht : (m.ht || existing.ht || ''));
+
       if (isPlayed && !existingIsPlayed) {
-        result[existingIdx] = { ...existing, ...m, id: existing.id || m.id || ++maxId };
+        result[existingIdx] = { ...existing, ...m, ht: mergedHt, id: existing.id || m.id || ++maxId };
       } else if (!isPlayed && existingIsPlayed) {
-        result[existingIdx] = { ...m, ...existing, id: existing.id || ++maxId };
+        result[existingIdx] = { ...m, ...existing, ht: mergedHt, id: existing.id || ++maxId };
       } else {
-        result[existingIdx] = { ...existing, ...m, id: existing.id || m.id || ++maxId };
+        result[existingIdx] = { ...existing, ...m, ht: mergedHt, id: existing.id || m.id || ++maxId };
       }
     } else {
       if (!m.id) {
@@ -440,63 +443,75 @@ export const Store = {
     state.memoryNews = loadLocal('dsg_articles', 38) || sortArticles([...(INITIAL_DATA.news || [])]);
     state.memoryGallery = loadLocal('dsg_gallery', 27) || INITIAL_DATA.gallery || [];
 
-    // If local storage has no populated data (e.g. cold start / clean browser), eagerly load static JSON seeds before first paint
+    // Check if each individual local resource has populated data
     const hasPopulatedData = state.memoryData?.seasons && 
       Object.values(state.memoryData.seasons).some(s => (s.matches && s.matches.length > 0) || (s.teams && s.teams.length > 0)) &&
       state.memoryData.seasons['2026/2027'] && (state.memoryData.seasons['2026/2027'].matches?.length > 0 || state.memoryData.seasons['2026/2027'].teams?.length > 0);
     
     const localLeagues = loadLocal('dsg_admin_leagues', 44);
     const localRounds = loadLocal('dsg_admin_rounds', 44);
+    const localNews = loadLocal('dsg_articles', 38);
 
-    if (!hasPopulatedData || !localLeagues || localLeagues.length === 0 || !localRounds || localRounds.length === 0) {
-      try {
-        const [resL, resLeagues, resRounds, resArticles] = await Promise.all([
-          fetch('data/liga.json' + DATA_VERSION_STRING).catch(() => null),
-          fetch('data/leagues.json' + DATA_VERSION_STRING).catch(() => null),
-          fetch('data/rounds.json' + DATA_VERSION_STRING).catch(() => null),
-          fetch('data/articles.json' + DATA_VERSION_STRING).catch(() => null)
-        ]);
-
-        if (resL && resL.ok) {
-          const fileLiga = await resL.json();
-          if (fileLiga && fileLiga.seasons) {
-            Object.keys(fileLiga.seasons).forEach(sKey => {
-              if (fileLiga.seasons[sKey]?.matches) {
-                fileLiga.seasons[sKey].matches = deduplicateMatches(fileLiga.seasons[sKey].matches);
-              }
-            });
-            if (!fileLiga.currentSeason) fileLiga.currentSeason = "2026/2027";
-            state.memoryData = fileLiga;
-            trySetLocal('dsg_data_v88', JSON.stringify(fileLiga));
-          }
-        }
-        if (resLeagues && resLeagues.ok) {
-          const fileLeagues = await resLeagues.json();
-          let merged = Array.isArray(fileLeagues) ? [...fileLeagues] : [];
-          INITIAL_LEAGUES.forEach(cl => {
-            if (!merged.some(l => l.seasonKey === cl.seasonKey)) merged.push(cl);
-          });
-          const cleanLeagues = sortLeaguesByPriority(merged);
-          trySetLocal('dsg_admin_leagues_v44', JSON.stringify(cleanLeagues));
-        } else {
-          trySetLocal('dsg_admin_leagues_v44', JSON.stringify(INITIAL_LEAGUES));
-        }
-        if (resRounds && resRounds.ok) {
-          const fileRounds = await resRounds.json();
-          if (Array.isArray(fileRounds) && fileRounds.length > 0) {
-            trySetLocal('dsg_admin_rounds_v44', JSON.stringify(fileRounds));
-          }
-        }
-        if (resArticles && resArticles.ok) {
-          const fileArticles = await resArticles.json();
-          if (Array.isArray(fileArticles) && fileArticles.length > 0) {
-            state.memoryNews = sortArticles(fileArticles);
-            trySetLocal('dsg_articles_v38', JSON.stringify(state.memoryNews));
-          }
-        }
-      } catch(e) {
-        console.warn("Local seed pre-fetch fallback:", e);
+    try {
+      const fetches = [];
+      if (!hasPopulatedData) {
+        fetches.push(fetch('data/liga.json' + DATA_VERSION_STRING).then(r => r.ok ? r.json() : null).catch(() => null));
+      } else {
+        fetches.push(Promise.resolve(null));
       }
+
+      if (!localLeagues || localLeagues.length === 0) {
+        fetches.push(fetch('data/leagues.json' + DATA_VERSION_STRING).then(r => r.ok ? r.json() : null).catch(() => null));
+      } else {
+        fetches.push(Promise.resolve(null));
+      }
+
+      if (!localRounds || localRounds.length === 0) {
+        fetches.push(fetch('data/rounds.json' + DATA_VERSION_STRING).then(r => r.ok ? r.json() : null).catch(() => null));
+      } else {
+        fetches.push(Promise.resolve(null));
+      }
+
+      if (!localNews || localNews.length === 0) {
+        fetches.push(fetch('data/articles.json' + DATA_VERSION_STRING).then(r => r.ok ? r.json() : null).catch(() => null));
+      } else {
+        fetches.push(Promise.resolve(null));
+      }
+
+      const [fileLiga, fileLeagues, fileRounds, fileArticles] = await Promise.all(fetches);
+
+      if (fileLiga && fileLiga.seasons && !hasPopulatedData) {
+        Object.keys(fileLiga.seasons).forEach(sKey => {
+          if (fileLiga.seasons[sKey]?.matches) {
+            fileLiga.seasons[sKey].matches = deduplicateMatches(fileLiga.seasons[sKey].matches);
+          }
+        });
+        if (!fileLiga.currentSeason) fileLiga.currentSeason = "2026/2027";
+        state.memoryData = fileLiga;
+        trySetLocal('dsg_data_v88', JSON.stringify(fileLiga));
+      }
+
+      if (fileLeagues && (!localLeagues || localLeagues.length === 0)) {
+        let merged = Array.isArray(fileLeagues) ? [...fileLeagues] : [];
+        INITIAL_LEAGUES.forEach(cl => {
+          if (!merged.some(l => l.seasonKey === cl.seasonKey)) merged.push(cl);
+        });
+        const cleanLeagues = sortLeaguesByPriority(merged);
+        trySetLocal('dsg_admin_leagues_v44', JSON.stringify(cleanLeagues));
+      } else if (!localLeagues || localLeagues.length === 0) {
+        trySetLocal('dsg_admin_leagues_v44', JSON.stringify(INITIAL_LEAGUES));
+      }
+
+      if (fileRounds && Array.isArray(fileRounds) && fileRounds.length > 0 && (!localRounds || localRounds.length === 0)) {
+        trySetLocal('dsg_admin_rounds_v44', JSON.stringify(fileRounds));
+      }
+
+      if (fileArticles && Array.isArray(fileArticles) && fileArticles.length > 0 && (!localNews || localNews.length === 0)) {
+        state.memoryNews = sortArticles(fileArticles);
+        trySetLocal('dsg_articles_v38', JSON.stringify(state.memoryNews));
+      }
+    } catch(e) {
+      console.warn("Local seed pre-fetch fallback:", e);
     }
 
     if (!state.memoryData) {
