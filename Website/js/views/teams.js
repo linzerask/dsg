@@ -1,7 +1,7 @@
-import { Store, sanitizeMojibake } from '../store.js?v=1791197000000';
-import { renderIcon } from '../icons.js?v=1791197000000';
-import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791197000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink, getPlayerPositionLabel } from '../playerUtils.js?v=1791197000000';
+import { Store, sanitizeMojibake } from '../store.js?v=1791270000000';
+import { renderIcon } from '../icons.js?v=1791270000000';
+import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791270000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink, getPlayerPositionLabel } from '../playerUtils.js?v=1791270000000';
 
 let allTeams = [];
 let allPlayers = [];
@@ -350,23 +350,45 @@ export const bindTeams = async () => {
 
         <!-- Matches & Results -->
         <div class="glass-card" style="padding: var(--space-md); border-radius: var(--border-radius-md);">
-          <h3 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
-            ${renderIcon('calendar', { size: 18, color: 'var(--color-accent)' })} Spielplan & Ergebnisse
-          </h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+            <h3 style="margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+              ${renderIcon('calendar', { size: 18, color: 'var(--color-accent)' })} Spielplan & Ergebnisse
+            </h3>
+            <span style="font-size: 0.8rem; color: var(--color-text-secondary); font-weight: 600;">Saison 2026/27</span>
+          </div>
           ${teamMatches.length === 0 ? `
-            <div style="color: var(--color-text-secondary); font-size: 0.9rem; padding: 16px 0;">Keine aktuellen Begegnungen gelistet.</div>
+            <div style="color: var(--color-text-secondary); font-size: 0.9rem; padding: 16px 0; text-align: center;">Keine aktuellen Begegnungen gelistet.</div>
           ` : `
-            <div style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
-              ${teamMatches.map(m => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(0,0,0,0.02); border-radius: 6px; font-size: 0.88rem;">
-                  <div style="font-weight: 600;">
-                    ${m.home} vs. ${m.away}
+            <div style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 4px;">
+              ${teamMatches.map(m => {
+                const isPlayed = m.score && m.score !== '-:-' && m.score !== '- : -';
+                const isCanceled = (m.status || '').toLowerCase().includes('abgesagt');
+                const scoreText = isCanceled ? m.status : (isPlayed ? m.score.replace(/\s*\([^)]*\)/g, '').trim() : (m.time ? `${m.time} Uhr` : '-:-'));
+                const scoreColor = isCanceled ? '#e74c3c' : (isPlayed ? 'var(--color-accent)' : 'var(--color-text-secondary)');
+
+                return `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(0,0,0,0.02); border-radius: 6px; font-size: 0.88rem; gap: 10px; border: 1px solid var(--color-border);">
+                  <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; overflow: hidden;">
+                    <div style="display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1; justify-content: flex-end;">
+                      <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; font-size: 0.86rem; text-align: right;">${m.home}</span>
+                      <a href="#/teams?team=${encodeURIComponent(m.home)}" class="team-logo-link" title="${m.home} Vereinsseite" onclick="event.stopPropagation();">
+                        ${renderTeamLogo(m.home, 'xs')}
+                      </a>
+                    </div>
+                    <span style="color: var(--color-text-secondary); font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">vs</span>
+                    <div style="display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1;">
+                      <a href="#/teams?team=${encodeURIComponent(m.away)}" class="team-logo-link" title="${m.away} Vereinsseite" onclick="event.stopPropagation();">
+                        ${renderTeamLogo(m.away, 'xs')}
+                      </a>
+                      <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; font-size: 0.86rem;">${m.away}</span>
+                    </div>
                   </div>
-                  <div style="font-weight: 800; color: ${m.score && m.score !== '-:-' ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">
-                    ${m.score || m.time || '-:-'}
+                  <div style="font-weight: 800; font-size: 0.95rem; color: ${scoreColor}; flex-shrink: 0; min-width: 45px; text-align: right;">
+                    ${scoreText}
                   </div>
                 </div>
-              `).join('')}
+              `;
+              }).join('')}
             </div>
           `}
         </div>
