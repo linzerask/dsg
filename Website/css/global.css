@@ -101,6 +101,14 @@ h2 {
   display: none;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+}
+
 .nav-link {
   color: var(--color-text-secondary);
   font-weight: 500;
@@ -360,7 +368,8 @@ main {
   color: var(--color-accent);
 }
 
-@media (max-width: 768px) {
+/* Floating Nav Responsive Collapse (Switches to Hamburger below 1080px) */
+@media (max-width: 1080px) {
   .floating-nav {
     width: auto !important;
     max-width: max-content !important;
@@ -373,7 +382,7 @@ main {
     left: 50% !important;
     transform: translateX(-50%);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14) !important;
-    background: rgba(255, 255, 255, 0.85) !important;
+    background: var(--glass-bg) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, box-shadow var(--transition-fast) !important;
@@ -393,10 +402,16 @@ main {
     background: rgba(0, 0, 0, 0.12);
     margin-left: 10px;
   }
+  [data-theme="dark"] .floating-nav .brand::after {
+    background: rgba(255, 255, 255, 0.18);
+  }
   .mobile-menu-btn {
     display: flex !important;
     padding: 4px !important;
   }
+}
+
+@media (max-width: 768px) {
   .stats-header-btn {
     display: none !important;
   }

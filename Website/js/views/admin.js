@@ -56,28 +56,28 @@ export const ensureAllAdminModalsInBody = () => {
 
 
 
-let currentAdminTab = 'admin-rounds';
+let currentAdminTab = 'admin-games';
 try {
   const savedTab = sessionStorage.getItem('dsg_admin_tab');
   if (savedTab) currentAdminTab = savedTab;
 } catch(e) {}
 
 const tabLabels = {
-  'admin-rounds': 'Spielrunden',
   'admin-games': 'Spiele',
-  'admin-players': 'Spieler verwalten',
-  'admin-teams': 'Teams verwalten',
+  'admin-rounds': 'Spielrunden',
   'admin-leagues': 'Ligen verwalten',
+  'admin-teams': 'Teams verwalten',
+  'admin-players': 'Spieler verwalten',
   'admin-news': 'News verwalten',
   'admin-gallery': 'Galerie verwalten'
 };
 
 const tabIcons = {
-  'admin-rounds': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
   'admin-games': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>`,
-  'admin-players': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
-  'admin-teams': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
+  'admin-rounds': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
   'admin-leagues': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path><path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>`,
+  'admin-teams': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
+  'admin-players': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
   'admin-news': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path><path d="M18 14h-8"></path><path d="M15 18h-5"></path><path d="M10 6h8v4h-8V6Z"></path></svg>`,
   'admin-gallery': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`
 };
@@ -87,10 +87,10 @@ export const viewAdmin = () => {
     const savedTab = sessionStorage.getItem('dsg_admin_tab');
     if (savedTab) currentAdminTab = savedTab;
   } catch(e) {}
-  const activeTab = currentAdminTab || 'admin-rounds';
+  const activeTab = currentAdminTab || 'admin-games';
   const isTabActive = (tabId) => activeTab === tabId;
-  const currentLabel = tabLabels[activeTab] || 'Spielrunden';
-  const currentIcon = tabIcons[activeTab] || tabIcons['admin-rounds'];
+  const currentLabel = tabLabels[activeTab] || 'Spiele';
+  const currentIcon = tabIcons[activeTab] || tabIcons['admin-games'];
 
   return `
     <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 0 var(--space-md); padding-top: var(--space-sm);">
@@ -107,25 +107,25 @@ export const viewAdmin = () => {
           </button>
         </div>
         <nav id="admin-nav-menu" class="admin-nav-accordion-content">
-          <button class="admin-nav-btn ${isTabActive('admin-rounds') ? 'active' : ''}" data-target="admin-rounds">
-            ${tabIcons['admin-rounds']}
-            <span>Spielrunden</span>
-          </button>
           <button class="admin-nav-btn ${isTabActive('admin-games') ? 'active' : ''}" data-target="admin-games">
             ${tabIcons['admin-games']}
             <span>Spiele</span>
           </button>
-          <button class="admin-nav-btn ${isTabActive('admin-players') ? 'active' : ''}" data-target="admin-players">
-            ${tabIcons['admin-players']}
-            <span>Spieler verwalten</span>
+          <button class="admin-nav-btn ${isTabActive('admin-rounds') ? 'active' : ''}" data-target="admin-rounds">
+            ${tabIcons['admin-rounds']}
+            <span>Spielrunden</span>
+          </button>
+          <button class="admin-nav-btn ${isTabActive('admin-leagues') ? 'active' : ''}" data-target="admin-leagues">
+            ${tabIcons['admin-leagues']}
+            <span>Ligen verwalten</span>
           </button>
           <button class="admin-nav-btn ${isTabActive('admin-teams') ? 'active' : ''}" data-target="admin-teams">
             ${tabIcons['admin-teams']}
             <span>Teams verwalten</span>
           </button>
-          <button class="admin-nav-btn ${isTabActive('admin-leagues') ? 'active' : ''}" data-target="admin-leagues">
-            ${tabIcons['admin-leagues']}
-            <span>Ligen verwalten</span>
+          <button class="admin-nav-btn ${isTabActive('admin-players') ? 'active' : ''}" data-target="admin-players">
+            ${tabIcons['admin-players']}
+            <span>Spieler verwalten</span>
           </button>
           <button class="admin-nav-btn ${isTabActive('admin-news') ? 'active' : ''}" data-target="admin-news">
             ${tabIcons['admin-news']}
@@ -138,20 +138,20 @@ export const viewAdmin = () => {
         </nav>
       </aside>
       <div class="admin-content" style="padding: 0; min-width: 0;">
-        <div id="admin-rounds" class="admin-section ${isTabActive('admin-rounds') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-rounds') ? 'block' : 'none'};">
-          ${renderAdminRounds()}
-        </div>
         <div id="admin-games" class="admin-section ${isTabActive('admin-games') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-games') ? 'block' : 'none'};">
           ${renderAdminGames()}
         </div>
-        <div id="admin-players" class="admin-section ${isTabActive('admin-players') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-players') ? 'block' : 'none'};">
-          ${renderAdminPlayers()}
+        <div id="admin-rounds" class="admin-section ${isTabActive('admin-rounds') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-rounds') ? 'block' : 'none'};">
+          ${renderAdminRounds()}
+        </div>
+        <div id="admin-leagues" class="admin-section ${isTabActive('admin-leagues') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-leagues') ? 'block' : 'none'};">
+          ${renderAdminLeagues()}
         </div>
         <div id="admin-teams" class="admin-section ${isTabActive('admin-teams') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-teams') ? 'block' : 'none'};">
           ${renderAdminTeams()}
         </div>
-        <div id="admin-leagues" class="admin-section ${isTabActive('admin-leagues') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-leagues') ? 'block' : 'none'};">
-          ${renderAdminLeagues()}
+        <div id="admin-players" class="admin-section ${isTabActive('admin-players') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-players') ? 'block' : 'none'};">
+          ${renderAdminPlayers()}
         </div>
         <div id="admin-news" class="admin-section ${isTabActive('admin-news') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-news') ? 'block' : 'none'};">
           ${renderAdminNews()}
@@ -312,12 +312,12 @@ export const viewAdmin = () => {
 export const bindAdmin = () => {
   ensureAllAdminModalsInBody();
 
-  const activeTab = currentAdminTab || 'admin-rounds';
-  if (activeTab === 'admin-rounds') initAdminRounds();
-  else if (activeTab === 'admin-games') initAdminGames();
-  else if (activeTab === 'admin-players') initAdminPlayers();
-  else if (activeTab === 'admin-teams') initAdminTeams();
+  const activeTab = currentAdminTab || 'admin-games';
+  if (activeTab === 'admin-games') initAdminGames();
+  else if (activeTab === 'admin-rounds') initAdminRounds();
   else if (activeTab === 'admin-leagues') initAdminLeagues();
+  else if (activeTab === 'admin-teams') initAdminTeams();
+  else if (activeTab === 'admin-players') initAdminPlayers();
   else if (activeTab === 'admin-news') initAdminNews();
   else if (activeTab === 'admin-gallery') initAdminGallery();
 
