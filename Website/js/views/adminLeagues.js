@@ -479,6 +479,8 @@ const openLeagueDataModal = (idx, tab = 'table') => {
     renderModalContent();
     if (modal) {
         modal.style.display = 'flex';
+        document.body.classList.add('no-scroll');
+        document.documentElement.classList.add('no-scroll');
         const content = modal.querySelector('div') || modal.firstElementChild;
         if (content) content.scrollTop = 0;
     }
@@ -1312,6 +1314,8 @@ const openEditModal = async (idx = null) => {
     }
 
     modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
     if (content) content.scrollTop = 0;
 };
@@ -1320,12 +1324,16 @@ const closeEditModal = () => {
     document.querySelectorAll('#league-modal').forEach(m => {
         m.style.display = 'none';
     });
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
 };
 
 const closeLeagueDataModal = () => {
     document.querySelectorAll('#league-data-modal').forEach(m => {
         m.style.display = 'none';
     });
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
     selectedLeague = null;
 };
 

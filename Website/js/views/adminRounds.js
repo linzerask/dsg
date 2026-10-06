@@ -1,4 +1,4 @@
-﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791182000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791182000000';
 import { showToast } from './admin.js?v=1791182000000';
 
 let roundsData = [];
@@ -760,6 +760,8 @@ const openEditRoundModal = (idx = null) => {
     }
 
     modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
     if (content) content.scrollTop = 0;
 };
@@ -768,6 +770,8 @@ const closeRoundModal = () => {
     document.querySelectorAll('#round-modal').forEach(m => {
         m.style.display = 'none';
     });
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
     editingRoundId = null;
 };
 
@@ -1094,6 +1098,8 @@ const openViewRoundGamesModal = (idx) => {
     }
 
     modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
     if (content) content.scrollTop = 0;
 };
@@ -1102,6 +1108,8 @@ const closeRoundGamesModal = () => {
     document.querySelectorAll('#round-games-modal').forEach(m => {
         m.style.display = 'none';
     });
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
 };
 
 const deleteRound = (idx) => {

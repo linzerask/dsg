@@ -598,6 +598,8 @@ const openEditModal = (idx = null) => {
 
     populateModalTeamDropdown(currentTeam);
     modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
     if (content) content.scrollTop = 0;
 };
@@ -606,6 +608,8 @@ const closeEditModal = () => {
     document.querySelectorAll('#player-modal').forEach(m => {
         m.style.display = 'none';
     });
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
 };
 
 const applyFilters = () => {

@@ -19,6 +19,8 @@ const initApp = async () => {
 
   const openDrawer = () => {
     if (overlay) overlay.classList.add('active');
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
     anime({
       targets: drawer,
       right: 0,
@@ -29,6 +31,8 @@ const initApp = async () => {
 
   const closeDrawer = () => {
     if (overlay) overlay.classList.remove('active');
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
     anime({
       targets: drawer,
       right: '-100%',

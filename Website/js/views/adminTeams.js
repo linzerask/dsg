@@ -1,4 +1,4 @@
-﻿import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791182000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1791182000000';
 import { showToast } from './admin.js?v=1791182000000';
 import { renderTeamLogo, getTeamLogoUrl, getDefaultBadge, getTeamLogoData } from '../logos.js?v=1791182000000';
 
@@ -476,6 +476,8 @@ const openEditModal = (idx = null) => {
     updateModalLogoPreview();
 
     modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
     if (content) content.scrollTop = 0;
 };
@@ -484,6 +486,8 @@ const closeEditModal = () => {
     document.querySelectorAll('#team-modal').forEach(m => {
         m.style.display = 'none';
     });
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
 };
 
 const applyFilters = () => {

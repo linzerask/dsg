@@ -623,6 +623,8 @@ export const bindSpieler = async () => {
     `;
 
     modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
 
     // Copy player link handler
     document.getElementById('btn-copy-player-link')?.addEventListener('click', async () => {
@@ -642,11 +644,15 @@ export const bindSpieler = async () => {
     // Close team link inside modal if clicked
     document.querySelector('.player-modal-team-link')?.addEventListener('click', () => {
       modal.style.display = 'none';
+      document.body.classList.remove('no-scroll');
+      document.documentElement.classList.remove('no-scroll');
     });
   };
 
   const closeModal = () => {
     if (modal) modal.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
   };
 
   modalClose?.addEventListener('click', closeModal);

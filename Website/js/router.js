@@ -117,6 +117,8 @@ export const Router = {
     const renderNewView = () => {
       this.currentPath = path;
       this.currentRawPath = rawPath;
+      document.body.classList.remove('no-scroll');
+      document.documentElement.classList.remove('no-scroll');
       app.innerHTML = route.render();
       if(route.bind) route.bind();
       

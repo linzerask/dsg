@@ -1,4 +1,4 @@
-﻿import { Store } from '../store.js?v=1791182000000';
+import { Store } from '../store.js?v=1791182000000';
 export let currentEvent = null;
 let currentLightboxIndex = 0;
 let currentImages = [];
@@ -146,26 +146,32 @@ export const bindGalerie = () => {
       }
     };
 
+    const closeLightbox = () => {
+      lightbox.style.display = 'none';
+      document.body.classList.remove('no-scroll');
+      document.documentElement.classList.remove('no-scroll');
+    };
+
     document.querySelectorAll('.gallery-img-card').forEach(card => {
       card.addEventListener('click', (e) => {
         currentLightboxIndex = parseInt(e.currentTarget.getAttribute('data-index'));
         updateLightboxImage();
         lightbox.style.display = 'flex';
+        document.body.classList.add('no-scroll');
+        document.documentElement.classList.add('no-scroll');
         // Small animation
         lightboxImg.animate([{ transform: 'scale(0.9)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 300, easing: 'ease-out' });
       });
     });
 
     if (closeBtn) {
-      closeBtn.addEventListener('click', () => {
-        lightbox.style.display = 'none';
-      });
+      closeBtn.addEventListener('click', closeLightbox);
     }
     
     // Close on background click
     if(lightbox) {
         lightbox.addEventListener('click', (e) => {
-            if(e.target === lightbox) lightbox.style.display = 'none';
+            if(e.target === lightbox) closeLightbox();
         });
     }
 
@@ -188,7 +194,7 @@ export const bindGalerie = () => {
     // Keyboard navigation
     document.addEventListener('keydown', function lightboxKeys(e) {
         if(lightbox.style.display === 'flex') {
-            if(e.key === 'Escape') lightbox.style.display = 'none';
+            if(e.key === 'Escape') closeLightbox();
             if(e.key === 'ArrowLeft') {
                 currentLightboxIndex = (currentLightboxIndex - 1 + currentImages.length) % currentImages.length;
                 updateLightboxImage();

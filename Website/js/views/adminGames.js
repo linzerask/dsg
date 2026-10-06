@@ -1053,6 +1053,8 @@ const openAddGameModal = () => {
     document.getElementById('input-game-away').value = '';
 
     modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
     if (content) content.scrollTop = 0;
 };
@@ -1123,6 +1125,8 @@ const openEditGameModal = (idx) => {
     document.getElementById('input-game-status').value = match.status || 'Upcoming';
 
     modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
     if (content) content.scrollTop = 0;
 };
@@ -1131,6 +1135,8 @@ const closeGameModal = () => {
     document.querySelectorAll('#game-modal').forEach(m => {
         m.style.display = 'none';
     });
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
     editingMatchId = null;
 };
 
@@ -1138,6 +1144,8 @@ const closeReportModal = () => {
     document.querySelectorAll('#report-modal').forEach(m => {
         m.style.display = 'none';
     });
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
     currentReportMatch = null;
 };
 
@@ -1607,6 +1615,8 @@ const openReportModal = (idxOrMatch) => {
 
     renderReportLists();
     modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+    document.documentElement.classList.add('no-scroll');
     const content = modal.querySelector('.modal-content') || modal.firstElementChild;
     if (content) content.scrollTop = 0;
 };
