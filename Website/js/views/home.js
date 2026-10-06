@@ -1,4 +1,4 @@
-﻿import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791182000000';
+import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791182000000';
 import { computeAllTimeStats } from './statistiken.js?v=1791182000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo, renderNewsFallbackHeader } from '../logos.js?v=1791182000000';
@@ -147,10 +147,10 @@ export const viewHome = () => {
       <div style="display: flex; align-items: center; width: 100%;">
         <span class="rank" style="font-weight: 700; color: ${index === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; min-width: 22px;">${index + 1}</span>
         <div class="team-name" style="font-weight: 600; flex: 1; margin-left: var(--space-sm); color: var(--color-text-primary); display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden;">
-          <a href="#/teams?team=${encodeURIComponent(t.name)}" class="team-link" style="display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; text-decoration: none;" onclick="event.stopPropagation();">
+          <a href="#/teams?team=${encodeURIComponent(t.name)}" class="team-logo-link" title="${t.name} Vereinsseite" onclick="event.stopPropagation();">
             ${renderTeamLogo(t.name, 'sm')}
-            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
           </a>
+          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
         </div>
         <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: 8px;">
           <span class="points" style="font-weight: 700; color: var(--color-accent);">${t.points} Pkt</span>
@@ -192,10 +192,10 @@ export const viewHome = () => {
       <div style="flex: 1; margin-left: var(--space-sm); display: flex; flex-direction: column; min-width: 0;">
         <a href="${playerLink}" class="player-link scorer-name" style="font-weight: 600; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;">${playerName}</a>
         <div class="team-name" style="color: var(--color-text-secondary); font-size: 0.8rem; display: flex; align-items: center; gap: 6px; margin-top: 2px;">
-          <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-link" style="display: flex; align-items: center; gap: 6px; color: inherit; text-decoration: none;">
+          <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-logo-link" title="${s.team || ''} Vereinsseite" onclick="event.stopPropagation();">
             ${renderTeamLogo(s.team, 'xs')}
-            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
           </a>
+          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
         </div>
       </div>
       <span class="goals" style="font-weight: 700; color: var(--color-accent); flex-shrink: 0; margin-left: 8px;">${s.goals} Tore</span>

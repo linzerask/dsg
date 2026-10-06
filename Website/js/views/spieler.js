@@ -554,17 +554,17 @@ export const bindSpieler = async () => {
         <!-- Avatar & Team Crest Showcase -->
         <div style="position: relative; width: 130px; height: 130px; border-radius: 50%; background: #ffffff; padding: 4px; border: 3px solid var(--color-accent); box-shadow: 0 8px 24px rgba(0, 179, 65, 0.25); display: flex; align-items: center; justify-content: center; overflow: visible; margin-top: 10px;">
           <img src="${avatarUrl}" alt="${player.fullName}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: contain; object-position: bottom center;">
-          <div style="position: absolute; bottom: -2px; right: -4px; width: 44px; height: 44px; background: var(--color-surface); border-radius: 50%; padding: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 2px solid var(--color-border); display: flex; align-items: center; justify-content: center;">
+          <a href="#/teams?team=${encodeURIComponent(player.team)}" class="player-modal-team-link team-logo-link" title="${player.team} Vereinsseite" style="position: absolute; bottom: -2px; right: -4px; width: 44px; height: 44px; background: var(--color-surface); border-radius: 50%; padding: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 2px solid var(--color-border); display: flex; align-items: center; justify-content: center;">
             ${teamLogo}
-          </div>
+          </a>
         </div>
 
         <!-- Name & Title -->
         <div>
           <h2 style="font-size: 1.7rem; font-weight: 800; margin: 0 0 4px 0; color: var(--color-text-primary);">${player.fullName}</h2>
-          <a href="#/teams?team=${encodeURIComponent(player.team)}" class="player-modal-team-link" style="font-size: 1.05rem; font-weight: 700; color: var(--color-accent); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
-            ${player.team} &rarr;
-          </a>
+          <div style="font-size: 1.05rem; font-weight: 700; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 6px;">
+            ${player.team}
+          </div>
           ${positionLabel ? `<div style="display: inline-block; margin-top: 6px; background: rgba(0, 179, 65, 0.15); color: var(--color-accent); font-weight: 800; font-size: 0.78rem; padding: 4px 12px; border-radius: 999px; text-transform: uppercase;">${positionLabel}</div>` : ''}
         </div>
 

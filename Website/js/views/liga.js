@@ -1,4 +1,4 @@
-﻿import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791182000000';
+import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791182000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
 import { getPlayerLink } from '../playerUtils.js?v=1791182000000';
@@ -143,10 +143,10 @@ export function viewLiga() {
       <div class="liga-row glass-card stagger-item ${i < 3 ? 'top-3-row' : ''} has-table-accordion" style="display: grid; grid-template-columns: 40px 1fr 100px 40px 35px 35px 35px 70px 50px 60px; align-items: center; margin-bottom: var(--space-sm); padding: var(--space-sm) var(--space-md); cursor: pointer; transition: background 0.3s;">
         <span style="font-weight: 900; font-size: 1.2rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">${i + 1}</span>
         <div style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 8px; min-width: 0;">
-          <a href="#/teams?team=${encodeURIComponent(t.name)}" class="team-link" style="display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; text-decoration: none;" onclick="event.stopPropagation();">
+          <a href="#/teams?team=${encodeURIComponent(t.name)}" class="team-logo-link" title="${t.name} Vereinsseite" onclick="event.stopPropagation();">
             ${renderTeamLogo(t.name, 'sm')}
-            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
           </a>
+          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
         </div>
         ${generateForm(t.name)}
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.played || 0}</span>
@@ -193,10 +193,10 @@ export function viewLiga() {
         <div style="min-width: 0;">
           <a href="${pLink}" class="player-link" style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${pName}</a>
           <div style="font-size: 0.8rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-top: 2px;">
-            <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-link" style="display: flex; align-items: center; gap: 6px;">
+            <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-logo-link" title="${s.team || ''} Vereinsseite" onclick="event.stopPropagation();">
               ${renderTeamLogo(s.team, 'xs')}
-              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
             </a>
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
           </div>
         </div>
       </div>
@@ -215,10 +215,10 @@ export function viewLiga() {
         <div style="min-width: 0;">
           <a href="${pLink}" class="player-link" style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${pName}</a>
           <div style="font-size: 0.8rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-top: 2px;">
-            <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-link" style="display: flex; align-items: center; gap: 6px;">
+            <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-logo-link" title="${s.team || ''} Vereinsseite" onclick="event.stopPropagation();">
               ${renderTeamLogo(s.team, 'xs')}
-              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
             </a>
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
           </div>
         </div>
       </div>
@@ -301,16 +301,16 @@ export function viewLiga() {
         <div style="min-width: 0;">
           <a href="${pLink}" class="player-link" style="font-weight: 700; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${pName}</a>
           <div class="hide-mobile" style="font-size: 0.8rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; margin-top: 2px;">
-            <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-link" style="display: flex; align-items: center; gap: 6px;">
+            <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-logo-link" title="${s.team || ''} Vereinsseite" onclick="event.stopPropagation();">
               ${renderTeamLogo(s.team, 'xs')}
-              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
             </a>
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
           </div>
           <div class="show-mobile" style="font-size: 0.75rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px; margin-top: 2px;">
-            <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-link" style="display: flex; align-items: center; gap: 5px;">
+            <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-logo-link" title="${s.team || ''} Vereinsseite" onclick="event.stopPropagation();">
               ${renderTeamLogo(s.team, 'xs')}
-              <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
             </a>
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
           </div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
@@ -815,8 +815,8 @@ export function viewLiga() {
 
         <div class="match-card-body">
           <div class="match-team match-team-home" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
-            <a href="#/teams?team=${encodeURIComponent(m.home)}" class="team-link" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; color: inherit; text-decoration: none;">
-              <span class="team-name">${m.home}</span>
+            <span class="team-name">${m.home}</span>
+            <a href="#/teams?team=${encodeURIComponent(m.home)}" class="team-logo-link" title="${m.home} Vereinsseite" onclick="event.stopPropagation();">
               ${renderTeamLogo(m.home, 'md')}
             </a>
             ${renderTeamReds(homeReds)}
@@ -830,10 +830,10 @@ export function viewLiga() {
           </div>
           
           <div class="match-team match-team-away" style="display: flex; align-items: center; justify-content: flex-start; gap: 8px;">
-            <a href="#/teams?team=${encodeURIComponent(m.away)}" class="team-link" style="display: flex; align-items: center; justify-content: flex-start; gap: 8px; color: inherit; text-decoration: none;">
+            <a href="#/teams?team=${encodeURIComponent(m.away)}" class="team-logo-link" title="${m.away} Vereinsseite" onclick="event.stopPropagation();">
               ${renderTeamLogo(m.away, 'md')}
-              <span class="team-name">${m.away}</span>
             </a>
+            <span class="team-name">${m.away}</span>
             ${renderTeamReds(awayReds)}
           </div>
         </div>
