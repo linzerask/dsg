@@ -10,7 +10,7 @@ import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=17913
 import { viewAdmin, bindAdmin } from './views/admin.js?v=1791305000000';
 import { viewArticle, bindArticle } from './views/article.js?v=1791305000000';
 import { viewImpressum } from './views/impressum.js?v=1791305000000';
-import { viewDatenschutz } from './views/datenschutz.js?v=1791305000000';
+import { viewDatenschutz, bindDatenschutz } from './views/datenschutz.js?v=1791306000000';
 
 const routes = {
   '/': { render: () => viewHome(), bind: () => bindHome() },
@@ -25,7 +25,7 @@ const routes = {
   '/galerie': { render: () => viewGalerie(), bind: () => bindGalerie() },
   '/archiv': { render: () => viewArchiv() },
   '/impressum': { render: () => viewImpressum() },
-  '/datenschutz': { render: () => viewDatenschutz() },
+  '/datenschutz': { render: () => viewDatenschutz(), bind: () => bindDatenschutz() },
   '/admin': { 
     render: () => {
       if(sessionStorage.getItem('dsg_admin') === 'true') return viewAdmin();
