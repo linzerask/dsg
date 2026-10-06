@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="refresh" content="0; url=Website/">
-  <title>DSG Liga - Weiterleitung...</title>
+  <title>DSG Liga</title>
   <script>
-    window.location.href = "Website/" + window.location.hash;
+    var currentPath = window.location.pathname.replace(/\/+$/, '');
+    var targetUrl = currentPath + '/Website/' + window.location.search + window.location.hash;
+    window.location.replace(targetUrl);
   </script>
 </head>
 <body>
