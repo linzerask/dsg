@@ -67,7 +67,7 @@ export const computeAllTimeStats = () => {
     // Matches & Goals
     const matches = s.matches || [];
     matches.forEach(m => {
-      const isPlayed = m.status === 'Gespielt' || m.status === 'Played' || (m.status && m.status.startsWith('Abgesagt')) || (m.score && m.score !== '-:-' && m.score !== '- : -' && m.score.trim() !== '');
+      const isPlayed = m.status === 'Gespielt' || m.status === 'Played' || m.status === 'Beendet' || (m.status && m.status.startsWith('Abgesagt')) || (m.score && m.score !== '-:-' && m.score !== '- : -' && m.score.trim() !== '');
       if (isPlayed) {
         totalMatches++;
         let gA = 0, gB = 0;
@@ -281,9 +281,13 @@ export const computeAllTimeStats = () => {
       clubMap[name].seasonsList.add(seasonKey);
     });
 
-    // Season honors only for completed seasons (all matches finished)
-    const isCompletedSeason = matches.length > 0 && matches.every(m => m.status === 'Gespielt' || m.status === 'Played' || (m.status && m.status.startsWith('Abgesagt')));
-    if (isCompletedSeason && teams.length > 0 && teams.some(t => (t.played || 0) > 0 || (t.points || 0) > 0)) {
+    // Season honors only for completed past seasons (not active current season)
+    const leagues = (Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : []) || [];
+    const leagueConfig = leagues.find(l => l.seasonKey === seasonKey || l.name === seasonKey);
+    const isCurrentSeason = leagueConfig ? (leagueConfig.isCurrent === true) : (seasonKey === '2026/2027');
+
+    const isCompletedSeason = !isCurrentSeason && teams.length > 0 && teams.some(t => (t.played || 0) > 0 || (t.points || 0) > 0);
+    if (isCompletedSeason) {
       const sortedTeams = [...teams].sort((a, b) => (b.points || 0) - (a.points || 0) || (((b.goalsFor ?? b.gf ?? 0) - (b.goalsAgainst ?? b.ga ?? 0)) - ((a.goalsFor ?? a.gf ?? 0) - (a.goalsAgainst ?? a.ga ?? 0))));
       const champion = sortedTeams[0];
       const runnerUp = sortedTeams[1];
@@ -312,15 +316,19 @@ export const computeAllTimeStats = () => {
     }
   });
 
-  // Sort Season Honors: Year descending, DSG Liga before secondary leagues
+  // Sort Season Honors: Year descending, DSG Liga before secondary leagues / playoffs
+  const getLeagueHierarchy = (key) => {
+    if (key.includes('oberes')) return 2;
+    if (key.includes('unteres')) return 3;
+    if (key.includes('1klasse') || key.toLowerCase().includes('1. klasse')) return 4;
+    return 1; // Standard DSG Liga
+  };
+
   seasonHonors.sort((a, b) => {
     const yrA = parseInt(String(a.season).match(/\d{4}/)?.[0]) || 0;
     const yrB = parseInt(String(b.season).match(/\d{4}/)?.[0]) || 0;
     if (yrB !== yrA) return yrB - yrA;
-    const isKlasseA = a.season.includes('1klasse') || a.season.toLowerCase().includes('1. klasse');
-    const isKlasseB = b.season.includes('1klasse') || b.season.toLowerCase().includes('1. klasse');
-    if (isKlasseA !== isKlasseB) return isKlasseA ? 1 : -1;
-    return 0;
+    return getLeagueHierarchy(a.season) - getLeagueHierarchy(b.season);
   });
 
   // Sort Scorers and assign real all-time rank
@@ -468,13 +476,6 @@ export const computeAllTimeStats = () => {
       fullDate: targetOldest['Aktiv seit']
     };
   }
-
-  // Sort season honors descending by year (e.g. 2025/2026 first down to 2021/2022 last)
-  const parseSeasonYear = (seasonStr) => {
-    const match = String(seasonStr).match(/\d{4}/);
-    return match ? parseInt(match[0]) : 0;
-  };
-  seasonHonors.sort((a, b) => parseSeasonYear(b.season) - parseSeasonYear(a.season));
 
   const goalsPerMatch = totalMatches > 0 ? (totalGoals / totalMatches).toFixed(2) : '0';
 
