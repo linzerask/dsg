@@ -236,11 +236,15 @@ export const viewHome = () => {
         <div class="topspiel-teams">
           <div class="topspiel-team home-team">
             <h3 class="topspiel-team-name">${nextMatch.home}</h3>
-            ${renderTeamLogo(nextMatch.home, 'lg')}
+            <a href="#/teams?team=${encodeURIComponent(nextMatch.home)}" class="team-logo-link" title="${nextMatch.home} Vereinsseite">
+              ${renderTeamLogo(nextMatch.home, 'lg')}
+            </a>
           </div>
           <span class="topspiel-vs">VS</span>
           <div class="topspiel-team away-team">
-            ${renderTeamLogo(nextMatch.away, 'lg')}
+            <a href="#/teams?team=${encodeURIComponent(nextMatch.away)}" class="team-logo-link" title="${nextMatch.away} Vereinsseite">
+              ${renderTeamLogo(nextMatch.away, 'lg')}
+            </a>
             <h3 class="topspiel-team-name">${nextMatch.away}</h3>
           </div>
         </div>
@@ -270,7 +274,9 @@ export const viewHome = () => {
         <div style="flex: 1; min-width: 0;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
             <div style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.95rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-              ${renderTeamLogo(m.home, 'xs')}
+              <a href="#/teams?team=${encodeURIComponent(m.home)}" class="team-logo-link" title="${m.home} Vereinsseite" onclick="event.stopPropagation();">
+                ${renderTeamLogo(m.home, 'xs')}
+              </a>
               <span style="overflow: hidden; text-overflow: ellipsis;">${m.home}</span>
             </div>
             <span style="font-weight: 700; font-size: ${isResult ? '1rem' : '0.85rem'}; color: ${isCanceled ? '#e74c3c' : (isResult ? 'var(--color-accent)' : 'var(--color-text-secondary)')}; margin-left: 8px; flex-shrink: 0;">
@@ -279,7 +285,9 @@ export const viewHome = () => {
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.95rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-              ${renderTeamLogo(m.away, 'xs')}
+              <a href="#/teams?team=${encodeURIComponent(m.away)}" class="team-logo-link" title="${m.away} Vereinsseite" onclick="event.stopPropagation();">
+                ${renderTeamLogo(m.away, 'xs')}
+              </a>
               <span style="overflow: hidden; text-overflow: ellipsis;">${m.away}</span>
             </div>
             <span style="font-size: 0.75rem; color: var(--color-text-secondary); flex-shrink: 0; margin-left: 8px;">${formattedDate}</span>

@@ -992,7 +992,9 @@ export const viewStatistiken = () => {
                 <div style="padding: 14px 16px; background: rgba(142, 198, 63, 0.09); border-radius: 8px; border: 1px solid rgba(142, 198, 63, 0.25);">
                   <div style="font-size: 0.72rem; font-weight: 800; color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.6px;">Meister</div>
                   <div style="font-size: 1.3rem; font-weight: 800; color: var(--color-text-primary); margin: 4px 0; display: flex; align-items: center; gap: 8px;">
-                    ${renderTeamLogo(h.champion, 'md')}
+                    <a href="#/teams?team=${encodeURIComponent(h.champion)}" class="team-logo-link" title="${h.champion} Vereinsseite" onclick="event.stopPropagation();">
+                      ${renderTeamLogo(h.champion, 'md')}
+                    </a>
                     <span>${h.champion}</span>
                   </div>
                   <div style="font-size: 0.85rem; color: var(--color-text-secondary); font-weight: 500;">
@@ -1009,7 +1011,9 @@ export const viewStatistiken = () => {
                       ${renderIcon('medal', { size: 15, color: '#94a3b8' })} Vizemeister:
                     </span>
                     <div style="font-weight: 700; color: var(--color-text-primary); text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 6px;">
-                      ${renderTeamLogo(h.runnerUp, 'xs')}
+                      <a href="#/teams?team=${encodeURIComponent(h.runnerUp)}" class="team-logo-link" title="${h.runnerUp} Vereinsseite" onclick="event.stopPropagation();">
+                        ${renderTeamLogo(h.runnerUp, 'xs')}
+                      </a>
                       <span>${h.runnerUp}</span> <span style="font-weight: 500; color: var(--color-text-secondary); font-size: 0.8rem;">(${h.runnerUpPoints} Pkt)</span>
                     </div>
                   </div>
@@ -1024,7 +1028,7 @@ export const viewStatistiken = () => {
                       <div style="font-weight: 700; color: var(--color-accent);">
                         ${h.topScorer} <span style="font-weight: 800; color: var(--color-accent); font-size: 0.82rem;">(${h.topScorerGoals} Tore)</span>
                       </div>
-                      ${h.topScorerTeam ? `<div style="font-size: 0.75rem; font-weight: 500; color: var(--color-text-secondary); display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 2px;">${renderTeamLogo(h.topScorerTeam, 'xs')} <span>${h.topScorerTeam}</span></div>` : ''}
+                      ${h.topScorerTeam ? `<div style="font-size: 0.75rem; font-weight: 500; color: var(--color-text-secondary); display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 2px;"><a href="#/teams?team=${encodeURIComponent(h.topScorerTeam)}" class="team-logo-link" title="${h.topScorerTeam} Vereinsseite" onclick="event.stopPropagation();">${renderTeamLogo(h.topScorerTeam, 'xs')}</a> <span>${h.topScorerTeam}</span></div>` : ''}
                     </div>
                   </div>
                 ` : ''}
@@ -1047,7 +1051,7 @@ export const viewStatistiken = () => {
               ${stats.records.bestSingleSeasonScorer.goals} <span style="font-size: 1rem; font-weight: 600;">Tore</span>
             </div>
             <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-              <span>Erzielt für</span> ${renderTeamLogo(stats.records.bestSingleSeasonScorer.team, 'xs')} <strong>${stats.records.bestSingleSeasonScorer.team}</strong> <span>in der Saison</span> <strong>${formatSeasonDisplay(stats.records.bestSingleSeasonScorer.season)}</strong>.
+              <span>Erzielt für</span> <a href="#/teams?team=${encodeURIComponent(stats.records.bestSingleSeasonScorer.team)}" class="team-logo-link" title="${stats.records.bestSingleSeasonScorer.team} Vereinsseite">${renderTeamLogo(stats.records.bestSingleSeasonScorer.team, 'xs')}</a> <strong>${stats.records.bestSingleSeasonScorer.team}</strong> <span>in der Saison</span> <strong>${formatSeasonDisplay(stats.records.bestSingleSeasonScorer.season)}</strong>.
             </p>
           </div>
 
@@ -1057,7 +1061,7 @@ export const viewStatistiken = () => {
               <div style="margin-bottom: 8px;">${renderIcon('zap', { size: 30, color: '#eab308' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Torreichstes Spiel</div>
               <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                ${renderTeamLogo(stats.records.highestScoringMatch.home, 'xs')} <span>${stats.records.highestScoringMatch.home}</span> vs. ${renderTeamLogo(stats.records.highestScoringMatch.away, 'xs')} <span>${stats.records.highestScoringMatch.away}</span>
+                <a href="#/teams?team=${encodeURIComponent(stats.records.highestScoringMatch.home)}" class="team-logo-link" title="${stats.records.highestScoringMatch.home} Vereinsseite">${renderTeamLogo(stats.records.highestScoringMatch.home, 'xs')}</a> <span>${stats.records.highestScoringMatch.home}</span> vs. <a href="#/teams?team=${encodeURIComponent(stats.records.highestScoringMatch.away)}" class="team-logo-link" title="${stats.records.highestScoringMatch.away} Vereinsseite">${renderTeamLogo(stats.records.highestScoringMatch.away, 'xs')}</a> <span>${stats.records.highestScoringMatch.away}</span>
               </h3>
               <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
                 ${stats.records.highestScoringMatch.score} <span style="font-size: 1rem; font-weight: 600;">(${stats.records.highestScoringMatch.totalGoals} Tore)</span>
@@ -1074,7 +1078,7 @@ export const viewStatistiken = () => {
               <div style="margin-bottom: 8px;">${renderIcon('target', { size: 30, color: '#ef4444' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Höchster Sieg</div>
               <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                ${renderTeamLogo(stats.records.biggestWin.home, 'xs')} <span>${stats.records.biggestWin.home}</span> vs. ${renderTeamLogo(stats.records.biggestWin.away, 'xs')} <span>${stats.records.biggestWin.away}</span>
+                <a href="#/teams?team=${encodeURIComponent(stats.records.biggestWin.home)}" class="team-logo-link" title="${stats.records.biggestWin.home} Vereinsseite">${renderTeamLogo(stats.records.biggestWin.home, 'xs')}</a> <span>${stats.records.biggestWin.home}</span> vs. <a href="#/teams?team=${encodeURIComponent(stats.records.biggestWin.away)}" class="team-logo-link" title="${stats.records.biggestWin.away} Vereinsseite">${renderTeamLogo(stats.records.biggestWin.away, 'xs')}</a> <span>${stats.records.biggestWin.away}</span>
               </h3>
               <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
                 ${stats.records.biggestWin.score}
@@ -1091,7 +1095,9 @@ export const viewStatistiken = () => {
               <div style="margin-bottom: 8px;">${renderIcon('trophy', { size: 30, color: '#f59e0b' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Rekordmeister</div>
               <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0; display: flex; align-items: center; gap: 8px;">
-                ${renderTeamLogo(stats.records.rekordmeister.name, 'sm')}
+                <a href="#/teams?team=${encodeURIComponent(stats.records.rekordmeister.name)}" class="team-logo-link" title="${stats.records.rekordmeister.name} Vereinsseite">
+                  ${renderTeamLogo(stats.records.rekordmeister.name, 'sm')}
+                </a>
                 <span>${stats.records.rekordmeister.name}</span>
               </h3>
               <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
@@ -1110,7 +1116,12 @@ export const viewStatistiken = () => {
             <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid #ef4444;">
               <div style="margin-bottom: 8px;">${renderIcon('target', { size: 30, color: '#ef4444' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: #ef4444; text-transform: uppercase;">Die Schießbude</div>
-              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.mostConcededMatch.team}</h3>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0; display: flex; align-items: center; gap: 8px;">
+                <a href="#/teams?team=${encodeURIComponent(stats.records.mostConcededMatch.team)}" class="team-logo-link" title="${stats.records.mostConcededMatch.team} Vereinsseite">
+                  ${renderTeamLogo(stats.records.mostConcededMatch.team, 'sm')}
+                </a>
+                <span>${stats.records.mostConcededMatch.team}</span>
+              </h3>
               <div style="font-size: 2rem; font-weight: 800; color: #ef4444; margin: 6px 0;">
                 ${stats.records.mostConcededMatch.conceded} <span style="font-size: 1rem; font-weight: 600;">Gegentore</span>
               </div>
@@ -1138,8 +1149,8 @@ export const viewStatistiken = () => {
                   </span>
                 ` : ''}
               </div>
-              <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0;">
-                Aktiv für <strong>${stats.records.badBoy.team || 'DSG Verein'}</strong> &bull; Meiste Verwarnungen in den digital erfassten Spielberichten.
+              <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <span>Aktiv für</span> ${stats.records.badBoy.team ? `<a href="#/teams?team=${encodeURIComponent(stats.records.badBoy.team)}" class="team-logo-link" title="${stats.records.badBoy.team} Vereinsseite">${renderTeamLogo(stats.records.badBoy.team, 'xs')}</a> <strong>${stats.records.badBoy.team}</strong>` : '<strong>DSG Verein</strong>'} <span>&bull; Meiste Verwarnungen in den digital erfassten Spielberichten.</span>
               </p>
             </div>
           ` : ''}
@@ -1149,7 +1160,12 @@ export const viewStatistiken = () => {
             <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
               <div style="margin-bottom: 8px;">${renderIcon('handshake', { size: 30, color: 'var(--color-accent)' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Die Remis-Könige</div>
-              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.drawKings.team}</h3>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0; display: flex; align-items: center; gap: 8px;">
+                <a href="#/teams?team=${encodeURIComponent(stats.records.drawKings.team)}" class="team-logo-link" title="${stats.records.drawKings.team} Vereinsseite">
+                  ${renderTeamLogo(stats.records.drawKings.team, 'sm')}
+                </a>
+                <span>${stats.records.drawKings.team}</span>
+              </h3>
               <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
                 ${stats.records.drawKings.count} <span style="font-size: 1rem; font-weight: 600;">Unentschieden</span>
               </div>
@@ -1194,7 +1210,12 @@ export const viewStatistiken = () => {
             <div class="glass-card" style="padding: var(--space-lg); border-left: 4px solid var(--color-accent);">
               <div style="margin-bottom: 8px;">${renderIcon('award', { size: 30, color: 'var(--color-accent)' })}</div>
               <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase;">Vereins-Urgestein</div>
-              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0;">${stats.records.oldestClub.name}</h3>
+              <h3 style="font-size: 1.25rem; margin: 4px 0 2px 0; display: flex; align-items: center; gap: 8px;">
+                <a href="#/teams?team=${encodeURIComponent(stats.records.oldestClub.name)}" class="team-logo-link" title="${stats.records.oldestClub.name} Vereinsseite">
+                  ${renderTeamLogo(stats.records.oldestClub.name, 'sm')}
+                </a>
+                <span>${stats.records.oldestClub.name}</span>
+              </h3>
               <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin: 6px 0;">
                 Seit ${stats.records.oldestClub.since} <span style="font-size: 1rem; font-weight: 600;">aktiv</span>
               </div>
