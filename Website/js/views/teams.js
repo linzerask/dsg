@@ -366,6 +366,21 @@ export const bindTeams = async () => {
                 const scoreText = isCanceled ? m.status : (isPlayed ? m.score.replace(/\s*\([^)]*\)/g, '').trim() : (m.time ? `${m.time} Uhr` : '-:-'));
                 const scoreColor = isCanceled ? '#e74c3c' : (isPlayed ? 'var(--color-accent)' : 'var(--color-text-secondary)');
 
+                // Format date with weekday (e.g. "Fr, 11.09.")
+                let dateDisplay = '';
+                if (m.date) {
+                  const cleanDate = String(m.date).trim();
+                  const parts = cleanDate.includes('.') ? cleanDate.split('.') : (cleanDate.includes('-') ? cleanDate.split('-').reverse() : []);
+                  if (parts.length >= 2) {
+                    dateDisplay = `${parts[0]}.${parts[1]}.`;
+                  } else {
+                    dateDisplay = cleanDate;
+                  }
+                  if (m.weekday && m.weekday.trim()) {
+                    dateDisplay = `${m.weekday.trim()}, ${dateDisplay}`;
+                  }
+                }
+
                 return `
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(0,0,0,0.02); border-radius: 6px; font-size: 0.88rem; gap: 10px; border: 1px solid var(--color-border);">
                   <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; overflow: hidden;">
@@ -375,7 +390,7 @@ export const bindTeams = async () => {
                         ${renderTeamLogo(m.home, 'xs')}
                       </a>
                     </div>
-                    <span style="color: var(--color-text-secondary); font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">vs</span>
+                    <span style="color: var(--color-text-secondary); font-size: 0.72rem; font-weight: 700; flex-shrink: 0; opacity: 0.8;">vs</span>
                     <div style="display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1;">
                       <a href="#/teams?team=${encodeURIComponent(m.away)}" class="team-logo-link" title="${m.away} Vereinsseite" onclick="event.stopPropagation();">
                         ${renderTeamLogo(m.away, 'xs')}
@@ -383,8 +398,11 @@ export const bindTeams = async () => {
                       <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; font-size: 0.86rem;">${m.away}</span>
                     </div>
                   </div>
-                  <div style="font-weight: 800; font-size: 0.95rem; color: ${scoreColor}; flex-shrink: 0; min-width: 45px; text-align: right;">
-                    ${scoreText}
+                  <div style="display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; min-width: 65px; text-align: right;">
+                    <div style="font-weight: 800; font-size: 0.95rem; color: ${scoreColor}; line-height: 1.2;">
+                      ${scoreText}
+                    </div>
+                    ${dateDisplay ? `<div style="font-size: 0.72rem; color: var(--color-text-secondary); font-weight: 500; margin-top: 2px; white-space: nowrap;">${dateDisplay}</div>` : ''}
                   </div>
                 </div>
               `;
