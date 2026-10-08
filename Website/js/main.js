@@ -1,5 +1,6 @@
-import { Router } from './router.js?v=1791260000000';
-import { Store } from './store.js?v=1791260000000';
+import { Router } from './router.js?v=1791308000000';
+import { Store } from './store.js?v=1791308000000';
+import { initConsentBanner } from './consent.js?v=1791308000000';
 
 window.Store = Store;
 
@@ -10,6 +11,7 @@ const initApp = async () => {
     console.error("Store init error:", e);
   }
   Router.init();
+  initConsentBanner();
 
   // Mobile Drawer logic
   const drawer = document.getElementById('mobile-drawer');

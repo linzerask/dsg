@@ -1,10 +1,15 @@
-export const viewDatenschutz = () => `
+import { isAnalyticsGranted, setAnalyticsConsent, GA_MEASUREMENT_ID } from '../consent.js?v=1791308000000';
+
+export const viewDatenschutz = () => {
+  const gaActive = isAnalyticsGranted();
+
+  return `
   <div class="container stagger-item" style="padding-top: var(--space-xl); max-width: 1000px; margin: 0 auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-md);">
       <h1 style="color: var(--color-accent); margin: 0;">Datenschutzerklärung</h1>
       <span style="background: rgba(0, 179, 65, 0.12); color: var(--color-accent); border: 1px solid rgba(0, 179, 65, 0.3); font-weight: 700; font-size: 0.85rem; padding: 6px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-        100% Tracking-Frei & DSGVO-Konform
+        DSGVO & TKG 2021 Konform
       </span>
     </div>
 
@@ -15,15 +20,16 @@ export const viewDatenschutz = () => `
         Speicher- & Datenschutz-Transparenz
       </h3>
       <p style="color: var(--color-text-secondary); font-size: 0.95rem; margin-bottom: var(--space-md);">
-        Diese Website verzichtet vollständig auf Werbe-, Tracking- und Drittanbieter-Cookies. Es werden ausschließlich technisch notwendige Speicherungen auf Ihrem Endgerät genutzt (§ 165 Abs. 3 TKG 2021).
+        Hier können Sie Ihre aktuellen Datenschutzeinstellungen einsehen und die Einwilligung zur statistischen Webanalyse (Google Analytics) jederzeit mit einem Klick anpassen oder widerrufen (§ 165 Abs. 3 TKG 2021 & Art. 7 Abs. 3 DSGVO).
       </p>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-sm); margin-bottom: var(--space-md);">
         <div style="background: var(--color-surface-hover); padding: 12px 16px; border-radius: var(--border-radius-sm); border: var(--glass-border);">
-          <div style="font-size: 0.8rem; color: var(--color-text-secondary); font-weight: 600; text-transform: uppercase;">Tracking- & Marketing-Cookies</div>
-          <div style="font-weight: 700; color: #00b341; margin-top: 4px; display: flex; align-items: center; gap: 6px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Keine (0 aktiv)
+          <div style="font-size: 0.8rem; color: var(--color-text-secondary); font-weight: 600; text-transform: uppercase;">Google Analytics (Reichweite)</div>
+          <div id="ga-status-badge" style="font-weight: 700; color: ${gaActive ? '#00b341' : '#e67e22'}; margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+            ${gaActive 
+              ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg> Aktiviert (Einwilligung erteilt)' 
+              : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg> Deaktiviert (Keine Einwilligung)'}
           </div>
         </div>
         <div style="background: var(--color-surface-hover); padding: 12px 16px; border-radius: var(--border-radius-sm); border: var(--glass-border);">
@@ -35,13 +41,17 @@ export const viewDatenschutz = () => `
         </div>
         <div style="background: var(--color-surface-hover); padding: 12px 16px; border-radius: var(--border-radius-sm); border: var(--glass-border);">
           <div style="font-size: 0.8rem; color: var(--color-text-secondary); font-weight: 600; text-transform: uppercase;">Funktionaler Speicher</div>
-          <div style="font-weight: 700; color: var(--color-text-primary); margin-top: 4px;" id="privacy-storage-status">
+          <div style="font-weight: 700; color: var(--color-text-primary); margin-top: 4px;">
             Design-Präferenz & Tabellencache
           </div>
         </div>
       </div>
 
-      <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+      <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;">
+        <button id="btn-toggle-ga" class="btn" style="background: ${gaActive ? 'rgba(230, 126, 34, 0.12)' : 'rgba(0, 179, 65, 0.12)'}; color: ${gaActive ? '#e67e22' : 'var(--color-accent)'}; border: 1px solid ${gaActive ? 'rgba(230, 126, 34, 0.4)' : 'rgba(0, 179, 65, 0.4)'}; font-size: 0.9rem; padding: 8px 16px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; transition: all 0.2s;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+          ${gaActive ? 'Google Analytics deaktivieren (Widerrufen)' : 'Google Analytics aktivieren (Zustimmen)'}
+        </button>
         <button id="btn-clear-cache" class="btn" style="background: rgba(255, 71, 87, 0.12); color: #ff4757; border: 1px solid rgba(255, 71, 87, 0.3); font-size: 0.9rem; padding: 8px 16px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; transition: all 0.2s;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
           Lokale Einstellungen & Cache zurücksetzen
@@ -67,20 +77,16 @@ export const viewDatenschutz = () => `
       <h2 style="margin-bottom: var(--space-sm); padding-top: var(--space-md); border-top: var(--glass-border);">2. Rechtsgrundlagen der Datenverarbeitung</h2>
       <p style="margin-bottom: var(--space-xs);">Die Verarbeitung von Daten auf dieser Website erfolgt auf Basis folgender Rechtsgrundlagen gemäß Art. 6 DSGVO:</p>
       <ul style="margin-left: 24px; margin-bottom: var(--space-md);">
+        <li style="margin-bottom: 6px;"><strong>Art. 6 Abs. 1 lit. a DSGVO & § 165 Abs. 3 TKG 2021 (Einwilligung):</strong> Freiwillige Einwilligung zur Nutzung von Analyse-Cookies (Google Analytics). Die Einwilligung kann jederzeit widerrufen werden.</li>
         <li style="margin-bottom: 6px;"><strong>Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung & Organisation des Spielbetriebs):</strong> Verarbeitung von Spielergebnissen, Kadern, Spielberichten und Ligatabellen zur ordnungsgemäßen Abwicklung der DSG-Fußballmeisterschaft.</li>
         <li style="margin-bottom: 6px;"><strong>Art. 6 Abs. 1 lit. f DSGVO (Berechtigtes Interesse):</strong> Bereitstellung einer sicheren, stabilen, schnellen und nutzerfreundlichen Website.</li>
         <li style="margin-bottom: 6px;"><strong>§ 165 Abs. 3 Satz 2 TKG 2021:</strong> Zulässigkeit technisch unbedingt erforderlicher Speicherungen auf dem Endgerät ohne vorheriges Einwilligungserfordernis.</li>
       </ul>
 
       <h2 style="margin-bottom: var(--space-sm); padding-top: var(--space-md); border-top: var(--glass-border);">3. Speichertechnologien (Cookies & Lokaler Speicher)</h2>
-      <h3 style="color: var(--color-text-secondary); margin-bottom: var(--space-xs);">A. Keine Marketing- oder Tracking-Cookies</h3>
+      <h3 style="color: var(--color-text-secondary); margin-bottom: var(--space-xs);">A. Technisch notwendige lokale Speicherungen (HTML5 Storage)</h3>
       <p style="margin-bottom: var(--space-sm);">
-        Diese Website verwendet <strong>keine</strong> Tracking-Cookies, keine Werbe-Cookies und keine Analyseprogramme Dritter (wie Google Analytics, Meta Pixel oder Werbenetzwerke). Es werden keine Nutzerprofile erstellt und kein seitenübergreifendes Tracking durchgeführt.
-      </p>
-
-      <h3 style="color: var(--color-text-secondary); margin-bottom: var(--space-xs);">B. Technisch notwendige lokale Speicherungen (HTML5 Storage)</h3>
-      <p style="margin-bottom: var(--space-sm);">
-        Zur Gewährleistung der fehlerfreien Funktion und optimalen Nutzererfahrung werden folgende Daten ausschließlich lokal auf Ihrem Endgerät gespeichert:
+        Zur Gewährleistung der fehlerfreien Funktion und optimalen Nutzererfahrung werden folgende Daten lokal auf Ihrem Endgerät gespeichert:
       </p>
       <div style="overflow-x: auto; margin-bottom: var(--space-md);">
         <table style="width: 100%; border-collapse: collapse; font-size: 0.92rem;">
@@ -93,6 +99,12 @@ export const viewDatenschutz = () => `
             </tr>
           </thead>
           <tbody>
+            <tr style="border-bottom: 1px solid var(--color-border);">
+              <td style="padding: 10px 8px; font-family: monospace; color: var(--color-accent);">dsg_cookie_consent</td>
+              <td style="padding: 10px 8px;">LocalStorage</td>
+              <td style="padding: 10px 8px;">Speichert Ihren Einwilligungsstatus für Analyse-Cookies (Google Analytics).</td>
+              <td style="padding: 10px 8px;">Persistent (bis zum Widerruf)</td>
+            </tr>
             <tr style="border-bottom: 1px solid var(--color-border);">
               <td style="padding: 10px 8px; font-family: monospace; color: var(--color-accent);">dsg_theme</td>
               <td style="padding: 10px 8px;">LocalStorage</td>
@@ -115,20 +127,22 @@ export const viewDatenschutz = () => `
         </table>
       </div>
 
-      <h2 style="margin-bottom: var(--space-sm); padding-top: var(--space-md); border-top: var(--glass-border);">4. Lokales Hosting von Schriften und Programmbibliotheken</h2>
-      <p style="margin-bottom: var(--space-md);">
-        Um die Vorgaben der DSGVO und des EuGH vollumfänglich einzuhalten, werden sämtliche Schriftarten (u. a. <em>Outfit</em> und <em>Merriweather</em>) sowie Skriptbibliotheken (u. a. <em>Anime.js</em>) <strong>vollständig lokal auf unserem eigenen Server</strong> gehostet. Bei Ihrem Besuch werden <strong>keine</strong> Verbindungen zu Google-Servern oder Drittanbieter-Netzwerken (CDNs) in den USA aufgebaut, sodass Ihre IP-Adresse nicht an Dritte übertragen wird.
+      <h2 style="margin-bottom: var(--space-sm); padding-top: var(--space-md); border-top: var(--glass-border);">4. Webanalyse durch Google Analytics (GA4)</h2>
+      <p style="margin-bottom: var(--space-sm);">
+        Diese Website nutzt – <strong>ausschließlich nach Ihrer ausdrücklichen Einwilligung</strong> im Cookie-Banner – Funktionen des Webanalysedienstes Google Analytics 4. Anbieter ist die Google Ireland Limited („Google“), Gordon House, Barrow Street, Dublin 4, Irland.
+      </p>
+      <p style="margin-bottom: var(--space-sm);">
+        Google Analytics verwendet Cookies, die eine statistische Auswertung der Benutzung unserer Website ermöglichen. Die dabei erfassten Daten (z. B. aufgerufene Seiten, Verweildauer, Browsertyp, ungefähre Region) werden an Server von Google übertragen. Wir verwenden Google Analytics mit aktivierter <strong>IP-Anonymisierung</strong>. Dadurch wird Ihre IP-Adresse von Google innerhalb von Mitgliedstaaten der Europäischen Union vor der Übertragung gekürzt, sodass ein direkter Personenbezug ausgeschlossen ist.
+      </p>
+      <p style="margin-bottom: var(--space-sm);">
+        • <strong>Mess-ID:</strong> <code>${GA_MEASUREMENT_ID}</code><br>
+        • <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. a DSGVO und § 165 Abs. 3 TKG 2021 (Einwilligung).<br>
+        • <strong>Widerruf der Einwilligung:</strong> Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen, indem Sie den Schalter oben im Bereich „Speicher- & Datenschutz-Transparenz“ auf dieser Seite betätigen oder Ihre Browserdaten leeren.
       </p>
 
-      <h2 style="margin-bottom: var(--space-sm); padding-top: var(--space-md); border-top: var(--glass-border);">5. Server-Log-Dateien</h2>
+      <h2 style="margin-bottom: var(--space-sm); padding-top: var(--space-md); border-top: var(--glass-border);">5. Lokales Hosting von Schriften und Programmbibliotheken</h2>
       <p style="margin-bottom: var(--space-md);">
-        Der Hosting-Provider dieser Seiten erhebt und speichert automatisch Informationen in so genannten Server-Log-Dateien, die Ihr Browser automatisch übermittelt. Dies umfasst:<br>
-        • Browsertyp und Browserversion<br>
-        • Verwendetes Betriebssystem<br>
-        • Referrer URL (die zuvor besuchte Seite)<br>
-        • Hostname des zugreifenden Rechners bzw. IP-Adresse (anonymisiert)<br>
-        • Uhrzeit der Serveranfrage<br><br>
-        Diese Daten sind nicht bestimmten Personen zuordenbar. Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Die Erfassung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO zur Gewährleistung der Systemsicherheit und Stabilität.
+        Um die Vorgaben der DSGVO und des EuGH vollumfänglich einzuhalten, werden sämtliche Schriftarten (u. a. <em>Outfit</em> und <em>Merriweather</em>) sowie Skriptbibliotheken (u. a. <em>Anime.js</em>) <strong>vollständig lokal auf unserem eigenen Server</strong> gehostet. Bei Ihrem Besuch werden hierbei <strong>keine</strong> Verbindungen zu Google-Schriftservern oder externen CDNs aufgebaut.
       </p>
 
       <h2 style="margin-bottom: var(--space-sm); padding-top: var(--space-md); border-top: var(--glass-border);">6. Cloud-Datenbank & Bereitstellung von Inhalten (Firebase / Google Cloud)</h2>
@@ -163,16 +177,31 @@ export const viewDatenschutz = () => `
       </p>
     </div>
   </div>
-`;
+  `;
+};
 
 export const bindDatenschutz = () => {
+  const toggleGaBtn = document.getElementById('btn-toggle-ga');
+  if (toggleGaBtn) {
+    toggleGaBtn.addEventListener('click', () => {
+      const currentlyGranted = isAnalyticsGranted();
+      const newStatus = !currentlyGranted;
+      setAnalyticsConsent(newStatus);
+      alert(newStatus 
+        ? 'Google Analytics wurde erfolgreich aktiviert. Vielen Dank für Ihre Unterstützung!' 
+        : 'Google Analytics wurde deaktiviert. Es werden keine statistischen Analysedaten mehr erfasst.');
+      window.location.reload();
+    });
+  }
+
   const clearBtn = document.getElementById('btn-clear-cache');
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
-      if (confirm('Möchten Sie alle lokal gespeicherten Einstellungen (Farbmodus & lokaler Tabellencache) zurücksetzen?')) {
+      if (confirm('Möchten Sie alle lokal gespeicherten Einstellungen (Farbmodus, Cookie-Auswahl & lokaler Tabellencache) zurücksetzen?')) {
         try {
           localStorage.removeItem('dsg_theme');
           localStorage.removeItem('dsg_store_data');
+          localStorage.removeItem('dsg_cookie_consent');
           sessionStorage.removeItem('dsg_admin');
           sessionStorage.removeItem('dsg_admin_tab');
           alert('Lokale Daten und Cache wurden erfolgreich geleert. Die Seite wird neu geladen.');
