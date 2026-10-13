@@ -30,43 +30,214 @@ This document serves as the persistent memory and operational guideline for all 
 
 For each round (e.g. Runde 4, 5, 6, 7, 8...), the following wallpaper types are produced:
 
-### A. Cover Wallpaper
-- **DSG Header Logo:** Centered at `y = 52px`.
-- **Title Block:** Centered vertically in canvas (approx `center_y = 560px`).
-  - Line 1: `SAISON 26/27` (Impact font, tracking `6 * SCALE`).
-  - Line 2: `RUNDE X` (Impact font, large `210 * SCALE` with signature razor slice line: 5.5px diagonal slice).
+### A. Cover Wallpaper Suite (V4 Approved — Symmetrical Triad Standard)
+- **DSG Header Logo:** Centered horizontally at `y = 52px` (`target_w = 280px`). Bounding box: `x = [400, 675]`, `y = [53, 156]`.
+- **Top Subtitle Block (Over Title):**
+  - Text: `SAISON 26/27` in pure white (`#FFFFFF`) Impact font (`42px`), tracking `5 * SCALE`.
+  - Flanking Accent Lines: Pure white (`RGBA(255, 255, 255, 220)`), `100px` length, `2.5px` height, `24px` horizontal gap to text, centered on text baseline height.
+  - Position: Positioned above the top green outline with mathematically equal spacing (`equal_gap = 32px`).
+- **Main Title Block (Center `y = 555px`):**
+  - **Center Solid Text:** `RUNDE X` in solid pure white (`#FFFFFF`), Impact font (`210px`), tracking `6 * SCALE`.
+  - **Top & Bottom Echo Outline Loops:**
+    - Color: Vibrant DSG Green (`#00f05f` / `RGB(0, 240, 95)`).
+    - Style: Thin wireframe stroke (`1.8px`), fully closed loops (cut horizontal edge closed with contour line).
+    - Geometry: `60%` letter slice height cut, separated by a balanced `18px` gap from the solid center text (Zero overlap, mathematically balanced breathing room).
+- **Bottom Subtitle Block (Under Title — Category Tag):**
+  - Text: `IN ZAHLEN`, `NACHTRAGSSPIEL`, `ERGEBNISSE`, etc. in pure white (`#FFFFFF`) Impact font (`42px`), tracking `5 * SCALE`.
+  - Flanking Accent Lines: Pure white (`RGBA(255, 255, 255, 220)`), `100px` length, `2.5px` height, `24px` horizontal gap to text, centered on text baseline height.
+  - Position: Positioned below the bottom green outline with identical equal spacing (`equal_gap = 32px`), creating a perfectly symmetrical typographic frame around the central title block.
+- **Round Cover Suite Coverage:**
+  - Standard Cover: `SAISON 26/27` + `RUNDE X`.
+  - Stats Cover (`IN ZAHLEN`): Produced for every round (`rundeX_cover_in_zahlen.png`).
+  - Results Cover (`SPIELERGEBNISSE` — Variante 3 Approved): Produced for every round (`rundeX_cover_spielergebnisse.png`), styled with refined `38px` Impact font, tracking `5 * SCALE`, `85px` pure white flanking accent lines, `22px` horizontal gap to text, and identical equal spacing (`equal_gap = 32px`) below the bottom green outline.
+  - Postponed / Separated Fixtures Cover (`NACHTRAGSSPIEL`): Produced for all rounds where matches are scheduled in separate weeks (e.g. Runde 1 on 29.08. vs 05.09., Runde 4 on 13.10., and Runde 6 on 07.11. — `rundeX_cover_nachtragsspiel.png`).
+- **Communication Policy:** Always communicate and answer the user in English.
 
-### B. Multi-Game Overview Wallpaper (Upcoming Fixtures)
-- Groups all matches occurring in the **same week / weekend**.
-- If a match is scheduled weeks later (e.g. postponed or separated fixture), it receives its own dedicated overview / matchday card.
-- **Sizing & Tight Spacing Standard (V3 Approved):**
-  - Crests offset from center: `x_offset = 150px` (`center_x_home = 390px`, `center_x_away = 690px`, `gap to V = ~70px`).
-  - 2-Game Weeks: `crest_size = 185px`, row centers `y = [480, 750]`, divider at center.
-  - 3-Game Weeks: `crest_size = 145px - 150px`, row centers `y = [430, 640, 850]`, dividers at center.
+### B. Multi-Game Overview Wallpaper (Upcoming Fixtures — V4 Glass Card Standard)
+- **Same-Week Clustering Rule:** Groups **ONLY** matches occurring in the **same week / weekend** (at least 2 games).
+- **Separated Fixtures Exclusion:** If a match in a round is scheduled in a separate week (e.g., played earlier as a *Vorgriffspiel* like Runde 1 on 29.08., or weeks later as a *Nachtragsspiel* / postponed fixture like Runde 4 on 13.10. and Runde 6 on 07.11.), it is **STRICTLY EXCLUDED** from the main round overview. It receives its own dedicated single matchday wallpaper or standalone card later.
+- **Dynamic Layout Adaptation:** When a round overview contains 2 games due to separated fixtures, it automatically adapts to the **2-Game Hero Standard** (both in 1:1 Square and 9:16 Vertical format).
+- **Card Styling & Construction (Medium Sheer Glass):**
+  - Card Dimensions: Width `940px`, Corner Radius `14px`.
+  - Card Fill: Sheer glass tint `RGBA(1, 20, 10, 110)` (Alpha 110 allows stadium lights to show through cleanly).
+  - Card Outline: Subtle green keyline `RGBA(0, 240, 95, 80)`, width `1.2px`.
+  - Vertical Green Accent Bars: Left and right flanking bars in vibrant DSG Green `RGBA(0, 240, 95, 240)`, width `6px`, vertical margin `22px` from top/bottom card edges.
+- **Internal Card Component Layout:**
+  - **Date & Time Pill:** Centered at the top with comfortable padding (`pill_top_offset = 24-25px` in 3-game, `27px` in 2-game). Pill fill `RGBA(0, 0, 0, 160)`, border `RGBA(0, 240, 95, 140)` (`1.2px`), pure white Impact font (`DAY, DD.MM. • HH:MM UHR`).
+  - **Venue / Location:** Centered near the bottom with comfortable padding (`loc_bottom_offset = 36px` in 3-game, `38px` in 2-game) in soft mint green `RGBA(195, 235, 210, 220)`.
+  - **Versus `V`:** Pure solid white (`#FFFFFF`) Impact font, centered between the date pill and location.
+  - **Crests & Team Names:** Crests offset from center (`offset_x = 240px`), with team name directly underneath in uppercase Impact font (`RGBA(255, 255, 255, 240)`), vertically centered relative to the central `V`. Fits even long team names (e.g., `DSG ST. JOSEF / OED`) with ample breathing room.
+- **3-Game Weeks Layout Specifications:**
+  - Card Height: `184px`.
+  - Row Centers: `y = [458, 672, 886]`.
+  - Spacing: `54px` gap below `RUNDE X` title, `30px` gap between cards, `102px` bottom margin.
+  - Crest Size: `98px`, Team Font: `19px` Impact, `V`: `50px`.
+- **2-Game Weeks Layout Specifications (Approved Hero Card Standard):**
+  - Card Height: `216px` (Hero presence for 2-game weeks).
+  - Row Centers: `y = [505, 785]`.
+  - Spacing: `88px` gap below `RUNDE X` title, `70px` gap between cards, `187px` bottom margin.
+  - Crest Size: `112px`, Team Font: `20px` Impact, `V`: `55px`.
 
-### C. Single Game Matchday Wallpaper (V3 Approved)
-- **Header Block:** `SAISON 26/27` + `RUNDE X` centered at `y = 270px`.
-- **Matchup (Center `y = 615px`):** `HOME CREST` (Left, `x = 270px`) — `V` (Center `x = 540px`, Impact font) — `AWAY CREST` (Right, `x = 810px`).
-  - **Equalized Breathing Room:** Mathematically balanced spacing (~165px top gap from `RUNDE X`, ~170px bottom gap to match details).
-- **Match Details (Bottom Info Bar at `y = 915px`):**
-  - Line 1: `TIME, DATE` in format `HH:MM, DD.MM.` or `HH:MM UHR, DD.MM.` (Impact font).
-  - Line 2: `LOCATION` (e.g., `SPORTPLATZ TRAUN`, `DSG-PLATZ`) in Impact font (`y = 949px`).
+### C. Single Game Matchday Wallpaper (Style D Approved — Broadcast Split Ribbon Standard)
+Single matchday wallpapers feature dedicated hero coverage for every match in both **Square (1:1 — 1080 × 1080 px)** and **Vertical Story (9:16 — 1080 × 1920 px)** formats.
 
-### D. Result Wallpaper
-- **Header Block:** `SAISON 26/27` + `RUNDE X` centered at `y = 270px`.
-- **Matchup & Scoreboard (Center `y = 560px`):**
-  - Crests: Left (`x = 270px`), Right (`x = 810px`), height `270px`.
-  - Main Score: Floating bold `X : Y` (or `- : -` for templates) in large Impact font (`120px`), centered at `y = 560px`.
-  - Half-Time Score: `HZ (A:B)` or `HZ (-:-)` placed directly below main score in lighter contrast (`36px`).
-- **Events (Scorers & Cards) — Spine-Aligned Standard (Starts at `y = 725px`):**
-  - **Sorting Order:** **Scorers First, Bookings Last** (Goals ⚽ always at the top of the event list, followed by Yellow Cards 🟨, and finally Red Cards 🟥).
-  - **Home Team (Left):** Player Name first, followed by event icon: `Player Name (Multiplier) [Icon]` (right-aligned towards center spine).
-  - **Away Team (Right):** Event icon first, followed by player name: `[Icon] Player Name (Multiplier)` (left-aligned from center spine).
-  - **Icon Conventions & Colors:**
-    - ⚽ **Goal (Soccer Ball):** Realistic vector football icon (white base circle, central dark pentagon `#191919`, radiating seam lines, 5 outer perimeter dark patches, crisp white outline). Multi-goals use multiplier format: `Player Name (4x) ⚽` or `⚽ Player Name (3x)`.
-    - 🟨 **Yellow Card:** Filled vibrant football card yellow (`#FFCD00` / `RGB(255, 205, 0)`) with rounded corners and a clean subtle white keyline outline (`RGBA(255, 255, 255, 220)`).
-    - 🟥 **Red Card:** Filled vibrant football card red (`#E6232D` / `RGB(230, 35, 45)`) with rounded corners and a clean subtle white keyline outline (`RGBA(255, 255, 255, 220)`).
-- **Bottom Info Bar:** Compact `TIME, DATE` at `y = 915px` and `LOCATION` at `y = 949px` in Impact font.
+#### 1. Square Single Game Wallpaper (1:1 — 1080 × 1080 px):
+- **Top Header Logo:** Centered horizontally at `y = 52px` (`target_w = 280px`). Bounding box: `x = [400, 675]`, `y = [53, 156]`.
+- **Header Title Block:** Centered at `y = 275px`.
+  - Top: `SAISON 26/27` in pure white (`#FFFFFF`) Impact font (`22px`), tracking `3 * SCALE`, flanked by pure white accent lines (`55px` length, `1.5px` height, `14px` gap).
+  - Center Solid Text: `RUNDE X` in solid pure white (`#FFFFFF`), Impact font (`68px`), tracking `4 * SCALE`.
+  - Echo Wireframe Loops: Top and bottom closed outline loops in vibrant DSG Green (`#00f05f`), `60%` slice cut, separated by `6px` gap from solid center text.
+- **Central Broadcast Ribbon:**
+  - Card Dimensions: Width `980px`, Height `340px`, centered at `y = 605px` (`y0 = 435px`, `y1 = 775px`), Corner Radius `18px`.
+  - Material: Sheer glass tint `RGBA(0, 16, 8, 170)` with subtle green keyline outline `RGBA(0, 240, 95, 100)` (`1.5px`).
+  - Angled Green Chevron Divider: Central diagonal slash leaning at `45°` (`width = 14px`, lean `45px`) dividing Home and Away halves in vibrant DSG Green `RGBA(0, 240, 95, 180)`.
+  - 2K Monochrome Crests: Centered vertically at `y = 581px` (`crest_sz = 210px`), Home crest at `x = 270px`, Away crest at `x = 810px`.
+  - Team Names: Neatly centered directly under each crest at `team_y = 731px` in uppercase Impact font (`24px`, `RGBA(255, 255, 255, 240)`).
+  - Center `VS` Badge: Pill badge (`74 × 46px`, radius `6px`) in black `RGBA(0, 0, 0, 240)` with green border `RGBA(0, 240, 95, 240)` (`1.5px`), centered over the diagonal slash with green `VS` text (`28px` Impact).
+- **Lower Broadcast Plate (Kickoff & Location Bar):**
+  - Dimensions: Width `880px`, Height `115px`, Corner Radius `14px`, centered at `y0 = 890px`.
+  - Material: Dark glass tint `RGBA(1, 20, 10, 140)`, green outline `RGBA(0, 240, 95, 90)` (`1.2px`).
+  - Date & Time: `DAY, DD.MM. • HH:MM UHR` in pure white (`#FFFFFF`) Impact font (`26px`) at `y = 912px`.
+  - Location / Venue: Centered below date at `y = 956px` in soft mint green `RGBA(195, 235, 210, 220)` (`22px` Impact).
+
+#### 2. Vertical Single Game Story Wallpaper (9:16 — 1080 × 1920 px):
+- **Safe Zones & Vignette:** Top 0–180px and bottom 1740–1920px story safe zones. Atmospheric vignette falloff at top (0–320px) and bottom (1560–1920px) fading into deep stadium shadow (`#010e07`).
+- **Header Block:** NO top logo (uncluttered headroom). Main Title block centered at `y = 340px`:
+  - `SAISON 26/27` in pure white Impact (`25px`), flanked by white accent lines (`55px` length, `1.5px` height).
+  - `RUNDE X` in solid pure white Impact (`80px`), flanked by top and bottom vibrant green echo outline loops (`#00f05f`).
+- **Central Broadcast Arena:**
+  - Card Dimensions: Width `960px`, Height `640px`, centered at `y = 880px` (`y0 = 560px`, `y1 = 1200px`), Corner Radius `20px`.
+  - Material: Sheer glass tint `RGBA(1, 20, 10, 120)`, green keyline `RGBA(0, 240, 95, 90)` (`1.5px`).
+  - Angled Green Chevron Divider: Central diagonal slash leaning at `45°` (`width = 14px`, lean `55px`) in `RGBA(0, 240, 95, 140)`.
+  - 2K Monochrome Crests & Team Names (Mathematically Centered Group):
+    - Crest Size: Hero size `260px`, Home crest at `cx = 300px`, Away crest at `cx = 780px` (`240px` offset from center).
+    - Team Names: Uppercase Impact font (`28px`, `RGBA(255, 255, 255, 240)`), positioned snugly `20px` directly underneath crests (`team_y = crest_top + crest_sz + 20px`).
+    - Group Centering: The entire Crest + Text stack (`group_h = crest_sz + 20px + text_h`) is vertically centered inside the arena, eliminating dead space.
+  - Center `VS` Badge: Rounded badge (`90 × 54px`, radius `8px`) in black with vibrant green outline (`1.5px`) and green `VS` text (`34px` Impact), centered vertically at `crest_cy`.
+- **Lower Broadcast Info Capsule:**
+  - Dimensions: Width `760px`, Height `120px`, Corner Radius `16px`, centered at `y0 = 1330px`.
+  - Material: Black tint `RGBA(0, 0, 0, 180)`, green outline `RGBA(0, 240, 95, 140)` (`1.2px`).
+  - Date & Time: `DAY, DD.MM. • HH:MM UHR` in pure white Impact (`28px`) at `y = 1352px`.
+  - Location / Venue: Centered below date at `y = 1398px` in soft mint green `RGBA(195, 235, 210, 220)` (`24px` Impact).
+- **Bottom Brand Anchor Logo:** Official white DSG Liga logo (`Wallpapers/Logos/standard/DSGLiga_white.png`) centered horizontally at `y = 1690px`, width `300px`.
+
+#### 3. Standard Production File Naming & Coverage:
+- **Square File Format:** `runde{round}_spiel{idx}_{home_slug}_{away_slug}.png`
+- **Vertical File Format:** `runde{round}_spiel{idx}_{home_slug}_{away_slug}_9_16.png`
+- **Full League Coverage:** All 27 matches across all 9 rounds (3 matches per round) are saved directly into `Wallpapers/Ready/Runde {round}/`.
+
+### D. Result Wallpaper (Option B Approved — Structured Dynamic Arena Standard)
+Single match result wallpapers feature dedicated score and event coverage for finished matches in both **Square (1:1 — 1080 × 1080 px)** and **Vertical Story (9:16 — 1080 × 1920 px)** formats.
+
+#### 1. Square Result Wallpaper (1:1 — 1080 × 1080 px):
+- **Top Header Logo:** Centered horizontally at `y = 52px` (`target_w = 280px`). Bounding box: `x = [400, 675]`, `y = [53, 156]`.
+- **Header Title Block:** Centered at `y = 265px` (guaranteeing a clean **23px clearance** below the logo with ZERO overlap):
+  - Top: `SAISON 26/27` in pure white (`#FFFFFF`) Impact font (`20px`), tracking `3 * SCALE`, flanked by pure white accent lines (`50px` length, `1.5px` height, `14px` gap).
+  - Center Solid Text: `RUNDE X` in solid pure white (`#FFFFFF`), Impact font (`62px`), tracking `4 * SCALE`.
+  - Echo Wireframe Loops: Top and bottom closed outline loops in vibrant DSG Green (`#00f05f`), `60%` slice cut, separated by `6px` gap from solid center text.
+- **Dynamic Glass Arena Card:**
+  - Card Dimensions: Width `980px`, Corner Radius `18px`, centered horizontally (`ar_x0 = 50px`).
+  - Material: Sheer glass tint `RGBA(0, 16, 8, 170)` with subtle green keyline outline `RGBA(0, 240, 95, 95)` (`1.5px`).
+  - Vertical Green Accent Bars: Left and right flanking bars in vibrant DSG Green `RGBA(0, 240, 95, 230)`, width `6px`, vertical margin `22px` from card edges.
+  - Dynamic Height Formula:
+    `arena_h = sb_h (225px) + ev_gap (20px) + (num_rows * line_h (34px)) + bot_pad (22px)`.
+    Positioning: `ar_y0 = 360px` for $\le 3$ rows, `345px` for $\le 6$ rows, and `335px` for $> 6$ rows.
+- **Scoreboard Block (Upper Arena):**
+  - Crests & Team Names: 2K monochrome crests ($160\text{px}$) centered at `cx = 240px` and `cx = 840px` (`crest_cy = ar_y0 + 98px`). Team names directly underneath in uppercase Impact font (`20px`, `RGBA(255, 255, 255, 240)`).
+  - Main Score: Bold floating `X : Y` in pure white Impact font (`114px`), vertically centered with crests.
+  - Half-Time Score: `HZ (A:B)` centered below the main score in soft mint green `RGBA(195, 235, 210, 230)` (`25px` Impact). NO "ENDSTAND" pill text.
+- **Option B Structured Hairlines:**
+  - Horizontal Divider Line: Ultra-thin hairline separating scoreboard from events roster at `y = ar_y0 + sb_h + 6px` in `RGBA(0, 240, 95, 75)` (`1.2px`), with `32px` inset from card edges.
+  - Vertical Spine Hairline: Subtle line down center spine ($x = 540\text{px}$) from horizontal divider to near card bottom in `RGBA(0, 240, 95, 55)` (`1.2px`).
+- **Events Section (Spine-Aligned Standard):**
+  - **Sorting Order:** **Scorers First, Bookings Last** (Goals ⚽ at top, Yellow Cards 🟨 middle, Red Cards 🟥 bottom).
+  - **Goal Multiplier Aggregation:** Multiple goals by a single player are aggregated: `Player Name (3x) ⚽`.
+  - **Home Team (Left):** Player name first, right-aligned towards spine, followed by event icon (`icon_cx = 516px`, `text_rx = 500px`).
+  - **Away Team (Right):** Event icon first (`icon_cx = 564px`), followed by player name left-aligned from spine (`text_lx = 580px`).
+  - **Icon Conventions:**
+    - ⚽ **Goal:** Realistic vector football icon (`soccer_ball_realistic.png`, size `18px`).
+    - 🟨 **Yellow Card:** Filled vibrant yellow (`#FFCD00`, `13 × 18px`, radius `2.5px`) with subtle white keyline outline (`RGBA(255, 255, 255, 230)`).
+    - 🟥 **Red Card:** Filled vibrant red (`#E6232D`, `13 × 18px`, radius `2.5px`) with subtle white keyline outline (`RGBA(255, 255, 255, 230)`).
+- **Lower Broadcast Plate (Kickoff & Location Bar):**
+  - Dimensions: Width `880px`, Height `86px`, Corner Radius `14px`, anchored dynamically at `cap_y0 = ar_y1 + 26px`.
+  - Material: Dark glass tint `RGBA(1, 20, 10, 140)`, green outline `RGBA(0, 240, 95, 90)` (`1.2px`).
+  - Date & Time: `DAY, DD.MM. • HH:MM UHR` in pure white Impact (`24px`).
+  - Location / Venue: Soft mint green `RGBA(195, 235, 210, 220)` (`21px` Impact).
+
+#### 2. Vertical Result Story Wallpaper (9:16 — 1080 × 1920 px):
+- **Safe Zones & Vignette:** Top 0–180px and bottom 1740–1920px story safe zones. Atmospheric vignette falloff at top (0–320px) and bottom (1560–1920px) fading into deep stadium shadow (`#010e07`).
+- **Header Block:** NO top logo (uncluttered headroom). Main Title block centered at `y = 340px`:
+  - `SAISON 26/27` in pure white Impact (`25px`), flanked by white accent lines (`55px` length, `1.5px` height).
+  - `RUNDE X` in solid pure white Impact (`80px`), flanked by top and bottom vibrant green echo outline loops (`#00f05f`).
+- **Dynamic Glass Arena Card:**
+  - Card Dimensions: Width `960px`, Corner Radius `20px`, centered horizontally (`ar_x0 = 60px`).
+  - Material: Sheer glass tint `RGBA(0, 16, 8, 170)` with subtle green keyline outline `RGBA(0, 240, 95, 95)` (`1.5px`).
+  - Vertical Green Accent Bars: Left and right flanking bars in vibrant DSG Green `RGBA(0, 240, 95, 230)`, width `7px`, vertical margin `26px`.
+  - Dynamic Height Formula:
+    `arena_h = sb_h (260px) + ev_gap (22px) + (num_rows * line_h (38px)) + bot_pad (26px)`.
+  - Group Centering: The Arena Card + Lower Plate group (`total_h = arena_h + 32px + 100px`) is mathematically centered in the story safe zone `[440, 1620]` around `mid_y = 1030px`.
+- **Scoreboard Block (Upper Arena):**
+  - Crests & Team Names: 2K monochrome crests ($190\text{px}$) centered at `cx = 240px` and `cx = 840px` (`crest_cy = ar_y0 + 112px`). Team names directly underneath in uppercase Impact font (`22px`, `RGBA(255, 255, 255, 240)`).
+  - Main Score: Bold floating `X : Y` in pure white Impact font (`126px`), vertically centered with crests.
+  - Half-Time Score: `HZ (A:B)` centered below the main score in soft mint green `RGBA(195, 235, 210, 230)` (`27px` Impact).
+- **Option B Structured Hairlines:**
+  - Horizontal Divider Line: At `y = ar_y0 + sb_h + 6px` in `RGBA(0, 240, 95, 75)` (`1.2px`), with `34px` inset from card edges.
+  - Vertical Spine Hairline: Down center spine ($x = 540\text{px}$) in `RGBA(0, 240, 95, 55)` (`1.2px`).
+- **Events Section (Spine-Aligned Standard):**
+  - Same spine-aligned standard with `line_h = 38px`.
+  - Goal icon size `20px`, card size `14 × 20px`, font size `24px` Impact.
+- **Lower Broadcast Plate:**
+  - Dimensions: Width `820px`, Height `100px`, Corner Radius `16px`, anchored at `cap_y0 = ar_y1 + 32px`.
+  - Material: Dark glass tint `RGBA(1, 20, 10, 140)`, green outline `RGBA(0, 240, 95, 90)` (`1.2px`).
+  - Date & Time: `DAY, DD.MM. • HH:MM UHR` in pure white Impact (`26px`).
+  - Location / Venue: Soft mint green `RGBA(195, 235, 210, 220)` (`23px` Impact).
+- **Bottom Brand Anchor Logo:** Official white DSG Liga logo (`Wallpapers/Logos/standard/DSGLiga_white.png`) centered horizontally at `y = 1690px`, width `300px`.
+
+### E. Vertical Multi-Game Overview Wallpaper (9:16 Story Format — 1080 × 1920 px)
+- **Format & Platforms:** 1080 × 1920 px (9:16 vertical), designed specifically for Instagram Stories, WhatsApp Status, and TikTok.
+- **Mobile Story Safe Zones:**
+  - Top Safe Zone (0–180 px): Reserved for app profile headers, handles, and story progress bars.
+  - Bottom Safe Zone (1740–1920 px): Reserved for direct message inputs, reactions, and share controls.
+  - Background Scaling: Scaled to cover 1080 × 1920 px with smooth atmospheric vignette falloff at top (0–320 px) and bottom (1560–1920 px) fading into deep stadium shadow (`#010e07`).
+- **Same-Week Clustering & Split Round Standard:**
+  - Vertical overviews include **ONLY** matches played in the same week/weekend (at least 2 games).
+  - Any fixture played earlier (*Vorgriffspiel*) or later (*Nachtragsspiel*) in a separate week (Runde 1 on 29.08., Runde 4 on 13.10., Runde 6 on 07.11.) is **strictly excluded** from the vertical multi-game overview and receives its own standalone single-match graphic later.
+  - All split-week rounds automatically adapt to the **2-Game Hero Standard (Option D)**.
+- **Header Block (No Top Logo Standard):**
+  - NO header logo at the top (gives clean, uncluttered headroom and prevents overlap with story profile UIs).
+  - Main Title Block centered at `y = 350px`:
+    - Top: `SAISON 26/27` in pure white (`#FFFFFF`) Impact font (`25px`), tracking `3 * SCALE`, flanked by pure white accent lines (`55px` length, `1.5px` height, `12px` gap).
+    - Center Solid Text: `RUNDE X` in pure white Impact font (`80px`), tracking `4 * SCALE`.
+    - Echo Wireframe Loops: Top and bottom outline loops in vibrant DSG Green (`#00f05f`), closed loops, `60%` slice cut, `6px` gap from solid text.
+- **Card Styling & Construction (Medium Sheer Glass):**
+  - Card Fill: Sheer glass tint `RGBA(1, 20, 10, 115)`.
+  - Card Outline: Subtle green keyline `RGBA(0, 240, 95, 90)`, width `1.2px`.
+  - Vertical Green Accent Bars: Left and right flanking bars in vibrant DSG Green `RGBA(0, 240, 95, 240)`.
+  - Date & Time Pill: Centered top in `RGBA(0, 0, 0, 160)` with green border `RGBA(0, 240, 95, 140)`.
+  - Venue / Location: Centered bottom in soft mint green `RGBA(195, 235, 210, 220)`.
+  - Versus `V`: Pure white Impact font centered.
+  - Crests & Team Names: Monochrome crests with team name directly underneath in uppercase Impact font.
+- **3-Game Weeks Layout Specifications (Approved Option B Standard):**
+  - Card Dimensions: Width `950px`, Height `255px`, Corner Radius `16px`.
+  - Side Accent Bars: Width `6px`, vertical margin `26px`.
+  - Row Centers: `y = [710, 1040, 1370]`.
+  - Spacing: `105px` gap below title block, `75px` gap between cards.
+  - Crest Size: `122px`, Team Font: `22px` Impact, `V`: `62px`.
+  - Date Pill: Top offset `32px`, font `23px` Impact.
+  - Location: Bottom offset `44px`, font `23px` Impact.
+  - Bottom Anchor Logo: Centered at `y = 1700px`, target width `290px`.
+- **2-Game Weeks Layout Specifications (Approved Option D Hero Standard):**
+  - Card Dimensions: Width `960px`, Height `305px`, Corner Radius `18px`.
+  - Side Accent Bars: Width `7px`, vertical margin `30px`.
+  - Row Centers: `y = [780, 1230]`.
+  - Spacing: `125px` gap below title block, `145px` gap between cards.
+  - Crest Size: `140px`, Team Font: `23px` Impact, `V`: `68px`.
+  - Date Pill: Top offset `38px`, font `24px` Impact.
+  - Location: Bottom offset `50px`, font `24px` Impact.
+  - Bottom Anchor Logo: Centered at `y = 1690px`, target width `300px`.
+- **Bottom Anchor Logo Specifications:**
+  - File: `Wallpapers/Logos/standard/DSGLiga_white.png`.
+  - Replaces bottom pills to act as a solid official brand anchor.
 
 ---
 
@@ -88,6 +259,7 @@ For each round (e.g. Runde 4, 5, 6, 7, 8...), the following wallpaper types are 
 1. **Strict Destination Gate:** All working drafts, newly generated wallpapers, PNG previews, and work-in-progress `.psd` files MUST remain in `Wallpapers/Test/`.
 2. **Never Save to `Ready/` or `Templates/` Prematurely:** Do NOT write or move files into `Wallpapers/Ready/` or `Wallpapers/Templates/` until the user explicitly says the draft is approved and ready.
 3. **Automated Visual Self-Testing:** Always inspect and verify generated outputs with high-res comparison sheets before presenting them to the user.
+4. **No PSD Files in `Ready/` Standard:** NEVER save `.psd` files into `Wallpapers/Ready/` or its round subfolders. The `Ready/` directory is reserved exclusively for production-ready PNG image assets and `.txt` captions. Master PSD files belong strictly in `Wallpapers/Test/` or generation templates.
 
 ---
 
@@ -140,6 +312,43 @@ For each round (e.g. Runde 4, 5, 6, 7, 8...), the following wallpaper types are 
 - **Intelligent Category Mapping:**
   - Public position filter buttons (`Torwart`, `Abwehr`, `Mittelfeld`, `Sturm`) use `getPlayerPositionCategory()` to map all respective subpositions automatically.
 
+---
 
+## 11. Human Copywriting & Social Voice (Avoid AI Writing Standard)
+- **Strict Prohibition of AI-isms & Robotic Boilerplate:**
+  - Never use hollow intensifiers or generic AI marketing clichés (e.g. *"Torfeuerwerk"*, *"Hochspannung pur"*, *"Packende Duelle"*, *"Ein torreiches Wochenende liegt hinter uns"*, *"Testament to"*, *"Fostering"*).
+  - Avoid AI formatting artifacts: excessive emoji-stacking, bullet-heavy over-explanations, hollow rule-of-three phrasing, or artificial hype.
+- **Authentic Football Tone:**
+  - Write direct, punchy, grounded captions that read like a real local football club admin or league organizer.
+  - Present scorelines, goalscorers, and match dates clearly and plainly.
+  - Deliver stats and facts as concrete, genuine observations rather than exaggerated marketing copy.
+- **Mandatory Social Text File Export:**
+  - Every round's social media text / caption MUST always be exported as a UTF-8 `.txt` file (`rundeX_caption.txt` or `caption.txt`) directly into the round's directory (both in `Wallpapers/Test/` during drafting and `Wallpapers/Ready/Runde X/` upon final approval).
+  - Allows instant copy-pasting alongside image assets.
 
+---
+
+## 12. DSGVO & Austrian TKG 2021 Privacy Standards
+- **Two-Tier Consent Architecture:**
+  - Strictly no tracking cookies or Google Analytics (`gtag.js` / `G-JLXYJPG360`) are executed or loaded before the user provides explicit opt-in consent.
+  - Rejection ("Nur notwendige") immediately disables non-essential storage and keeps Google Analytics completely deactivated without nagging.
+  - Dedicated privacy view (`#/datenschutz`) provides transparent declarations compliant with Austrian DSGVO & TKG 2021, including a live interactive consent status widget allowing users to change or revoke consent at any time.
+- **Zero-Layout Shift Responsive Navigation:**
+  - Dynamic responsive breakpoint ensures that navigation links never break into two awkward rows; it collapses seamlessly into the full slide-out drawer burger menu whenever viewport width constrains the horizontal pill links.
+  - Standard navigation order: `Home`, `Liga`, `Teams`, `Spieler`, `Statistiken`, `News`, `Galerie`, `Organisation`, `Verwaltung`.
+  - Standard admin tab order: `Spiele`, `Spielrunden`, `Ligen verwalten`, `Teams verwalten`, `Spieler verwalten`, `News verwalten`, `Galerie verwalten`.
+
+---
+
+## 13. Data Store, Cloud Synchronization & Lossless Persistence Standards
+- **Authoritative Firestore Cloud Synchronization:**
+  - Firestore document `system/liga_data` serves as the authoritative real-time database.
+  - Static fallback `Website/data/liga.json` is always maintained in sync as an offline/initial seed repository.
+- **Lossless Match Synchronization Rule:**
+  - When synchronizing data between cloud and local storage or saving scores via admin, `deduplicateMatches([...targetSeason.matches, ...memSeason.matches])` must ALWAYS be applied.
+  - A played match with recorded scores, scorers, or cards must NEVER be overwritten or dropped by an unplayed placeholder (`-:-`).
+- **Dynamic Season Fallback Mandate:**
+  - NEVER hardcode obsolete season strings (e.g. `'2022/2023'`) in admin views or form handlers. Always resolve dynamically via `(Store.getData()?.currentSeason || '2026/2027')`.
+- **Cache-Busting & LocalStorage Keys:**
+  - Any architectural schema or data updates must systematically increment the localStorage version key (`dsg_data_vXX`, current: `v89`) and bump the query parameter on `Website/index.html` (`main.js?v=...`) to prevent stale browser cache collisions across clients.
 
