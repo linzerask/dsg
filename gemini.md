@@ -14,6 +14,7 @@ This document serves as the persistent memory and operational guideline for all 
   - NEVER use flat linear tint overlays or raw semi-transparent blocks over photos.
   - NEVER use muddy or washed-out green shades.
   - NEVER stretch or distort images when fitting to square aspect ratios. Always crop proportionally with visual centering.
+  - NEVER add match minutes (e.g., `24.`, `61.`, `(74.)`) for goals, cards, or social media captions — match minutes are never tracked or recorded in the DSG Liga!
 
 ---
 
@@ -235,9 +236,50 @@ Single match result wallpapers feature dedicated score and event coverage for fi
   - Date Pill: Top offset `38px`, font `24px` Impact.
   - Location: Bottom offset `50px`, font `24px` Impact.
   - Bottom Anchor Logo: Centered at `y = 1690px`, target width `300px`.
-- **Bottom Anchor Logo Specifications:**
-  - File: `Wallpapers/Logos/standard/DSGLiga_white.png`.
-  - Replaces bottom pills to act as a solid official brand anchor.
+### F. "In Zahlen" Matchday Statistics Suite (Style 3 Approved — Editorial Split-Ribbon Standard)
+Round statistics and records graphics feature 6 genuine matchday facts across both **Square Carousel (1:1 — 1080 × 1080 px)** and **Vertical Story (9:16 — 1080 × 1920 px)** formats.
+
+#### 1. Format Architecture & Coverage:
+- **Square (1:1) Carousel Suite (2 Slides, 3 facts each):**
+  - **Slide A:** Subtitle Tag `IN ZAHLEN` (Facts 1–3: high-impact scorelines, goal averages, hattricks).
+  - **Slide B:** Subtitle Tag `IN ZAHLEN` (Facts 4–6: derby booking stats, clean sheets, match-winning goals, offensive depth).
+- **Vertical Story (9:16) All-in-One Story:**
+  - All 6 facts cleanly stacked in a single story graphic within mobile safe zones (`0–180px` top and `1740–1920px` bottom).
+  - Subtitle Tag: `IN ZAHLEN` in pure white (`#FFFFFF`) with pure white flanking accent lines.
+
+#### 2. Typographic Triad & Header Standards:
+- **Square (1:1) Header:**
+  - Top Header Logo: Centered horizontally at `y = 52px` (`target_w = 280px`). Bounding box: `x = [400, 675]`, `y = [53, 156]`.
+  - Title Center: `y = 250px`.
+  - Top: `SAISON 26/27` in pure white Impact (`19px`), tracking `3 * SCALE`, flanked by pure white accent lines (`45px` length, `1.5px` height, `12px` gap).
+  - Center Solid Text: `RUNDE X` in solid pure white Impact (`58px`), tracking `4 * SCALE`.
+  - Echo Wireframe Loops: Top and bottom closed outline loops in vibrant DSG Green (`#00f05f`), `60%` slice cut, `6px` gap from solid center text.
+  - Bottom Subtitle Tag: `IN ZAHLEN` in pure white (`#FFFFFF`) Impact font (`20px`), tracking `3 * SCALE`, flanked by pure white accent lines (`60px` length, `1.5px` height, `12px` gap).
+- **Vertical Story (9:16) Header:**
+  - NO top header logo (uncluttered headroom).
+  - Title Center: `y = 255px`.
+  - Top: `SAISON 26/27` in pure white Impact (`21px`), tracking `3 * SCALE`, flanked by pure white accent lines (`50px` length, `1.5px` height, `12px` gap).
+  - Center Solid Text: `RUNDE X` in solid pure white Impact (`68px`), tracking `4 * SCALE`.
+  - Echo Wireframe Loops: Top and bottom closed outline loops in vibrant DSG Green (`#00f05f`), `60%` slice cut, `6px` gap from solid center text.
+  - Bottom Subtitle Tag: `IN ZAHLEN` in pure white (`#FFFFFF`) Impact font (`21px`), tracking `3 * SCALE`, flanked by pure white accent lines (`60px` length, `1.5px` height, `12px` gap).
+  - Bottom Brand Anchor Logo: Official white DSG Liga logo centered at `y = 1690px`, width `300px`.
+
+#### 3. Card Styling & Split-Ribbon Construction:
+- **Card Geometry & Materials:**
+  - **Square:** Width `960px`, Height `184px`, Corner Radius `16px`. Rows at `y0 = [375, 580, 785]`.
+  - **Vertical:** Width `960px`, Height `168px`, Corner Radius `16px`, `20px` gap between cards. Starts at `y0 = 405px`.
+  - **Material:** Dark sheer glass tint `RGBA(0, 16, 8, 165)` with subtle green outline `RGBA(0, 240, 95, 95)` (`1.5px`).
+  - **Angled Green Divider Slash:** Central diagonal slash leaning at `45°` dividing hero stat bay from narrative text in vibrant DSG Green `RGBA(0, 240, 95, 130)`.
+- **Internal Bay Composition:**
+  - **Left Hero Stat Bay:**
+    - Hero Number: Bold pure white Impact font (`80px` Square, `74px` Vertical).
+    - Event Icons: Realistic football icon (`28px`) or structured yellow & red card badges (`15 × 22px`).
+  - **Right Narrative Bay:**
+    - Category Title: Vibrant DSG Green (`#00f05f`) uppercase Impact font (`30px` Square, `28px` Vertical).
+    - Main Description: Pure white (`RGBA(255, 255, 255, 245)`) uppercase Impact font (`21px` Square, `20px` Vertical).
+    - Subtext / Detail: Soft mint green (`RGBA(195, 235, 210, 220)`) uppercase Impact font (`18px` Square, `17px` Vertical).
+    - Monochrome Crest: 2K monochrome vector crest enlarged to **`80px` (Square)** and **`65px` (Vertical)** on the right side with ample margin clearance.
+- **Footer:** `DSG-FUSSBALL.COM` centered horizontally at `y = 1030px` in square graphics.
 
 ---
 
@@ -351,4 +393,15 @@ Single match result wallpapers feature dedicated score and event coverage for fi
   - NEVER hardcode obsolete season strings (e.g. `'2022/2023'`) in admin views or form handlers. Always resolve dynamically via `(Store.getData()?.currentSeason || '2026/2027')`.
 - **Cache-Busting & LocalStorage Keys:**
   - Any architectural schema or data updates must systematically increment the localStorage version key (`dsg_data_vXX`, current: `v89`) and bump the query parameter on `Website/index.html` (`main.js?v=...`) to prevent stale browser cache collisions across clients.
+
+---
+
+## 14. Performance & Zero-Freeze Loading Standards
+- **Global Transition Loader (`#dsg-global-loader`):**
+  - Features a frosted glassmorphism card with dual emerald-green spinner ring (`#00b341` / `#24b262`) and localized German status copy (*„Wird geladen...“*, *„Saison wird geladen...“*).
+  - Matches both Light Mode and Dark Mode automatically.
+- **Frame-Yielding Architecture (Zero Main-Thread Freezes):**
+  - In `router.js` and `liga.js`, transitions trigger `showLoader()` immediately in 0ms and yield to the browser's paint engine using `requestAnimationFrame` before initiating heavy DOM rendering (e.g. recalculating standings, hundreds of players, or historical seasons).
+  - Eliminates the 1-2 second unresponsive freezing sensation across navigation and league dropdown switches.
+
 

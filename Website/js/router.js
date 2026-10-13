@@ -1,6 +1,6 @@
 import { viewHome, bindHome } from './views/home.js?v=1791305000000';
 import { viewNews, bindNews } from './views/news.js?v=1791305000000';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1791305000000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1791930000000';
 import { viewSpieler, bindSpieler } from './views/spieler.js?v=1791305000000';
 import { viewTeams, bindTeams } from './views/teams.js?v=1791305000000';
 import { viewArchiv } from './views/simpleViews.js?v=1791305000000';
@@ -62,6 +62,24 @@ export const Router = {
   scrollPositions: new Map(),
   isPopState: false,
   isNavigating: false,
+
+  showLoader(title = 'Wird geladen', subtitle = 'DSG Liga Diözese Linz') {
+    const loader = document.getElementById('dsg-global-loader');
+    if (!loader) return;
+    const titleText = loader.querySelector('.dsg-loader-title-text');
+    const subText = loader.querySelector('.dsg-loader-subtitle');
+    if (titleText) titleText.textContent = title;
+    if (subText) subText.textContent = subtitle;
+    loader.classList.add('is-active');
+    loader.setAttribute('aria-hidden', 'false');
+  },
+
+  hideLoader() {
+    const loader = document.getElementById('dsg-global-loader');
+    if (!loader) return;
+    loader.classList.remove('is-active');
+    loader.setAttribute('aria-hidden', 'true');
+  },
   
   init() {
     if ('scrollRestoration' in history) {
@@ -113,14 +131,38 @@ export const Router = {
     
     const app = document.getElementById('app');
     const floatingNav = document.querySelector('.floating-nav');
+
+    const titleMap = {
+      '/': 'Home',
+      '/news': 'News',
+      '/liga': 'Liga',
+      '/statistiken': 'Statistiken',
+      '/teams': 'Teams',
+      '/vereine': 'Teams',
+      '/spieler': 'Spieler',
+      '/kader': 'Spieler',
+      '/organisation': 'Organisation',
+      '/galerie': 'Galerie',
+      '/archiv': 'Archiv',
+      '/admin': 'Verwaltung',
+      '/article': 'News',
+      '/impressum': 'Impressum',
+      '/datenschutz': 'Datenschutz'
+    };
+    const pageTitle = titleMap[path] || 'Home';
     
     const renderNewView = () => {
       this.currentPath = path;
       this.currentRawPath = rawPath;
       document.body.classList.remove('no-scroll');
       document.documentElement.classList.remove('no-scroll');
-      app.innerHTML = route.render();
-      if(route.bind) route.bind();
+      
+      try {
+        app.innerHTML = route.render();
+        if(route.bind) route.bind();
+      } catch(err) {
+        console.error("View rendering error:", err);
+      }
       
       // Clean up any detached admin modals on body when leaving admin
       if (path !== '/admin') {
@@ -133,25 +175,9 @@ export const Router = {
       });
 
       // Update document title
-      const titleMap = {
-        '/': 'Home',
-        '/news': 'News',
-        '/liga': 'Liga',
-        '/statistiken': 'Statistiken',
-        '/organisation': 'Organisation',
-        '/galerie': 'Galerie',
-        '/archiv': 'Archiv',
-        '/admin': 'Admin',
-        '/article': 'News',
-        '/impressum': 'Impressum',
-        '/datenschutz': 'Datenschutz'
-      };
-      const pageTitle = titleMap[path] || 'Home';
       document.title = `${pageTitle} | DSG Fussball Diözese Linz`;
 
       // Handle Scroll Position:
-      // If navigating back/forward (popstate) and position was saved, restore it.
-      // Otherwise, always reset scroll cleanly to the top (0, 0).
       const wasPopState = this.isPopState;
       const targetScrollY = (wasPopState && this.scrollPositions.has(rawPath)) 
         ? this.scrollPositions.get(rawPath) 
@@ -170,6 +196,9 @@ export const Router = {
       // Ensure floating nav is visible on new page load
       floatingNav?.classList.remove('nav-hidden');
 
+      // Dismiss loader
+      this.hideLoader();
+
       // Clean, reliable page entry animation (only on user navigation, silent on background refresh)
       if (!isDataRefresh && typeof anime !== 'undefined') {
         anime({
@@ -182,24 +211,12 @@ export const Router = {
       }
     };
 
-    // Animate out if content exists and it's not a background data refresh
+    // User navigation: show loader instantly and yield frame so browser paints it before doing heavy render
     if (app.children.length > 0 && !isDataRefresh && this.currentPath !== path) {
-      let isDone = false;
-      const done = () => {
-        if (!isDone) {
-          isDone = true;
-          renderNewView();
-        }
-      };
-      anime({
-        targets: app.children,
-        opacity: [1, 0],
-        translateY: [0, 15],
-        duration: 180,
-        easing: 'easeInCubic',
-        complete: done
+      this.showLoader('Wird geladen', `${pageTitle} • DSG Liga`);
+      requestAnimationFrame(() => {
+        setTimeout(renderNewView, 50);
       });
-      setTimeout(done, 220);
     } else {
       renderNewView();
     }

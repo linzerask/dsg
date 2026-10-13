@@ -4085,5 +4085,152 @@ main {
   }
 }
 
+/* ============================================================
+   DSG GLOBAL ROUTE & LEAGUE TRANSITION LOADER (SLEEK PILL)
+   ============================================================ */
+.dsg-global-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.40);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
+.dsg-global-loader.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
 
+.dsg-loader-pill {
+  position: relative;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1.5px solid rgba(0, 179, 65, 0.35);
+  border-radius: var(--border-radius-pill, 999px);
+  padding: 10px 22px 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 250px;
+  max-width: 360px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12), 0 0 20px rgba(0, 179, 65, 0.12);
+  transform: scale(0.95) translateY(4px);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dsg-global-loader.is-active .dsg-loader-pill {
+  transform: scale(1) translateY(0);
+}
+
+[data-theme="dark"] .dsg-loader-pill {
+  background: rgba(8, 20, 12, 0.94);
+  border: 1.5px solid rgba(0, 240, 95, 0.4);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65), 0 0 24px rgba(0, 240, 95, 0.18);
+}
+
+.dsg-loader-icon-box {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(0, 179, 65, 0.08);
+}
+
+[data-theme="dark"] .dsg-loader-icon-box {
+  background: rgba(0, 240, 95, 0.1);
+}
+
+.dsg-loader-ring {
+  position: absolute;
+  inset: 0;
+  border: 2.5px solid rgba(0, 179, 65, 0.15);
+  border-top-color: var(--color-accent, #00b341);
+  border-right-color: #24b262;
+  border-radius: 50%;
+  animation: dsgSpinnerRotate 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+[data-theme="dark"] .dsg-loader-ring {
+  border-color: rgba(0, 240, 95, 0.16);
+  border-top-color: #00f05f;
+  border-right-color: #24b262;
+}
+
+.dsg-loader-svg-ball {
+  width: 17px;
+  height: 17px;
+  stroke: var(--color-accent, #00b341);
+  animation: dsgBallPulse 1.6s ease-in-out infinite;
+}
+
+[data-theme="dark"] .dsg-loader-svg-ball {
+  stroke: #00f05f;
+}
+
+.dsg-loader-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dsg-loader-title {
+  font-family: var(--font-primary, system-ui);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: 0.2px;
+  line-height: 1.2;
+}
+
+.dsg-loader-dots::after {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  text-align: left;
+  animation: dsgLoadingDots 1.4s steps(4, end) infinite;
+}
+
+.dsg-loader-subtitle {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--color-text-secondary);
+  opacity: 0.85;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+@keyframes dsgSpinnerRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes dsgBallPulse {
+  0%, 100% { transform: scale(0.92); opacity: 0.85; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes dsgLoadingDots {
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
+}

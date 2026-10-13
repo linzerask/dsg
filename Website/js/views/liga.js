@@ -969,11 +969,20 @@ export function bindLigaTabs() {
 
     options.forEach(opt => {
       opt.addEventListener('click', (e) => {
-        const selectedValue = e.currentTarget.dataset.value || e.target.dataset.value;
+        const targetEl = e.currentTarget || e.target;
+        const selectedValue = targetEl.dataset.value;
+        const selectedLabel = (targetEl.textContent || '').trim();
         optionsWrapper.classList.remove('open');
         if (selectedValue && currentViewSeason !== selectedValue) {
           currentViewSeason = selectedValue;
-          window.dispatchEvent(new CustomEvent('data-updated'));
+          if (window.Router?.showLoader) {
+            window.Router.showLoader('Saison wird geladen', selectedLabel || 'DSG Liga');
+          }
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              window.dispatchEvent(new CustomEvent('data-updated'));
+            }, 60);
+          });
         }
       });
     });
