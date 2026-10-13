@@ -129,7 +129,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1791182000000';
+const DATA_VERSION_STRING = '?v=1791920000000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -428,7 +428,7 @@ export const Store = {
     // Clear all obsolete cache versions
     try {
       for (let i = 1; i <= 100; i++) {
-        if (i !== 88) localStorage.removeItem(`dsg_data_v${i}`);
+        if (i !== 89) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 38) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 27) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 13) localStorage.removeItem(`dsg_admin_players_v${i}`);
@@ -439,7 +439,7 @@ export const Store = {
     } catch(e) {}
 
     // Eagerly load synchronous local memory into shared singleton
-    state.memoryData = loadLocal('dsg_data', 88);
+    state.memoryData = loadLocal('dsg_data', 89);
     state.memoryNews = loadLocal('dsg_articles', 38) || sortArticles([...(INITIAL_DATA.news || [])]);
     state.memoryGallery = loadLocal('dsg_gallery', 27) || INITIAL_DATA.gallery || [];
 
@@ -488,7 +488,7 @@ export const Store = {
         });
         if (!fileLiga.currentSeason) fileLiga.currentSeason = "2026/2027";
         state.memoryData = fileLiga;
-        trySetLocal('dsg_data_v88', JSON.stringify(fileLiga));
+        trySetLocal('dsg_data_v89', JSON.stringify(fileLiga));
       }
 
       if (fileLeagues && (!localLeagues || localLeagues.length === 0)) {
@@ -566,7 +566,7 @@ export const Store = {
     const roundsRef = doc(db, 'system', 'rounds_data');
 
     try {
-      const withTimeout = (promise, ms = 4000) => {
+      const withTimeout = (promise, ms = 8000) => {
         return Promise.race([
           promise,
           new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), ms))
@@ -577,7 +577,7 @@ export const Store = {
         Promise.all([
           getDoc(dataRef), getDoc(newsRef), getDoc(galleryRef), getDoc(leagueRef), getDoc(roundsRef)
         ]),
-        4000
+        8000
       ).catch(() => [ { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false } ]);
 
       let needsMigration = false;
@@ -589,7 +589,7 @@ export const Store = {
       if (dataSnap.exists() && dataSnap.data()?.data) {
         const fbData = dataSnap.data().data;
         const fbTime = dataSnap.data().lastUpdated || fbData.lastUpdated || 0;
-        const localData = loadLocal('dsg_data', 88);
+        const localData = loadLocal('dsg_data', 89);
         const localTime = localData?.lastUpdated || 0;
         
         let targetData = (localTime > fbTime && localData && localData.seasons) ? localData : fbData;
@@ -601,7 +601,7 @@ export const Store = {
           needsMigration = true;
         }
 
-        // Ensure canonical memory seasons exist in targetData
+        // Ensure canonical memory seasons exist in targetData and merge played matches
         if (state.memoryData && state.memoryData.seasons) {
           Object.keys(state.memoryData.seasons).forEach(sKey => {
             const memSeason = state.memoryData.seasons[sKey];
@@ -609,6 +609,13 @@ export const Store = {
             if (!targetSeason || (!targetSeason.matches?.length && memSeason?.matches?.length) || (!targetSeason.teams?.length && memSeason?.teams?.length)) {
               targetData.seasons[sKey] = memSeason;
               needsMigration = true;
+            } else if (memSeason?.matches?.length && targetSeason?.matches?.length) {
+              // Lossless match merge: ensure played matches from either source are preserved
+              const mergedMatches = deduplicateMatches([...targetSeason.matches, ...memSeason.matches]);
+              if (JSON.stringify(mergedMatches) !== JSON.stringify(targetSeason.matches)) {
+                targetSeason.matches = mergedMatches;
+                needsMigration = true;
+              }
             }
           });
         }
@@ -638,7 +645,7 @@ export const Store = {
         const targetLigaStr = JSON.stringify(targetData?.seasons || {});
         if (currentLigaStr !== targetLigaStr) {
           state.memoryData = targetData;
-          trySetLocal('dsg_data_v88', JSON.stringify(targetData));
+          trySetLocal('dsg_data_v89', JSON.stringify(targetData));
           hasLigaUpdates = true;
         }
 
@@ -646,9 +653,7 @@ export const Store = {
           await setDoc(dataRef, { data: targetData, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (liga):", e));
         }
       } else {
-        if (state.memoryData && state.memoryData.seasons && Object.keys(state.memoryData.seasons).length > 0) {
-          await setDoc(dataRef, { data: state.memoryData, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (liga):", e));
-        }
+        console.warn("Firestore liga_data not available or offline; preserving local memory without overwrite.");
       }
 
       // Sync News - authoritative timestamp comparison
@@ -852,7 +857,7 @@ export const Store = {
         await setDoc(galleryRef, { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v88', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_data_v89', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v38', JSON.stringify(state.memoryNews));
       trySetLocal('dsg_gallery_v27', JSON.stringify(state.memoryGallery));
 
@@ -888,7 +893,7 @@ export const Store = {
     }
     const cleanData = deepSanitize(data);
     state.memoryData = cleanData;
-    trySetLocal('dsg_data_v88', JSON.stringify(cleanData));
+    trySetLocal('dsg_data_v89', JSON.stringify(cleanData));
     setDoc(doc(db, 'system', 'liga_data'), { data: cleanData, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },

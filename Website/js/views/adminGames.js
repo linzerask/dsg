@@ -850,7 +850,7 @@ const updateTeamsForSelectedRound = () => {
     const homeSelect = document.getElementById('input-game-home');
     const awaySelect = document.getElementById('input-game-away');
     const selectedOpt = roundSelect?.selectedOptions[0];
-    const sKey = selectedOpt?.getAttribute('data-season-key') || (Store.getData()?.currentSeason || '2022/2023');
+    const sKey = selectedOpt?.getAttribute('data-season-key') || (Store.getData()?.currentSeason || '2026/2027');
 
     const seasonTeams = Store.getLiga(sKey);
     let teamsToDisplay = [];
@@ -927,7 +927,7 @@ const populateFilterAndFormDropdowns = () => {
                 label, 
                 roundNr: parseInt(r.runde, 10) || 0, 
                 full: `${r.runde}. Runde`, 
-                seasonKey: r.seasonKey || (Store.getData()?.currentSeason || '2022/2023'), 
+                seasonKey: r.seasonKey || (Store.getData()?.currentSeason || '2026/2027'), 
                 id: r.id,
                 leagueName,
                 year: cleanYear
@@ -942,9 +942,9 @@ const populateFilterAndFormDropdowns = () => {
                 label: g.round, 
                 roundNr: g.roundNr || parseInt(String(g.round).replace(/\D/g, ''), 10) || 0, 
                 full: g.round, 
-                seasonKey: g.seasonKey || (Store.getData()?.currentSeason || '2022/2023'),
+                seasonKey: g.seasonKey || (Store.getData()?.currentSeason || '2026/2027'),
                 leagueName: 'DSG Liga',
-                year: '2022/2023'
+                year: (Store.getData()?.currentSeason || '2026/2027')
             });
         }
     });
@@ -979,7 +979,7 @@ const populateFilterAndFormDropdowns = () => {
             modalRoundSelect.innerHTML = '<option value="" disabled selected>Keine aktive Spielrunde verfügbar</option>';
         } else {
             modalRoundSelect.innerHTML = activeRoundsList.map(r => `
-                <option value="${r.full}" data-season-key="${r.seasonKey || (Store.getData()?.currentSeason || '2022/2023')}" data-round-id="${r.id || ''}">${r.label || r.full}</option>
+                <option value="${r.full}" data-season-key="${r.seasonKey || (Store.getData()?.currentSeason || '2026/2027')}" data-round-id="${r.id || ''}">${r.label || r.full}</option>
             `).join('');
         }
         modalRoundSelect.onchange = updateTeamsForSelectedRound;
@@ -1112,7 +1112,7 @@ const openEditGameModal = (idx) => {
             const opt = document.createElement('option');
             opt.value = match.round;
             opt.text = match.round;
-            opt.setAttribute('data-season-key', match.seasonKey || '2022/2023');
+            opt.setAttribute('data-season-key', match.seasonKey || (Store.getData()?.currentSeason || '2026/2027'));
             opt.selected = true;
             roundSelect.appendChild(opt);
         }
@@ -1158,7 +1158,7 @@ const deleteGame = (idx) => {
         return;
     }
 
-    const targetSeasonKey = match.seasonKey || (Store.getData()?.currentSeason || '2022/2023');
+    const targetSeasonKey = match.seasonKey || (Store.getData()?.currentSeason || '2026/2027');
 
     if (confirm(`Möchten Sie das Spiel "${match.home} vs. ${match.away}" wirklich löschen?`)) {
         Store.deleteMatch(targetSeasonKey, match.id, match);
@@ -1199,7 +1199,7 @@ const saveGameForm = (e) => {
 
     const roundSelect = document.getElementById('input-game-round');
     const selectedRoundOpt = roundSelect?.selectedOptions[0];
-    const targetSeasonKey = selectedRoundOpt?.getAttribute('data-season-key') || (Store.getData()?.currentSeason || '2022/2023');
+    const targetSeasonKey = selectedRoundOpt?.getAttribute('data-season-key') || (Store.getData()?.currentSeason || '2026/2027');
 
     // Strict active league guard
     const matchingLeague = (leaguesData || []).find(l => 
@@ -1215,7 +1215,7 @@ const saveGameForm = (e) => {
 
     let existingMatch = editingMatchId !== null ? Store.getMatch(targetSeasonKey, editingMatchId) : null;
     if (!existingMatch && editingMatchId !== null) {
-        existingMatch = Store.getMatch(Store.getData()?.currentSeason || '2022/2023', editingMatchId);
+        existingMatch = Store.getMatch(Store.getData()?.currentSeason || '2026/2027', editingMatchId);
     }
 
     const matchData = {
