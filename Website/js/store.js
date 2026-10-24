@@ -1563,6 +1563,142 @@ export const Store = {
     this.saveData(data);
   },
 
+  getTeamCancellations(matches) {
+    const counts = {};
+    (matches || []).forEach(m => {
+      const st = String(m.status || '').trim();
+      const sc = String(m.score || '').trim();
+      if (m.canceledBy) {
+        const t = String(m.canceledBy).trim();
+        counts[t] = (counts[t] || 0) + 1;
+      } else if (st === 'Abgesagt 3:0' || sc === '3:0 Abgesagt') {
+        if (m.away) {
+          const t = String(m.away).trim();
+          counts[t] = (counts[t] || 0) + 1;
+        }
+      } else if (st === 'Abgesagt 0:3' || sc === '0:3 Abgesagt') {
+        if (m.home) {
+          const t = String(m.home).trim();
+          counts[t] = (counts[t] || 0) + 1;
+        }
+      }
+    });
+    return counts;
+  },
+
+  getHeadToHead(teamA, teamB, matches) {
+    const normA = String(teamA || '').trim().toLowerCase();
+    const normB = String(teamB || '').trim().toLowerCase();
+    if (!normA || !normB || normA === normB) {
+      return { played: false, ptsA: 0, ptsB: 0, gdA: 0, gdB: 0, gfA: 0, gfB: 0 };
+    }
+
+    const h2hMatches = (matches || []).filter(m => {
+      const h = String(m.home || '').trim().toLowerCase();
+      const a = String(m.away || '').trim().toLowerCase();
+      const isPair = (h === normA && a === normB) || (h === normB && a === normA);
+      if (!isPair) return false;
+
+      const st = String(m.status || '').trim();
+      const sc = String(m.score || '').trim();
+      const isPlayed = ['gespielt', 'played', 'beendet', 'abgesagt 3:0', 'abgesagt 0:3'].includes(st.toLowerCase()) ||
+                       sc.toLowerCase().includes('abgesagt') ||
+                       (sc && sc !== '-:-' && sc !== '- : -' && sc.includes(':') && !sc.startsWith('-'));
+      return isPlayed;
+    });
+
+    if (h2hMatches.length === 0) {
+      return { played: false, ptsA: 0, ptsB: 0, gdA: 0, gdB: 0, gfA: 0, gfB: 0 };
+    }
+
+    let ptsA = 0, ptsB = 0;
+    let gfA = 0, gfB = 0;
+
+    h2hMatches.forEach(m => {
+      const h = String(m.home || '').trim().toLowerCase();
+      const st = String(m.status || '').trim();
+      const sc = String(m.score || '').trim();
+
+      let sHome = 0, sAway = 0;
+      if (st === 'Abgesagt 3:0' || sc === '3:0 Abgesagt') {
+        sHome = 3; sAway = 0;
+      } else if (st === 'Abgesagt 0:3' || sc === '0:3 Abgesagt') {
+        sHome = 0; sAway = 3;
+      } else {
+        const clean = sc.split(' ')[0].replace('*', '');
+        const parts = clean.split(':');
+        sHome = parseInt(parts[0]) || 0;
+        sAway = parseInt(parts[1]) || 0;
+      }
+
+      if (h === normA) {
+        gfA += sHome;
+        gfB += sAway;
+        if (sHome > sAway) ptsA += 3;
+        else if (sAway > sHome) ptsB += 3;
+        else { ptsA += 1; ptsB += 1; }
+      } else {
+        gfB += sHome;
+        gfA += sAway;
+        if (sHome > sAway) ptsB += 3;
+        else if (sAway > sHome) ptsA += 3;
+        else { ptsA += 1; ptsB += 1; }
+      }
+    });
+
+    return {
+      played: true,
+      ptsA,
+      ptsB,
+      gdA: gfA - gfB,
+      gdB: gfB - gfA,
+      gfA,
+      gfB
+    };
+  },
+
+  sortLeagueTeams(teams, matches) {
+    if (!Array.isArray(teams)) return [];
+    const cancMap = this.getTeamCancellations(matches);
+
+    return [...teams].sort((a, b) => {
+      const ptsA = Number(a.points) || 0;
+      const ptsB = Number(b.points) || 0;
+      if (ptsB !== ptsA) return ptsB - ptsA;
+
+      // 1. DSG Liga Regel: Spielabsagen ihrerseits (weniger Absagen reiht vor)
+      const cancA = cancMap[String(a.name || '').trim()] || 0;
+      const cancB = cancMap[String(b.name || '').trim()] || 0;
+      if (cancA !== cancB) return cancA - cancB;
+
+      // 2. ÖFB § 9: Direktes Duell (Head-to-Head)
+      const h2h = this.getHeadToHead(a.name, b.name, matches);
+      if (h2h.played) {
+        if (h2h.ptsB !== h2h.ptsA) return h2h.ptsB - h2h.ptsA;
+        if (h2h.gdB !== h2h.gdA) return h2h.gdB - h2h.gdA;
+        if (h2h.gfB !== h2h.gfA) return h2h.gfB - h2h.gfA;
+      }
+
+      // 3. ÖFB § 9: Gesamttordifferenz
+      const diffA = (a.goalDiff !== undefined && !isNaN(Number(a.goalDiff))) ? Number(a.goalDiff) : ((a.diff !== undefined && !isNaN(Number(a.diff))) ? Number(a.diff) : ((Number(a.gf !== undefined ? a.gf : (a.goalsFor || 0))) - (Number(a.ga !== undefined ? a.ga : (a.goalsAgainst || 0)))));
+      const diffB = (b.goalDiff !== undefined && !isNaN(Number(b.goalDiff))) ? Number(b.goalDiff) : ((b.diff !== undefined && !isNaN(Number(b.diff))) ? Number(b.diff) : ((Number(b.gf !== undefined ? b.gf : (b.goalsFor || 0))) - (Number(b.ga !== undefined ? b.ga : (b.goalsAgainst || 0)))));
+      if (diffB !== diffA) return diffB - diffA;
+
+      // 4. ÖFB § 9: Erzielte Tore
+      const gfA = Number(a.gf !== undefined ? a.gf : (a.goalsFor || 0));
+      const gfB = Number(b.gf !== undefined ? b.gf : (b.goalsFor || 0));
+      if (gfB !== gfA) return gfB - gfA;
+
+      // 5. ÖFB § 9: Gesamtsiege
+      const wA = Number(a.won || 0);
+      const wB = Number(b.won || 0);
+      if (wB !== wA) return wB - wA;
+
+      // Fallback: Alphabetisch
+      return String(a.name || '').localeCompare(String(b.name || ''));
+    });
+  },
+
   recalculateSeason(season) {
     const data = this.getData();
     if (!data.seasons || !data.seasons[season]) return;
@@ -1583,13 +1719,9 @@ export const Store = {
       this._applyMatchStats(season, m);
     });
 
-    // Sort teams
+    // Sort teams using official DSG Liga Tiebreaker Rules
     if (Array.isArray(s.teams)) {
-      s.teams.sort((a, b) => {
-        if (b.points !== a.points) return b.points - a.points;
-        if (b.goalDiff !== a.goalDiff) return b.goalDiff - a.goalDiff;
-        return b.goalsFor - a.goalsFor;
-      });
+      s.teams = this.sortLeagueTeams(s.teams, s.matches);
       s.teams.forEach((t, idx) => { t.rank = idx + 1; });
     }
 

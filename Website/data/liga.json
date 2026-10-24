@@ -16367,6 +16367,18 @@
           "rank": 5
         },
         {
+          "goalsFor": 7,
+          "goalsAgainst": 27,
+          "won": 1,
+          "name": "FC Gornjak",
+          "points": 3,
+          "drawn": 0,
+          "rank": 6,
+          "played": 6,
+          "goalDiff": -20,
+          "lost": 5
+        },
+        {
           "goalDiff": -9,
           "name": "DSG St. Josef/Oed FC",
           "goalsAgainst": 16,
@@ -16376,19 +16388,7 @@
           "drawn": 0,
           "goalsFor": 7,
           "won": 1,
-          "rank": 6
-        },
-        {
-          "goalsFor": 7,
-          "goalsAgainst": 27,
-          "won": 1,
-          "name": "FC Gornjak",
-          "points": 3,
-          "drawn": 0,
-          "rank": 7,
-          "played": 6,
-          "goalDiff": -20,
-          "lost": 5
+          "rank": 7
         }
       ],
       "matches": [
