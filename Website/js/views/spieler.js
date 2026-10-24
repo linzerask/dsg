@@ -76,9 +76,17 @@ export const viewSpieler = () => {
         <div id="spieler-count-info" style="font-size: 0.9rem; font-weight: 600; color: var(--color-text-secondary);">
           Lade Spielerdatenbank...
         </div>
-        <div id="spieler-active-tag" style="font-size: 0.8rem; color: var(--color-accent); font-weight: 700;">
-          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent); margin-right: 6px;"></span>
-          Nur aktive Spieler
+        <div id="spieler-status-toggle" style="display: inline-flex; background: rgba(0,0,0,0.06); padding: 3px; border-radius: 8px; gap: 4px; border: 1px solid var(--color-border);">
+          <button type="button" class="spieler-status-btn active" data-status="Aktiv" style="font-size: 0.8rem; padding: 5px 12px; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: var(--color-surface); color: var(--color-accent); box-shadow: 0 2px 4px rgba(0,0,0,0.08);">
+            <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--color-accent); margin-right: 5px;"></span>
+            Aktive Spieler
+          </button>
+          <button type="button" class="spieler-status-btn" data-status="Inaktiv" style="font-size: 0.8rem; padding: 5px 12px; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--color-text-secondary); box-shadow: none;">
+            Inaktive Spieler
+          </button>
+          <button type="button" class="spieler-status-btn" data-status="all" style="font-size: 0.8rem; padding: 5px 12px; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--color-text-secondary); box-shadow: none;">
+            Alle Spieler
+          </button>
         </div>
       </div>
 
@@ -310,6 +318,7 @@ export const viewSpieler = () => {
 };
 
 export const bindSpieler = async () => {
+  let activeStatusFilter = 'Aktiv';
   const grid = document.getElementById('spieler-grid');
   const countInfo = document.getElementById('spieler-count-info');
   const searchInput = document.getElementById('spieler-search-input');
@@ -332,8 +341,8 @@ export const bindSpieler = async () => {
     console.error("Error loading players:", err);
   }
 
-  // Filter strictly active players
-  allActivePlayers = (rawPlayers || []).filter(p => (p.Status || p.status) === 'Aktiv').map(p => {
+  // Map all players with status tracking
+  allActivePlayers = (rawPlayers || []).map(p => {
     const fn = sanitizeMojibake((p.Vorname || p.vorname || '').trim());
     const ln = sanitizeMojibake((p.Nachname || p.nachname || '').trim());
     const tm = sanitizeMojibake((p.Team || p.team || '').trim());
@@ -341,6 +350,7 @@ export const bindSpieler = async () => {
     const sDate = (p.seit || p.Seit || p.memberSince || '').trim();
     const id = String(p['#'] || p.id || p.ID || '');
     const pos = (p.Position || p.position || '').trim();
+    const status = (p.Status || p.status || 'Aktiv');
     const stats = getPlayerLiveStats(p);
 
     return {
@@ -353,6 +363,8 @@ export const bindSpieler = async () => {
       age: calculatePlayerAge(bDate),
       memberSince: sDate,
       position: pos,
+      status: status,
+      isActive: status === 'Aktiv',
       goals: stats.goals,
       yellow: stats.yellow,
       yellowRed: stats.yellowRed || 0,
@@ -396,6 +408,10 @@ export const bindSpieler = async () => {
 
   const renderGrid = () => {
     let filtered = allActivePlayers.filter(p => {
+      // Status filter
+      if (activeStatusFilter === 'Aktiv' && !p.isActive) return false;
+      if (activeStatusFilter === 'Inaktiv' && p.isActive) return false;
+
       // Search query
       if (activeSearchQuery) {
         const q = normalizePlayerKey(activeSearchQuery);
@@ -460,7 +476,8 @@ export const bindSpieler = async () => {
     const pagePlayers = filtered.slice(startIdx, endIdx);
 
     if (countInfo) {
-      countInfo.innerHTML = `Zeige <strong>${totalResults === 0 ? 0 : startIdx + 1}–${endIdx}</strong> von <strong>${totalResults}</strong> aktiven Spielern`;
+      const statusLabel = activeStatusFilter === 'Aktiv' ? 'aktiven' : (activeStatusFilter === 'Inaktiv' ? 'inaktiven' : 'registrierten');
+      countInfo.innerHTML = `Zeige <strong>${totalResults === 0 ? 0 : startIdx + 1}–${endIdx}</strong> von <strong>${totalResults}</strong> ${statusLabel} Spielern`;
     }
 
     if (pageInfo) {
@@ -497,12 +514,17 @@ export const bindSpieler = async () => {
         suspTag = `<span class="sperre-badge sperre-warning" style="position: absolute; top: 10px; right: 10px; z-index: 2;">Sperre droht</span>`;
       }
 
+      const inactiveBadge = !p.isActive ? `
+        <span style="position: absolute; top: 10px; left: 10px; z-index: 2; background: rgba(100, 116, 139, 0.25); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.4); font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; text-transform: uppercase;">Inaktiv</span>
+      ` : '';
+
       return `
-        <div class="spieler-card" data-player-id="${p.id}">
+        <div class="spieler-card ${!p.isActive ? 'spieler-card-inactive' : ''}" data-player-id="${p.id}">
           <div class="spieler-card-header">
             ${posLabel}
+            ${inactiveBadge}
             ${suspTag}
-            <img src="${avatarUrl}" alt="${p.fullName}" class="spieler-card-avatar">
+            <img src="${avatarUrl}" alt="${p.fullName}" class="spieler-card-avatar" style="${!p.isActive ? 'filter: grayscale(40%); opacity: 0.85;' : ''}">
             <div class="spieler-card-team-badge" title="${p.team}">
               ${teamLogo}
             </div>
@@ -738,6 +760,26 @@ export const bindSpieler = async () => {
       posFilterButtons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activePositionFilter = btn.getAttribute('data-pos');
+      currentPage = 1;
+      renderGrid();
+    });
+  });
+
+  const statusFilterButtons = document.querySelectorAll('.spieler-status-btn');
+  statusFilterButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      statusFilterButtons.forEach(b => {
+        b.classList.remove('active');
+        b.style.background = 'transparent';
+        b.style.color = 'var(--color-text-secondary)';
+        b.style.boxShadow = 'none';
+      });
+      const targetBtn = e.currentTarget || e.target;
+      targetBtn.classList.add('active');
+      targetBtn.style.background = 'var(--color-surface)';
+      targetBtn.style.color = 'var(--color-accent)';
+      targetBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)';
+      activeStatusFilter = targetBtn.getAttribute('data-status') || 'Aktiv';
       currentPage = 1;
       renderGrid();
     });

@@ -806,10 +806,26 @@ export const viewStatistiken = () => {
           Die ewige Bestenliste, Hall of Fame der Torjäger, Vereinsbilanzen und historische Meilensteine der DSG Meisterschaft.
         </p>
         
-        <!-- Disclaimer Badge -->
-        <div style="margin-top: var(--space-md); font-size: 0.8rem; color: var(--color-text-secondary); opacity: 0.85; display: flex; align-items: center; gap: 6px;">
-          <span style="color: var(--color-accent); font-weight: 700;">*</span>
-          <span>Sämtliche Statistiken und Rekorde basieren auf den digital erfassten Spielberichten seit Beginn der Aufzeichnungen in der Saison 2022/2023.</span>
+        <!-- Offizieller Hinweis zur Datenerfassung -->
+        <div class="official-report-notice glass-card" style="margin: var(--space-md) auto 0 auto; max-width: 800px; padding: 12px 16px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%); display: flex; align-items: center; gap: 12px; text-align: left;">
+          <div style="flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 179, 65, 0.15); display: flex; align-items: center; justify-content: center; color: var(--color-accent);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 700; font-size: 0.88rem; color: var(--color-text-primary); margin-bottom: 2px; display: flex; align-items: center; gap: 8px;">
+              <span>Offizielle Datenerfassung &bull; Spielberichte der Schiedsrichter</span>
+              <span style="font-size: 0.68rem; font-weight: 800; background: rgba(0, 179, 65, 0.18); color: var(--color-accent); padding: 1px 6px; border-radius: 999px; text-transform: uppercase;">Offiziell</span>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.4;">
+              Sämtliche Statistiken, Torschützen, Verwarnungen und Sperren basieren auf den offiziellen physischen Spielberichten, die nach Spielende vom Schiedsrichterteam handschriftlich ausgefüllt, unterzeichnet und digitalisiert werden.
+            </div>
+          </div>
         </div>
       </div>
 

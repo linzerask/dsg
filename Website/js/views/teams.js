@@ -6,7 +6,8 @@ import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveSt
 let allTeams = [];
 let allPlayers = [];
 let selectedTeamName = '';
-let scorerSeasonFilter = 'all';
+let scorerSeasonFilter = '2026/2027';
+let squadStatusFilter = 'Aktiv';
 let showAllScorers = false;
 let scorerCurrentPage = 1;
 const SCORERS_PER_PAGE = 5;
@@ -157,7 +158,7 @@ export const bindTeams = async () => {
       Store.getAdminPlayers()
     ]);
     allTeams = rawTeams || [];
-    allPlayers = (rawPlayers || []).filter(p => (p.Status || p.status) === 'Aktiv');
+    allPlayers = rawPlayers || [];
   } catch (err) {
     console.error("Error loading teams data:", err);
   }
@@ -175,8 +176,9 @@ export const bindTeams = async () => {
 
   let activeTeamsList = defaultActiveTeams.filter(tName => {
     return allPlayers.some(p => {
+      const isAct = (p.Status || p.status) === 'Aktiv';
       const tm = sanitizeMojibake((p.Team || p.team || '').trim());
-      return tm === tName || normalizePlayerKey(tm) === normalizePlayerKey(tName);
+      return isAct && (tm === tName || normalizePlayerKey(tm) === normalizePlayerKey(tName));
     });
   });
 
@@ -188,8 +190,9 @@ export const bindTeams = async () => {
   allTeams.forEach(t => {
     const name = sanitizeMojibake((t.Name || t.name || '').trim());
     const hasActivePlayers = allPlayers.some(p => {
+      const isAct = (p.Status || p.status) === 'Aktiv';
       const tm = sanitizeMojibake((p.Team || p.team || '').trim());
-      return tm === name || normalizePlayerKey(tm) === normalizePlayerKey(name);
+      return isAct && (tm === name || normalizePlayerKey(tm) === normalizePlayerKey(name));
     });
     const isActiveStatus = (t.Status === 'Aktiv' || t.status === 'Aktiv');
     if (name && isActiveStatus && hasActivePlayers && !activeTeamsList.includes(name)) {
@@ -220,16 +223,29 @@ export const bindTeams = async () => {
 
     // Filter squad for this team
     const teamNorm = normalizePlayerKey(teamName);
-    const squad = allPlayers.filter(p => {
+    const teamPlayersAll = allPlayers.filter(p => {
       const tm = sanitizeMojibake((p.Team || p.team || '').trim());
       return tm === teamName || normalizePlayerKey(tm) === teamNorm;
-    }).map(p => {
+    });
+
+    const activeSquadPlayers = teamPlayersAll.filter(p => (p.Status || p.status) === 'Aktiv');
+    const inactiveSquadPlayers = teamPlayersAll.filter(p => (p.Status || p.status) !== 'Aktiv');
+
+    const filteredPlayers = teamPlayersAll.filter(p => {
+      const isAct = (p.Status || p.status) === 'Aktiv';
+      if (squadStatusFilter === 'Aktiv') return isAct;
+      if (squadStatusFilter === 'Inaktiv') return !isAct;
+      return true; // 'all'
+    });
+
+    const squad = filteredPlayers.map(p => {
       const fn = sanitizeMojibake((p.Vorname || p.vorname || '').trim());
       const ln = sanitizeMojibake((p.Nachname || p.nachname || '').trim());
       const bDate = (p.Geburtsdatum || p.geburtsdatum || '').trim();
       const sDate = (p.seit || p.Seit || '').trim();
       const id = String(p['#'] || p.id || p.ID || '');
       const pos = (p.Position || p.position || '').trim();
+      const status = (p.Status || p.status || 'Aktiv');
       const stats = getPlayerLiveStats(p);
 
       return {
@@ -239,6 +255,8 @@ export const bindTeams = async () => {
         age: calculatePlayerAge(bDate),
         memberSince: sDate,
         position: pos,
+        status: status,
+        isActive: status === 'Aktiv',
         goals: stats.goals,
         yellow: stats.yellow,
         yellowRed: stats.yellowRed || 0,
@@ -287,8 +305,12 @@ export const bindTeams = async () => {
       if (l.seasonKey) seasonKeysSet.add(l.seasonKey);
     });
     const sortedKeys = Array.from(seasonKeysSet).sort((a, b) => b.localeCompare(a));
+    const currentSeasonKey = Store.getData()?.currentSeason || sortedKeys[0] || '2026/2027';
+    if (!scorerSeasonFilter) {
+      scorerSeasonFilter = currentSeasonKey;
+    }
+
     const seasonOptions = [
-      { key: 'all', label: 'Alle Saisons (Ewige)' },
       ...sortedKeys.map(k => {
         let label = k;
         if (/^\d{4}\/\d{4}$/.test(k)) {
@@ -300,7 +322,8 @@ export const bindTeams = async () => {
           label = `Saison ${k}`;
         }
         return { key: k, label };
-      })
+      }),
+      { key: 'all', label: 'Alle Saisons (Ewige)' }
     ];
 
     teamContainer.innerHTML = `
@@ -316,7 +339,7 @@ export const bindTeams = async () => {
           </div>
           <h2 style="font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; margin: 0 0 6px 0; color: var(--color-text-primary);">${teamName}</h2>
           <p style="margin: 0; color: var(--color-text-secondary); font-size: 0.95rem;">
-            Aktueller Kader: <strong>${squad.length} aktive Spieler</strong> &bull; DSG Meisterschaft 2026/27
+            Aktueller Kader: <strong>${activeSquadPlayers.length} aktive Spieler</strong>${inactiveSquadPlayers.length > 0 ? ` <span style="opacity: 0.75;">(${inactiveSquadPlayers.length} inaktiv)</span>` : ''} &bull; DSG Meisterschaft 2026/27
           </p>
         </div>
 
@@ -415,31 +438,63 @@ export const bindTeams = async () => {
 
       <!-- Squad / Active Roster -->
       <div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: var(--space-xs);">
-          <h3 style="margin: 0; font-size: 1.3rem;">Aktueller Kader (${squad.length} Spieler)</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h3 style="margin: 0; font-size: 1.3rem;">
+              ${squadStatusFilter === 'Aktiv' ? `Aktueller Kader (${activeSquadPlayers.length} Spieler)` : (squadStatusFilter === 'Inaktiv' ? `Inaktive Spieler (${inactiveSquadPlayers.length})` : `Gesamtkader (${teamPlayersAll.length} Spieler)`)}
+            </h3>
+            <div style="font-size: 0.82rem; color: var(--color-text-secondary); margin-top: 2px;">
+              ${activeSquadPlayers.length} Aktiv &bull; ${inactiveSquadPlayers.length} Inaktiv / Archiviert
+            </div>
+          </div>
+
+          <!-- Segmented Filter Switcher -->
+          <div class="team-squad-filter-group" style="display: inline-flex; background: rgba(0,0,0,0.06); padding: 3px; border-radius: 8px; gap: 4px; border: 1px solid var(--color-border);">
+            <button type="button" class="squad-status-btn ${squadStatusFilter === 'Aktiv' ? 'active' : ''}" data-status="Aktiv" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: ${squadStatusFilter === 'Aktiv' ? 'var(--color-surface)' : 'transparent'}; color: ${squadStatusFilter === 'Aktiv' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; box-shadow: ${squadStatusFilter === 'Aktiv' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none'};">
+              Aktive (${activeSquadPlayers.length})
+            </button>
+            <button type="button" class="squad-status-btn ${squadStatusFilter === 'Inaktiv' ? 'active' : ''}" data-status="Inaktiv" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: ${squadStatusFilter === 'Inaktiv' ? 'var(--color-surface)' : 'transparent'}; color: ${squadStatusFilter === 'Inaktiv' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; box-shadow: ${squadStatusFilter === 'Inaktiv' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none'};">
+              Inaktive (${inactiveSquadPlayers.length})
+            </button>
+            <button type="button" class="squad-status-btn ${squadStatusFilter === 'all' ? 'active' : ''}" data-status="all" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: ${squadStatusFilter === 'all' ? 'var(--color-surface)' : 'transparent'}; color: ${squadStatusFilter === 'all' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; box-shadow: ${squadStatusFilter === 'all' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none'};">
+              Alle (${teamPlayersAll.length})
+            </button>
+          </div>
+
           <a href="#/spieler?team=${encodeURIComponent(teamName)}" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85rem;">
             In Spieler-Datenbank suchen &rarr;
           </a>
         </div>
 
-        <div class="team-kader-grid">
-          ${squad.map(p => {
-            const avatar = getPlayerAvatar(p.raw);
-            const ageText = p.age ? `${p.age} J.` : '';
-            const sinceText = formatMemberSince(p.memberSince);
-            const posLabelText = getPlayerPositionLabel(p.raw || p);
-            const posLabel = posLabelText ? `<span class="spieler-card-pos-tag">${posLabelText}</span>` : '';
+        ${squad.length === 0 ? `
+          <div class="glass-card" style="text-align: center; padding: 40px 20px; color: var(--color-text-secondary); margin-top: var(--space-md);">
+            <p style="margin: 0; font-size: 1rem;">Keine Spieler für diese Auswahl gelistet.</p>
+          </div>
+        ` : `
+          <div class="team-kader-grid">
+            ${squad.map(p => {
+              const avatar = getPlayerAvatar(p.raw);
+              const ageText = p.age ? `${p.age} J.` : '';
+              const sinceText = formatMemberSince(p.memberSince);
+              const posLabelText = getPlayerPositionLabel(p.raw || p);
+              const posLabel = posLabelText ? `<span class="spieler-card-pos-tag">${posLabelText}</span>` : '';
+              const statusBadge = !p.isActive ? `
+                <span style="position: absolute; top: 8px; right: 8px; background: rgba(100, 116, 139, 0.25); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.4); font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; z-index: 2;">Inaktiv</span>
+              ` : (squadStatusFilter === 'all' ? `
+                <span style="position: absolute; top: 8px; right: 8px; background: rgba(0, 179, 65, 0.18); color: var(--color-accent); border: 1px solid rgba(0, 179, 65, 0.35); font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; z-index: 2;">Aktiv</span>
+              ` : '');
 
-            return `
-              <a href="#/spieler?id=${p.id}" style="text-decoration: none; color: inherit; display: block;">
-                <div class="spieler-card" style="height: 100%;">
-                  <div class="spieler-card-header" style="height: 170px;">
-                    ${posLabel}
-                    <img src="${avatar}" alt="${p.fullName}" class="spieler-card-avatar">
-                    <div class="spieler-card-team-badge" title="${teamName}" style="width: 36px; height: 36px; bottom: 8px; right: 8px;">
-                      ${teamBadgeSm}
+              return `
+                <a href="#/spieler?id=${p.id}" style="text-decoration: none; color: inherit; display: block;">
+                  <div class="spieler-card ${!p.isActive ? 'spieler-card-inactive' : ''}" style="height: 100%; position: relative;">
+                    <div class="spieler-card-header" style="height: 170px; position: relative;">
+                      ${posLabel}
+                      ${statusBadge}
+                      <img src="${avatar}" alt="${p.fullName}" class="spieler-card-avatar" style="${!p.isActive ? 'filter: grayscale(40%); opacity: 0.85;' : ''}">
+                      <div class="spieler-card-team-badge" title="${teamName}" style="width: 36px; height: 36px; bottom: 8px; right: 8px;">
+                        ${teamBadgeSm}
+                      </div>
                     </div>
-                  </div>
                   <div class="spieler-card-body">
                     <h4 class="spieler-card-name" style="font-size: 1.05rem;">${p.fullName}</h4>
                     <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--color-text-secondary); margin-bottom: 6px;">
@@ -480,6 +535,7 @@ export const bindTeams = async () => {
             `;
           }).join('')}
         </div>
+      `}
       </div>
     `;
 
@@ -619,6 +675,14 @@ export const bindTeams = async () => {
     };
 
     renderScorersWidget();
+
+    // Bind squad status buttons
+    teamContainer.querySelectorAll('.squad-status-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        squadStatusFilter = btn.getAttribute('data-status') || 'Aktiv';
+        renderTeamDetails(teamName);
+      });
+    });
   };
 
   const renderSelector = () => {
@@ -626,7 +690,11 @@ export const bindTeams = async () => {
     selectorGrid.innerHTML = activeTeamsList.map(tName => {
       const isSelected = tName === selectedTeamName;
       const logoHTML = renderTeamLogo(tName, 'sm');
-      const count = allPlayers.filter(p => sanitizeMojibake((p.Team || p.team || '').trim()) === tName).length;
+      const count = allPlayers.filter(p => {
+        const tm = sanitizeMojibake((p.Team || p.team || '').trim());
+        const isAct = (p.Status || p.status) === 'Aktiv';
+        return isAct && (tm === tName || normalizePlayerKey(tm) === normalizePlayerKey(tName));
+      }).length;
 
       return `
         <div class="team-selector-card ${isSelected ? 'active' : ''}" data-team-name="${tName}">
