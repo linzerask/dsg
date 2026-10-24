@@ -1,2849 +1,1427 @@
 import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1791182000000';
-
 import { renderIcon } from '../icons.js?v=1791182000000';
-
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
-
 import { getPlayerLink } from '../playerUtils.js?v=1791182000000';
-
 import { calculateSeasonSuspensions, getMatchSuspensions, normalizeKey, normalizePlayerName } from '../suspensionUtils.js?v=1792837000000';
-
-
-
 
 
 let currentViewSeason = null;
 
-
-
 export function viewLiga() {
-
   const data = Store.getData();
-
   const rawLeagues = Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : [];
-
   const leagues = sortLeaguesByPriority((rawLeagues || []).filter(l => l.showOnHomepage !== false));
 
-
-
   if (leagues.length === 0) {
-
     return `
-
       <div class="container view-enter-active" style="padding-top: var(--space-xl); padding-bottom: var(--space-xxl);">
-
         <div class="glass-card" style="padding: 60px 24px; text-align: center; max-width: 640px; margin: 40px auto; border-radius: var(--border-radius-md);">
-
           <div style="margin-bottom: 16px; display: flex; justify-content: center;">
-
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-
           </div>
-
           <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Keine Liga verfügbar</h2>
-
           <p style="color: var(--color-text-secondary); font-size: 0.95rem; margin: 0;">Derzeit ist keine Saison für die öffentliche Ansicht freigeschaltet.</p>
-
         </div>
-
       </div>
-
     `;
-
   }
-
-
 
   const currentLeague = leagues.find(l => l.isCurrent) || leagues[0];
-
   const defaultSeason = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : (data.currentSeason || "2026/2027");
 
-
-
   let visibleItems = leagues.map(l => {
-
     const key = l.seasonKey || l.name;
-
     let name = (l.name || key).trim();
-
     let year = l.year ? String(l.year).trim() : '';
-
     if (!year && key) {
-
       const match = key.match(/\d{4}(\/\d{4})?/);
-
       if (match) year = match[0];
-
     }
-
     if (/^\d{4}$/.test(year)) {
-
       const nextY = parseInt(year) + 1;
-
       year = `${year}/${nextY}`;
-
     }
-
     if (year && !name.includes(year)) {
-
       name = `${name} ${year}`;
-
     } else if (!year && /^\d{4}\/\d{4}$/.test(name)) {
-
       name = `Saison ${name}`;
-
     }
-
     return { key, label: name };
-
   });
-
-
 
   const visibleSeasonKeys = visibleItems.map(i => i.key);
-
   if (!currentViewSeason || !visibleSeasonKeys.includes(currentViewSeason)) {
-
     currentViewSeason = visibleSeasonKeys[0] || defaultSeason || "";
-
   }
-
   const currentSeason = currentViewSeason;
-
   const currentItem = visibleItems.find(i => i.key === currentSeason) || {
-
     key: currentSeason,
-
     label: currentSeason ? (currentSeason.startsWith('Saison') || currentSeason.startsWith('Liga') ? currentSeason : `Saison ${currentSeason}`) : "Keine Liga angelegt"
-
   };
-
   
-
   const stats = Store.getStats(currentSeason) || { topScorers: [], cards: [] };
-
   const topScorers = stats.topScorers || [];
-
   const matches = Store.getMatches(currentSeason) || [];
-
   const cancMap = Store.getTeamCancellations ? Store.getTeamCancellations(matches) : {};
-
   const rawTeams = Store.getLiga(currentSeason) || [];
-
   const teams = Store.sortLeagueTeams ? Store.sortLeagueTeams(rawTeams, matches) : [...rawTeams];
 
-
-
   const getMatchResult = (teamName, m) => {
-
     let sHome = 0;
-
     let sAway = 0;
-
     if (m.status === 'Abgesagt 3:0') { sHome = 3; sAway = 0; }
-
     else if (m.status === 'Abgesagt 0:3') { sHome = 0; sAway = 3; }
-
     else if (m.score && m.score !== '-:-' && m.score !== '- : -') {
-
       let mainScore = m.score.split(' ')[0].replace('*', '');
-
       let parts = mainScore.split(':');
-
       if (parts.length !== 2) return null;
-
       sHome = parseInt(parts[0]);
-
       sAway = parseInt(parts[1]);
-
       if (isNaN(sHome) || isNaN(sAway)) return null;
-
     } else {
-
       return null;
-
     }
-
-
 
     let isHome = m.home.trim() === teamName.trim();
-
     if (sHome === sAway) return 'D';
-
     if (isHome) return sHome > sAway ? 'W' : 'L';
-
     return sAway > sHome ? 'W' : 'L';
-
   };
-
-
 
   const generateForm = (teamName) => {
-
     // Find all matches for this team that have a valid score or are Abgesagt
-
     const teamMatches = matches.filter(m => (m.home.trim() === teamName.trim() || m.away.trim() === teamName.trim()) && (m.score !== '-:-' || m.status === 'Abgesagt 3:0' || m.status === 'Abgesagt 0:3'));
-
     const last5 = teamMatches.slice(-5);
-
     
-
     let html = '<div class="form-guide">';
-
     let dotCount = 0;
 
-
-
     last5.forEach(m => {
-
       const res = getMatchResult(teamName, m);
-
       if (res) {
-
         html += `<span class="form-dot form-${res}" title="${m.home} vs ${m.away}"></span>`;
-
         dotCount++;
-
       } else {
-
         // Fallback if getMatchResult returns null but it's a played match!
-
         let sHome = 0, sAway = 0;
-
         if (m.score && m.score.includes(':')) {
-
            let pts = m.score.split(':');
-
            sHome = parseInt(pts[0].trim()) || 0;
-
            sAway = parseInt(pts[1].trim()) || 0;
-
            let isHome = m.home.trim() === teamName.trim();
-
            let fallbackRes = (sHome === sAway) ? 'D' : (isHome ? (sHome > sAway ? 'W' : 'L') : (sAway > sHome ? 'W' : 'L'));
-
            html += `<span class="form-dot form-${fallbackRes}" title="Fallback: ${m.home} vs ${m.away}"></span>`;
-
            dotCount++;
-
         }
-
       }
-
     });
 
-
-
     for(let i = dotCount; i < 5; i++) {
-
         html += `<span class="form-dot" style="background: var(--color-border);" title="No match"></span>`;
-
     }
-
     html += '</div>';
-
     return html;
-
   };
 
-
-
   const rows = teams.map((t, i) => {
-
     const gf = Number(t.gf !== undefined ? t.gf : (t.goalsFor || 0));
-
     const ga = Number(t.ga !== undefined ? t.ga : (t.goalsAgainst || 0));
-
     const diff = (t.goalDiff !== undefined && !isNaN(Number(t.goalDiff))) ? Number(t.goalDiff) : ((t.diff !== undefined && !isNaN(Number(t.diff))) ? Number(t.diff) : (gf - ga));
-
     const diffStr = diff > 0 ? '+' + diff : diff;
-
     const cancCount = cancMap[String(t.name || '').trim()] || 0;
-
-    const starBadge = cancCount > 0 ? `<span class="cancellation-star" style="color: var(--color-accent); font-weight: 900; margin-left: 3px; font-size: 1.15rem; line-height: 1; vertical-align: middle; cursor: help;" title="${cancCount} ${cancCount === 1 ? 'Spielabsage' : 'Spielabsagen'} ihrerseits (straftabelle-relevant)">${'*'.repeat(cancCount)}</span>` : '';
-
+    const starBadge = cancCount > 0 ? `<span class="cancellation-star" style="color: var(--color-accent); font-weight: 900; margin-left: 2px; font-size: 1.15rem; line-height: 1; cursor: help;" title="${cancCount} ${cancCount === 1 ? 'Spielabsage' : 'Spielabsagen'}">${'*'.repeat(cancCount)}</span>` : '';
     return `
-
       <div class="liga-row glass-card stagger-item ${i < 3 ? 'top-3-row' : ''} has-table-accordion" style="display: grid; grid-template-columns: 40px 1fr 100px 40px 35px 35px 35px 70px 50px 60px; align-items: center; margin-bottom: var(--space-sm); padding: var(--space-sm) var(--space-md); cursor: pointer; transition: background 0.3s;">
-
         <span style="font-weight: 900; font-size: 1.2rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">${i + 1}</span>
-
         <div style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 8px; min-width: 0;">
-
           <a href="#/teams?team=${encodeURIComponent(t.name)}" class="team-logo-link" title="${t.name} Vereinsseite" onclick="event.stopPropagation();">
-
             ${renderTeamLogo(t.name, 'sm')}
-
           </a>
-
           <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
-
-          ${starBadge}
-
         </div>
-
         ${generateForm(t.name)}
-
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.played || 0}</span>
-
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.won || 0}</span>
-
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.drawn || 0}</span>
-
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.lost || 0}</span>
-
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${gf}:${ga}</span>
-
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${diffStr}</span>
-
-        <span class="accent-text" style="font-weight: 900; text-align: right; font-size: 1.2rem;">${t.points || 0}</span>
-
+        <span class="accent-text" style="font-weight: 900; text-align: right; font-size: 1.2rem; display: inline-flex; align-items: center; justify-content: flex-end; gap: 2px;">${t.points || 0}${starBadge}</span>
         
-
         <div class="table-accordion" style="grid-column: 1 / -1; display: none; margin-top: 10px; padding: 12px 6px 4px; border-top: 1px dashed var(--color-border); font-size: 0.85rem; color: var(--color-text-secondary); width: 100%;">
-
            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; justify-items: center; align-items: center; width: 100%;">
-
              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Spiele</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${t.played || 0}</div></div>
-
              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Siege</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${t.won || 0}</div></div>
-
              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Unent.</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${t.drawn || 0}</div></div>
-
              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Nied.</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${t.lost || 0}</div></div>
-
              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Tore</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${gf}:${ga}</div></div>
-
              <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;"><div style="font-size: 0.65rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 600;">Diff</div><div style="font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; margin-top: 3px;">${diffStr}</div></div>
-
            </div>
-
         </div>
-
       </div>
-
     `;
-
   }).join('');
-
-
 
   let currentRankScorer = 1;
-
   let prevGoalsScorer = -1;
-
   topScorers.forEach(s => {
-
     if (s.goals !== prevGoalsScorer) {
-
       if (prevGoalsScorer !== -1) currentRankScorer++;
-
       prevGoalsScorer = s.goals;
-
       s._displayRank = currentRankScorer + '.';
-
     } else {
-
       s._displayRank = '';
-
     }
-
   });
 
-
-
   const top10 = topScorers.slice(0, 10).map(s => {
-
     const pName = s.player || s.name || '';
-
     const pLink = getPlayerLink(pName, s.team);
-
     return `
-
     <div class="glass-card stagger-item" style="margin-bottom: var(--space-sm); display: flex; justify-content: space-between; align-items: center;">
-
       <div style="display: flex; gap: var(--space-md); align-items: center; min-width: 0;">
-
         <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-secondary); width: 25px; display: inline-block; flex-shrink: 0;">${s._displayRank}</span>
-
         <div style="min-width: 0;">
-
           <a href="${pLink}" class="player-link" style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${pName}</a>
-
           <div style="font-size: 0.8rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-top: 2px;">
-
             <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-logo-link" title="${s.team || ''} Vereinsseite" onclick="event.stopPropagation();">
-
               ${renderTeamLogo(s.team, 'xs')}
-
             </a>
-
             <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
-
           </div>
-
         </div>
-
       </div>
-
       <div style="font-weight: 900; font-size: 1.5rem; color: var(--color-accent); flex-shrink: 0; margin-left: 10px;">${s.goals}</div>
-
     </div>
-
   `;
-
   }).join('');
-
-
 
   const restScorers = topScorers.slice(10).map(s => {
-
     const pName = s.player || s.name || '';
-
     const pLink = getPlayerLink(pName, s.team);
-
     return `
-
     <div class="glass-card extra-scorer" style="margin-bottom: var(--space-sm); display: flex; justify-content: space-between; align-items: center;">
-
       <div style="display: flex; gap: var(--space-md); align-items: center; min-width: 0;">
-
         <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-secondary); width: 25px; display: inline-block; flex-shrink: 0;">${s._displayRank}</span>
-
         <div style="min-width: 0;">
-
           <a href="${pLink}" class="player-link" style="font-weight: 700; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${pName}</a>
-
           <div style="font-size: 0.8rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-top: 2px;">
-
             <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-logo-link" title="${s.team || ''} Vereinsseite" onclick="event.stopPropagation();">
-
               ${renderTeamLogo(s.team, 'xs')}
-
             </a>
-
             <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
-
           </div>
-
         </div>
-
       </div>
-
       <div style="font-weight: 900; font-size: 1.5rem; color: var(--color-accent); flex-shrink: 0; margin-left: 10px;">${s.goals}</div>
-
     </div>
-
   `;
-
   }).join('');
-
-
-
 
 
   const cardsData = stats.cards || [];
-
   const suspensionData = calculateSeasonSuspensions(currentSeason);
-
   
-
   const generateCardsHTML = (typeKey) => {
-
     let sorted = [];
-
     if (typeKey === 'yellow') {
-
       sorted = [...cardsData]
-
         .filter(c => (c.yellow || 0) > 0)
-
         .sort((a, b) => (b.yellow || 0) - (a.yellow || 0));
-
     } else if (typeKey === 'yellowRed') {
-
       sorted = [...cardsData]
-
         .filter(c => (c.yellowRed || 0) > 0)
-
         .sort((a, b) => (b.yellowRed || 0) - (a.yellowRed || 0));
-
     } else {
-
       // Straight Red
-
       sorted = [...cardsData]
-
         .filter(c => (c.red || 0) > 0)
-
         .sort((a, b) => (b.red || 0) - (a.red || 0));
-
     }
-
     
-
     // Dense Ranking
-
     let currentRank = 1;
-
     let prevComp = null;
-
     sorted.forEach((c, idx) => {
-
       const comp = typeKey === 'yellow' 
-
         ? `${c.yellow || 0}`
-
         : (typeKey === 'yellowRed' ? `${c.yellowRed || 0}` : `${c.red || 0}`);
-
       if (prevComp !== null && comp !== prevComp) {
-
         currentRank++;
-
       }
-
       prevComp = comp;
-
       c._displayRank = (idx === 0 || comp !== sorted[idx - 1]?._comp) ? `${currentRank}.` : '';
-
       c._comp = comp;
-
     });
-
     
-
     const renderCardIcons = (c) => {
-
       if (typeKey === 'yellow') {
-
         return `
-
           <div style="display: flex; align-items: center;" title="Gelbe Karte">
-
             <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${c.yellow || 0}</span>
-
             <div class="card-icon card-icon-yellow"></div>
-
           </div>
-
         `;
-
       }
-
       if (typeKey === 'yellowRed') {
-
         return `
-
           <div style="display: flex; align-items: center;" title="Gelb-Rote Karte">
-
             <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${c.yellowRed || 0}</span>
-
             <div class="card-icon card-icon-yellow-red"></div>
-
           </div>
-
         `;
-
       }
-
       return `
-
         <div style="display: flex; align-items: center;" title="Rote Karte">
-
           <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${c.red || 0}</span>
-
           <div class="card-icon card-icon-red"></div>
-
         </div>
-
       `;
-
     };
-
-
 
     const renderRow = (s, extraClass) => {
-
       const pName = s.player || s.name || '';
-
       const pLink = getPlayerLink(pName, s.team);
-
       return `
-
       <div class="glass-card stagger-item ${extraClass}" style="margin-bottom: var(--space-sm); display: grid; grid-template-columns: 25px 1fr auto; align-items: center; gap: 10px; padding: var(--space-md);">
-
         <span style="font-weight: 900; font-size: 1.1rem; color: var(--color-text-secondary); flex-shrink: 0;">${s._displayRank}</span>
-
         <div style="min-width: 0;">
-
           <a href="${pLink}" class="player-link" style="font-weight: 700; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${pName}</a>
-
           <div class="hide-mobile" style="font-size: 0.8rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; margin-top: 2px;">
-
             <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-logo-link" title="${s.team || ''} Vereinsseite" onclick="event.stopPropagation();">
-
               ${renderTeamLogo(s.team, 'xs')}
-
             </a>
-
             <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
-
           </div>
-
           <div class="show-mobile" style="font-size: 0.75rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px; margin-top: 2px;">
-
             <a href="#/teams?team=${encodeURIComponent(s.team || '')}" class="team-logo-link" title="${s.team || ''} Vereinsseite" onclick="event.stopPropagation();">
-
               ${renderTeamLogo(s.team, 'xs')}
-
             </a>
-
             <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.team || ''}</span>
-
           </div>
-
         </div>
-
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
-
           ${renderCardIcons(s)}
-
           ${(() => {
-
             const pKey = normalizePlayerName(pName) + '___' + normalizeKey(s.team);
-
             const susp = suspensionData.playerMap.get(pKey);
-
             if (!susp) return '';
-
             if (susp.status === 'suspended') {
-
               return `<span class="sperre-badge sperre-active" title="${susp.active?.reason || 'Gesperrt'} - Fehlt in ${susp.active?.nextMatch?.round || 'nächster Runde'}">${susp.statusText}</span>`;
-
             } else if (susp.status === 'warning' && typeKey === 'yellow') {
-
               return `<span class="sperre-badge sperre-warning" title="Noch 1 gelbe Karte bis zur automatischen Spielsperre">${susp.statusText}</span>`;
-
             } else if (susp.status === 'served') {
-
               return `<span class="sperre-badge sperre-served" title="Sperre bereits abgesessen">${susp.statusText}</span>`;
-
             }
-
             return '';
-
           })()}
-
         </div>
-
       </div>
-
     `;
-
     };
-
-
 
     const top10Cards = sorted.slice(0, 10).map(s => renderRow(s, '')).join('');
-
     const restCards = sorted.slice(10).map(s => renderRow(s, `extra-${typeKey}-scorer`)).join('');
-
     
-
     let html = top10Cards;
-
     if (restCards) {
-
       html += `
-
         <div id="extra-${typeKey}-container" style="display: none;">${restCards}</div>
-
         <div class="btn-container"><button id="btn-show-all-${typeKey}" class="link-btn">Alle anschauen</button></div>
-
       `;
-
     }
-
     return html || '<div style="color: var(--color-text-secondary); font-size: 0.9rem; padding: var(--space-md) 0;">Keine Karten</div>';
-
   };
-
-
 
   const cardsHTML = {
-
     gelb: generateCardsHTML('yellow'),
-
     gelbrot: generateCardsHTML('yellowRed'),
-
     rot: generateCardsHTML('red')
-
   };
-
-
 
   const buildSperrenHTML = () => {
-
     const { activeSuspensions, pendingWarnings, servedSuspensions } = suspensionData;
 
-
-
     const renderActiveCard = (item) => {
-
       const pLink = getPlayerLink(item.player, item.team);
-
       const m = item.nextMatch;
-
       return `
-
         <div class="glass-card stagger-item sperre-card sperre-card-active" style="margin-bottom: var(--space-sm); padding: var(--space-md); border-left: 4px solid #ef4444;">
-
           <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
-
             <div style="min-width: 0;">
-
               <div style="display: flex; align-items: center; gap: 8px;">
-
                 <span class="sperre-badge sperre-active">${item.gamesRemaining} Spiel${item.gamesRemaining > 1 ? 'e' : ''} Sperre</span>
-
                 <span style="font-size: 0.8rem; font-weight: 700; color: #ef4444; text-transform: uppercase;">${item.reason}</span>
-
               </div>
-
               <a href="${pLink}" class="player-link" style="font-weight: 800; font-size: 1.15rem; display: block; margin-top: 4px; color: var(--color-text-primary);">${item.player}</a>
-
               <div style="font-size: 0.85rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-top: 3px;">
-
                 <a href="#/teams?team=${encodeURIComponent(item.team)}" class="team-logo-link" title="${item.team} Vereinsseite">
-
                   ${renderTeamLogo(item.team, 'xs')}
-
                 </a>
-
                 <span>${item.team}</span>
-
               </div>
-
             </div>
-
             <div style="text-align: right; font-size: 0.85rem; color: var(--color-text-secondary); background: rgba(0,0,0,0.04); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--color-border);">
-
               <div style="font-weight: 700; color: var(--color-text-primary);">Fehlt in ${m.round || 'kommender Runde'}</div>
-
               <div style="font-size: 0.8rem; margin-top: 2px;">${m.date ? m.date + ' ' : ''}${m.opponent ? 'vs ' + m.opponent : ''}</div>
-
             </div>
-
           </div>
-
         </div>
-
       `;
-
     };
-
-
 
     const renderWarningCard = (item) => {
-
       const pLink = getPlayerLink(item.player, item.team);
-
       return `
-
         <div class="glass-card stagger-item sperre-card sperre-card-warning" style="margin-bottom: var(--space-sm); padding: var(--space-md); border-left: 4px solid #eab308;">
-
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-
             <div style="min-width: 0;">
-
               <div style="display: flex; align-items: center; gap: 8px;">
-
                 <span class="sperre-badge sperre-warning">Sperre droht (${item.yellowCount}/${item.threshold})</span>
-
                 <span style="font-size: 0.8rem; font-weight: 700; color: #eab308; text-transform: uppercase;">1 Karte bis Sperre</span>
-
               </div>
-
               <a href="${pLink}" class="player-link" style="font-weight: 800; font-size: 1.1rem; display: block; margin-top: 4px; color: var(--color-text-primary);">${item.player}</a>
-
               <div style="font-size: 0.85rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-top: 3px;">
-
                 <a href="#/teams?team=${encodeURIComponent(item.team)}" class="team-logo-link" title="${item.team} Vereinsseite">
-
                   ${renderTeamLogo(item.team, 'xs')}
-
                 </a>
-
                 <span>${item.team}</span>
-
               </div>
-
             </div>
-
             <div style="display: flex; align-items: center; gap: 4px;" title="${item.yellowCount} gelbe Karten">
-
               <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 4px;">${item.yellowCount}</span>
-
               <div class="card-icon card-icon-yellow"></div>
-
             </div>
-
           </div>
-
         </div>
-
       `;
-
     };
-
-
 
     const renderServedCard = (item) => {
-
       const pLink = getPlayerLink(item.player, item.team);
-
       return `
-
         <div class="glass-card stagger-item sperre-card sperre-card-served" style="margin-bottom: var(--space-sm); padding: var(--space-sm) var(--space-md); opacity: 0.85;">
-
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-
             <div style="min-width: 0;">
-
               <a href="${pLink}" class="player-link" style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">${item.player}</a>
-
               <div style="font-size: 0.8rem; color: var(--color-text-secondary);">${item.team} • ${item.reason}</div>
-
             </div>
-
             <div style="text-align: right;">
-
               <span class="sperre-badge sperre-served">Ausgesetzt in ${item.gamesServed}</span>
-
             </div>
-
           </div>
-
         </div>
-
       `;
-
     };
 
-
-
     return `
-
       <div style="margin-bottom: var(--space-lg);">
-
         <h4 style="font-size: 1.15rem; font-weight: 800; color: #ef4444; margin: 0 0 var(--space-sm) 0; display: flex; align-items: center; gap: 8px;">
-
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
-
           Aktuell gesperrt (${activeSuspensions.length})
-
         </h4>
-
         ${activeSuspensions.length > 0 ? activeSuspensions.map(renderActiveCard).join('') : '<div class="glass-card" style="padding: 18px; text-align: center; color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Keine aktiven Spielersperren für die kommende Runde.</div>'}
-
       </div>
-
-
 
       <div style="margin-bottom: var(--space-lg);">
-
         <h4 style="font-size: 1.15rem; font-weight: 800; color: #eab308; margin: 0 0 var(--space-sm) 0; display: flex; align-items: center; gap: 8px;">
-
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-
           Sperre droht (${pendingWarnings.length})
-
         </h4>
-
         <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: var(--space-sm);">Spieler mit 2 oder 4 gelben Karten (1 weitere Karte bis zur automatischen Spielsperre).</div>
-
         ${pendingWarnings.length > 0 ? pendingWarnings.map(renderWarningCard).join('') : '<div class="glass-card" style="padding: 18px; text-align: center; color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Keine Spieler vor einer Gelbsperre.</div>'}
-
       </div>
-
-
 
       ${servedSuspensions.length > 0 ? `
-
       <div>
-
         <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--color-text-secondary); margin: 0 0 var(--space-sm) 0;">
-
           Abgesessene Sperren dieser Saison (${servedSuspensions.length})
-
         </h4>
-
         ${servedSuspensions.map(renderServedCard).join('')}
-
       </div>
-
       ` : ''}
-
     `;
-
   };
-
-
 
   const sperrenHTML = buildSperrenHTML();
 
-
-
   const scorersHTML = topScorers.length > 0 ? `
-
     ${top10}
-
     <div id="extra-scorers-container" style="display: none;">
-
       ${restScorers}
-
     </div>
-
     ${topScorers.length > 10 ? '<div class="btn-container"><button id="btn-show-all-scorers" class="link-btn">Alle anschauen</button></div>' : ''}
-
   ` : '<div style="color: var(--color-text-secondary); font-size: 0.9rem; padding: var(--space-md) 0;">Keine Torschützen erfasst.</div>';
 
-
-
   const parseRoundNumber = (str) => {
-
     if (!str) return 0;
-
     const m = String(str).match(/^\d+/) || String(str).match(/(\d+)\.\s*Runde/i) || String(str).match(/Runde\s*(\d+)/i);
-
     if (m) return parseInt(m[1] || m[0]) || 0;
-
     return parseInt(str) || 0;
-
   };
-
-
 
   // Group matches by unified round number
-
   const roundMap = new Map(); // roundNr -> { roundNr, label, matches: [] }
 
-
-
   // 1. Register all rounds known in store for this season
-
   let seasonRounds = (Store.getAdminRoundsSync ? Store.getAdminRoundsSync(currentSeason) : []) || [];
-
   if (seasonRounds.length === 0 && Store.getAdminRoundsSync) {
-
     const allRounds = Store.getAdminRoundsSync() || [];
-
     seasonRounds = allRounds.filter(r => 
-
       r.seasonKey === currentSeason || 
-
       r.jahr === currentSeason || 
-
       (!r.seasonKey && currentSeason === '2022/2023') ||
-
       (r.liga && (r.liga === currentSeason || r.liga.includes(currentSeason)))
-
     );
-
   }
-
-
 
   seasonRounds.forEach(r => {
-
     const nr = parseInt(r.runde) || 0;
-
     if (nr > 0) {
-
       let dateRange = '';
-
       const fmtD = (dStr) => {
-
         if (!dStr) return '';
-
         const str = String(dStr).trim();
-
         if (str.includes('-')) {
-
           const p = str.split('-');
-
           if (p.length === 3) return `${p[2].padStart(2, '0')}.${p[1].padStart(2, '0')}.${p[0]}`;
-
         }
-
         if (str.includes('.')) {
-
           const p = str.split('.');
-
           if (p.length === 3) {
-
             let yr = p[2];
-
             if (yr.length === 2) yr = '20' + yr;
-
             return `${p[0].padStart(2, '0')}.${p[1].padStart(2, '0')}.${yr}`;
-
           }
-
         }
-
         return str;
-
       };
-
       const von = fmtD(r.datumVon);
-
       const bis = fmtD(r.datumBis);
-
       if (von || bis) {
-
         dateRange = ` (${von}${bis ? ' - ' + bis : ''})`;
-
       } else if (r.datum) {
-
         dateRange = ` (${r.datum})`;
-
       }
-
       roundMap.set(nr, {
-
         roundNr: nr,
-
         label: `${nr}. Runde${dateRange}`,
-
         matches: []
-
       });
-
     }
-
   });
-
-
 
   // 2. Put each match into its matching round number
-
   matches.forEach(m => {
-
     const nr = parseRoundNumber(m.round);
-
     if (nr > 0) {
-
       if (!roundMap.has(nr)) {
-
         let label = `${nr}. Runde`;
-
         if (m.round && m.round.includes('(')) {
-
           label = m.round;
-
         }
-
         roundMap.set(nr, {
-
           roundNr: nr,
-
           label: label,
-
           matches: []
-
         });
-
       }
-
       roundMap.get(nr).matches.push(m);
-
     } else {
-
       const fallbackNr = 999;
-
       if (!roundMap.has(fallbackNr)) {
-
         roundMap.set(fallbackNr, {
-
           roundNr: fallbackNr,
-
           label: m.round || 'Spiele',
-
           matches: []
-
         });
-
       }
-
       roundMap.get(fallbackNr).matches.push(m);
-
     }
-
   });
-
-
 
   // 3. Ensure every round label has a valid date range (extract from matches if missing)
-
   roundMap.forEach(entry => {
-
     if (!entry.label.includes('(') && entry.matches && entry.matches.length > 0) {
-
       const dates = [];
-
       entry.matches.forEach(m => {
-
         if (m.date) {
-
           const mMatch = m.date.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
-
           if (mMatch) {
-
             const day = mMatch[1].padStart(2, '0');
-
             const month = mMatch[2].padStart(2, '0');
-
             const year = mMatch[3];
-
             dates.push({
-
               formatted: `${day}.${month}.${year}`,
-
               timestamp: new Date(`${year}-${month}-${day}`).getTime()
-
             });
-
           }
-
         }
-
       });
-
       if (dates.length > 0) {
-
         dates.sort((a, b) => a.timestamp - b.timestamp);
-
         const first = dates[0].formatted;
-
         const last = dates[dates.length - 1].formatted;
-
         const range = first === last ? first : `${first} - ${last}`;
-
         entry.label = `${entry.roundNr}. Runde (${range})`;
-
       }
-
     }
-
   });
-
-
 
   const sortedRounds = Array.from(roundMap.values()).sort((a, b) => a.roundNr - b.roundNr);
-
   const maxRoundIdx = sortedRounds.length - 1;
 
-
-
   // Helper: Parse Date & Time to Timestamp for accurate sorting
-
   const parseMatchTimestamp = (dateStr, timeStr) => {
-
     if (!dateStr) return Infinity;
-
     let year = 1970, month = 0, day = 1;
-
     if (dateStr.includes('-')) {
-
       const parts = dateStr.split('-');
-
       if (parts.length === 3) {
-
         year = parseInt(parts[0]) || 1970;
-
         month = (parseInt(parts[1]) || 1) - 1;
-
         day = parseInt(parts[2]) || 1;
-
       }
-
     } else if (dateStr.includes('.')) {
-
       const parts = dateStr.split('.');
-
       if (parts.length === 3) {
-
         day = parseInt(parts[0]) || 1;
-
         month = (parseInt(parts[1]) || 1) - 1;
-
         year = parseInt(parts[2]) || 1970;
-
         if (year < 100) year += 2000;
-
       }
-
     }
-
-
 
     let hours = 12, minutes = 0;
-
     if (timeStr) {
-
       const cleanTime = String(timeStr).replace(/[^\d:]/g, '');
-
       const tParts = cleanTime.split(':');
-
       if (tParts.length >= 2) {
-
         hours = parseInt(tParts[0]) || 0;
-
         minutes = parseInt(tParts[1]) || 0;
-
       }
-
     }
-
-
 
     const t = new Date(year, month, day, hours, minutes).getTime();
-
     return isNaN(t) ? Infinity : t;
-
   };
-
-
 
   const isMatchUpcoming = (m) => {
-
     if (!m) return false;
-
     const status = (m.status || '').trim();
-
     if (status.startsWith('Abgesagt') || status === 'Gespielt' || status === 'Played' || status === 'Beendet') {
-
       return false;
-
     }
-
     const score = (m.score || '').trim();
-
     if (score && score !== '-:-' && score !== '- : -' && !score.includes('Abgesagt')) {
-
       return false;
-
     }
-
     return true;
-
   };
 
-
-
   // Determine initial round to show: the round with the NEXT playing game, sorted by date & time
-
   const now = Date.now();
-
   const futureUpcomingMatches = [];
-
   const allUpcomingMatches = [];
 
-
-
   sortedRounds.forEach((rObj, rIdx) => {
-
     (rObj.matches || []).forEach(m => {
-
       if (isMatchUpcoming(m)) {
-
         const ts = parseMatchTimestamp(m.date, m.time);
-
         allUpcomingMatches.push({
-
           match: m,
-
           roundIdx: rIdx,
-
           roundNr: rObj.roundNr,
-
           timestamp: ts
-
         });
-
         if (ts >= now - (24 * 3600 * 1000)) {
-
           futureUpcomingMatches.push({
-
             match: m,
-
             roundIdx: rIdx,
-
             roundNr: rObj.roundNr,
-
             timestamp: ts
-
           });
-
         }
-
       }
-
     });
-
   });
 
-
-
   let initialRoundIdx = 0;
-
   if (futureUpcomingMatches.length > 0) {
-
     futureUpcomingMatches.sort((a, b) => {
-
       if (a.timestamp !== b.timestamp) return a.timestamp - b.timestamp;
-
       return a.roundNr - b.roundNr;
-
     });
-
     initialRoundIdx = futureUpcomingMatches[0].roundIdx;
-
   } else if (allUpcomingMatches.length > 0 && currentSeason === (data.currentSeason || "2026/2027")) {
-
     allUpcomingMatches.sort((a, b) => {
-
       if (a.timestamp !== b.timestamp) return a.timestamp - b.timestamp;
-
       return a.roundNr - b.roundNr;
-
     });
-
     initialRoundIdx = allUpcomingMatches[0].roundIdx;
-
   } else {
-
     // For finished/past seasons, default to the last round of the season
-
     let lastPlayedIdx = 0;
-
     for (let i = 0; i <= maxRoundIdx; i++) {
-
       const roundMatches = sortedRounds[i].matches;
-
       if (roundMatches && roundMatches.length > 0) {
-
         lastPlayedIdx = i;
-
       }
-
     }
-
     initialRoundIdx = lastPlayedIdx;
-
   }
 
-
-
   if (initialRoundIdx < 0) initialRoundIdx = 0;
-
   if (initialRoundIdx > maxRoundIdx) initialRoundIdx = Math.max(0, maxRoundIdx);
 
-
-
   const spieleSlider = sortedRounds.map((roundObj, idx) => {
-
     let roundMatchesHtml = '';
-
     if (!roundObj.matches || roundObj.matches.length === 0) {
-
       roundMatchesHtml = `
-
         <div class="glass-card" style="text-align: center; padding: 2.5rem 1rem; color: var(--color-text-secondary); margin-top: var(--space-sm);">
-
           <p style="margin: 0; font-size: 1rem;">Noch keine Spiele für die ${roundObj.roundNr}. Runde angesetzt.</p>
-
         </div>
-
       `;
-
     } else {
-
       roundMatchesHtml = roundObj.matches.map(m => {
-
       const isAbgesagtStatus = m.status === 'Abgesagt 3:0' || m.status === 'Abgesagt 0:3';
-
       const isAbgesagt = isAbgesagtStatus || (m.score && m.score.includes('Abgesagt'));
-
       const isUpcoming = m.status === 'Upcoming';
-
       const hasEvents = (m.events && m.events.length > 0) || (m.scorers && m.scorers.length > 0) || (m.cards && m.cards.length > 0);
 
-
-
       const isPostponed = (m.status || '').toLowerCase() === 'postponed' || (m.status || '').toLowerCase().includes('verschoben');
-
       let displayScore = m.score || "- : -";
-
       if (m.status === 'Abgesagt 3:0') displayScore = "Abges. 3:0";
-
       if (m.status === 'Abgesagt 0:3') displayScore = "Abges. 0:3";
-
       if (isPostponed) displayScore = "Verschoben";
 
-
-
       if (displayScore && displayScore !== "- : -" && displayScore !== "-:-" && !displayScore.startsWith("Abges.") && displayScore !== "Verschoben") {
-
         displayScore = displayScore.replace(/\s*\([^)]*\)/g, '').trim();
-
       }
-
-
 
       const htScore = (m.ht && m.ht !== ':') ? m.ht : (m.score ? (m.score.match(/\(([^)]+)\)/)?.[1] || '') : '');
 
-
-
       let scoreBadgeClass = 'score-normal';
-
       if (isAbgesagtStatus || isAbgesagt) {
-
         scoreBadgeClass = 'score-abgesagt';
-
       } else if (isUpcoming || displayScore === '- : -' || displayScore === '-:-') {
-
         scoreBadgeClass = 'score-upcoming';
-
       }
-
-
 
       const dateParts = m.date ? m.date.split('.') : [];
-
       let weekdayStr = '';
-
       if (dateParts.length === 3) {
-
         let year = parseInt(dateParts[2]); if (year < 100) year += 2000; const d = new Date(year, dateParts[1] - 1, dateParts[0]);
-
         const days = ['SO', 'MO', 'DI', 'MI', 'DO', 'FR', 'SA'];
-
         if (!isNaN(d.getDay())) {
-
           weekdayStr = `<span style="font-weight: 700; margin-right: 4px;">${days[d.getDay()]}</span>`;
-
         }
-
       }
-
-
 
       let eventsHtml = '';
-
       if (hasEvents) {
-
         const norm = (s) => (s || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').replace(/\s+/g, '').trim();
-
         const homeNorm = norm(m.home);
-
         const awayNorm = norm(m.away);
 
-
-
         let combinedEvents = (m.events && m.events.length > 0) ? [...m.events] : [];
-
         if (combinedEvents.length === 0) {
-
           (m.scorers || []).forEach(s => combinedEvents.push({ type: 'goal', player: s.name || s.player, team: s.team, count: 1 }));
-
           (m.cards || []).forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1 }));
-
         }
-
-
 
         const isHomeEvent = (e) => {
-
           const t = String(e.team || '');
-
           return t === String(m.home) || (homeNorm && norm(t) === homeNorm);
-
         };
-
         const isAwayEvent = (e) => {
-
           const t = String(e.team || '');
-
           return t === String(m.away) || (awayNorm && norm(t) === awayNorm);
-
         };
-
-
 
         // Group events by player & type to avoid repeating names
-
         const groupEvents = (eventsList) => {
-
           const playerEvents = new Map();
-
           eventsList.forEach(e => {
-
             const player = (e.player || e.name || '').trim();
-
             if (!player) return;
-
             const type = e.type || 'goal';
-
             if (!playerEvents.has(player)) playerEvents.set(player, []);
-
             playerEvents.get(player).push({ type, count: parseInt(e.count) || 1 });
-
           });
-
-
 
           const results = [];
-
           playerEvents.forEach((types, player) => {
-
             const hasYellowRed = types.some(t => t.type === 'yellowRed');
-
             const hasRed = types.some(t => t.type === 'red');
-
             const yellowCount = types.filter(t => t.type === 'yellow').reduce((sum, t) => sum + t.count, 0);
-
             const goalCount = types.filter(t => t.type === 'goal').reduce((sum, t) => sum + t.count, 0);
 
-
-
             if (goalCount > 0) {
-
               results.push({ player, type: 'goal', count: goalCount });
-
             }
-
             if (hasYellowRed || (hasRed && yellowCount > 0) || yellowCount >= 2) {
-
               results.push({ player, type: 'yellowRed', count: 1 });
-
             } else if (hasRed) {
-
               results.push({ player, type: 'red', count: 1 });
-
             } else if (yellowCount > 0) {
-
               results.push({ player, type: 'yellow', count: yellowCount });
-
             }
-
           });
-
           return results;
-
         };
-
-
 
         const homeGrouped = groupEvents(combinedEvents.filter(isHomeEvent));
-
         const awayGrouped = groupEvents(combinedEvents.filter(isAwayEvent));
 
-
-
         const soccerBallSvg = `
-
           <svg class="goal-svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; flex-shrink: 0;">
-
             <circle cx="12" cy="12" r="10" stroke-width="1.8"></circle>
-
             <path d="M12 7.5L15.8 10.2L14.4 15H9.6L8.2 10.2L12 7.5Z" fill="currentColor" fill-opacity="0.25" stroke-width="1.8"></path>
-
             <path d="M12 2v5.5"></path>
-
             <path d="M21.5 8.5l-5.7 1.7"></path>
-
             <path d="M18 20.3l-3.6-5.3"></path>
-
             <path d="M6 20.3l3.6-5.3"></path>
-
             <path d="M2.5 8.5l5.7 1.7"></path>
-
           </svg>
-
         `;
-
-
 
         const renderBadge = (type, count) => {
-
           if (type === 'goal') {
-
             const ballCount = Math.max(1, parseInt(count) || 1);
-
             const balls = Array(ballCount).fill(soccerBallSvg).join('');
-
             return `<span class="event-icon-wrapper" title="${ballCount > 1 ? ballCount + ' Tore' : 'Tor'}">${balls}</span>`;
-
           }
-
           if (type === 'yellow') {
-
             const cardCount = Math.max(1, parseInt(count) || 1);
-
             if (cardCount >= 2) {
-
               return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte (2. Gelbe)"></span>`;
-
             }
-
             return `<span class="match-card-badge-card badge-yellow" title="Gelbe Karte"></span>`;
-
           }
-
           if (type === 'yellowRed') {
-
             return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte"></span>`;
-
           }
-
           if (type === 'red') {
-
             return `<span class="match-card-badge-card badge-red" title="Rote Karte"></span>`;
-
           }
-
           return '';
-
         };
-
-
 
         eventsHtml = `
-
           <div class="events-accordion" style="display: none;">
-
             <div class="events-container">
-
               <div class="events-col-home">
-
                 ${homeGrouped.length > 0 ? homeGrouped.map(e => `
-
                   <div class="match-event-row match-event-home">
-
                     <a href="${getPlayerLink(e.player, m.home)}" class="match-event-player player-link">${e.player}</a>
-
                     <div class="match-event-badges">${renderBadge(e.type, e.count)}</div>
-
                   </div>
-
                 `).join('') : '<span style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0.5;">-</span>'}
-
               </div>
-
               <div class="events-col-away">
-
                 ${awayGrouped.length > 0 ? awayGrouped.map(e => `
-
                   <div class="match-event-row match-event-away">
-
                     <div class="match-event-badges">${renderBadge(e.type, e.count)}</div>
-
                     <a href="${getPlayerLink(e.player, m.away)}" class="match-event-player player-link">${e.player}</a>
-
                   </div>
-
                 `).join('') : '<span style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0.5;">-</span>'}
-
               </div>
-
             </div>
-
           </div>
-
         `;
-
       }
-
-
 
       let homeReds = 0;
-
       let awayReds = 0;
-
       if (hasEvents) {
-
         const norm = (s) => (s || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').replace(/\s+/g, '').trim();
-
         const homeNorm = norm(m.home);
-
         const awayNorm = norm(m.away);
 
-
-
         let combinedEvents = (m.events && m.events.length > 0) ? [...m.events] : [];
-
         if (combinedEvents.length === 0) {
-
           (m.cards || []).forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1 }));
-
         }
 
-
-
         const isHome = (e) => {
-
           const t = String(e.team || '');
-
           return t === String(m.home) || (homeNorm && norm(t) === homeNorm);
-
         };
-
         const isAway = (e) => {
-
           const t = String(e.team || '');
-
           return t === String(m.away) || (awayNorm && norm(t) === awayNorm);
-
         };
-
-
 
         const countReds = (evList) => {
-
           const dismissedPlayers = new Set();
-
           evList.forEach(e => {
-
             const p = (e.player || e.name || '').trim();
-
             if (!p) return;
-
             const t = e.type || 'yellow';
-
             if (t === 'red' || t === 'yellowRed') {
-
               dismissedPlayers.add(p);
-
             }
-
           });
-
           const yellowCounts = new Map();
-
           evList.forEach(e => {
-
             const p = (e.player || e.name || '').trim();
-
             if (!p) return;
-
             if (e.type === 'yellow') {
-
               yellowCounts.set(p, (yellowCounts.get(p) || 0) + (parseInt(e.count) || 1));
-
             }
-
           });
-
           yellowCounts.forEach((cnt, p) => {
-
             if (cnt >= 2) dismissedPlayers.add(p);
-
           });
-
           return dismissedPlayers.size;
-
         };
 
-
-
         homeReds = countReds(combinedEvents.filter(isHome));
-
         awayReds = countReds(combinedEvents.filter(isAway));
-
       }
 
-
-
       const renderTeamReds = (count) => {
-
         if (!count || count <= 0) return '';
-
         const cards = Array(count).fill('<span class="team-red-card-badge" title="Rote Karte / Platzverweis"></span>').join('');
-
         return `<span class="team-red-cards" title="${count > 1 ? count + ' Platzverweise' : 'Platzverweis'}">${cards}</span>`;
-
       };
-
-
 
       const matchVenue = (m.location || m.venue || m.ort || '').trim();
 
-
-
       return `
-
       <div class="match-card glass-card ${hasEvents ? 'has-events-accordion' : ''}">
-
         <div class="match-card-meta">
-
           <div class="match-meta-left">
-
             <span class="match-meta-item">
-
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-
               ${weekdayStr}${m.date}${m.time ? ' • ' + m.time + ' Uhr' : ''}
-
             </span>
-
             ${matchVenue ? `
-
               <span class="match-meta-item hide-mobile">
-
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-
                 ${matchVenue}
-
               </span>
-
             ` : ''}
-
           </div>
-
           <div class="match-meta-right">
-
             ${matchVenue ? `
-
               <span class="match-meta-item show-mobile" style="opacity: 0.85;">
-
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px; vertical-align: middle;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-
                 ${matchVenue}
-
               </span>
-
             ` : ''}
-
             ${hasEvents ? `
-
               <span class="match-details-indicator">
-
                 <span>Details</span>
-
                 <svg class="details-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-
               </span>
-
             ` : ''}
-
           </div>
-
         </div>
-
-
 
         <div class="match-card-body">
-
           <div class="match-team match-team-home" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
-
             <span class="team-name">${m.home}</span>
-
             <a href="#/teams?team=${encodeURIComponent(m.home)}" class="team-logo-link" title="${m.home} Vereinsseite" onclick="event.stopPropagation();">
-
               ${renderTeamLogo(m.home, 'md')}
-
             </a>
-
             ${renderTeamReds(homeReds)}
-
           </div>
-
           
-
           <div class="match-score-center">
-
             <span class="match-score-badge ${scoreBadgeClass}">
-
               ${displayScore}
-
             </span>
-
             ${(htScore && !isAbgesagtStatus) ? `<span class="match-ht-badge">HT ${htScore}</span>` : ''}
-
           </div>
-
           
-
           <div class="match-team match-team-away" style="display: flex; align-items: center; justify-content: flex-start; gap: 8px;">
-
             <a href="#/teams?team=${encodeURIComponent(m.away)}" class="team-logo-link" title="${m.away} Vereinsseite" onclick="event.stopPropagation();">
-
               ${renderTeamLogo(m.away, 'md')}
-
             </a>
-
             <span class="team-name">${m.away}</span>
-
             ${renderTeamReds(awayReds)}
-
           </div>
-
         </div>
-
-
 
         ${eventsHtml}
-
         ${(() => {
-
           if (isUpcoming || displayScore === '- : -' || displayScore === '-:-') {
-
             const matchSusp = getMatchSuspensions(m, currentSeason);
-
             const totalSusp = [...matchSusp.homeSuspended, ...matchSusp.awaySuspended];
-
             if (totalSusp.length > 0) {
-
               return `
-
                 <div class="match-suspension-notice">
-
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
-
                   <span>Fehlt gesperrt: ${totalSusp.map(s => `<strong>${s.player}</strong> (${s.team}, ${s.gamesRemaining} Sp.)`).join(', ')}</span>
-
                 </div>
-
               `;
-
             }
-
           }
-
           return '';
-
         })()}
-
       </div>`;
-
       }).join('');
-
     }
-
-
 
     return `
-
       <div class="round-slide" data-index="${idx}" style="display: ${idx === initialRoundIdx ? 'block' : 'none'}; width: 100%;">
-
         <div class="round-header">
-
            <button class="slider-btn prev-round glass-btn" title="Vorherige Runde" aria-label="Vorherige Runde">
-
              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-
            </button>
-
            
-
            <div class="round-select-wrapper">
-
              <select class="round-select-dropdown" data-current-idx="${idx}" aria-label="Spielrunde auswählen">
-
                ${sortedRounds.map((rk, rIdx) => `<option value="${rIdx}" ${rIdx === idx ? 'selected' : ''}>${rk.label}</option>`).join('')}
-
              </select>
-
              <span class="round-select-chevron">
-
                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-
              </span>
-
            </div>
-
            
-
            <button class="slider-btn next-round glass-btn" title="Nächste Runde" aria-label="Nächste Runde">
-
              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-
            </button>
-
         </div>
-
         <div class="round-matches stagger-item">
-
           ${roundMatchesHtml}
-
         </div>
-
       </div>
-
     `;
-
   }).join('');
 
-
-
   return `
-
     <div class="container">
-
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; position: relative; z-index: 50;" class="stagger-item">
-
         <h1 style="margin: 0;"><span class="accent-text" id="liga-season-label">${(currentItem.label || currentSeason).toUpperCase()}</span></h1>
-
         
-
         <div class="season-select-wrapper">
-
           <div class="season-select-trigger" id="season-custom-trigger">
-
             <span>${currentItem.label || currentSeason}</span>
-
             <svg style="margin-left: 10px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-
           </div>
-
           <div class="season-select-options" id="season-custom-options">
-
             ${visibleItems.map(item => `
-
               <div class="season-option ${item.key === currentSeason ? 'selected' : ''}" data-value="${item.key}">
-
                 ${item.label}
-
               </div>
-
             `).join('')}
-
           </div>
-
         </div>
-
       </div>
-
       
-
       <div class="tabs stagger-item" style="display: flex; gap: var(--space-md); margin: var(--space-xl) 0 var(--space-lg); padding-bottom: var(--space-sm);">
-
         <button class="tab-btn active liga-tab-active" data-target="table" style="color: var(--color-text-primary); font-size: 1.2rem; font-weight: 700; position: relative;">Tabelle</button>
-
         <button class="tab-btn" data-target="spiele" style="color: var(--color-text-secondary); font-size: 1.2rem; font-weight: 700; position: relative;">Spiele</button>
-
         <button class="tab-btn" data-target="stats" style="color: var(--color-text-secondary); font-size: 1.2rem; font-weight: 700; position: relative;">Statistiken</button>
-
       </div>
-
-
 
       <div id="tab-table" class="tab-content" style="display: block;">
-
         ${rows.length > 0 ? `
-
           <div class="liga-header" style="display: grid; grid-template-columns: 40px 1fr 100px 40px 35px 35px 35px 70px 50px 60px; padding: 0 var(--space-md) var(--space-sm); color: var(--color-text-secondary); font-size: 0.8rem; text-transform: uppercase;">
-
             <span>#</span>
-
             <span>Team</span>
-
             <span>Form</span>
-
             <span class="hide-mobile" style="text-align: center;">Sp</span>
-
             <span class="hide-mobile" style="text-align: center;">S</span>
-
             <span class="hide-mobile" style="text-align: center;">U</span>
-
             <span class="hide-mobile" style="text-align: center;">N</span>
-
             <span class="hide-mobile" style="text-align: center;">Tore</span>
-
             <span class="hide-mobile" style="text-align: center;">Diff.</span>
-
             <span style="text-align: right;">Pkt</span>
-
           </div>
-
           ${rows}
-
           <div class="table-legend-footnote glass-card stagger-item" style="margin-top: var(--space-md); padding: 12px 18px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%); display: flex; align-items: flex-start; gap: 12px;">
-
             <span style="color: var(--color-accent); font-weight: 900; font-size: 1.3rem; line-height: 1; flex-shrink: 0; margin-top: 1px;">*</span>
-
             <div style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.45;">
-
-              <strong style="color: var(--color-text-primary);">DSG-Ligastatut &amp; ÖFB-Meisterschaftsregeln § 9 (Ermittlung der Tabellenplätze):</strong><br>
-
               Bei Punktegleichheit zweier oder mehrerer Mannschaften entscheidet vorrangig die <strong>geringere Anzahl an Spielabsagen ihrerseits (*)</strong>, gefolgt vom <strong>direkten Duell</strong> (Punkte, Tordifferenz, erzielte Tore im direkten Vergleich), der <strong>Gesamttordifferenz</strong> sowie den <strong>erzielten Toren</strong>.
-
             </div>
-
           </div>
-
         ` : `
-
           <div class="glass-card" style="text-align: center; padding: 40px; color: var(--color-text-secondary); margin-top: var(--space-md);">
-
             <p style="margin: 0; font-size: 1.05rem;">Noch keine Mannschaften für diese Saison eingetragen.</p>
-
           </div>
-
         `}
-
       </div>
-
-
 
       <div id="tab-spiele" class="tab-content" style="display: none;">
-
         <!-- Offizieller Hinweis zur Datenerfassung -->
-
         <div class="official-report-notice glass-card" style="margin-bottom: var(--space-md); padding: 12px 18px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%); display: flex; align-items: center; gap: 14px;">
-
           <div style="flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 179, 65, 0.15); display: flex; align-items: center; justify-content: center; color: var(--color-accent);">
-
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-
               <polyline points="14 2 14 8 20 8"></polyline>
-
               <line x1="16" y1="13" x2="8" y2="13"></line>
-
               <line x1="16" y1="17" x2="8" y2="17"></line>
-
               <polyline points="10 9 9 9 8 9"></polyline>
-
             </svg>
-
           </div>
-
           <div style="flex: 1; min-width: 0; font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.45;">
-
             Sämtliche Statistiken, Torschützen, Verwarnungen (Gelb, Gelb-Rot, Rot) sowie Sperren werden unmittelbar nach Spielende aus den offiziellen, durch das Schiedsrichterteam handschriftlich ausgefüllten und unterzeichneten physischen Spielberichten übertragen.
-
           </div>
-
         </div>
-
-
 
         ${spieleSlider && spieleSlider.length > 0 ? spieleSlider : `
-
           <div class="glass-card" style="text-align: center; padding: 40px; color: var(--color-text-secondary); margin-top: var(--space-md);">
-
             <p style="margin: 0; font-size: 1.05rem;">Noch keine Spielrunden für diese Saison angelegt.</p>
-
           </div>
-
         `}
-
       </div>
-
-
 
       <div id="tab-stats" class="tab-content" style="display: none;">
-
         <!-- Offizieller Hinweis zur Datenerfassung -->
-
         <div class="official-report-notice glass-card" style="margin-bottom: var(--space-md); padding: 12px 18px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%); display: flex; align-items: center; gap: 14px;">
-
           <div style="flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 179, 65, 0.15); display: flex; align-items: center; justify-content: center; color: var(--color-accent);">
-
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-
               <polyline points="14 2 14 8 20 8"></polyline>
-
               <line x1="16" y1="13" x2="8" y2="13"></line>
-
               <line x1="16" y1="17" x2="8" y2="17"></line>
-
               <polyline points="10 9 9 9 8 9"></polyline>
-
             </svg>
-
           </div>
-
           <div style="flex: 1; min-width: 0; font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.45;">
-
             Sämtliche Statistiken, Torschützen, Verwarnungen (Gelb, Gelb-Rot, Rot) sowie Sperren werden unmittelbar nach Spielende aus den offiziellen, durch das Schiedsrichterteam handschriftlich ausgefüllten und unterzeichneten physischen Spielberichten übertragen.
-
           </div>
-
         </div>
-
-
 
         <div class="stats-toggle">
-
             <button class="stats-toggle-btn active" data-stats="tore">Top Torjäger</button>
-
             <button class="stats-toggle-btn" data-stats="karten">Karten</button>
-
         </div>
-
-
 
         <div id="stats-tore" class="stagger-item">
-
             ${scorersHTML}
-
         </div>
-
-
 
         <div id="stats-karten" style="display: none;" class="stagger-item">
-
             <div class="karten-sub-toggle">
-
                 <button class="karten-sub-btn active" data-karten="gelb">Gelb</button>
-
                 <button class="karten-sub-btn" data-karten="gelbrot">Gelb-Rot</button>
-
                 <button class="karten-sub-btn" data-karten="rot">Rot</button>
-
                 <button class="karten-sub-btn" data-karten="sperren">Sperren</button>
-
             </div>
-
             
-
             <div id="karten-gelb">${cardsHTML.gelb}</div>
-
             <div id="karten-gelbrot" style="display: none;">${cardsHTML.gelbrot}</div>
-
             <div id="karten-rot" style="display: none;">${cardsHTML.rot}</div>
-
             <div id="karten-sperren" style="display: none;">${sperrenHTML}</div>
-
         </div>
-
       </div>
-
     </div>
-
   `;
-
 };
 
-
-
 export function bindLigaTabs() {
-
   const trigger = document.getElementById('season-custom-trigger');
-
   const optionsWrapper = document.getElementById('season-custom-options');
-
   const options = document.querySelectorAll('.season-option');
 
-
-
   if (trigger && optionsWrapper) {
-
     trigger.addEventListener('click', (e) => {
-
       e.stopPropagation();
-
       optionsWrapper.classList.toggle('open');
-
     });
-
-
 
     document.addEventListener('click', (e) => {
-
       if (!trigger.contains(e.target) && !optionsWrapper.contains(e.target)) {
-
         optionsWrapper.classList.remove('open');
-
       }
-
     });
-
-
 
     options.forEach(opt => {
-
       opt.addEventListener('click', (e) => {
-
         const targetEl = e.currentTarget || e.target;
-
         const selectedValue = targetEl.dataset.value;
-
         const selectedLabel = (targetEl.textContent || '').trim();
-
         optionsWrapper.classList.remove('open');
-
         if (selectedValue && currentViewSeason !== selectedValue) {
-
           currentViewSeason = selectedValue;
-
           if (window.Router?.showLoader) {
-
             window.Router.showLoader('Saison wird geladen', selectedLabel || 'DSG Liga');
-
           }
-
           requestAnimationFrame(() => {
-
             setTimeout(() => {
-
               window.dispatchEvent(new CustomEvent('data-updated'));
-
             }, 60);
-
           });
-
         }
-
       });
-
     });
-
   }
 
-
-
   const btns = document.querySelectorAll('.tab-btn');
-
   btns.forEach(btn => {
-
     btn.addEventListener('click', (e) => {
-
       const clickedBtn = e.currentTarget || e.target;
-
       btns.forEach(b => {
-
         b.classList.remove('active');
-
         b.classList.remove('liga-tab-active');
-
         b.style.color = 'var(--color-text-secondary)';
-
       });
-
       clickedBtn.classList.add('active');
-
       clickedBtn.classList.add('liga-tab-active');
-
       clickedBtn.style.color = 'var(--color-text-primary)';
-
       
-
       document.querySelectorAll('.tab-content').forEach(tc => tc.style.display = 'none');
-
       const targetId = clickedBtn.dataset.target || clickedBtn.getAttribute('data-target');
-
       const target = document.getElementById('tab-' + targetId);
-
       if (target) {
-
         target.style.display = 'block';
-
         anime({
-
           targets: target.children,
-
           opacity: [0, 1],
-
           translateY: [10, 0],
-
           delay: anime.stagger(25),
-
           duration: 300,
-
           easing: 'easeOutCubic'
-
         });
-
       }
-
     });
-
   });
 
-
-
   // Auto-switch tab if URL hash contains query like ?tab=stats or ?tab=spiele
-
   try {
-
     const hash = window.location.hash || '';
-
     if (hash.includes('tab=stats') || hash.includes('tab=statistiken')) {
-
       const statsBtn = document.querySelector('.tab-btn[data-target="stats"]');
-
       if (statsBtn) statsBtn.click();
-
     } else if (hash.includes('tab=spiele')) {
-
       const spieleBtn = document.querySelector('.tab-btn[data-target="spiele"]');
-
       if (spieleBtn) spieleBtn.click();
-
     }
-
   } catch(e) {}
 
 
-
-
-
   // Slider Logic with Dropdown & Arrow synchronization
-
   const slides = document.querySelectorAll('.round-slide');
-
   const maxRound = slides.length - 1;
-
   let currentRound = 0;
-
   for (let i = 0; i < slides.length; i++) {
-
     if (slides[i].style.display === 'block') currentRound = i;
-
   }
 
-
-
   const updateSliderState = (newIdx, direction = 0) => {
-
     if (newIdx < 0 || newIdx > maxRound) return;
-
     
-
     const oldIdx = currentRound;
-
     slides[oldIdx].style.display = 'none';
-
     currentRound = newIdx;
-
     slides[currentRound].style.display = 'block';
 
-
-
     // Synchronize all round dropdowns
-
     document.querySelectorAll('.round-select-dropdown').forEach(sel => {
-
       sel.value = currentRound;
-
     });
-
-
 
     // Update opacity/pointer-events on navigation buttons
-
     document.querySelectorAll('.prev-round').forEach(btn => {
-
       btn.style.opacity = currentRound === 0 ? '0.35' : '1';
-
       btn.style.pointerEvents = currentRound === 0 ? 'none' : 'auto';
-
     });
-
     document.querySelectorAll('.next-round').forEach(btn => {
-
       btn.style.opacity = currentRound === maxRound ? '0.35' : '1';
-
       btn.style.pointerEvents = currentRound === maxRound ? 'none' : 'auto';
-
     });
-
-
 
     const travelX = direction > 0 ? 20 : (direction < 0 ? -20 : 0);
-
     if (travelX !== 0) {
-
       anime({
-
         targets: slides[currentRound],
-
         opacity: [0, 1],
-
         translateX: [travelX, 0],
-
         duration: 300,
-
         easing: 'easeOutSine'
-
       });
-
     }
-
   };
-
-
 
   updateSliderState(currentRound, 0);
 
-
-
   document.querySelectorAll('.prev-round').forEach(btn => {
-
     btn.addEventListener('click', () => {
-
       if (currentRound > 0) updateSliderState(currentRound - 1, -1);
-
     });
-
   });
-
-
 
   document.querySelectorAll('.next-round').forEach(btn => {
-
     btn.addEventListener('click', () => {
-
       if (currentRound < maxRound) updateSliderState(currentRound + 1, 1);
-
     });
-
   });
-
-
 
   document.querySelectorAll('.round-select-dropdown').forEach(sel => {
-
     sel.addEventListener('change', (e) => {
-
       const targetIdx = parseInt(e.target.value);
-
       const dir = targetIdx > currentRound ? 1 : -1;
-
       updateSliderState(targetIdx, dir);
-
     });
-
   });
-
-
 
   // Match Event Accordions
-
   const matchCards = document.querySelectorAll('.has-events-accordion');
-
   matchCards.forEach(card => {
-
     card.addEventListener('click', () => {
-
       const accordion = card.querySelector('.events-accordion');
-
       if (!accordion) return;
-
       if (accordion.style.display === 'none') {
-
         accordion.style.display = 'block';
-
         card.classList.add('accordion-open');
-
         anime({
-
           targets: accordion,
-
           opacity: [0, 1],
-
           translateY: [-6, 0],
-
           duration: 300,
-
           easing: 'easeOutQuad'
-
         });
-
       } else {
-
         accordion.style.display = 'none';
-
         card.classList.remove('accordion-open');
-
       }
-
     });
-
   });
-
-
 
   // Table Row Accordions (Mobile)
-
   const tableCards = document.querySelectorAll('.has-table-accordion');
-
   tableCards.forEach(card => {
-
     card.addEventListener('click', () => {
-
       if (window.innerWidth > 768) return; 
-
       const accordion = card.querySelector('.table-accordion');
-
       if (!accordion) return;
-
       const isCurrentlyOpen = accordion.style.display === 'block';
-
       
-
       // Close all other row accordions
-
       tableCards.forEach(otherCard => {
-
         const otherAcc = otherCard.querySelector('.table-accordion');
-
         if (otherAcc && otherAcc !== accordion) {
-
           otherAcc.style.display = 'none';
-
         }
-
       });
 
-
-
       if (!isCurrentlyOpen) {
-
         accordion.style.display = 'block';
-
         accordion.style.opacity = '0';
-
         accordion.style.transform = 'translateY(-6px)';
-
         anime({
-
           targets: accordion,
-
           opacity: [0, 1],
-
           translateY: [-6, 0],
-
           duration: 250,
-
           easing: 'easeOutQuad'
-
         });
-
       } else {
-
         accordion.style.display = 'none';
-
       }
-
     });
-
   });
-
-
 
   const btnShowAll = document.getElementById('btn-show-all-scorers');
 
-
-
   // Stats Main Toggle
-
   const statsBtns = document.querySelectorAll('.stats-toggle-btn');
-
   statsBtns.forEach(btn => {
-
     btn.addEventListener('click', (e) => {
-
       statsBtns.forEach(b => b.classList.remove('active'));
-
       e.target.classList.add('active');
-
       
-
       const elTore = document.getElementById('stats-tore');
-
       const elKarten = document.getElementById('stats-karten');
-
       if (elTore) elTore.style.display = 'none';
-
       if (elKarten) elKarten.style.display = 'none';
-
       
-
       const target = document.getElementById('stats-' + e.target.dataset.stats);
-
       if (target) {
-
         target.style.display = 'block';
-
         const cards = target.querySelectorAll('.glass-card');
-
         cards.forEach(c => { c.style.opacity = '1'; c.style.transform = 'none'; });
-
         anime.remove(cards);
-
         anime({
-
           targets: cards,
-
           opacity: [0, 1],
-
           translateY: [10, 0],
-
           delay: anime.stagger(40),
-
           duration: 400,
-
           easing: 'easeOutCubic'
-
         });
-
       }
-
     });
-
   });
-
-
 
   // Karten Sub Toggle
-
   const kartenBtns = document.querySelectorAll('.karten-sub-btn');
-
   kartenBtns.forEach(btn => {
-
     btn.addEventListener('click', (e) => {
-
       kartenBtns.forEach(b => b.classList.remove('active'));
-
       e.target.classList.add('active');
-
       
-
       const elGelb = document.getElementById('karten-gelb');
-
       const elGelbrot = document.getElementById('karten-gelbrot');
-
       const elRot = document.getElementById('karten-rot');
-
       const elSperren = document.getElementById('karten-sperren');
-
       if (elGelb) elGelb.style.display = 'none';
-
       if (elGelbrot) elGelbrot.style.display = 'none';
-
       if (elRot) elRot.style.display = 'none';
-
       if (elSperren) elSperren.style.display = 'none';
-
       
-
       const target = document.getElementById('karten-' + e.target.dataset.karten);
-
       if (target) {
-
         target.style.display = 'block';
-
         const cards = target.querySelectorAll('.glass-card');
-
         cards.forEach(c => { c.style.opacity = '1'; c.style.transform = 'none'; });
-
         anime.remove(cards);
-
         anime({
-
           targets: cards,
-
           opacity: [0, 1],
-
           translateY: [10, 0],
-
           delay: anime.stagger(40),
-
           duration: 400,
-
           easing: 'easeOutCubic'
-
         });
-
       }
-
     });
-
   });
-
-
 
   // Karten Alle anschauen buttons
-
   ['yellow', 'yellowRed', 'red'].forEach(type => {
-
     const btn = document.getElementById('btn-show-all-' + type);
-
     if (btn) {
-
       btn.addEventListener('click', () => {
-
         const container = document.getElementById('extra-' + type + '-container');
-
         if (container) {
-
           container.style.display = 'block';
-
           btn.style.display = 'none';
-
           anime({
-
             targets: '.extra-' + type + '-scorer',
-
             opacity: [0, 1],
-
             translateY: [10, 0],
-
             delay: anime.stagger(50),
-
             duration: 500,
-
             easing: 'easeOutCubic'
-
           });
-
         }
-
       });
-
     }
-
   });
 
-
-
   if (btnShowAll) {
-
     btnShowAll.addEventListener('click', () => {
-
       const container = document.getElementById('extra-scorers-container');
-
       container.style.display = 'block';
-
       btnShowAll.style.display = 'none';
-
       anime({
-
         targets: '.extra-scorer',
-
         opacity: [0, 1],
-
         translateY: [10, 0],
-
         delay: anime.stagger(50),
-
         duration: 500,
-
         easing: 'easeOutCubic'
-
       });
-
     });
-
   }
-
 };
+
+
+
+
