@@ -278,16 +278,30 @@ export const renderAdminPlayers = () => {
                             <input type="text" id="edit-ofb" class="admin-input" placeholder="ÖFB-Verein" style="width: 100%;">
                         </div>
                         <div>
-                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Sperre</label>
-                            <input type="text" id="edit-sperre" class="admin-input" placeholder="Grund für Sperre" style="width: 100%;">
+                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Mannschaft</label>
+                            <select id="edit-team" class="admin-input" style="width: 100%;">
+                                <option value="">-- Mannschaft auswählen --</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div>
-                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Mannschaft</label>
-                        <select id="edit-team" class="admin-input" style="width: 100%;">
-                            <option value="">-- Mannschaft auswählen --</option>
-                        </select>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.22); border-radius: var(--border-radius-sm); padding: var(--space-sm);">
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; color: #ef4444; font-weight: 700; margin-bottom: 4px;">Sperre (Anzahl Spiele)</label>
+                            <select id="edit-sperre-spiele" class="admin-input" style="width: 100%;">
+                                <option value="0">Keine Sperre (0 Spiele)</option>
+                                <option value="1">1 Spiel Sperre</option>
+                                <option value="2">2 Spiele Sperre</option>
+                                <option value="3">3 Spiele Sperre</option>
+                                <option value="4">4 Spiele Sperre</option>
+                                <option value="5">5 Spiele Sperre</option>
+                                <option value="-1">Unbefristet / Ausschluss</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; color: #ef4444; font-weight: 700; margin-bottom: 4px;">Sperre Grund / Kommission</label>
+                            <input type="text" id="edit-sperre" class="admin-input" placeholder="z. B. Tätlichkeit (Urteil Senat I)" style="width: 100%;">
+                        </div>
                     </div>
 
                     <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
@@ -417,7 +431,10 @@ const renderTable = () => {
                 <td>${p.Team || '-'}</td>
                 <td style="text-align: center;">${mitglied}</td>
                 <td>${p.seit || '-'}</td>
-                <td><span class="badge ${badgeClass}">${p.Status || '-'}</span></td>
+                <td>
+                    <span class="badge ${badgeClass}">${p.Status || '-'}</span>
+                    ${(parseInt(p.sperreSpiele) > 0 || (p.Sperre && !p.Sperre.toLowerCase().includes('keine'))) ? `<span class="badge badge-danger" style="margin-left: 4px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);" title="${p.Sperre || 'Gesperrt'}">Gesperrt (${p.sperreSpiele > 0 ? p.sperreSpiele + ' Sp.' : 'Ja'})</span>` : ''}
+                </td>
                 <td><span style="color: var(--color-text-primary);">${ofbVerein}</span></td>
                 <td style="text-align: center;">
                     <button class="btn btn-outline edit-single-player-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
@@ -573,6 +590,7 @@ const openEditModal = (idx = null) => {
         }
 
         document.getElementById('edit-ofb').value = p['ÖFB-Verein'] || '';
+        document.getElementById('edit-sperre-spiele').value = (p.sperreSpiele !== undefined) ? String(p.sperreSpiele) : ((p.Sperre && !p.Sperre.toLowerCase().includes('keine')) ? '1' : '0');
         document.getElementById('edit-sperre').value = p.Sperre || '';
         if (deleteBtn) deleteBtn.style.display = 'block';
     } else {
@@ -592,6 +610,7 @@ const openEditModal = (idx = null) => {
         }
         document.getElementById('edit-seit').value = new Date().toISOString().split('T')[0];
         document.getElementById('edit-ofb').value = '';
+        document.getElementById('edit-sperre-spiele').value = '0';
         document.getElementById('edit-sperre').value = '';
         if (deleteBtn) deleteBtn.style.display = 'none';
     }
@@ -886,6 +905,7 @@ const bindEvents = () => {
                 positionSide: document.getElementById('edit-position-side').value,
                 photoUrl: document.getElementById('edit-photo-url').value.trim(),
                 'ÖFB-Verein': document.getElementById('edit-ofb').value.trim(),
+                sperreSpiele: parseInt(document.getElementById('edit-sperre-spiele').value) || 0,
                 Sperre: document.getElementById('edit-sperre').value.trim(),
                 Team: document.getElementById('edit-team').value
             };

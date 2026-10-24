@@ -1,7 +1,7 @@
 import { viewHome, bindHome } from './views/home.js?v=1792834000000';
 import { viewNews, bindNews } from './views/news.js?v=1791305000000';
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1792836000000';
-import { viewSpieler, bindSpieler } from './views/spieler.js?v=1792836000000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1792837000000';
+import { viewSpieler, bindSpieler } from './views/spieler.js?v=1792837000000';
 import { viewTeams, bindTeams } from './views/teams.js?v=1792836000000';
 import { viewArchiv } from './views/simpleViews.js?v=1791305000000';
 import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=1791305000000';

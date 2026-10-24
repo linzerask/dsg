@@ -2,6 +2,7 @@ import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=17
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
 import { getPlayerLink } from '../playerUtils.js?v=1791182000000';
+import { calculateSeasonSuspensions, getMatchSuspensions, normalizeKey, normalizePlayerName } from '../suspensionUtils.js?v=1792837000000';
 
 
 let currentViewSeason = null;
@@ -229,6 +230,7 @@ export function viewLiga() {
 
 
   const cardsData = stats.cards || [];
+  const suspensionData = calculateSeasonSuspensions(currentSeason);
   
   const generateCardsHTML = (typeKey) => {
     let sorted = [];
@@ -310,7 +312,19 @@ export function viewLiga() {
         </div>
         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
           ${renderCardIcons(s)}
-          ${s.suspension ? '<span class="sperre-badge">' + s.suspension + '</span>' : ''}
+          ${(() => {
+            const pKey = normalizePlayerName(pName) + '___' + normalizeKey(s.team);
+            const susp = suspensionData.playerMap.get(pKey);
+            if (!susp) return '';
+            if (susp.status === 'suspended') {
+              return `<span class="sperre-badge sperre-active" title="${susp.active?.reason || 'Gesperrt'} - Fehlt in ${susp.active?.nextMatch?.round || 'nächster Runde'}">${susp.statusText}</span>`;
+            } else if (susp.status === 'warning' && typeKey === 'yellow') {
+              return `<span class="sperre-badge sperre-warning" title="Noch 1 gelbe Karte bis zur automatischen Spielsperre">${susp.statusText}</span>`;
+            } else if (susp.status === 'served') {
+              return `<span class="sperre-badge sperre-served" title="Sperre bereits verbüßt">${susp.statusText}</span>`;
+            }
+            return '';
+          })()}
         </div>
       </div>
     `;
@@ -334,6 +348,112 @@ export function viewLiga() {
     gelbrot: generateCardsHTML('yellowRed'),
     rot: generateCardsHTML('red')
   };
+
+  const buildSperrenHTML = () => {
+    const { activeSuspensions, pendingWarnings, servedSuspensions } = suspensionData;
+
+    const renderActiveCard = (item) => {
+      const pLink = getPlayerLink(item.player, item.team);
+      const m = item.nextMatch;
+      return `
+        <div class="glass-card stagger-item sperre-card sperre-card-active" style="margin-bottom: var(--space-sm); padding: var(--space-md); border-left: 4px solid #ef4444;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
+            <div style="min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="sperre-badge sperre-active">${item.gamesRemaining} Spiel${item.gamesRemaining > 1 ? 'e' : ''} Sperre</span>
+                <span style="font-size: 0.8rem; font-weight: 700; color: #ef4444; text-transform: uppercase;">${item.reason}</span>
+              </div>
+              <a href="${pLink}" class="player-link" style="font-weight: 800; font-size: 1.15rem; display: block; margin-top: 4px; color: var(--color-text-primary);">${item.player}</a>
+              <div style="font-size: 0.85rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-top: 3px;">
+                <a href="#/teams?team=${encodeURIComponent(item.team)}" class="team-logo-link" title="${item.team} Vereinsseite">
+                  ${renderTeamLogo(item.team, 'xs')}
+                </a>
+                <span>${item.team}</span>
+              </div>
+            </div>
+            <div style="text-align: right; font-size: 0.85rem; color: var(--color-text-secondary); background: rgba(0,0,0,0.04); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--color-border);">
+              <div style="font-weight: 700; color: var(--color-text-primary);">Fehlt in ${m.round || 'kommender Runde'}</div>
+              <div style="font-size: 0.8rem; margin-top: 2px;">${m.date ? m.date + ' ' : ''}${m.opponent ? 'vs ' + m.opponent : ''}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    const renderWarningCard = (item) => {
+      const pLink = getPlayerLink(item.player, item.team);
+      return `
+        <div class="glass-card stagger-item sperre-card sperre-card-warning" style="margin-bottom: var(--space-sm); padding: var(--space-md); border-left: 4px solid #eab308;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+            <div style="min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="sperre-badge sperre-warning">Sperre droht (${item.yellowCount}/${item.threshold})</span>
+                <span style="font-size: 0.8rem; font-weight: 700; color: #eab308; text-transform: uppercase;">1 Karte bis Sperre</span>
+              </div>
+              <a href="${pLink}" class="player-link" style="font-weight: 800; font-size: 1.1rem; display: block; margin-top: 4px; color: var(--color-text-primary);">${item.player}</a>
+              <div style="font-size: 0.85rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-top: 3px;">
+                <a href="#/teams?team=${encodeURIComponent(item.team)}" class="team-logo-link" title="${item.team} Vereinsseite">
+                  ${renderTeamLogo(item.team, 'xs')}
+                </a>
+                <span>${item.team}</span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 4px;" title="${item.yellowCount} gelbe Karten">
+              <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 4px;">${item.yellowCount}</span>
+              <div class="card-icon card-icon-yellow"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    const renderServedCard = (item) => {
+      const pLink = getPlayerLink(item.player, item.team);
+      return `
+        <div class="glass-card stagger-item sperre-card sperre-card-served" style="margin-bottom: var(--space-sm); padding: var(--space-sm) var(--space-md); opacity: 0.85;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+            <div style="min-width: 0;">
+              <a href="${pLink}" class="player-link" style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">${item.player}</a>
+              <div style="font-size: 0.8rem; color: var(--color-text-secondary);">${item.team} • ${item.reason}</div>
+            </div>
+            <div style="text-align: right;">
+              <span class="sperre-badge sperre-served">Verbürgt in ${item.gamesServed}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    return `
+      <div style="margin-bottom: var(--space-lg);">
+        <h4 style="font-size: 1.15rem; font-weight: 800; color: #ef4444; margin: 0 0 var(--space-sm) 0; display: flex; align-items: center; gap: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+          Aktuell gesperrt (${activeSuspensions.length})
+        </h4>
+        ${activeSuspensions.length > 0 ? activeSuspensions.map(renderActiveCard).join('') : '<div class="glass-card" style="padding: 18px; text-align: center; color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Keine aktiven Spielersperren für die kommende Runde.</div>'}
+      </div>
+
+      <div style="margin-bottom: var(--space-lg);">
+        <h4 style="font-size: 1.15rem; font-weight: 800; color: #eab308; margin: 0 0 var(--space-sm) 0; display: flex; align-items: center; gap: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          Sperre droht (${pendingWarnings.length})
+        </h4>
+        <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: var(--space-sm);">Spieler mit 2 oder 4 gelben Karten (1 weitere Karte bis zur automatischen Spielsperre).</div>
+        ${pendingWarnings.length > 0 ? pendingWarnings.map(renderWarningCard).join('') : '<div class="glass-card" style="padding: 18px; text-align: center; color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: var(--space-md);">Keine Spieler vor einer Gelbsperre.</div>'}
+      </div>
+
+      ${servedSuspensions.length > 0 ? `
+      <div>
+        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--color-text-secondary); margin: 0 0 var(--space-sm) 0;">
+          Verbüßte Sperren dieser Saison (${servedSuspensions.length})
+        </h4>
+        ${servedSuspensions.map(renderServedCard).join('')}
+      </div>
+      ` : ''}
+    `;
+  };
+
+  const sperrenHTML = buildSperrenHTML();
 
   const scorersHTML = topScorers.length > 0 ? `
     ${top10}
@@ -836,6 +956,21 @@ export function viewLiga() {
         </div>
 
         ${eventsHtml}
+        ${(() => {
+          if (isUpcoming || displayScore === '- : -' || displayScore === '-:-') {
+            const matchSusp = getMatchSuspensions(m, currentSeason);
+            const totalSusp = [...matchSusp.homeSuspended, ...matchSusp.awaySuspended];
+            if (totalSusp.length > 0) {
+              return `
+                <div class="match-suspension-notice">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                  <span>Fehlt gesperrt: ${totalSusp.map(s => `<strong>${s.player}</strong> (${s.team}, ${s.gamesRemaining} Sp.)`).join(', ')}</span>
+                </div>
+              `;
+            }
+          }
+          return '';
+        })()}
       </div>`;
       }).join('');
     }
@@ -938,11 +1073,13 @@ export function viewLiga() {
                 <button class="karten-sub-btn active" data-karten="gelb">Gelb</button>
                 <button class="karten-sub-btn" data-karten="gelbrot">Gelb-Rot</button>
                 <button class="karten-sub-btn" data-karten="rot">Rot</button>
+                <button class="karten-sub-btn" data-karten="sperren">Sperren</button>
             </div>
             
             <div id="karten-gelb">${cardsHTML.gelb}</div>
             <div id="karten-gelbrot" style="display: none;">${cardsHTML.gelbrot}</div>
             <div id="karten-rot" style="display: none;">${cardsHTML.rot}</div>
+            <div id="karten-sperren" style="display: none;">${sperrenHTML}</div>
         </div>
       </div>
     </div>
@@ -1194,9 +1331,11 @@ export function bindLigaTabs() {
       const elGelb = document.getElementById('karten-gelb');
       const elGelbrot = document.getElementById('karten-gelbrot');
       const elRot = document.getElementById('karten-rot');
+      const elSperren = document.getElementById('karten-sperren');
       if (elGelb) elGelb.style.display = 'none';
       if (elGelbrot) elGelbrot.style.display = 'none';
       if (elRot) elRot.style.display = 'none';
+      if (elSperren) elSperren.style.display = 'none';
       
       const target = document.getElementById('karten-' + e.target.dataset.karten);
       if (target) {

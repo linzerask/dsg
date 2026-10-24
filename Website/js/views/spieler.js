@@ -3,6 +3,7 @@ import { Store, sanitizeMojibake } from '../store.js?v=1791182000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
 import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getPlayerPositionLabel, getPlayerPositionCategory } from '../playerUtils.js?v=1791183000000';
+import { getPlayerSuspensionInfo } from '../suspensionUtils.js?v=1792837000000';
 
 let allActivePlayers = [];
 let activeSearchQuery = '';
@@ -488,10 +489,19 @@ export const bindSpieler = async () => {
       const posLabelText = getPlayerPositionLabel(p.raw || p);
       const posLabel = posLabelText ? `<span class="spieler-card-pos-tag">${posLabelText}</span>` : '';
 
+      const susp = getPlayerSuspensionInfo(p.fullName, p.team, Store.getData()?.currentSeason || '2026/2027');
+      let suspTag = '';
+      if (susp.status === 'suspended') {
+        suspTag = `<span class="sperre-badge sperre-active" style="position: absolute; top: 10px; right: 10px; z-index: 2;">Gesperrt</span>`;
+      } else if (susp.status === 'warning') {
+        suspTag = `<span class="sperre-badge sperre-warning" style="position: absolute; top: 10px; right: 10px; z-index: 2;">Sperre droht</span>`;
+      }
+
       return `
         <div class="spieler-card" data-player-id="${p.id}">
           <div class="spieler-card-header">
             ${posLabel}
+            ${suspTag}
             <img src="${avatarUrl}" alt="${p.fullName}" class="spieler-card-avatar">
             <div class="spieler-card-team-badge" title="${p.team}">
               ${teamLogo}
@@ -627,6 +637,31 @@ export const bindSpieler = async () => {
               <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent);"></span> Aktiv
             </span>
           </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--color-border);">
+            <span style="color: var(--color-text-secondary); font-weight: 600;">Spielberechtigung:</span>
+            <div>${(() => {
+              const suspModal = getPlayerSuspensionInfo(player.fullName, player.team, Store.getData()?.currentSeason || '2026/2027');
+              return suspModal.badgeHtml;
+            })()}</div>
+          </div>
+          ${(() => {
+            const suspModal = getPlayerSuspensionInfo(player.fullName, player.team, Store.getData()?.currentSeason || '2026/2027');
+            if (suspModal.active) {
+              return `
+                <div style="font-size: 0.8rem; color: #ef4444; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.22); border-radius: 6px; padding: 6px 10px; margin-top: 6px; text-align: center;">
+                  <strong>${suspModal.active.reason}</strong>: Fehlt in ${suspModal.active.nextMatch.round || 'kommender Runde'} (${suspModal.active.gamesRemaining} Spiel${suspModal.active.gamesRemaining > 1 ? 'e' : ''} Sperre)
+                </div>
+              `;
+            }
+            if (suspModal.warning) {
+              return `
+                <div style="font-size: 0.8rem; color: #eab308; background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.22); border-radius: 6px; padding: 6px 10px; margin-top: 6px; text-align: center;">
+                  Vorverwarnung: Noch 1 gelbe Karte bis zur automatischen Spielsperre!
+                </div>
+              `;
+            }
+            return '';
+          })()}
         </div>
 
         <!-- Share & Copy Profile Link -->
