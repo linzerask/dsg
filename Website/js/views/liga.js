@@ -236,15 +236,15 @@ export function viewLiga() {
       sorted = [...cardsData]
         .filter(c => (c.yellow || 0) > 0)
         .sort((a, b) => (b.yellow || 0) - (a.yellow || 0));
-    } else {
-      // Red / Dismissals (both straight Red and Yellow-Red)
+    } else if (typeKey === 'yellowRed') {
       sorted = [...cardsData]
-        .filter(c => (c.red || 0) > 0 || (c.yellowRed || 0) > 0)
-        .sort((a, b) => {
-          if ((b.red || 0) !== (a.red || 0)) return (b.red || 0) - (a.red || 0);
-          if ((b.yellowRed || 0) !== (a.yellowRed || 0)) return (b.yellowRed || 0) - (a.yellowRed || 0);
-          return (b.yellow || 0) - (a.yellow || 0);
-        });
+        .filter(c => (c.yellowRed || 0) > 0)
+        .sort((a, b) => (b.yellowRed || 0) - (a.yellowRed || 0));
+    } else {
+      // Straight Red
+      sorted = [...cardsData]
+        .filter(c => (c.red || 0) > 0)
+        .sort((a, b) => (b.red || 0) - (a.red || 0));
     }
     
     // Dense Ranking
@@ -253,7 +253,7 @@ export function viewLiga() {
     sorted.forEach((c, idx) => {
       const comp = typeKey === 'yellow' 
         ? `${c.yellow || 0}`
-        : `${c.red || 0}_${c.yellowRed || 0}`;
+        : (typeKey === 'yellowRed' ? `${c.yellowRed || 0}` : `${c.red || 0}`);
       if (prevComp !== null && comp !== prevComp) {
         currentRank++;
       }
@@ -265,31 +265,26 @@ export function viewLiga() {
     const renderCardIcons = (c) => {
       if (typeKey === 'yellow') {
         return `
-          <div style="display: flex; align-items: center;">
+          <div style="display: flex; align-items: center;" title="Gelbe Karte">
             <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${c.yellow || 0}</span>
-            <div class="card-icon card-icon-yellow" title="Gelbe Karte"></div>
+            <div class="card-icon card-icon-yellow"></div>
           </div>
         `;
       }
-      // Dismissals: render straight Red, Yellow-Red, or both
-      const badges = [];
-      if ((c.red || 0) > 0) {
-        badges.push(`
-          <div style="display: flex; align-items: center;" title="Rote Karte">
-            <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${c.red}</span>
-            <div class="card-icon card-icon-red"></div>
-          </div>
-        `);
-      }
-      if ((c.yellowRed || 0) > 0) {
-        badges.push(`
+      if (typeKey === 'yellowRed') {
+        return `
           <div style="display: flex; align-items: center;" title="Gelb-Rote Karte">
-            <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${c.yellowRed}</span>
+            <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${c.yellowRed || 0}</span>
             <div class="card-icon card-icon-yellow-red"></div>
           </div>
-        `);
+        `;
       }
-      return `<div style="display: flex; align-items: center; gap: 12px;">${badges.join('')}</div>`;
+      return `
+        <div style="display: flex; align-items: center;" title="Rote Karte">
+          <span style="font-weight: 900; font-size: 1.2rem; color: var(--color-text-primary); margin-right: 8px;">${c.red || 0}</span>
+          <div class="card-icon card-icon-red"></div>
+        </div>
+      `;
     };
 
     const renderRow = (s, extraClass) => {
@@ -336,6 +331,7 @@ export function viewLiga() {
 
   const cardsHTML = {
     gelb: generateCardsHTML('yellow'),
+    gelbrot: generateCardsHTML('yellowRed'),
     rot: generateCardsHTML('red')
   };
 
@@ -583,10 +579,11 @@ export function viewLiga() {
       const isUpcoming = m.status === 'Upcoming';
       const hasEvents = (m.events && m.events.length > 0) || (m.scorers && m.scorers.length > 0) || (m.cards && m.cards.length > 0);
 
+      const isPostponed = (m.status || '').toLowerCase() === 'postponed' || (m.status || '').toLowerCase().includes('verschoben');
       let displayScore = m.score || "- : -";
       if (m.status === 'Abgesagt 3:0') displayScore = "Abges. 3:0";
       if (m.status === 'Abgesagt 0:3') displayScore = "Abges. 0:3";
-      if (m.status === 'Postponed') displayScore = "Verschoben";
+      if (isPostponed) displayScore = "Verschoben";
 
       if (displayScore && displayScore !== "- : -" && displayScore !== "-:-" && !displayScore.startsWith("Abges.") && displayScore !== "Verschoben") {
         displayScore = displayScore.replace(/\s*\([^)]*\)/g, '').trim();
@@ -939,10 +936,12 @@ export function viewLiga() {
         <div id="stats-karten" style="display: none;" class="stagger-item">
             <div class="karten-sub-toggle">
                 <button class="karten-sub-btn active" data-karten="gelb">Gelb</button>
+                <button class="karten-sub-btn" data-karten="gelbrot">Gelb-Rot</button>
                 <button class="karten-sub-btn" data-karten="rot">Rot</button>
             </div>
             
             <div id="karten-gelb">${cardsHTML.gelb}</div>
+            <div id="karten-gelbrot" style="display: none;">${cardsHTML.gelbrot}</div>
             <div id="karten-rot" style="display: none;">${cardsHTML.rot}</div>
         </div>
       </div>
@@ -1193,8 +1192,10 @@ export function bindLigaTabs() {
       e.target.classList.add('active');
       
       const elGelb = document.getElementById('karten-gelb');
+      const elGelbrot = document.getElementById('karten-gelbrot');
       const elRot = document.getElementById('karten-rot');
       if (elGelb) elGelb.style.display = 'none';
+      if (elGelbrot) elGelbrot.style.display = 'none';
       if (elRot) elRot.style.display = 'none';
       
       const target = document.getElementById('karten-' + e.target.dataset.karten);
@@ -1216,7 +1217,7 @@ export function bindLigaTabs() {
   });
 
   // Karten Alle anschauen buttons
-  ['yellow', 'red'].forEach(type => {
+  ['yellow', 'yellowRed', 'red'].forEach(type => {
     const btn = document.getElementById('btn-show-all-' + type);
     if (btn) {
       btn.addEventListener('click', () => {

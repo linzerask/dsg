@@ -354,6 +354,7 @@ export const bindSpieler = async () => {
       position: pos,
       goals: stats.goals,
       yellow: stats.yellow,
+      yellowRed: stats.yellowRed || 0,
       red: stats.red,
       raw: p
     };
@@ -516,7 +517,15 @@ export const bindSpieler = async () => {
                 </span>
                 <span class="spieler-stat-lbl">Gelb</span>
               </div>
-              <div class="spieler-stat-pill" title="Rote & Gelb-Rote Karten">
+              ${(p.yellowRed > 0) ? `
+              <div class="spieler-stat-pill" title="Gelb-Rote Karten">
+                <span class="spieler-stat-val" style="color: #f1c40f; display: inline-flex; align-items: center; gap: 4px;">
+                  <span style="display:inline-block;width:9px;height:12px;background:linear-gradient(135deg, #f1c40f 50%, #e74c3c 50%);border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.yellowRed}
+                </span>
+                <span class="spieler-stat-lbl">G-Rot</span>
+              </div>
+              ` : ''}
+              <div class="spieler-stat-pill" title="Rote Karten">
                 <span class="spieler-stat-val" style="color: #ef4444; display: inline-flex; align-items: center; gap: 4px;">
                   <span style="display:inline-block;width:9px;height:12px;background:#ef4444;border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.red}
                 </span>
@@ -569,7 +578,7 @@ export const bindSpieler = async () => {
         </div>
 
         <!-- Stats Overview Grid -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%;">
+        <div style="display: grid; grid-template-columns: repeat(${player.yellowRed > 0 ? 4 : 3}, 1fr); gap: 10px; width: 100%;">
           <div style="background: rgba(0, 179, 65, 0.08); border: 1px solid rgba(0, 179, 65, 0.2); border-radius: var(--border-radius-sm); padding: 12px 8px;">
             <div style="font-size: 1.6rem; font-weight: 800; color: var(--color-accent); display: flex; align-items: center; justify-content: center; gap: 6px;">
               ${renderIcon('ball', { size: 20, color: 'var(--color-accent)' })} ${player.goals}
@@ -582,6 +591,14 @@ export const bindSpieler = async () => {
             </div>
             <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary); margin-top: 2px;">Gelbe Karten</div>
           </div>
+          ${(player.yellowRed > 0) ? `
+          <div style="background: rgba(241, 196, 15, 0.08); border: 1px solid rgba(241, 196, 15, 0.25); border-radius: var(--border-radius-sm); padding: 12px 8px;">
+            <div style="font-size: 1.6rem; font-weight: 800; color: #f1c40f; display: flex; align-items: center; justify-content: center; gap: 6px;">
+              <span style="display:inline-block;width:14px;height:18px;background:linear-gradient(135deg, #f1c40f 50%, #e74c3c 50%);border-radius:2px;box-shadow:0 2px 4px rgba(0,0,0,0.25);"></span> ${player.yellowRed}
+            </div>
+            <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary); margin-top: 2px;">Gelb-Rot</div>
+          </div>
+          ` : ''}
           <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: var(--border-radius-sm); padding: 12px 8px;">
             <div style="font-size: 1.6rem; font-weight: 800; color: #ef4444; display: flex; align-items: center; justify-content: center; gap: 6px;">
               <span style="display:inline-block;width:14px;height:18px;background:#ef4444;border-radius:2px;box-shadow:0 2px 4px rgba(0,0,0,0.25);"></span> ${player.red}

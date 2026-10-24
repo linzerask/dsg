@@ -140,26 +140,42 @@ export const computeAllTimeStats = () => {
             playerMap[name].goals += (parseInt(ev.count) || 1);
             if (ev.team) playerMap[name].teams.add(sanitizeMojibake(ev.team.trim()));
             playerMap[name].seasons.add(seasonKey);
-          } else if ((ev.type === 'yellow' || ev.type === 'red' || ev.type === 'yellowRed' || ev.type === 'yellow-red') && ev.player) {
-            const name = sanitizeMojibake((ev.player || '').trim());
-            if (!name) return;
-            if (!seasonEventCards[name]) {
-              seasonEventCards[name] = {
-                name,
-                team: ev.team ? sanitizeMojibake(ev.team.trim()) : sanitizeMojibake(m.home || ''),
-                yellow: 0,
-                red: 0
-              };
-            }
-            if (ev.type === 'yellow') {
-              seasonEventCards[name].yellow += (parseInt(ev.count) || 1);
-            } else if (ev.type === 'yellowRed' || ev.type === 'yellow-red') {
-              seasonEventCards[name].yellow += 2;
-              seasonEventCards[name].red += 1;
-            } else {
-              seasonEventCards[name].red += (parseInt(ev.count) || 1);
-            }
           }
+        });
+
+        // Group cards per player for this match to apply Yellow-Red cancellation
+        const matchCardEvents = (m.cards && Array.isArray(m.cards) && m.cards.length > 0)
+          ? m.cards
+          : ((m.events && Array.isArray(m.events)) ? m.events.filter(e => e.type && e.type !== 'goal') : []);
+
+        const matchCardsPerPlayer = new Map();
+        matchCardEvents.forEach(cd => {
+          const name = sanitizeMojibake((cd.player || cd.name || '').trim());
+          if (!name) return;
+          const team = cd.team ? sanitizeMojibake(cd.team.trim()) : sanitizeMojibake(m.home || '');
+          const key = name.toLowerCase() + '___' + team.toLowerCase();
+          if (!matchCardsPerPlayer.has(key)) {
+            matchCardsPerPlayer.set(key, { name, team, yellows: 0, yellowReds: 0, reds: 0 });
+          }
+          const entry = matchCardsPerPlayer.get(key);
+          const count = parseInt(cd.count) || 1;
+          const t = String(cd.type || cd.card || '').toLowerCase().replace(/[^a-z]/g, '');
+          if (t === 'yellow' || t === 'gelb') entry.yellows += count;
+          else if (t === 'yellowred' || t === 'gelbrot') entry.yellowReds += count;
+          else if (t === 'red' || t === 'rot') entry.reds += count;
+        });
+
+        matchCardsPerPlayer.forEach(mc => {
+          if (!seasonEventCards[mc.name]) {
+            seasonEventCards[mc.name] = { name: mc.name, team: mc.team, yellow: 0, yellowRed: 0, red: 0 };
+          }
+          if (mc.yellowReds > 0 || mc.yellows >= 2) {
+            seasonEventCards[mc.name].yellowRed += Math.max(1, mc.yellowReds);
+            // First yellow cancelled: 0 added to yellow
+          } else {
+            seasonEventCards[mc.name].yellow += mc.yellows;
+          }
+          seasonEventCards[mc.name].red += mc.reds;
         });
       } else if (m.scorers && Array.isArray(m.scorers) && m.scorers.length > 0) {
         m.scorers.forEach(sc => {
@@ -191,6 +207,7 @@ export const computeAllTimeStats = () => {
           name,
           team: (c.team || '').trim(),
           yellow: parseInt(c.yellow || c.gelb || 0) || 0,
+          yellowRed: parseInt(c.yellowRed || c.gelbrot || 0) || 0,
           red: parseInt(c.red || c.rot || 0) || 0
         };
       });
@@ -202,19 +219,21 @@ export const computeAllTimeStats = () => {
     ]);
 
     allSeasonPlayersForCards.forEach(name => {
-      const evC = seasonEventCards[name] || { yellow: 0, red: 0, team: '' };
-      const stC = seasonStatsCards[name] || { yellow: 0, red: 0, team: '' };
+      const evC = seasonEventCards[name] || { yellow: 0, yellowRed: 0, red: 0, team: '' };
+      const stC = seasonStatsCards[name] || { yellow: 0, yellowRed: 0, red: 0, team: '' };
 
       const effectiveYellow = Math.max(evC.yellow || 0, stC.yellow || 0);
+      const effectiveYellowRed = Math.max(evC.yellowRed || 0, stC.yellowRed || 0);
       const effectiveRed = Math.max(evC.red || 0, stC.red || 0);
       const team = stC.team || evC.team || '';
 
-      if (effectiveYellow > 0 || effectiveRed > 0) {
+      if (effectiveYellow > 0 || effectiveYellowRed > 0 || effectiveRed > 0) {
         if (!cardMap[name]) {
           cardMap[name] = {
             name,
             team,
             yellow: 0,
+            yellowRed: 0,
             red: 0
           };
         }
@@ -222,6 +241,7 @@ export const computeAllTimeStats = () => {
           cardMap[name].team = team;
         }
         cardMap[name].yellow += effectiveYellow;
+        cardMap[name].yellowRed += effectiveYellowRed;
         cardMap[name].red += effectiveRed;
       }
     });
@@ -440,9 +460,9 @@ export const computeAllTimeStats = () => {
   concededList.sort((a, b) => b.conceded - a.conceded);
   const mostConcededMatch = concededList.length > 0 && concededList[0].conceded > 0 ? concededList[0] : null;
 
-  // 2. Der Kartensünder (Player with most card points)
-  const badBoyList = Object.values(cardMap).sort((a, b) => (b.red * 3 + b.yellow) - (a.red * 3 + a.yellow) || b.yellow - a.yellow);
-  const badBoy = badBoyList.length > 0 && (badBoyList[0].yellow > 0 || badBoyList[0].red > 0) ? badBoyList[0] : null;
+  // 2. Der Kartensünder (Player with most card points: Straight Red = 3, Yellow-Red = 2, Yellow = 1)
+  const badBoyList = Object.values(cardMap).sort((a, b) => (b.red * 3 + (b.yellowRed || 0) * 2 + b.yellow) - (a.red * 3 + (a.yellowRed || 0) * 2 + a.yellow) || b.yellow - a.yellow);
+  const badBoy = badBoyList.length > 0 && (badBoyList[0].yellow > 0 || (badBoyList[0].yellowRed || 0) > 0 || badBoyList[0].red > 0) ? badBoyList[0] : null;
 
   // 3. Die Remis-Könige (Team with most draws)
   let drawKings = null;
@@ -1142,6 +1162,12 @@ export const viewStatistiken = () => {
                   <span style="display:inline-block;width:12px;height:16px;background:#eab308;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
                   ${stats.records.badBoy.yellow} Gelb
                 </span>
+                ${(stats.records.badBoy.yellowRed > 0) ? `
+                  <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 1.1rem; color: #f1c40f;">
+                    <span style="display:inline-block;width:12px;height:16px;background:linear-gradient(135deg, #f1c40f 50%, #e74c3c 50%);border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+                    ${stats.records.badBoy.yellowRed} Gelb-Rot
+                  </span>
+                ` : ''}
                 ${stats.records.badBoy.red > 0 ? `
                   <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 1.1rem; color: #ef4444;">
                     <span style="display:inline-block;width:12px;height:16px;background:#ef4444;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>

@@ -129,7 +129,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1791920000000';
+const DATA_VERSION_STRING = '?v=1792834000000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -380,6 +380,17 @@ export const deduplicateMatches = (matches = []) => {
     }
   });
 
+  const hasAuthoritativeState = (m) => {
+    if (!m) return false;
+    const s = (m.status || '').toLowerCase();
+    if (s === 'played' || s === 'beendet' || s === 'gespielt' || s.startsWith('abgesagt')) return true;
+    if (s === 'postponed' || s.includes('verschoben') || s === 'canceled') return true;
+    if (m.score && m.score !== '-:-' && m.score !== ':' && m.score.trim() !== '') return true;
+    if ((m.events && m.events.length > 0) || (m.scorers && m.scorers.length > 0) || (m.cards && m.cards.length > 0)) return true;
+    if (m.ht && m.ht !== ':' && m.ht.trim() !== '') return true;
+    return false;
+  };
+
   const result = [];
   matches.forEach(m => {
     if (!m) return;
@@ -388,23 +399,19 @@ export const deduplicateMatches = (matches = []) => {
     const normAway = (m.away || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').replace(/\s+/g, '').trim();
     const natKey = `${normRound}_${normHome}_${normAway}`;
 
-    const isPlayed = (m.score && m.score !== '-:-' && m.score !== ':' && m.score.trim() !== '') || 
-                     m.status === 'Played' || m.status === 'Gespielt' || 
-                     (m.status && m.status.startsWith('Abgesagt'));
+    const incomingHasAuth = hasAuthoritativeState(m);
 
     if (map.has(natKey)) {
       const existingIdx = map.get(natKey);
       const existing = result[existingIdx];
-      const existingIsPlayed = (existing.score && existing.score !== '-:-' && existing.score !== ':' && existing.score.trim() !== '') || 
-                               existing.status === 'Played' || existing.status === 'Gespielt' || 
-                               (existing.status && existing.status.startsWith('Abgesagt'));
+      const existingHasAuth = hasAuthoritativeState(existing);
       
       const mergedHt = (m.ht && m.ht.trim() !== '' && m.ht !== ':') ? m.ht : 
                        ((existing.ht && existing.ht.trim() !== '' && existing.ht !== ':') ? existing.ht : (m.ht || existing.ht || ''));
 
-      if (isPlayed && !existingIsPlayed) {
+      if (incomingHasAuth && !existingHasAuth) {
         result[existingIdx] = { ...existing, ...m, ht: mergedHt, id: existing.id || m.id || ++maxId };
-      } else if (!isPlayed && existingIsPlayed) {
+      } else if (!incomingHasAuth && existingHasAuth) {
         result[existingIdx] = { ...m, ...existing, ht: mergedHt, id: existing.id || ++maxId };
       } else {
         result[existingIdx] = { ...existing, ...m, ht: mergedHt, id: existing.id || m.id || ++maxId };
@@ -421,6 +428,7 @@ export const deduplicateMatches = (matches = []) => {
   return result;
 };
 
+
 export const Store = {
   async init() {
     const state = getState();
@@ -428,7 +436,7 @@ export const Store = {
     // Clear all obsolete cache versions
     try {
       for (let i = 1; i <= 100; i++) {
-        if (i !== 89) localStorage.removeItem(`dsg_data_v${i}`);
+        if (i !== 91) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 38) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 27) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 13) localStorage.removeItem(`dsg_admin_players_v${i}`);
@@ -439,7 +447,7 @@ export const Store = {
     } catch(e) {}
 
     // Eagerly load synchronous local memory into shared singleton
-    state.memoryData = loadLocal('dsg_data', 89);
+    state.memoryData = loadLocal('dsg_data', 91);
     state.memoryNews = loadLocal('dsg_articles', 38) || sortArticles([...(INITIAL_DATA.news || [])]);
     state.memoryGallery = loadLocal('dsg_gallery', 27) || INITIAL_DATA.gallery || [];
 
@@ -488,7 +496,7 @@ export const Store = {
         });
         if (!fileLiga.currentSeason) fileLiga.currentSeason = "2026/2027";
         state.memoryData = fileLiga;
-        trySetLocal('dsg_data_v89', JSON.stringify(fileLiga));
+        trySetLocal('dsg_data_v91', JSON.stringify(fileLiga));
       }
 
       if (fileLeagues && (!localLeagues || localLeagues.length === 0)) {
@@ -589,7 +597,7 @@ export const Store = {
       if (dataSnap.exists() && dataSnap.data()?.data) {
         const fbData = dataSnap.data().data;
         const fbTime = dataSnap.data().lastUpdated || fbData.lastUpdated || 0;
-        const localData = loadLocal('dsg_data', 89);
+        const localData = loadLocal('dsg_data', 91);
         const localTime = localData?.lastUpdated || 0;
         
         let targetData = (localTime > fbTime && localData && localData.seasons) ? localData : fbData;
@@ -645,7 +653,7 @@ export const Store = {
         const targetLigaStr = JSON.stringify(targetData?.seasons || {});
         if (currentLigaStr !== targetLigaStr) {
           state.memoryData = targetData;
-          trySetLocal('dsg_data_v89', JSON.stringify(targetData));
+          trySetLocal('dsg_data_v91', JSON.stringify(targetData));
           hasLigaUpdates = true;
         }
 
@@ -857,7 +865,7 @@ export const Store = {
         await setDoc(galleryRef, { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v89', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_data_v91', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v38', JSON.stringify(state.memoryNews));
       trySetLocal('dsg_gallery_v27', JSON.stringify(state.memoryGallery));
 
@@ -893,7 +901,7 @@ export const Store = {
     }
     const cleanData = deepSanitize(data);
     state.memoryData = cleanData;
-    trySetLocal('dsg_data_v89', JSON.stringify(cleanData));
+    trySetLocal('dsg_data_v91', JSON.stringify(cleanData));
     setDoc(doc(db, 'system', 'liga_data'), { data: cleanData, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
@@ -1070,70 +1078,40 @@ export const Store = {
         const isPlayed = m.status === 'Gespielt' || m.status === 'Played';
         if (!isPlayed) return;
 
-        // 1. Process match.events
-        if (Array.isArray(m.events)) {
-          m.events.forEach(ev => {
-            const playerName = (ev.player || ev.name || '').trim();
-            if (!playerName) return;
-            const key = `${playerName}__${(ev.team || '').trim()}`;
+        // 1. Process goals
+        const goalList = (m.events && Array.isArray(m.events) && m.events.length > 0)
+          ? m.events.filter(e => e.type === 'goal')
+          : (m.scorers || []);
 
-            if (ev.type === 'goal') {
-              const count = parseInt(ev.count, 10) || 1;
-              if (!scorersMap.has(key)) {
-                scorersMap.set(key, { player: playerName, name: playerName, team: ev.team || '', goals: 0 });
-              }
-              scorersMap.get(key).goals += count;
-            } else if (['yellow', 'yellowRed', 'red'].includes(ev.type)) {
-              if (!cardsMap.has(key)) {
-                cardsMap.set(key, { player: playerName, name: playerName, team: ev.team || '', yellow: 0, yellowRed: 0, red: 0 });
-              }
-              const c = cardsMap.get(key);
-              if (ev.type === 'yellow') c.yellow += (parseInt(ev.count, 10) || 1);
-              else if (ev.type === 'yellowRed') {
-                c.yellowRed = (c.yellowRed || 0) + 1;
-                c.yellow += 2;
-              } else if (ev.type === 'red') {
-                c.red += (parseInt(ev.count, 10) || 1);
-              }
-            }
-          });
-        }
+        goalList.forEach(ev => {
+          const playerName = (ev.player || ev.name || '').trim();
+          if (!playerName) return;
+          const key = `${playerName}__${(ev.team || '').trim()}`;
+          const count = parseInt(ev.goals || ev.count, 10) || 1;
+          if (!scorersMap.has(key)) {
+            scorersMap.set(key, { player: playerName, name: playerName, team: ev.team || '', goals: 0 });
+          }
+          scorersMap.get(key).goals += count;
+        });
 
-        // 2. Process match.scorers fallback
-        if (Array.isArray(m.scorers) && (!m.events || m.events.length === 0)) {
-          m.scorers.forEach(sc => {
-            const playerName = (sc.player || sc.name || '').trim();
-            if (!playerName) return;
-            const key = `${playerName}__${(sc.team || '').trim()}`;
-            const count = parseInt(sc.goals || sc.count, 10) || 1;
-            if (!scorersMap.has(key)) {
-              scorersMap.set(key, { player: playerName, name: playerName, team: sc.team || '', goals: 0 });
-            }
-            scorersMap.get(key).goals += count;
-          });
-        }
-
-        // 3. Process match.cards fallback
-        if (Array.isArray(m.cards) && (!m.events || m.events.length === 0)) {
-          m.cards.forEach(cd => {
-            const playerName = (cd.player || cd.name || '').trim();
-            if (!playerName) return;
-            const key = `${playerName}__${(cd.team || '').trim()}`;
-            if (!cardsMap.has(key)) {
-              cardsMap.set(key, { player: playerName, name: playerName, team: cd.team || '', yellow: 0, yellowRed: 0, red: 0 });
-            }
-            const c = cardsMap.get(key);
-            c.yellow += (parseInt(cd.yellow, 10) || 0);
-            c.yellowRed = (c.yellowRed || 0) + (parseInt(cd.yellowRed, 10) || 0);
-            c.red += (parseInt(cd.red, 10) || 0);
-          });
-        }
+        // 2. Process cards with yellow-red resolution
+        const resolvedCards = this._resolveMatchPlayerCards(m);
+        resolvedCards.forEach(cd => {
+          const key = `${cd.name}__${(cd.team || '').trim()}`;
+          if (!cardsMap.has(key)) {
+            cardsMap.set(key, { player: cd.name, name: cd.name, team: cd.team || '', yellow: 0, yellowRed: 0, red: 0 });
+          }
+          const c = cardsMap.get(key);
+          c.yellow += cd.yellow;
+          c.yellowRed += cd.yellowRed;
+          c.red += cd.red;
+        });
       });
 
       topScorers = Array.from(scorersMap.values()).sort((a, b) => (b.goals || 0) - (a.goals || 0));
       topScorers.forEach((sc, idx) => { sc.rank = idx + 1; });
 
-      cards = Array.from(cardsMap.values()).sort((a, b) => {
+      cards = Array.from(cardsMap.values()).filter(c => (c.yellow > 0 || c.yellowRed > 0 || c.red > 0)).sort((a, b) => {
         if ((b.red || 0) !== (a.red || 0)) return (b.red || 0) - (a.red || 0);
         if ((b.yellowRed || 0) !== (a.yellowRed || 0)) return (b.yellowRed || 0) - (a.yellowRed || 0);
         return (b.yellow || 0) - (a.yellow || 0);
@@ -1159,6 +1137,63 @@ export const Store = {
     }));
 
     return { ...(stats || {}), topScorers, cards };
+  },
+
+  _resolveMatchPlayerCards(match) {
+    const cardList = (match.cards && Array.isArray(match.cards) && match.cards.length > 0)
+      ? match.cards
+      : ((match.events && Array.isArray(match.events)) ? match.events.filter(e => e.type && e.type !== 'goal') : []);
+
+    const matchPlayerCards = new Map();
+    cardList.forEach(cd => {
+      const cleanName = (cd.player || cd.name || '').trim();
+      if (!cleanName) return;
+      const team = (cd.team || '').trim();
+      const key = `${cleanName.toLowerCase()}___${team.toLowerCase()}`;
+      if (!matchPlayerCards.has(key)) {
+        matchPlayerCards.set(key, { name: cleanName, player: cleanName, team, yellows: 0, yellowReds: 0, reds: 0 });
+      }
+      const entry = matchPlayerCards.get(key);
+      const count = parseInt(cd.count) || 1;
+      const t = String(cd.type || cd.card || '').toLowerCase().replace(/[^a-z]/g, '');
+      if (t === 'yellow' || t === 'gelb') {
+        entry.yellows += (parseInt(cd.yellow) || count);
+      } else if (t === 'yellowred' || t === 'gelbrot') {
+        entry.yellowReds += (parseInt(cd.yellowRed) || count);
+      } else if (t === 'red' || t === 'rot') {
+        entry.reds += (parseInt(cd.red) || count);
+      } else {
+        if (cd.yellow) entry.yellows += parseInt(cd.yellow) || 0;
+        if (cd.yellowRed) entry.yellowReds += parseInt(cd.yellowRed) || 0;
+        if (cd.red) entry.reds += parseInt(cd.red) || 0;
+      }
+    });
+
+    const resolved = [];
+    matchPlayerCards.forEach(mc => {
+      let finalYellow = 0;
+      let finalYellowRed = 0;
+      let finalRed = mc.reds;
+
+      if (mc.yellowReds > 0 || mc.yellows >= 2) {
+        finalYellowRed = Math.max(1, mc.yellowReds);
+        finalYellow = 0; // 1st yellow is cancelled/subsumed: zero entries in yellow card stats
+      } else {
+        finalYellow = mc.yellows;
+      }
+
+      if (finalYellow > 0 || finalYellowRed > 0 || finalRed > 0) {
+        resolved.push({
+          name: mc.name,
+          player: mc.name,
+          team: mc.team,
+          yellow: finalYellow,
+          yellowRed: finalYellowRed,
+          red: finalRed
+        });
+      }
+    });
+    return resolved;
   },
 
   _applyMatchStats(season, match) {
@@ -1226,68 +1261,42 @@ export const Store = {
     if (!Array.isArray(seasonStats.topScorers)) seasonStats.topScorers = [];
     if (!Array.isArray(seasonStats.cards)) seasonStats.cards = [];
 
-    if (isPlayed && match.events && Array.isArray(match.events) && match.events.length > 0) {
-      match.events.forEach(ev => {
+    if (isPlayed) {
+      // 1. Process goals
+      const goalList = (match.events && Array.isArray(match.events) && match.events.length > 0)
+        ? match.events.filter(e => e.type === 'goal')
+        : (match.scorers || []);
+
+      goalList.forEach(ev => {
         const playerName = (ev.player || ev.name || '').trim();
         if (!playerName) return;
-
-        if (ev.type === 'goal') {
-          const goalCount = parseInt(ev.count) || 1;
-          let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === ev.team);
-          if (scorer) {
-            scorer.goals = (scorer.goals || 0) + goalCount;
-          } else {
-            seasonStats.topScorers.push({ player: playerName, name: playerName, team: ev.team, goals: goalCount });
-          }
-        }
-        if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red')) {
-          let cardEntry = seasonStats.cards.find(c => (c.name === playerName || c.player === playerName) && c.team === ev.team);
-          if (!cardEntry) {
-            cardEntry = { player: playerName, name: playerName, team: ev.team, yellow: 0, yellowRed: 0, red: 0 };
-            seasonStats.cards.push(cardEntry);
-          }
-          if (ev.type === 'yellow') cardEntry.yellow = (cardEntry.yellow || 0) + (parseInt(ev.count) || 1);
-          if (ev.type === 'yellowRed') {
-            cardEntry.yellowRed = (cardEntry.yellowRed || 0) + 1;
-            cardEntry.yellow = (cardEntry.yellow || 0) + 2;
-          }
-          if (ev.type === 'red') cardEntry.red = (cardEntry.red || 0) + (parseInt(ev.count) || 1);
+        const goalCount = parseInt(ev.goals || ev.count) || 1;
+        let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === ev.team);
+        if (scorer) {
+          scorer.goals = (scorer.goals || 0) + goalCount;
+        } else {
+          seasonStats.topScorers.push({ player: playerName, name: playerName, team: ev.team, goals: goalCount });
         }
       });
-    } else if (isPlayed) {
-      // Check match.scorers and match.cards
-      if (Array.isArray(match.scorers)) {
-        match.scorers.forEach(sc => {
-          const playerName = (sc.player || sc.name || '').trim();
-          if (!playerName) return;
-          const count = parseInt(sc.goals || sc.count) || 1;
-          let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === sc.team);
-          if (scorer) {
-            scorer.goals = (scorer.goals || 0) + count;
-          } else {
-            seasonStats.topScorers.push({ player: playerName, name: playerName, team: sc.team, goals: count });
-          }
-        });
-      }
-      if (Array.isArray(match.cards)) {
-        match.cards.forEach(cd => {
-          const playerName = (cd.player || cd.name || '').trim();
-          if (!playerName) return;
-          let cardEntry = seasonStats.cards.find(c => (c.name === playerName || c.player === playerName) && c.team === cd.team);
-          if (!cardEntry) {
-            cardEntry = { player: playerName, name: playerName, team: cd.team, yellow: 0, yellowRed: 0, red: 0 };
-            seasonStats.cards.push(cardEntry);
-          }
-          cardEntry.yellow = (cardEntry.yellow || 0) + (parseInt(cd.yellow) || 0);
-          cardEntry.yellowRed = (cardEntry.yellowRed || 0) + (parseInt(cd.yellowRed) || 0);
-          cardEntry.red = (cardEntry.red || 0) + (parseInt(cd.red) || 0);
-        });
-      }
+
+      // 2. Process cards with yellow-red resolution
+      const resolvedCards = this._resolveMatchPlayerCards(match);
+      resolvedCards.forEach(mc => {
+        let cardEntry = seasonStats.cards.find(c => (c.name === mc.name || c.player === mc.name) && c.team === mc.team);
+        if (!cardEntry) {
+          cardEntry = { player: mc.name, name: mc.name, team: mc.team, yellow: 0, yellowRed: 0, red: 0 };
+          seasonStats.cards.push(cardEntry);
+        }
+        cardEntry.yellow = (cardEntry.yellow || 0) + mc.yellow;
+        cardEntry.yellowRed = (cardEntry.yellowRed || 0) + mc.yellowRed;
+        cardEntry.red = (cardEntry.red || 0) + mc.red;
+      });
     }
 
     seasonStats.topScorers.sort((a, b) => (b.goals || 0) - (a.goals || 0));
     seasonStats.topScorers.forEach((s, idx) => { s.rank = idx + 1; });
 
+    seasonStats.cards = seasonStats.cards.filter(c => (c.yellow > 0 || c.yellowRed > 0 || c.red > 0));
     seasonStats.cards.sort((a, b) => {
       if ((b.red || 0) !== (a.red || 0)) return (b.red || 0) - (a.red || 0);
       if ((b.yellowRed || 0) !== (a.yellowRed || 0)) return (b.yellowRed || 0) - (a.yellowRed || 0);
@@ -1358,54 +1367,32 @@ export const Store = {
     if (!Array.isArray(seasonStats.topScorers)) seasonStats.topScorers = [];
     if (!Array.isArray(seasonStats.cards)) seasonStats.cards = [];
 
-    if (isPlayed && match.events && Array.isArray(match.events) && match.events.length > 0) {
-      match.events.forEach(ev => {
+    if (isPlayed) {
+      // 1. Process goals reversal
+      const goalList = (match.events && Array.isArray(match.events) && match.events.length > 0)
+        ? match.events.filter(e => e.type === 'goal')
+        : (match.scorers || []);
+
+      goalList.forEach(ev => {
         const playerName = (ev.player || ev.name || '').trim();
         if (!playerName) return;
-
-        if (ev.type === 'goal') {
-          const goalCount = parseInt(ev.count) || 1;
-          let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === ev.team);
-          if (scorer) {
-            scorer.goals = Math.max(0, (scorer.goals || 0) - goalCount);
-          }
-        }
-        if ((ev.type === 'yellow' || ev.type === 'yellowRed' || ev.type === 'red')) {
-          let cardEntry = seasonStats.cards.find(c => (c.name === playerName || c.player === playerName) && c.team === ev.team);
-          if (cardEntry) {
-            if (ev.type === 'yellow') cardEntry.yellow = Math.max(0, (cardEntry.yellow || 0) - (parseInt(ev.count) || 1));
-            if (ev.type === 'yellowRed') {
-              cardEntry.yellowRed = Math.max(0, (cardEntry.yellowRed || 0) - 1);
-              cardEntry.yellow = Math.max(0, (cardEntry.yellow || 0) - 2);
-            }
-            if (ev.type === 'red') cardEntry.red = Math.max(0, (cardEntry.red || 0) - (parseInt(ev.count) || 1));
-          }
+        const goalCount = parseInt(ev.goals || ev.count) || 1;
+        let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === ev.team);
+        if (scorer) {
+          scorer.goals = Math.max(0, (scorer.goals || 0) - goalCount);
         }
       });
-    } else if (isPlayed) {
-      if (Array.isArray(match.scorers)) {
-        match.scorers.forEach(sc => {
-          const playerName = (sc.player || sc.name || '').trim();
-          if (!playerName) return;
-          const count = parseInt(sc.goals || sc.count) || 1;
-          let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === sc.team);
-          if (scorer) {
-            scorer.goals = Math.max(0, (scorer.goals || 0) - count);
-          }
-        });
-      }
-      if (Array.isArray(match.cards)) {
-        match.cards.forEach(cd => {
-          const playerName = (cd.player || cd.name || '').trim();
-          if (!playerName) return;
-          let cardEntry = seasonStats.cards.find(c => (c.name === playerName || c.player === playerName) && c.team === cd.team);
-          if (cardEntry) {
-            cardEntry.yellow = Math.max(0, (cardEntry.yellow || 0) - (parseInt(cd.yellow) || 0));
-            cardEntry.yellowRed = Math.max(0, (cardEntry.yellowRed || 0) - (parseInt(cd.yellowRed) || 0));
-            cardEntry.red = Math.max(0, (cardEntry.red || 0) - (parseInt(cd.red) || 0));
-          }
-        });
-      }
+
+      // 2. Process cards reversal
+      const resolvedCards = this._resolveMatchPlayerCards(match);
+      resolvedCards.forEach(mc => {
+        let cardEntry = seasonStats.cards.find(c => (c.name === mc.name || c.player === mc.name) && c.team === mc.team);
+        if (cardEntry) {
+          cardEntry.yellow = Math.max(0, (cardEntry.yellow || 0) - mc.yellow);
+          cardEntry.yellowRed = Math.max(0, (cardEntry.yellowRed || 0) - mc.yellowRed);
+          cardEntry.red = Math.max(0, (cardEntry.red || 0) - mc.red);
+        }
+      });
     }
 
     seasonStats.topScorers = seasonStats.topScorers.filter(s => (s.goals || 0) > 0);

@@ -132,8 +132,7 @@ export function computeAllPlayerStats() {
       statsMap[key].red += count;
     } else if (type === 'yellowRed' || type === 'yellow-red') {
       statsMap[key].yellowRed += count;
-      statsMap[key].yellow += (count * 2);
-      statsMap[key].red += count;
+      // Do not add to yellow or red: first yellow is cancelled/subsumed!
     }
   };
 
@@ -145,13 +144,49 @@ export function computeAllPlayerStats() {
     (s.matches || []).forEach(m => {
       if (m.events && Array.isArray(m.events)) {
         m.events.forEach(ev => {
-          registerEvent(ev.player, ev.type, parseInt(ev.count) || 1, ev.team);
+          if (ev.type === 'goal') {
+            registerEvent(ev.player, 'goal', parseInt(ev.count) || 1, ev.team);
+          }
         });
       } else if (m.scorers && Array.isArray(m.scorers)) {
         m.scorers.forEach(sc => {
           registerEvent(sc.name, 'goal', parseInt(sc.count) || parseInt(sc.goals) || 1, sc.team);
         });
       }
+
+      // Disciplinary cards resolved per match (first yellow cancelled on yellow-red)
+      const cardList = (m.cards && Array.isArray(m.cards) && m.cards.length > 0)
+        ? m.cards
+        : ((m.events && Array.isArray(m.events)) ? m.events.filter(e => e.type && e.type !== 'goal') : []);
+
+      const matchCardsPerPlayer = new Map();
+      cardList.forEach(cd => {
+        const cleanName = sanitizeMojibake((cd.player || cd.name || '').trim());
+        if (!cleanName) return;
+        const team = cd.team ? sanitizeMojibake(cd.team.trim()) : '';
+        const pKey = normalizePlayerKey(cleanName);
+        if (!pKey) return;
+        if (!matchCardsPerPlayer.has(pKey)) {
+          matchCardsPerPlayer.set(pKey, { name: cleanName, team, yellows: 0, yellowReds: 0, reds: 0 });
+        }
+        const entry = matchCardsPerPlayer.get(pKey);
+        const count = parseInt(cd.count) || 1;
+        const t = String(cd.type || cd.card || '').toLowerCase().replace(/[^a-z]/g, '');
+        if (t === 'yellow' || t === 'gelb') entry.yellows += count;
+        else if (t === 'yellowred' || t === 'gelbrot') entry.yellowReds += count;
+        else if (t === 'red' || t === 'rot') entry.reds += count;
+      });
+
+      matchCardsPerPlayer.forEach(mc => {
+        if (mc.yellowReds > 0 || mc.yellows >= 2) {
+          registerEvent(mc.name, 'yellowRed', Math.max(1, mc.yellowReds), mc.team);
+        } else if (mc.yellows === 1) {
+          registerEvent(mc.name, 'yellow', 1, mc.team);
+        }
+        if (mc.reds > 0) {
+          registerEvent(mc.name, 'red', mc.reds, mc.team);
+        }
+      });
     });
 
     // 2. Season scorers list
@@ -176,12 +211,14 @@ export function computeAllPlayerStats() {
         const pName = (c.player || c.name || '').trim();
         const key = normalizePlayerKey(pName);
         const y = parseInt(c.yellow || c.gelb || 0) || 0;
+        const yr = parseInt(c.yellowRed || c.gelbrot || 0) || 0;
         const r = parseInt(c.red || c.rot || 0) || 0;
         if (key) {
           if (!statsMap[key]) {
-            statsMap[key] = { name: pName, goals: 0, yellow: y, red: r, yellowRed: 0, teams: new Set(c.team ? [c.team] : []) };
+            statsMap[key] = { name: pName, goals: 0, yellow: y, red: r, yellowRed: yr, teams: new Set(c.team ? [c.team] : []) };
           } else {
             if (y > statsMap[key].yellow) statsMap[key].yellow = y;
+            if (yr > statsMap[key].yellowRed) statsMap[key].yellowRed = yr;
             if (r > statsMap[key].red) statsMap[key].red = r;
           }
         }
@@ -212,11 +249,12 @@ export function getPlayerLiveStats(player) {
     return {
       goals: matched.goals || 0,
       yellow: matched.yellow || 0,
+      yellowRed: matched.yellowRed || 0,
       red: matched.red || 0
     };
   }
 
-  return { goals: 0, yellow: 0, red: 0 };
+  return { goals: 0, yellow: 0, yellowRed: 0, red: 0 };
 }
 
 // Find a player's database ID or query param from a match event player name

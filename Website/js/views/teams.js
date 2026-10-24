@@ -241,6 +241,7 @@ export const bindTeams = async () => {
         position: pos,
         goals: stats.goals,
         yellow: stats.yellow,
+        yellowRed: stats.yellowRed || 0,
         red: stats.red,
         raw: p
       };
@@ -458,6 +459,14 @@ export const bindTeams = async () => {
                         </span>
                         <span class="spieler-stat-lbl">Gelb</span>
                       </div>
+                      ${(p.yellowRed > 0) ? `
+                      <div class="spieler-stat-pill">
+                        <span class="spieler-stat-val" style="color: #f1c40f; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 4px;">
+                          <span style="display:inline-block;width:9px;height:12px;background:linear-gradient(135deg, #f1c40f 50%, #e74c3c 50%);border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.yellowRed}
+                        </span>
+                        <span class="spieler-stat-lbl">G-Rot</span>
+                      </div>
+                      ` : ''}
                       <div class="spieler-stat-pill">
                         <span class="spieler-stat-val" style="color: #ef4444; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 4px;">
                           <span style="display:inline-block;width:9px;height:12px;background:#ef4444;border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.red}

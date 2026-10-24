@@ -93,19 +93,25 @@ export const viewHome = () => {
     return new Date(year, month, day, hours, minutes).getTime();
   };
 
+  // Helper: Determine if a match is postponed or canceled without a score
+  const isMatchPostponedOrCanceled = (m) => {
+    if (!m) return false;
+    const s = (m.status || '').toLowerCase();
+    return s === 'postponed' || s.includes('verschoben') || s === 'canceled';
+  };
+
+  // Helper: Determine if a match is finished with a result
+  const isMatchPlayed = (m) => {
+    if (!m) return false;
+    const s = (m.status || '').toLowerCase();
+    if (s === 'played' || s === 'beendet' || s === 'gespielt' || s.startsWith('abgesagt')) return true;
+    if (m.score && m.score !== '-:-' && m.score !== '- : -' && m.score.trim() !== '') return true;
+    return false;
+  };
+
   // Filter Played and Upcoming matches
-  const playedMatches = allMatches.filter(m => 
-    m.status === 'Played' || 
-    (m.status && m.status.startsWith('Abgesagt')) || 
-    (m.score && m.score !== '-:-' && m.score !== '- : -')
-  );
-  
-  const upcomingMatches = allMatches.filter(m => 
-    m.status === 'Upcoming' || 
-    !m.score || 
-    m.score === '-:-' || 
-    m.score === '- : -'
-  );
+  const playedMatches = allMatches.filter(m => isMatchPlayed(m));
+  const upcomingMatches = allMatches.filter(m => !isMatchPlayed(m) && !isMatchPostponedOrCanceled(m));
 
   // Sort upcoming matches ascending by date & time (earliest first)
   const sortedUpcomingMatches = [...upcomingMatches].sort((a, b) => {
@@ -127,11 +133,21 @@ export const viewHome = () => {
     return rB - rA;
   });
 
-  // Next Featured Match
-  const nextMatch = sortedUpcomingMatches[0] || null;
+  // Time-aware filtering for upcoming matches (Option A: match kickoff time > now)
+  const now = Date.now();
+  const trulyUpcomingMatches = sortedUpcomingMatches.filter(m => {
+    const matchTime = parseMatchDateTime(m.date, m.time);
+    return matchTime > now;
+  });
 
-  // Next upcoming fixtures (up to 4)
-  const nextFixtures = sortedUpcomingMatches.slice(0, 4);
+  // Next Featured Match: earliest upcoming match whose kickoff is in the future.
+  // Fallback: If all unplayed matches in the season are past their kickoff, show earliest unplayed match.
+  const nextMatch = trulyUpcomingMatches[0] || sortedUpcomingMatches[0] || null;
+
+  // Next upcoming fixtures (up to 4): prefer truly upcoming matches, fallback if none in future
+  const nextFixtures = trulyUpcomingMatches.length > 0
+    ? trulyUpcomingMatches.slice(0, 4)
+    : sortedUpcomingMatches.slice(0, 4);
 
   // Recent results (last 4 played)
   const recentResults = sortedPlayedMatches.slice(0, 4);
