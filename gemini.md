@@ -51,6 +51,7 @@ For each round (e.g. Runde 4, 5, 6, 7, 8...), the following wallpaper types are 
   - Standard Cover: `SAISON 26/27` + `RUNDE X`.
   - Stats Cover (`IN ZAHLEN`): Produced for every round (`rundeX_cover_in_zahlen.png`).
   - Results Cover (`SPIELERGEBNISSE` — Variante 3 Approved): Produced for every round (`rundeX_cover_spielergebnisse.png`), styled with refined `38px` Impact font, tracking `5 * SCALE`, `85px` pure white flanking accent lines, `22px` horizontal gap to text, and identical equal spacing (`equal_gap = 32px`) below the bottom green outline.
+  - Table Cover (`TABELLE`): Produced for every round (`rundeX_cover_tabelle.png`), styled with `42px` Impact font, tracking `5 * SCALE`, `100px` pure white flanking accent lines, `24px` horizontal gap to text, and identical equal spacing (`equal_gap = 32px`) below the bottom green outline.
   - Postponed / Separated Fixtures Cover (`NACHTRAGSSPIEL`): Produced for all rounds where matches are scheduled in separate weeks (e.g. Runde 1 on 29.08. vs 05.09., Runde 4 on 13.10., and Runde 6 on 07.11. — `rundeX_cover_nachtragsspiel.png`).
 - **Communication Policy:** Always communicate and answer the user in English.
 
@@ -281,6 +282,73 @@ Round statistics and records graphics feature 6 genuine matchday facts across bo
     - Monochrome Crest: 2K monochrome vector crest enlarged to **`80px` (Square)** and **`65px` (Vertical)** on the right side with ample margin clearance.
 - **Footer:** `DSG-FUSSBALL.COM` centered horizontally at `y = 1030px` in square graphics.
 
+### G. Instagram Pinned Profile Header Suite (Concept 2 Refined Approved — Hall of Clubs Standard)
+Dedicated 3-post pinned grid triptych banner for the official Instagram profile [`@dsg_fussballliga_ooe`](https://instagram.com/dsg_fussballliga_ooe). Produces a seamless 3240 × 1080 px stadium panorama sliced into 3 equal 1080 × 1080 px posts.
+- **Production Output Directory:** `Wallpapers/Ready/Instagram_Header/`
+  - `header_panorama.png` (3240 × 1080 px continuous banner)
+  - `tile_1_left_clubs.png` (1080 × 1080 px — SV Croatia, DSG Traun, SV Etehad)
+  - `tile_2_center_dsg.png` (1080 × 1080 px — Official white DSG logo + SAISON 2026/2027)
+  - `tile_3_right_clubs.png` (1080 × 1080 px — FC Gornjak, Union Heiligenberg, Walker FC, Oed)
+  - `instagram_profile_mockup.png` (1080 × 1920 px mobile preview)
+  - `captions_and_upload_guide.txt` (Complete upload order, pinning steps, and copy-pasteable German captions)
+- **Continuous Background Architecture:**
+  - **Source:** `Wallpapers/Backgrounds/stadium_green_02.png` scaled proportionally to 3240 × 3240 px.
+  - **Bottom Pitch Framing:** Cropped at `crop_y = 1700` (`(0, 1700, 3240, 2780)`), framing the authentic football pitch, center circle, kickoff spot, players in action, penalty box, and goal net across the banner.
+  - **Gradient Style:** Authentic Sporting CP emerald luxury gradient (`#24b262` / `#00b341` / `#008f33` / `#010e07`) with organic fine grain, matching the matchday covers below.
+  - **Zero Duplication & Zero Mirroring:** Strictly ONE continuous image sliced into 3 tiles.
+- **Instagram 3:4 Vertical Profile Grid Safe Zone Standard:**
+  - Instagram rolls out a 3:4 portrait profile grid where square 1:1 posts are displayed in a ~3:4 vertical window (~800px visible width in a 1080px canvas, cropping ~140px off the left and right sides).
+  - All critical graphics, cards, logos, and typography are strictly designed within the central **720px safe zone** ($x \in [180, 900]$), guaranteeing $\ge 40\text{px}$ of breathing room from the Instagram crop edges.
+- **Center Hero Tile (Tile 2):**
+  - Official white DSG Liga logo scaled down to **`360px` wide** (height `135px`) centered horizontally and vertically at `card_cy = 540px` for refined, balanced hierarchy matching the club crests.
+  - `SAISON 2026/2027` in pure solid white (`#FFFFFF`) Impact font (`30px`), flanked by pure white accent lines (`65px` length, `2.5px` height, `14px` gap).
+  - Strictly NO subtitles (`EINE LIGA. EIN ZIEL.` removed) and zero pills.
+- **7 Equal Club Cards Standard (Grid-Optimized):**
+  - Card Dimensions: Width **`155px`**, Height **`215px`**, Corner Radius **`14px`**.
+  - Material: Sheer dark glass `RGBA(1, 20, 10, 140)`, emerald keyline `RGBA(0, 240, 95, 110)` (`1.2px`), left green accent bar `RGBA(0, 240, 95, 240)` (`3.5px` wide, `14px` margin).
+  - Snug Logo-to-Name Spacing: Exactly **8px** vertical gap between bottom of monochrome crest (`115px` max bounding box) and top of uppercase team name (`17px` Impact, `#FFFFFF`), vertically centered as a group.
+  - Tile 1 Centers (3 Clubs): `x = [305, 540, 775]` (80px equal gaps, 87.5px breathing margin to Instagram crop line).
+  - Tile 3 Centers (4 Clubs): `x = [2422.5, 2607.5, 2792.5, 2977.5]` (Local `x = [262.5, 447.5, 632.5, 817.5]`, 30px gaps, 45px breathing margin to Instagram crop line).
+- **Instagram Upload & Pinning Protocol:**
+  - Post 1: `tile_3_right_clubs.png` (Right tile)
+  - Post 2: `tile_2_center_dsg.png` (Center hero tile)
+  - Post 3: `tile_1_left_clubs.png` (Left tile)
+  - Pin each in order so Tile 1 lands at top-left, Tile 2 at top-center, and Tile 3 at top-right of the Instagram 3-column grid.
+
+### G. League Table Wallpaper Suite (Approved Clean Glass Arena Standard)
+League table wallpapers feature official standings, goal records, and points across both **Square (1:1 — 1080 × 1080 px)** and **Vertical Story (9:16 — 1080 × 1920 px)** formats.
+
+#### 1. Square League Table Wallpaper (1:1 — 1080 × 1080 px):
+- **Top Header Logo:** Official DSG Liga logo centered horizontally at `y = 52px` (`target_w = 275px`). Bounding box: `x = [402, 678]`, `y = [52, 150]`.
+- **No Redundant Title Text:** The title block is strictly omitted on the table wallpaper itself (as Slide 1 is the dedicated `rundeX_cover_tabelle.png` cover), allowing maximum vertical expansion and large typography.
+- **Table Arena Card:**
+  - Dimensions: Width `980px`, Corner Radius `18px`, centered horizontally (`x0 = 50px`, `y0 = 180px`, `y1 = 1030px`). Total Height `850px`.
+  - Material: Sheer glass tint `RGBA(0, 16, 8, 175)` with subtle green keyline `RGBA(0, 240, 95, 95)` (`1.5px`).
+  - Vertical Green Accent Bars: Left and right flanking bars in vibrant DSG Green `RGBA(0, 240, 95, 240)`, width `6px`, vertical margin `20px`.
+- **Column Architecture & Metrics (100% Pure White Typography):**
+  - Header Bar: Height `52px` with hairline divider in `RGBA(0, 240, 95, 90)`. Header labels in pure white Impact (`21px`).
+  - Columns: `#` (Rank), `TEAM` (Crest + Name), `SP`, `S`, `U`, `N`, `TORE`, `DIFF`, `PKT`.
+  - Column Centers: `#` (`x = 92px`), Crest (`x = 150px`), Team Name (`x = 192px`, left-aligned), `SP` (`x = 485px`), `S` (`x = 545px`), `U` (`x = 605px`), `N` (`x = 665px`), `TORE` (`x = 755px`), `DIFF` (`x = 855px`), `PKT` (`x = 970px`).
+  - 7 Generous Team Rows: Height `114px` per row, featuring large team names in pure white Impact (`26px`), 2K monochrome white crests (`54px`), and stats in pure white (`24px`).
+  - **1st Place Highlighting:** Rank badge and Points capsule in solid DSG green `RGBA(0, 140, 52, 230)` with vibrant green outline `RGBA(0, 240, 95, 255)` (`1.5px`) and **100% PURE WHITE TEXT** (`#FFFFFF` — strictly zero dark text!).
+  - **Podium (2nd & 3rd):** Dark glass pill `RGBA(0, 0, 0, 180)` with vibrant green outline `RGBA(0, 240, 95, 220)` and pure white text (`#FFFFFF`).
+  - **Ranks 4–7:** Dark glass pill `RGBA(0, 0, 0, 120)` with subtle keyline and pure white text (`#FFFFFF`).
+
+#### 2. Vertical League Table Story Wallpaper (9:16 — 1080 × 1920 px):
+- **Safe Zones & Vignette:** Top 0–180px and bottom 1740–1920px story safe zones with atmospheric top & bottom vignette falloff fading into deep stadium shadow (`#010e07`).
+- **Clean Headroom (Zero Top Text):** Title block and top logo omitted completely.
+- **Table Arena Card (Moved Up for Optimal Spacing):**
+  - Dimensions: Width `980px`, Corner Radius `20px`, centered horizontally (`x0 = 50px`, `y0 = 220px`, `y1 = 1530px`). Total Height `1310px`.
+  - Vertical Green Accent Bars: Width `7px`, vertical margin `24px`.
+  - Header Bar: Height `68px` with hairline divider in `RGBA(0, 240, 95, 90)`. Header labels in pure white Impact (`24px`).
+  - 7 Hero Team Rows: Height `177px` per row, featuring prominent rank badges (`40 × 40px`), hero monochrome crests (`72px`), extra large team names in pure white Impact (`30px`), stats in pure white (`28px`), and hero points capsules (`66 × 46px`, font `32px`).
+  - **1st Place Highlighting:** Solid DSG green `RGBA(0, 140, 52, 230)` with bright green outline `RGBA(0, 240, 95, 255)` and **100% PURE WHITE TEXT** (`#FFFFFF` — strictly zero dark text!).
+- **Bottom Brand Anchor Logo:** Official white DSG Liga logo centered horizontally at `y = 1710px`, width `300px`, with a generous `128px` clearance above it and `158px` safe clearance from the screen bottom.
+
+#### 3. Standard Production File Naming:
+- **Table Cover:** `runde{round}_cover_tabelle.png`
+- **Square Table:** `runde{round}_tabelle.png`
+- **Vertical Story Table:** `runde{round}_tabelle_9_16.png`
 ---
 
 ## 4. 2K Vector Monochrome Crest Standard
@@ -403,5 +471,35 @@ Round statistics and records graphics feature 6 genuine matchday facts across bo
 - **Frame-Yielding Architecture (Zero Main-Thread Freezes):**
   - In `router.js` and `liga.js`, transitions trigger `showLoader()` immediately in 0ms and yield to the browser's paint engine using `requestAnimationFrame` before initiating heavy DOM rendering (e.g. recalculating standings, hundreds of players, or historical seasons).
   - Eliminates the 1-2 second unresponsive freezing sensation across navigation and league dropdown switches.
+
+---
+
+## 15. Website News & Match Report Editorial Standards
+- **Authentic Amateur Journalism Tone:**
+  - **Balanced Perspective:** Combine the polished narrative structure of sports journalism with deep respect and authenticity for the reality of Austrian amateur and hobby football.
+  - **Grounded Reality:** Acknowledge genuine grassroots factors: thin substitute benches, players rushing from work or family commitments, fatigue in the second half, early injuries without professional physios, and passionate volunteer dedication.
+  - **Natural Austrian Sports Vocabulary:** Use authentic phrasing (*Kabinengang*, *Eckball*, *Nadelstiche*, *Ersatzbank*, *Arbeitssieg*, *Schlagzahl*, *Offensivdrang*, *Pausenführung*).
+  - **Anti-AI Writing Mandate:** Strictly ban hollow AI marketing clichés (*"Torfeuerwerk"*, *"Packende Duelle"*, *"Hochspannung pur"*, *"Ein torreiches Wochenende liegt hinter uns"*, *"Testament to"*, *"Delve into"*, *"Fostering"*).
+- **Match Minutes & Context Rules:**
+  - Standard league database does not record match minutes. Social graphics, wallpapers, and scoreboard plates NEVER include minute markers (e.g., `(24.)`, `61.'`).
+  - In website articles: When specific user context or match witness accounts are provided (e.g., injury after 10 minutes, corner header goal in the 35th minute), integrate them organically into the match narrative (*"bereits nach knapp zehn Minuten"*, *"nach etwas mehr als einer halben Stunde"* or *"in Minute 35"*). Keep summary goal blocks cleanly aggregated by player name and tally.
+- **Milestone & League Facts Integration:**
+  - Every round recap article MUST incorporate genuine database facts and statistical milestones from `dsg.anonymcreator.online` / Firestore:
+    - Total round goals and average goals per match.
+    - League-wide milestone counters (e.g., 100-goal barrier broken).
+    - Top scorer leaderboard updates and streaks (e.g., 10-goal threshold, hattricks).
+    - Table movements, points ties at the top, and defensive/clean sheet streaks.
+    - Bye team status (*Spielfrei*).
+- **Article Schema & Semantic Typography Standards:**
+  - **Title:** Direct and punchy; strictly NO raw Unicode emojis in titles or headers (in adherence to the site's No-Emoji Rule).
+  - **Concise Length Guideline:** Keep round recaps compact and easily digestible (approx. 1–2 focused paragraphs per match, followed by clear goal lists and bulleted key facts). Avoid overly long essays.
+  - **Semantic HTML & Clean Markdown:** Structure text with clean paragraphs, bold scores, and bulleted facts.
+  - **Cover Image Banner:** 800 × 480 px (5:3 / 16:9 ratio) branded asset located in `Website/news/` (e.g., `Website/news/runde-7.png`).
+- **Dashboard Workflow (NEVER Auto-Publish to Website):**
+  - **Strictly Prohibited:** NEVER push, overwrite, or publish articles directly to `Website/data/articles.json` or Firestore `system/news_data` automatically.
+  - **User-Controlled Dashboard Publishing:** ALWAYS deliver the finalized text, title, excerpt, and match facts directly in chat so the user can review, fine-tune, and publish it manually via the Admin Dashboard (`#/admin`).
+  - **Banner Asset Provision:** Generate and save the ready-to-use cover banner in `Website/news/` (e.g., `Website/news/runde-7.png`) for the user to select or link in the admin news form.
+
+
 
 
