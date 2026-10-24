@@ -807,7 +807,7 @@ export const viewStatistiken = () => {
         </p>
         
         <!-- Offizieller Hinweis zur Datenerfassung -->
-        <div class="official-report-notice glass-card" style="margin: var(--space-md) auto 0 auto; max-width: 800px; padding: 12px 16px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%); display: flex; align-items: center; gap: 12px; text-align: left;">
+        <div class="official-report-notice glass-card" style="margin: var(--space-md) auto 0 auto; max-width: 800px; padding: 12px 18px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%); display: flex; align-items: center; gap: 14px; text-align: left;">
           <div style="flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 179, 65, 0.15); display: flex; align-items: center; justify-content: center; color: var(--color-accent);">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -817,14 +817,8 @@ export const viewStatistiken = () => {
               <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
           </div>
-          <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 700; font-size: 0.88rem; color: var(--color-text-primary); margin-bottom: 2px; display: flex; align-items: center; gap: 8px;">
-              <span>Offizielle Datenerfassung &bull; Spielberichte der Schiedsrichter</span>
-              <span style="font-size: 0.68rem; font-weight: 800; background: rgba(0, 179, 65, 0.18); color: var(--color-accent); padding: 1px 6px; border-radius: 999px; text-transform: uppercase;">Offiziell</span>
-            </div>
-            <div style="font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.4;">
-              Sämtliche Statistiken, Torschützen, Verwarnungen und Sperren basieren auf den offiziellen physischen Spielberichten, die nach Spielende vom Schiedsrichterteam handschriftlich ausgefüllt, unterzeichnet und digitalisiert werden.
-            </div>
+          <div style="flex: 1; min-width: 0; font-size: 0.84rem; color: var(--color-text-secondary); line-height: 1.45;">
+            Sämtliche Statistiken, Torschützen, Verwarnungen und Sperren basieren auf den offiziellen physischen Spielberichten, die nach Spielende vom Schiedsrichterteam handschriftlich ausgefüllt, unterzeichnet und digitalisiert werden.
           </div>
         </div>
       </div>

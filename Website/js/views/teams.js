@@ -6,11 +6,36 @@ import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveSt
 let allTeams = [];
 let allPlayers = [];
 let selectedTeamName = '';
-let scorerSeasonFilter = '2026/2027';
+let scorerSeasonFilter = null;
 let squadStatusFilter = 'Aktiv';
 let showAllScorers = false;
 let scorerCurrentPage = 1;
 const SCORERS_PER_PAGE = 5;
+
+// Dynamically resolves current/latest active season key and formatted label
+export const getActiveSeasonInfo = () => {
+  const data = Store.getData() || {};
+  const leagues = (Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : []) || [];
+  const activeLeagues = leagues.filter(l => l.active !== false && l.status !== 'Archiviert' && l.status !== 'Inaktiv');
+  const currentLeague = activeLeagues.find(l => l.isCurrent) || leagues.find(l => l.isCurrent) || activeLeagues[0] || leagues[0];
+  
+  const seasonsData = data.seasons || {};
+  const seasonKeys = Object.keys(seasonsData).sort((a, b) => b.localeCompare(a));
+  
+  const seasonKey = currentLeague ? (currentLeague.seasonKey || currentLeague.name) : (data.currentSeason || seasonKeys[0] || '2026/2027');
+  
+  let label = seasonKey;
+  if (/^\d{4}\/\d{4}$/.test(seasonKey)) {
+    const parts = seasonKey.split('/');
+    label = `Saison ${parts[0]}/${parts[1].slice(2)}`;
+  } else if (/^\d{4}$/.test(seasonKey)) {
+    label = `Saison ${seasonKey}`;
+  } else if (currentLeague && currentLeague.name) {
+    label = currentLeague.name;
+  }
+  
+  return { seasonKey, label };
+};
 
 export const viewTeams = () => {
   return `
@@ -32,7 +57,7 @@ export const viewTeams = () => {
       <!-- Active Teams Quick Selector Grid -->
       <div class="stagger-item" style="margin-bottom: var(--space-xl);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
-          <h3 style="margin: 0; font-size: 1.15rem;">Aktive Vereine (Saison 2026/27)</h3>
+          <h3 style="margin: 0; font-size: 1.15rem;" id="teams-active-heading">Aktive Vereine</h3>
           <span style="font-size: 0.85rem; color: var(--color-text-secondary);">Wähle ein Team für Details</span>
         </div>
         <div id="teams-selector-grid" class="teams-quick-grid">
@@ -150,6 +175,15 @@ export const viewTeams = () => {
 export const bindTeams = async () => {
   const selectorGrid = document.getElementById('teams-selector-grid');
   const teamContainer = document.getElementById('selected-team-container');
+  const activeSeasonInfo = getActiveSeasonInfo();
+  
+  const activeHeadingEl = document.getElementById('teams-active-heading');
+  if (activeHeadingEl) {
+    activeHeadingEl.textContent = `Aktive Vereine (${activeSeasonInfo.label})`;
+  }
+  if (!scorerSeasonFilter) {
+    scorerSeasonFilter = activeSeasonInfo.seasonKey;
+  }
 
   // Load data
   try {
@@ -276,9 +310,16 @@ export const bindTeams = async () => {
     }) || {};
     const activeSince = teamRecord['Aktiv seit'] || teamRecord.activeSince || 'Traditionsverein';
 
-    // League table row for 2026/27
-    const currentSeason = Store.getData()?.seasons?.['2026/2027'] || {};
-    const leagueTeams = Store.getLiga ? Store.getLiga('2026/2027') : (currentSeason.teams || []);
+    // League table row for active season
+    const activeInfo = getActiveSeasonInfo();
+    const currentSeasonKey = activeInfo.seasonKey;
+    const activeSeasonLabel = activeInfo.label;
+    if (!scorerSeasonFilter) {
+      scorerSeasonFilter = currentSeasonKey;
+    }
+
+    const currentSeason = Store.getData()?.seasons?.[currentSeasonKey] || {};
+    const leagueTeams = Store.getLiga ? Store.getLiga(currentSeasonKey) : (currentSeason.teams || []);
     const teamTableEntry = (leagueTeams || []).find(t => normalizePlayerKey(t.name || t.Name) === normalizePlayerKey(teamName)) || {
       played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, goalDiff: 0, points: 0
     };
@@ -304,11 +345,8 @@ export const bindTeams = async () => {
     rawLeagues.forEach(l => {
       if (l.seasonKey) seasonKeysSet.add(l.seasonKey);
     });
+    seasonKeysSet.add(currentSeasonKey);
     const sortedKeys = Array.from(seasonKeysSet).sort((a, b) => b.localeCompare(a));
-    const currentSeasonKey = Store.getData()?.currentSeason || sortedKeys[0] || '2026/2027';
-    if (!scorerSeasonFilter) {
-      scorerSeasonFilter = currentSeasonKey;
-    }
 
     const seasonOptions = [
       ...sortedKeys.map(k => {
@@ -339,7 +377,7 @@ export const bindTeams = async () => {
           </div>
           <h2 style="font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; margin: 0 0 6px 0; color: var(--color-text-primary);">${teamName}</h2>
           <p style="margin: 0; color: var(--color-text-secondary); font-size: 0.95rem;">
-            Aktueller Kader: <strong>${activeSquadPlayers.length} aktive Spieler</strong>${inactiveSquadPlayers.length > 0 ? ` <span style="opacity: 0.75;">(${inactiveSquadPlayers.length} inaktiv)</span>` : ''} &bull; DSG Meisterschaft 2026/27
+            Aktueller Kader: <strong>${activeSquadPlayers.length} aktive Spieler</strong>${inactiveSquadPlayers.length > 0 ? ` <span style="opacity: 0.75;">(${inactiveSquadPlayers.length} inaktiv)</span>` : ''} &bull; DSG Meisterschaft ${activeSeasonLabel}
           </p>
         </div>
 
@@ -378,7 +416,7 @@ export const bindTeams = async () => {
             <h3 style="margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
               ${renderIcon('calendar', { size: 18, color: 'var(--color-accent)' })} Spielplan & Ergebnisse
             </h3>
-            <span style="font-size: 0.8rem; color: var(--color-text-secondary); font-weight: 600;">Saison 2026/27</span>
+            <span style="font-size: 0.8rem; color: var(--color-text-secondary); font-weight: 600;">${activeSeasonLabel}</span>
           </div>
           ${teamMatches.length === 0 ? `
             <div style="color: var(--color-text-secondary); font-size: 0.9rem; padding: 16px 0; text-align: center;">Keine aktuellen Begegnungen gelistet.</div>
