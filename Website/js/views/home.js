@@ -148,7 +148,9 @@ export const viewHome = () => {
     const diff = (t.goalDiff !== undefined && !isNaN(Number(t.goalDiff))) ? Number(t.goalDiff) : ((t.diff !== undefined && !isNaN(Number(t.diff))) ? Number(t.diff) : (gf - ga));
     const diffStr = diff > 0 ? '+' + diff : diff;
     const cancCount = cancMap[String(t.name || '').trim()] || 0;
-    const starBadge = cancCount > 0 ? `<span class="cancellation-star" style="color: var(--color-accent); font-weight: 900; margin-left: 2px; font-size: 1.05rem; line-height: 1; cursor: help;" title="${cancCount} ${cancCount === 1 ? 'Spielabsage' : 'Spielabsagen'}">${'*'.repeat(cancCount)}</span>` : '';
+    const starBadge = cancCount > 0 
+      ? `<span class="cancellation-star" style="position: absolute; left: 100%; top: 0; margin-left: 2px; color: var(--color-accent); font-weight: 900; font-size: 1.05rem; line-height: 1; cursor: help; pointer-events: auto; white-space: nowrap;" title="${cancCount} ${cancCount === 1 ? 'Spielabsage' : 'Spielabsagen'}">${'*'.repeat(cancCount)}</span>` 
+      : '';
     return `
     <div class="table-row has-home-accordion" style="display: flex; flex-direction: column; cursor: pointer; transition: background 0.2s; padding: 10px 12px; border-radius: 6px; margin-bottom: 4px; border: 1px solid transparent;">
       <div style="display: flex; align-items: center; width: 100%;">
@@ -159,8 +161,8 @@ export const viewHome = () => {
           </a>
           <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.name}</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: 8px;">
-          <span class="points" style="font-weight: 700; color: var(--color-accent); display: inline-flex; align-items: center;">${t.points} Pkt${starBadge}</span>
+        <div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0; margin-left: 8px;">
+          <span class="points" style="font-weight: 700; color: var(--color-accent); position: relative; display: inline-block; text-align: right; min-width: 48px;">${t.points} Pkt${starBadge}</span>
           <svg class="home-accordion-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-text-secondary); transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>
       </div>

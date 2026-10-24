@@ -129,7 +129,9 @@ export function viewLiga() {
     const diff = (t.goalDiff !== undefined && !isNaN(Number(t.goalDiff))) ? Number(t.goalDiff) : ((t.diff !== undefined && !isNaN(Number(t.diff))) ? Number(t.diff) : (gf - ga));
     const diffStr = diff > 0 ? '+' + diff : diff;
     const cancCount = cancMap[String(t.name || '').trim()] || 0;
-    const starBadge = cancCount > 0 ? `<span class="cancellation-star" style="color: var(--color-accent); font-weight: 900; margin-left: 2px; font-size: 1.15rem; line-height: 1; cursor: help;" title="${cancCount} ${cancCount === 1 ? 'Spielabsage' : 'Spielabsagen'}">${'*'.repeat(cancCount)}</span>` : '';
+    const starBadge = cancCount > 0 
+      ? `<span class="cancellation-star" style="position: absolute; left: 100%; top: -1px; margin-left: 2px; color: var(--color-accent); font-weight: 900; font-size: 1.15rem; line-height: 1; cursor: help; pointer-events: auto; white-space: nowrap;" title="${cancCount} ${cancCount === 1 ? 'Spielabsage' : 'Spielabsagen'}">${'*'.repeat(cancCount)}</span>` 
+      : '';
     return `
       <div class="liga-row glass-card stagger-item ${i < 3 ? 'top-3-row' : ''} has-table-accordion" style="display: grid; grid-template-columns: 40px 1fr 100px 40px 35px 35px 35px 70px 50px 60px; align-items: center; margin-bottom: var(--space-sm); padding: var(--space-sm) var(--space-md); cursor: pointer; transition: background 0.3s;">
         <span style="font-weight: 900; font-size: 1.2rem; color: ${i === 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">${i + 1}</span>
@@ -146,7 +148,9 @@ export function viewLiga() {
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${t.lost || 0}</span>
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${gf}:${ga}</span>
         <span class="hide-mobile" style="color: var(--color-text-secondary); text-align: center;">${diffStr}</span>
-        <span class="accent-text" style="font-weight: 900; text-align: right; font-size: 1.2rem; display: inline-flex; align-items: center; justify-content: flex-end; gap: 2px;">${t.points || 0}${starBadge}</span>
+        <span class="accent-text" style="font-weight: 900; text-align: right; font-size: 1.2rem; display: block;">
+          <span style="position: relative; display: inline-block;">${t.points || 0}${starBadge}</span>
+        </span>
         
         <div class="table-accordion" style="grid-column: 1 / -1; display: none; margin-top: 10px; padding: 12px 6px 4px; border-top: 1px dashed var(--color-border); font-size: 0.85rem; color: var(--color-text-secondary); width: 100%;">
            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; justify-items: center; align-items: center; width: 100%;">
