@@ -357,8 +357,8 @@ export const calculateSeasonSuspensions = (seasonKey, optionalData = null) => {
       badgeHtml = `<span class="sperre-badge sperre-warning" title="Noch 1 gelbe Karte bis zur Sperre">${statusText}</span>`;
     } else if (served.length > 0) {
       status = 'served';
-      statusText = `${served.length}x Sperre verbüßt`;
-      badgeHtml = `<span class="sperre-badge sperre-served" title="Sperre bereits verbüßt">${statusText}</span>`;
+      statusText = `Sperre abgesessen`;
+      badgeHtml = `<span class="sperre-badge sperre-served" title="Sperre bereits abgesessen">${statusText}</span>`;
     }
 
     playerResultMap.set(pd.key, {

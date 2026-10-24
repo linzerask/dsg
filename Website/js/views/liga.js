@@ -321,7 +321,7 @@ export function viewLiga() {
             } else if (susp.status === 'warning' && typeKey === 'yellow') {
               return `<span class="sperre-badge sperre-warning" title="Noch 1 gelbe Karte bis zur automatischen Spielsperre">${susp.statusText}</span>`;
             } else if (susp.status === 'served') {
-              return `<span class="sperre-badge sperre-served" title="Sperre bereits verbüßt">${susp.statusText}</span>`;
+              return `<span class="sperre-badge sperre-served" title="Sperre bereits abgesessen">${susp.statusText}</span>`;
             }
             return '';
           })()}
@@ -417,7 +417,7 @@ export function viewLiga() {
               <div style="font-size: 0.8rem; color: var(--color-text-secondary);">${item.team} • ${item.reason}</div>
             </div>
             <div style="text-align: right;">
-              <span class="sperre-badge sperre-served">Verbürgt in ${item.gamesServed}</span>
+              <span class="sperre-badge sperre-served">Ausgesetzt in ${item.gamesServed}</span>
             </div>
           </div>
         </div>
@@ -445,7 +445,7 @@ export function viewLiga() {
       ${servedSuspensions.length > 0 ? `
       <div>
         <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--color-text-secondary); margin: 0 0 var(--space-sm) 0;">
-          Verbüßte Sperren dieser Saison (${servedSuspensions.length})
+          Abgesessene Sperren dieser Saison (${servedSuspensions.length})
         </h4>
         ${servedSuspensions.map(renderServedCard).join('')}
       </div>
