@@ -1037,9 +1037,15 @@ export function viewLiga() {
             <span style="text-align: right;">Pkt</span>
           </div>
           ${rows}
-          <div class="table-legend-footnote glass-card stagger-item" style="margin-top: var(--space-md); padding: 12px 18px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%); display: flex; align-items: flex-start; gap: 12px;">
-            <span style="color: var(--color-accent); font-weight: 900; font-size: 1.3rem; line-height: 1; flex-shrink: 0; margin-top: 1px;">*</span>
-            <div style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.45;">
+          <div class="table-legend-footnote glass-card stagger-item disclaimer-dropdown" style="margin-top: var(--space-md); padding: 12px 18px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%);">
+            <div class="disclaimer-header">
+              <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+                <span style="color: var(--color-accent); font-weight: 900; font-size: 1.25rem; line-height: 1; flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: rgba(0, 179, 65, 0.15); display: flex; align-items: center; justify-content: center;">*</span>
+                <span style="font-weight: 700; font-size: 0.88rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Regeln bei Punktegleichheit (*)</span>
+              </div>
+              <svg class="disclaimer-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div class="disclaimer-body" style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.45;">
               Bei Punktegleichheit zweier oder mehrerer Mannschaften entscheidet vorrangig die <strong>geringere Anzahl an Spielabsagen ihrerseits (*)</strong>, gefolgt vom <strong>direkten Duell</strong> (Punkte, Tordifferenz, erzielte Tore im direkten Vergleich), der <strong>Gesamttordifferenz</strong> sowie den <strong>erzielten Toren</strong>.
             </div>
           </div>
@@ -1052,17 +1058,23 @@ export function viewLiga() {
 
       <div id="tab-spiele" class="tab-content" style="display: none;">
         <!-- Offizieller Hinweis zur Datenerfassung -->
-        <div class="official-report-notice glass-card" style="margin-bottom: var(--space-md); padding: 12px 18px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%); display: flex; align-items: center; gap: 14px;">
-          <div style="flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 179, 65, 0.15); display: flex; align-items: center; justify-content: center; color: var(--color-accent);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
+        <div class="official-report-notice glass-card disclaimer-dropdown" style="margin-bottom: var(--space-md); padding: 12px 18px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%);">
+          <div class="disclaimer-header">
+            <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+              <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: rgba(0, 179, 65, 0.15); display: flex; align-items: center; justify-content: center; color: var(--color-accent);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </div>
+              <span style="font-weight: 700; font-size: 0.88rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Hinweis zur Datenerfassung (Spielberichte)</span>
+            </div>
+            <svg class="disclaimer-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
-          <div style="flex: 1; min-width: 0; font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.45;">
+          <div class="disclaimer-body" style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.45;">
             Sämtliche Statistiken, Torschützen, Verwarnungen (Gelb, Gelb-Rot, Rot) sowie Sperren werden unmittelbar nach Spielende aus den offiziellen, durch das Schiedsrichterteam handschriftlich ausgefüllten und unterzeichneten physischen Spielberichten übertragen.
           </div>
         </div>
@@ -1076,17 +1088,23 @@ export function viewLiga() {
 
       <div id="tab-stats" class="tab-content" style="display: none;">
         <!-- Offizieller Hinweis zur Datenerfassung -->
-        <div class="official-report-notice glass-card" style="margin-bottom: var(--space-md); padding: 12px 18px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%); display: flex; align-items: center; gap: 14px;">
-          <div style="flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 179, 65, 0.15); display: flex; align-items: center; justify-content: center; color: var(--color-accent);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
+        <div class="official-report-notice glass-card disclaimer-dropdown" style="margin-bottom: var(--space-md); padding: 12px 18px; border-radius: var(--border-radius-md); border-left: 4px solid var(--color-accent); background: linear-gradient(90deg, rgba(0, 179, 65, 0.08) 0%, rgba(0, 0, 0, 0.02) 100%);">
+          <div class="disclaimer-header">
+            <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+              <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: rgba(0, 179, 65, 0.15); display: flex; align-items: center; justify-content: center; color: var(--color-accent);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </div>
+              <span style="font-weight: 700; font-size: 0.88rem; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Hinweis zur Datenerfassung (Spielberichte)</span>
+            </div>
+            <svg class="disclaimer-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
-          <div style="flex: 1; min-width: 0; font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.45;">
+          <div class="disclaimer-body" style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.45;">
             Sämtliche Statistiken, Torschützen, Verwarnungen (Gelb, Gelb-Rot, Rot) sowie Sperren werden unmittelbar nach Spielende aus den offiziellen, durch das Schiedsrichterteam handschriftlich ausgefüllten und unterzeichneten physischen Spielberichten übertragen.
           </div>
         </div>

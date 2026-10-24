@@ -4297,3 +4297,71 @@ main {
   60% { content: '..'; }
   80%, 100% { content: '...'; }
 }
+
+
+/* ==========================================================================
+   Responsive Disclaimer / Notice Dropdown (Mobile-first)
+   ========================================================================== */
+.disclaimer-dropdown {
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.disclaimer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  user-select: none;
+}
+
+.disclaimer-chevron {
+  transition: transform 0.25s ease;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.disclaimer-dropdown.is-open .disclaimer-chevron {
+  transform: rotate(180deg);
+}
+
+/* Desktop: Always open, full layout */
+@media (min-width: 769px) {
+  .disclaimer-dropdown {
+    cursor: default;
+  }
+  .disclaimer-header {
+    cursor: default;
+    margin-bottom: 6px;
+  }
+  .disclaimer-chevron {
+    display: none !important;
+  }
+  .disclaimer-body {
+    display: block !important;
+  }
+}
+
+/* Mobile: Collapsed dropdown */
+@media (max-width: 768px) {
+  .disclaimer-dropdown {
+    cursor: pointer;
+    padding: 10px 14px !important;
+  }
+  .disclaimer-header {
+    cursor: pointer;
+  }
+  .disclaimer-chevron {
+    display: block;
+  }
+  .disclaimer-body {
+    display: none;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--color-border);
+    animation: fadeIn 0.2s ease-in-out;
+  }
+  .disclaimer-dropdown.is-open .disclaimer-body {
+    display: block;
+  }
+}

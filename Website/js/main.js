@@ -1,5 +1,5 @@
-import { Router } from './router.js?v=1792875000000';
-import { Store } from './store.js?v=1792875000000';
+import { Router } from './router.js?v=1792876000000';
+import { Store } from './store.js?v=1792876000000';
 import { initConsentBanner } from './consent.js?v=1791930000000';
 
 window.Store = Store;
@@ -254,6 +254,20 @@ const initFloatingTooltip = () => {
 
   window.addEventListener('scroll', hideTooltip, { passive: true });
   window.addEventListener('hashchange', hideTooltip);
+
+  // Global Disclaimer / Notice Dropdown Toggle (Mobile-friendly)
+  document.addEventListener('click', (e) => {
+    const header = e.target.closest('.disclaimer-header');
+    const dropdown = e.target.closest('.disclaimer-dropdown');
+    if (!dropdown) return;
+    
+    // On mobile view (<= 768px)
+    if (window.innerWidth <= 768) {
+      if (header || !dropdown.classList.contains('is-open')) {
+        dropdown.classList.toggle('is-open');
+      }
+    }
+  });
 };
 
 if (document.readyState === 'loading') {
