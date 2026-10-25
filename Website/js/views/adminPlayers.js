@@ -272,16 +272,21 @@ export const renderAdminPlayers = () => {
                         </div>
                     </div>
 
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Mannschaft</label>
+                        <select id="edit-team" class="admin-input" style="width: 100%;">
+                            <option value="">-- Mannschaft auswählen --</option>
+                        </select>
+                    </div>
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
                         <div>
                             <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">ÖFB-Verein</label>
                             <input type="text" id="edit-ofb" class="admin-input" placeholder="ÖFB-Verein" style="width: 100%;">
                         </div>
                         <div>
-                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Mannschaft</label>
-                            <select id="edit-team" class="admin-input" style="width: 100%;">
-                                <option value="">-- Mannschaft auswählen --</option>
-                            </select>
+                            <label style="display: block; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 4px;">Notiz</label>
+                            <input type="text" id="edit-notiz" class="admin-input" placeholder="Notiz (optional)..." style="width: 100%;">
                         </div>
                     </div>
 
@@ -435,7 +440,10 @@ const renderTable = () => {
                     <span class="badge ${badgeClass}">${p.Status || '-'}</span>
                     ${(parseInt(p.sperreSpiele) > 0 || (p.Sperre && !p.Sperre.toLowerCase().includes('keine'))) ? `<span class="badge badge-danger" style="margin-left: 4px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);" title="${p.Sperre || 'Gesperrt'}">Gesperrt (${p.sperreSpiele > 0 ? p.sperreSpiele + ' Sp.' : 'Ja'})</span>` : ''}
                 </td>
-                <td><span style="color: var(--color-text-primary);">${ofbVerein}</span></td>
+                <td>
+                    <span style="color: var(--color-text-primary);">${ofbVerein}</span>
+                    ${p.Notiz ? `<div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px; font-style: italic; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${p.Notiz}">📝 ${p.Notiz}</div>` : ''}
+                </td>
                 <td style="text-align: center;">
                     <button class="btn btn-outline edit-single-player-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
@@ -495,6 +503,12 @@ const renderTable = () => {
                                     <span class="admin-m-label">ÖFB-Verein</span>
                                     <span class="admin-m-value">${ofbVerein}</span>
                                 </div>
+                                ${p.Notiz ? `
+                                <div class="admin-m-grid-item" style="grid-column: span 2;">
+                                    <span class="admin-m-label">Notiz</span>
+                                    <span class="admin-m-value" style="font-style: italic;">${p.Notiz}</span>
+                                </div>
+                                ` : ''}
                             </div>
                             <div class="admin-m-actions">
                                 <button class="edit-single-player-btn full-width" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
@@ -590,6 +604,7 @@ const openEditModal = (idx = null) => {
         }
 
         document.getElementById('edit-ofb').value = p['ÖFB-Verein'] || '';
+        document.getElementById('edit-notiz').value = p.Notiz || p.notiz || p.note || p.Notizen || '';
         document.getElementById('edit-sperre-spiele').value = (p.sperreSpiele !== undefined) ? String(p.sperreSpiele) : ((p.Sperre && !p.Sperre.toLowerCase().includes('keine')) ? '1' : '0');
         document.getElementById('edit-sperre').value = p.Sperre || '';
         if (deleteBtn) deleteBtn.style.display = 'block';
@@ -610,6 +625,7 @@ const openEditModal = (idx = null) => {
         }
         document.getElementById('edit-seit').value = new Date().toISOString().split('T')[0];
         document.getElementById('edit-ofb').value = '';
+        document.getElementById('edit-notiz').value = '';
         document.getElementById('edit-sperre-spiele').value = '0';
         document.getElementById('edit-sperre').value = '';
         if (deleteBtn) deleteBtn.style.display = 'none';
@@ -648,6 +664,7 @@ const applyFilters = () => {
             (p.Nachname && p.Nachname.toLowerCase().includes(query)) ||
             (p.Team && p.Team.toLowerCase().includes(query)) ||
             (p['ÖFB-Verein'] && p['ÖFB-Verein'].toLowerCase().includes(query)) ||
+            (p.Notiz && p.Notiz.toLowerCase().includes(query)) ||
             (p['#'] && p['#'].toString().includes(query));
         
         const matchesTeam = selectedTeam === 'all' || p.Team === selectedTeam;
@@ -905,6 +922,7 @@ const bindEvents = () => {
                 positionSide: document.getElementById('edit-position-side').value,
                 photoUrl: document.getElementById('edit-photo-url').value.trim(),
                 'ÖFB-Verein': document.getElementById('edit-ofb').value.trim(),
+                Notiz: document.getElementById('edit-notiz').value.trim(),
                 sperreSpiele: parseInt(document.getElementById('edit-sperre-spiele').value) || 0,
                 Sperre: document.getElementById('edit-sperre').value.trim(),
                 Team: document.getElementById('edit-team').value

@@ -1,5 +1,5 @@
 import { Store } from '../store.js?v=1791230000000';
-import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1791230000000';
+import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1792914000000';
 import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1791230000000';
 import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1792913000000';
 import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1792913000000';
