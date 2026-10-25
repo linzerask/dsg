@@ -154,8 +154,21 @@ export const Router = {
     const renderNewView = () => {
       this.currentPath = path;
       this.currentRawPath = rawPath;
-      document.body.classList.remove('no-scroll');
-      document.documentElement.classList.remove('no-scroll');
+      
+      // Ensure mobile drawer is always closed and animation stopped on route transition
+      if (typeof window.closeDrawer === 'function') {
+        window.closeDrawer();
+      } else {
+        const d = document.getElementById('mobile-drawer');
+        const o = document.getElementById('drawer-overlay');
+        if (d) {
+          if (typeof anime !== 'undefined') anime.remove(d);
+          d.style.right = '-100%';
+        }
+        if (o) o.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+        document.documentElement.classList.remove('no-scroll');
+      }
       
       try {
         app.innerHTML = route.render();

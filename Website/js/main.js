@@ -1,4 +1,4 @@
-import { Router } from './router.js?v=1792915000000';
+import { Router } from './router.js?v=1792916000000';
 import { Store } from './store.js?v=1792876000000';
 import { initConsentBanner } from './consent.js?v=1791930000000';
 
@@ -23,25 +23,41 @@ const initApp = async () => {
     if (overlay) overlay.classList.add('active');
     document.body.classList.add('no-scroll');
     document.documentElement.classList.add('no-scroll');
-    anime({
-      targets: drawer,
-      right: 0,
-      duration: 500,
-      easing: 'spring(1, 80, 10, 0)'
-    });
+    if (typeof anime !== 'undefined' && drawer) {
+      anime.remove(drawer);
+      anime({
+        targets: drawer,
+        right: '0%',
+        duration: 350,
+        easing: 'easeOutCubic'
+      });
+    } else if (drawer) {
+      drawer.style.right = '0%';
+    }
   };
 
   const closeDrawer = () => {
     if (overlay) overlay.classList.remove('active');
     document.body.classList.remove('no-scroll');
     document.documentElement.classList.remove('no-scroll');
-    anime({
-      targets: drawer,
-      right: '-100%',
-      duration: 350,
-      easing: 'easeInQuad'
-    });
+    if (typeof anime !== 'undefined' && drawer) {
+      anime.remove(drawer);
+      anime({
+        targets: drawer,
+        right: '-100%',
+        duration: 300,
+        easing: 'easeInCubic',
+        complete: () => {
+          if (drawer) drawer.style.right = '-100%';
+        }
+      });
+    } else if (drawer) {
+      drawer.style.right = '-100%';
+    }
   };
+
+  window.openDrawer = openDrawer;
+  window.closeDrawer = closeDrawer;
 
   openBtn?.addEventListener('click', openDrawer);
   closeBtn?.addEventListener('click', closeDrawer);
