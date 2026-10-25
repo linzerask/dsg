@@ -241,7 +241,8 @@ export const renderAdminGames = () => {
                                         </div>
                                         <div class="searchable-player-dropdown" id="dropdown-report-scorer-player-home" style="display: none;"></div>
                                     </div>
-                                    <input type="number" id="report-goal-count-home" min="1" max="20" value="1" class="admin-input" title="Anzahl Tore" placeholder="1" style="width: 52px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                                    <input type="text" id="report-goal-min-home" class="admin-input" placeholder="Min." title="Spielminute (optional, z.B. 24 oder 45+2)" style="width: 58px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                                    <input type="number" id="report-goal-count-home" min="1" max="20" value="1" class="admin-input" title="Anzahl Tore" placeholder="1" style="width: 44px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
                                     <button type="button" id="btn-add-goal-home" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px; white-space: nowrap;">+ Hinzufügen</button>
                                 </div>
                                 <div id="report-goals-list-home" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
@@ -261,7 +262,8 @@ export const renderAdminGames = () => {
                                         </div>
                                         <div class="searchable-player-dropdown" id="dropdown-report-scorer-player-away" style="display: none;"></div>
                                     </div>
-                                    <input type="number" id="report-goal-count-away" min="1" max="20" value="1" class="admin-input" title="Anzahl Tore" placeholder="1" style="width: 52px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                                    <input type="text" id="report-goal-min-away" class="admin-input" placeholder="Min." title="Spielminute (optional, z.B. 24 oder 45+2)" style="width: 58px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                                    <input type="number" id="report-goal-count-away" min="1" max="20" value="1" class="admin-input" title="Anzahl Tore" placeholder="1" style="width: 44px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
                                     <button type="button" id="btn-add-goal-away" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px; white-space: nowrap;">+ Hinzufügen</button>
                                 </div>
                                 <div id="report-goals-list-away" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
@@ -292,6 +294,7 @@ export const renderAdminGames = () => {
                                         </div>
                                         <div class="searchable-player-dropdown" id="dropdown-report-card-player-home" style="display: none;"></div>
                                     </div>
+                                    <input type="text" id="report-card-min-home" class="admin-input" placeholder="Min." title="Spielminute (optional, z.B. 61)" style="width: 52px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
                                 </div>
                                 <div style="display: flex; gap: 6px;">
                                     <input type="text" id="report-card-reason-home" class="admin-input" placeholder="Begründung (optional)..." style="flex: 1; font-size: 0.8rem;">
@@ -319,6 +322,7 @@ export const renderAdminGames = () => {
                                         </div>
                                         <div class="searchable-player-dropdown" id="dropdown-report-card-player-away" style="display: none;"></div>
                                     </div>
+                                    <input type="text" id="report-card-min-away" class="admin-input" placeholder="Min." title="Spielminute (optional, z.B. 61)" style="width: 52px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
                                 </div>
                                 <div style="display: flex; gap: 6px;">
                                     <input type="text" id="report-card-reason-away" class="admin-input" placeholder="Begründung (optional)..." style="flex: 1; font-size: 0.8rem;">
@@ -1618,6 +1622,12 @@ const openReportModal = (idxOrMatch) => {
     populatePlayerCombobox('report-scorer-player-home', homePlayers, true);
     populatePlayerCombobox('report-scorer-player-away', awayPlayers, true);
 
+    // Reset minute inputs
+    const minGoalH = document.getElementById('report-goal-min-home'); if (minGoalH) minGoalH.value = '';
+    const minGoalA = document.getElementById('report-goal-min-away'); if (minGoalA) minGoalA.value = '';
+    const minCardH = document.getElementById('report-card-min-home'); if (minCardH) minCardH.value = '';
+    const minCardA = document.getElementById('report-card-min-away'); if (minCardA) minCardA.value = '';
+
     // Populate Scorers & Cards lists (checking match.scorers/cards and match.events)
     const rawScorers = (match.scorers && match.scorers.length > 0)
         ? match.scorers
@@ -1626,15 +1636,16 @@ const openReportModal = (idxOrMatch) => {
     reportScorersHome = [];
     reportScorersAway = [];
     rawScorers.forEach(s => {
-        const sName = sanitizeMojibake(s.name || s.player || '');
-        const sTeam = sanitizeMojibake(s.team || '');
-        const count = s.count || 1;
+        const sName = sanitizeMojibake(typeof s === 'string' ? s : (s.name || s.player || ''));
+        const sMinute = sanitizeMojibake(typeof s === 'object' ? (s.minute || s.min || '') : '');
+        const sTeam = sanitizeMojibake(typeof s === 'object' ? (s.team || '') : '');
+        const count = typeof s === 'object' ? (s.count || 1) : 1;
         const isHome = sTeam === match.home || normalizeTeamName(sTeam) === normalizeTeamName(match.home);
         for (let i = 0; i < count; i++) {
             if (isHome) {
-                reportScorersHome.push(sName);
+                reportScorersHome.push({ player: sName, minute: sMinute });
             } else {
-                reportScorersAway.push(sName);
+                reportScorersAway.push({ player: sName, minute: sMinute });
             }
         }
     });
@@ -1647,7 +1658,12 @@ const openReportModal = (idxOrMatch) => {
     reportCardsAway = [];
     rawCards.forEach(c => {
         const cTeam = sanitizeMojibake(c.team || '');
-        const cObj = { player: sanitizeMojibake(c.name || c.player || ''), type: c.type || 'yellow', reason: sanitizeMojibake(c.reason || '') };
+        const cObj = { 
+            player: sanitizeMojibake(c.name || c.player || ''), 
+            type: c.type || 'yellow', 
+            reason: sanitizeMojibake(c.reason || ''),
+            minute: sanitizeMojibake(c.minute || c.min || '')
+        };
         const isHome = cTeam === match.home || normalizeTeamName(cTeam) === normalizeTeamName(match.home);
         const count = c.count || 1;
         for (let i = 0; i < count; i++) {
@@ -1673,103 +1689,60 @@ const openReportModal = (idxOrMatch) => {
     if (content) content.scrollTop = 0;
 };
 
-const groupScorersList = (list) => {
-    const map = new Map();
-    list.forEach(p => {
-        const count = map.get(p) || 0;
-        map.set(p, count + 1);
-    });
-    return Array.from(map.entries()).map(([name, count]) => ({ name, count }));
-};
-
 const renderReportLists = () => {
-    // Render Home Scorers (grouped with stepper + delete)
+    // Render Home Scorers
     const homeGoalsDiv = document.getElementById('report-goals-list-home');
     if (homeGoalsDiv) {
-        const groupedHome = groupScorersList(reportScorersHome);
-        homeGoalsDiv.innerHTML = groupedHome.map((item) => {
-            const isOwnGoal = (item.name || '').toLowerCase().includes('eigentor');
+        homeGoalsDiv.innerHTML = reportScorersHome.map((item, i) => {
+            const pName = typeof item === 'string' ? item : (item.player || item.name || '');
+            const pMin = typeof item === 'object' ? (item.minute || item.min || '') : '';
+            const isOwnGoal = pName.toLowerCase().includes('eigentor');
             const ballColor = isOwnGoal ? '#ef4444' : 'var(--color-accent)';
             return `
             <div style="display: flex; justify-content: space-between; align-items: center; background: ${isOwnGoal ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0,0,0,0.03)'}; padding: 5px 8px; border-radius: 4px; font-size: 0.85rem; ${isOwnGoal ? 'border-left: 2px solid #ef4444;' : ''}">
                 <span style="display: inline-flex; align-items: center; gap: 6px;">
                     <svg class="goal-svg-icon ${isOwnGoal ? 'goal-svg-icon-own' : ''}" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ballColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${ballColor};"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
-                    <strong style="${isOwnGoal ? 'color: #ef4444;' : ''}">${item.name}</strong>
-                    ${item.count > 1 ? `<span style="background: ${isOwnGoal ? 'rgba(239, 68, 68, 0.15)' : 'rgba(46, 125, 50, 0.12)'}; color: ${isOwnGoal ? '#ef4444' : '#2e7d32'}; font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${item.count}x ${isOwnGoal ? 'Eigentore' : 'Tore'}</span>` : ''}
+                    ${pMin ? `<span style="background: rgba(0, 179, 65, 0.12); color: var(--color-accent); font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${pMin}'</span>` : ''}
+                    <strong style="${isOwnGoal ? 'color: #ef4444;' : ''}">${pName}</strong>
                 </span>
-                <div style="display: flex; align-items: center; gap: 4px;">
-                    <button type="button" class="btn-step-goal-h" data-action="minus" data-player="${encodeURIComponent(item.name)}" title="1 Tor abziehen" style="background: #e9ecef; color: #333; border: 1px solid #ced4da; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">−</button>
-                    <button type="button" class="btn-step-goal-h" data-action="plus" data-player="${encodeURIComponent(item.name)}" title="1 Tor hinzufügen" style="background: ${isOwnGoal ? '#ef4444' : 'var(--color-accent)'}; color: #fff; border: none; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">+</button>
-                    <button type="button" class="btn-del-goal-h" data-player="${encodeURIComponent(item.name)}" title="Alle Tore von ${item.name} entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer; margin-left: 2px;">✕</button>
-                </div>
+                <button type="button" class="btn-del-goal-h" data-idx="${i}" title="Tor entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
             </div>
             `;
         }).join('');
 
-        homeGoalsDiv.querySelectorAll('.btn-step-goal-h').forEach(btn => {
-            btn.onclick = (e) => {
-                const player = decodeURIComponent(e.currentTarget.getAttribute('data-player'));
-                const action = e.currentTarget.getAttribute('data-action');
-                if (action === 'plus') {
-                    reportScorersHome.push(player);
-                } else if (action === 'minus') {
-                    const idx = reportScorersHome.lastIndexOf(player);
-                    if (idx !== -1) reportScorersHome.splice(idx, 1);
-                }
-                renderReportLists();
-            };
-        });
-
         homeGoalsDiv.querySelectorAll('.btn-del-goal-h').forEach(btn => {
             btn.onclick = (e) => {
-                const player = decodeURIComponent(e.currentTarget.getAttribute('data-player'));
-                reportScorersHome = reportScorersHome.filter(p => p !== player);
+                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+                reportScorersHome.splice(idx, 1);
                 renderReportLists();
             };
         });
     }
 
-    // Render Away Scorers (grouped with stepper + delete)
+    // Render Away Scorers
     const awayGoalsDiv = document.getElementById('report-goals-list-away');
     if (awayGoalsDiv) {
-        const groupedAway = groupScorersList(reportScorersAway);
-        awayGoalsDiv.innerHTML = groupedAway.map((item) => {
-            const isOwnGoal = (item.name || '').toLowerCase().includes('eigentor');
+        awayGoalsDiv.innerHTML = reportScorersAway.map((item, i) => {
+            const pName = typeof item === 'string' ? item : (item.player || item.name || '');
+            const pMin = typeof item === 'object' ? (item.minute || item.min || '') : '';
+            const isOwnGoal = pName.toLowerCase().includes('eigentor');
             const ballColor = isOwnGoal ? '#ef4444' : 'var(--color-accent)';
             return `
             <div style="display: flex; justify-content: space-between; align-items: center; background: ${isOwnGoal ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0,0,0,0.03)'}; padding: 5px 8px; border-radius: 4px; font-size: 0.85rem; ${isOwnGoal ? 'border-left: 2px solid #ef4444;' : ''}">
                 <span style="display: inline-flex; align-items: center; gap: 6px;">
                     <svg class="goal-svg-icon ${isOwnGoal ? 'goal-svg-icon-own' : ''}" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ballColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${ballColor};"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
-                    <strong style="${isOwnGoal ? 'color: #ef4444;' : ''}">${item.name}</strong>
-                    ${item.count > 1 ? `<span style="background: ${isOwnGoal ? 'rgba(239, 68, 68, 0.15)' : 'rgba(46, 125, 50, 0.12)'}; color: ${isOwnGoal ? '#ef4444' : '#2e7d32'}; font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${item.count}x ${isOwnGoal ? 'Eigentore' : 'Tore'}</span>` : ''}
+                    ${pMin ? `<span style="background: rgba(0, 179, 65, 0.12); color: var(--color-accent); font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${pMin}'</span>` : ''}
+                    <strong style="${isOwnGoal ? 'color: #ef4444;' : ''}">${pName}</strong>
                 </span>
-                <div style="display: flex; align-items: center; gap: 4px;">
-                    <button type="button" class="btn-step-goal-a" data-action="minus" data-player="${encodeURIComponent(item.name)}" title="1 Tor abziehen" style="background: #e9ecef; color: #333; border: 1px solid #ced4da; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">−</button>
-                    <button type="button" class="btn-step-goal-a" data-action="plus" data-player="${encodeURIComponent(item.name)}" title="1 Tor hinzufügen" style="background: ${isOwnGoal ? '#ef4444' : 'var(--color-accent)'}; color: #fff; border: none; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">+</button>
-                    <button type="button" class="btn-del-goal-a" data-player="${encodeURIComponent(item.name)}" title="Alle Tore von ${item.name} entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer; margin-left: 2px;">✕</button>
-                </div>
+                <button type="button" class="btn-del-goal-a" data-idx="${i}" title="Tor entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
             </div>
             `;
         }).join('');
 
-        awayGoalsDiv.querySelectorAll('.btn-step-goal-a').forEach(btn => {
-            btn.onclick = (e) => {
-                const player = decodeURIComponent(e.currentTarget.getAttribute('data-player'));
-                const action = e.currentTarget.getAttribute('data-action');
-                if (action === 'plus') {
-                    reportScorersAway.push(player);
-                } else if (action === 'minus') {
-                    const idx = reportScorersAway.lastIndexOf(player);
-                    if (idx !== -1) reportScorersAway.splice(idx, 1);
-                }
-                renderReportLists();
-            };
-        });
-
         awayGoalsDiv.querySelectorAll('.btn-del-goal-a').forEach(btn => {
             btn.onclick = (e) => {
-                const player = decodeURIComponent(e.currentTarget.getAttribute('data-player'));
-                reportScorersAway = reportScorersAway.filter(p => p !== player);
+                const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+                reportScorersAway.splice(idx, 1);
                 renderReportLists();
             };
         });
@@ -1778,7 +1751,7 @@ const renderReportLists = () => {
     // Render Home Cards
     const cardBadge = (type) => {
         if (type === 'yellow') return '<span style="background: #f1c40f; color: #000; padding: 2px 6px; border-radius: 3px; font-weight: 700; font-size: 0.7rem;">Gelb</span>';
-        if (type === 'yellowRed') return '<span style="background: #e67e22; color: #fff; padding: 2px 6px; border-radius: 3px; font-weight: 700; font-size: 0.7rem;">Gelb-Rot</span>';
+        if (type === 'yellowRed' || type === 'yellow-red' || type === 'gelbrot') return '<span style="background: #e67e22; color: #fff; padding: 2px 6px; border-radius: 3px; font-weight: 700; font-size: 0.7rem;">Gelb-Rot</span>';
         if (type === 'red') return '<span style="background: #e74c3c; color: #fff; padding: 2px 6px; border-radius: 3px; font-weight: 700; font-size: 0.7rem;">Rot</span>';
         return '';
     };
@@ -1789,6 +1762,7 @@ const renderReportLists = () => {
             <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
                 <div style="display: flex; align-items: center; gap: 6px;">
                     ${cardBadge(c.type)}
+                    ${c.minute ? `<span style="background: rgba(0,0,0,0.07); color: var(--color-text-secondary); font-weight: 700; padding: 1px 5px; border-radius: 3px; font-size: 0.75rem;">${c.minute}'</span>` : ''}
                     <strong>${c.player}</strong>
                     ${c.reason ? `<span style="color: var(--color-text-secondary); font-size: 0.75rem;">(${c.reason})</span>` : ''}
                 </div>
@@ -1812,6 +1786,7 @@ const renderReportLists = () => {
             <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
                 <div style="display: flex; align-items: center; gap: 6px;">
                     ${cardBadge(c.type)}
+                    ${c.minute ? `<span style="background: rgba(0,0,0,0.07); color: var(--color-text-secondary); font-weight: 700; padding: 1px 5px; border-radius: 3px; font-size: 0.75rem;">${c.minute}'</span>` : ''}
                     <strong>${c.player}</strong>
                     ${c.reason ? `<span style="color: var(--color-text-secondary); font-size: 0.75rem;">(${c.reason})</span>` : ''}
                 </div>
@@ -1864,34 +1839,38 @@ const saveReportForm = (e) => {
         }
     }
 
-    // Build unified scorers array
+    // Build unified scorers array with minutes
     const scorers = [];
-    reportScorersHome.forEach(p => {
-        const cleanName = sanitizeMojibake(p);
-        scorers.push({ name: cleanName, player: cleanName, team: currentReportMatch.home, type: 'goal' });
+    reportScorersHome.forEach(s => {
+        const cleanName = sanitizeMojibake(s.player || s.name || s);
+        const cleanMinute = sanitizeMojibake(s.minute || s.min || '');
+        scorers.push({ name: cleanName, player: cleanName, team: currentReportMatch.home, type: 'goal', minute: cleanMinute });
     });
-    reportScorersAway.forEach(p => {
-        const cleanName = sanitizeMojibake(p);
-        scorers.push({ name: cleanName, player: cleanName, team: currentReportMatch.away, type: 'goal' });
+    reportScorersAway.forEach(s => {
+        const cleanName = sanitizeMojibake(s.player || s.name || s);
+        const cleanMinute = sanitizeMojibake(s.minute || s.min || '');
+        scorers.push({ name: cleanName, player: cleanName, team: currentReportMatch.away, type: 'goal', minute: cleanMinute });
     });
 
-    // Build unified cards array
+    // Build unified cards array with minutes
     const cards = [];
     reportCardsHome.forEach(c => {
-        const cleanPlayer = sanitizeMojibake(c.player);
+        const cleanPlayer = sanitizeMojibake(c.player || c.name || '');
         const cleanReason = sanitizeMojibake(c.reason || '');
-        cards.push({ name: cleanPlayer, player: cleanPlayer, team: currentReportMatch.home, type: c.type, reason: cleanReason });
+        const cleanMinute = sanitizeMojibake(c.minute || c.min || '');
+        cards.push({ name: cleanPlayer, player: cleanPlayer, team: currentReportMatch.home, type: c.type, reason: cleanReason, minute: cleanMinute });
     });
     reportCardsAway.forEach(c => {
-        const cleanPlayer = sanitizeMojibake(c.player);
+        const cleanPlayer = sanitizeMojibake(c.player || c.name || '');
         const cleanReason = sanitizeMojibake(c.reason || '');
-        cards.push({ name: cleanPlayer, player: cleanPlayer, team: currentReportMatch.away, type: c.type, reason: cleanReason });
+        const cleanMinute = sanitizeMojibake(c.minute || c.min || '');
+        cards.push({ name: cleanPlayer, player: cleanPlayer, team: currentReportMatch.away, type: c.type, reason: cleanReason, minute: cleanMinute });
     });
 
     // Build events timeline
     const events = [];
-    scorers.forEach(s => events.push({ type: 'goal', player: s.name, name: s.name, team: s.team }));
-    cards.forEach(c => events.push({ type: c.type, player: c.name, name: c.name, team: c.team, reason: c.reason }));
+    scorers.forEach(s => events.push({ type: 'goal', player: s.name, name: s.name, team: s.team, minute: s.minute || '' }));
+    cards.forEach(c => events.push({ type: c.type, player: c.name, name: c.name, team: c.team, reason: c.reason || '', minute: c.minute || '' }));
 
     const updatedMatch = {
         ...currentReportMatch,
@@ -2022,17 +2001,20 @@ const setupEventHandlers = () => {
     // Add Goal buttons
     const addGoalH = document.getElementById('btn-add-goal-home');
     const countInputH = document.getElementById('report-goal-count-home');
+    const minGoalHInput = document.getElementById('report-goal-min-home');
     if (addGoalH) {
         addGoalH.onclick = () => {
             const val = getComboboxValue('report-scorer-player-home');
             const count = Math.max(1, parseInt(countInputH?.value) || 1);
+            const minVal = minGoalHInput ? minGoalHInput.value.replace(/['"]/g, '').trim() : '';
             if (val) {
                 for (let i = 0; i < count; i++) {
-                    reportScorersHome.push(val);
+                    reportScorersHome.push({ player: val, minute: minVal });
                 }
                 renderReportLists();
                 resetPlayerCombobox('report-scorer-player-home', true);
                 if (countInputH) countInputH.value = '1';
+                if (minGoalHInput) minGoalHInput.value = '';
             }
         };
     }
@@ -2044,20 +2026,31 @@ const setupEventHandlers = () => {
             }
         };
     }
+    if (minGoalHInput) {
+        minGoalHInput.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (addGoalH) addGoalH.click();
+            }
+        };
+    }
 
     const addGoalA = document.getElementById('btn-add-goal-away');
     const countInputA = document.getElementById('report-goal-count-away');
+    const minGoalAInput = document.getElementById('report-goal-min-away');
     if (addGoalA) {
         addGoalA.onclick = () => {
             const val = getComboboxValue('report-scorer-player-away');
             const count = Math.max(1, parseInt(countInputA?.value) || 1);
+            const minVal = minGoalAInput ? minGoalAInput.value.replace(/['"]/g, '').trim() : '';
             if (val) {
                 for (let i = 0; i < count; i++) {
-                    reportScorersAway.push(val);
+                    reportScorersAway.push({ player: val, minute: minVal });
                 }
                 renderReportLists();
                 resetPlayerCombobox('report-scorer-player-away', true);
                 if (countInputA) countInputA.value = '1';
+                if (minGoalAInput) minGoalAInput.value = '';
             }
         };
     }
@@ -2069,41 +2062,73 @@ const setupEventHandlers = () => {
             }
         };
     }
+    if (minGoalAInput) {
+        minGoalAInput.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (addGoalA) addGoalA.click();
+            }
+        };
+    }
 
     // Add Card buttons
     const addCardH = document.getElementById('btn-add-card-home');
+    const minCardHInput = document.getElementById('report-card-min-home');
     if (addCardH) addCardH.onclick = () => {
         const typeSelect = document.getElementById('report-card-type-home');
         const reasonInput = document.getElementById('report-card-reason-home');
+        const minVal = minCardHInput ? minCardHInput.value.replace(/['"]/g, '').trim() : '';
         const player = getComboboxValue('report-card-player-home');
         if (player) {
             reportCardsHome.push({
                 player: player,
                 type: typeSelect ? typeSelect.value : 'yellow',
-                reason: reasonInput ? reasonInput.value.trim() : ''
+                reason: reasonInput ? reasonInput.value.trim() : '',
+                minute: minVal
             });
             renderReportLists();
             resetPlayerCombobox('report-card-player-home', true);
             if (reasonInput) reasonInput.value = '';
+            if (minCardHInput) minCardHInput.value = '';
         }
     };
+    if (minCardHInput) {
+        minCardHInput.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (addCardH) addCardH.click();
+            }
+        };
+    }
 
     const addCardA = document.getElementById('btn-add-card-away');
+    const minCardAInput = document.getElementById('report-card-min-away');
     if (addCardA) addCardA.onclick = () => {
         const typeSelect = document.getElementById('report-card-type-away');
         const reasonInput = document.getElementById('report-card-reason-away');
+        const minVal = minCardAInput ? minCardAInput.value.replace(/['"]/g, '').trim() : '';
         const player = getComboboxValue('report-card-player-away');
         if (player) {
             reportCardsAway.push({
                 player: player,
                 type: typeSelect ? typeSelect.value : 'yellow',
-                reason: reasonInput ? reasonInput.value.trim() : ''
+                reason: reasonInput ? reasonInput.value.trim() : '',
+                minute: minVal
             });
             renderReportLists();
             resetPlayerCombobox('report-card-player-away', true);
             if (reasonInput) reasonInput.value = '';
+            if (minCardAInput) minCardAInput.value = '';
         }
     };
+    if (minCardAInput) {
+        minCardAInput.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (addCardA) addCardA.click();
+            }
+        };
+    }
 };
 
 const loadDataAndRender = async () => {
