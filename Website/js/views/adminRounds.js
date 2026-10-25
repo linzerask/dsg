@@ -624,6 +624,18 @@ const populateLeaguesDropdowns = () => {
         if (activeLeagues.length === 0) {
             modalSelect.innerHTML = '<option value="" disabled selected>Keine aktive Liga verfügbar</option>';
         } else {
+            const curSeason = Store.getData()?.currentSeason || '2026/2027';
+            activeLeagues.sort((a, b) => {
+                const aIsCur = (a.seasonKey === curSeason || a.year === curSeason);
+                const bIsCur = (b.seasonKey === curSeason || b.year === curSeason);
+                if (aIsCur && !bIsCur) return -1;
+                if (!aIsCur && bIsCur) return 1;
+                const getYr = (l) => {
+                    const str = String(l.year || l.seasonKey || '').replace(/\D/g, '');
+                    return str.length >= 4 ? parseInt(str.slice(0, 4), 10) || 0 : 0;
+                };
+                return getYr(b) - getYr(a);
+            });
             modalSelect.innerHTML = activeLeagues.map(l => {
                 const leagueName = l.name || 'DSG Liga';
                 const cleanYear = l.year ? String(l.year).replace(/_[a-zA-Z0-9_-]+$/, '') : (l.seasonKey ? String(l.seasonKey).replace(/_[a-zA-Z0-9_-]+$/, '') : '');

@@ -930,7 +930,8 @@ const populateFilterAndFormDropdowns = () => {
                 seasonKey: r.seasonKey || (Store.getData()?.currentSeason || '2026/2027'), 
                 id: r.id,
                 leagueName,
-                year: cleanYear
+                year: cleanYear,
+                datumVon: r.datumVon || ''
             });
         }
     });
@@ -944,16 +945,48 @@ const populateFilterAndFormDropdowns = () => {
                 full: g.round, 
                 seasonKey: g.seasonKey || (Store.getData()?.currentSeason || '2026/2027'),
                 leagueName: 'DSG Liga',
-                year: (Store.getData()?.currentSeason || '2026/2027')
+                year: (Store.getData()?.currentSeason || '2026/2027'),
+                datumVon: g.date || ''
             });
         }
     });
 
-    // Sort rounds logically: by League name, Year descending, Round number ascending
+    // Sort rounds logically: by Date / Season (most recent season first, then round number ascending)
     allRoundsList.sort((a, b) => {
-        if (a.leagueName !== b.leagueName) return a.leagueName.localeCompare(b.leagueName);
-        if (a.year !== b.year) return b.year.localeCompare(a.year);
-        return a.roundNr - b.roundNr;
+        // 1. Prioritize current active season
+        const curSeason = Store.getData()?.currentSeason || '2026/2027';
+        const aIsCur = (a.seasonKey === curSeason || a.year === curSeason);
+        const bIsCur = (b.seasonKey === curSeason || b.year === curSeason);
+        if (aIsCur && !bIsCur) return -1;
+        if (!aIsCur && bIsCur) return 1;
+
+        // 2. Season year descending (most recent season first)
+        const getYearNum = (item) => {
+            const yrStr = String(item.year || item.seasonKey || item.label || '').replace(/\D/g, '');
+            if (yrStr.length >= 4) return parseInt(yrStr.slice(0, 4), 10) || 0;
+            return 0;
+        };
+        const yearDiff = getYearNum(b) - getYearNum(a);
+        if (yearDiff !== 0) return yearDiff;
+
+        // 3. Within same season, prioritize primary league ("DSG Liga") before playoffs
+        if (a.leagueName !== b.leagueName) {
+            if (a.leagueName === 'DSG Liga') return -1;
+            if (b.leagueName === 'DSG Liga') return 1;
+            return a.leagueName.localeCompare(b.leagueName, 'de');
+        }
+
+        // 4. Within same season & league, sort by round number ascending (Runde 1, Runde 2, ...)
+        if (a.roundNr !== b.roundNr) {
+            return a.roundNr - b.roundNr;
+        }
+
+        // 5. Fallback: by start date ascending if available
+        if (a.datumVon && b.datumVon) {
+            return parseGameDate(a.datumVon) - parseGameDate(b.datumVon);
+        }
+
+        return (a.label || '').localeCompare(b.label || '', 'de', { numeric: true });
     });
 
     if (roundFilterSelect) {
@@ -1051,6 +1084,25 @@ const openAddGameModal = () => {
     document.getElementById('input-game-note').value = '';
     document.getElementById('input-game-home').value = '';
     document.getElementById('input-game-away').value = '';
+
+    const roundSelect = document.getElementById('input-game-round');
+    const roundFilterVal = document.getElementById('game-round-filter')?.value;
+    const leagueFilterVal = document.getElementById('game-league-filter')?.value;
+    if (roundSelect && roundSelect.options.length > 0) {
+        let optToSelect = null;
+        if (roundFilterVal && roundFilterVal !== 'all') {
+            optToSelect = Array.from(roundSelect.options).find(o => 
+                (o.value === roundFilterVal || o.text.includes(roundFilterVal)) &&
+                (!leagueFilterVal || leagueFilterVal === 'all' || o.getAttribute('data-season-key') === leagueFilterVal)
+            );
+        }
+        if (optToSelect) {
+            optToSelect.selected = true;
+        } else {
+            roundSelect.options[0].selected = true;
+        }
+    }
+    updateTeamsForSelectedRound();
 
     modal.style.display = 'flex';
     document.body.classList.add('no-scroll');
