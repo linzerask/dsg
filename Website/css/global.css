@@ -3822,8 +3822,17 @@ main {
   color: var(--color-accent);
 }
 
-/* Match Report Modal: Ensure player dropdowns always float ON TOP of subsequent team cards and sections */
-#report-modal .glass-card {
+/* Match Report Modal: Ensure player dropdowns always float ON TOP of subsequent team cards and sections while preserving modal scrollability */
+#report-modal > .glass-card,
+#report-modal > .modal-content {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: 90vh !important;
+  max-height: 90dvh !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+#report-modal .report-team-card {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   position: relative;
@@ -3840,8 +3849,10 @@ main {
   z-index: 100 !important;
 }
 
-#report-modal .glass-card:has(.searchable-player-picker.is-open),
-#report-modal .glass-card.is-active-card {
+#report-modal .report-team-card:has(.searchable-player-picker.is-open),
+#report-modal .report-team-card.is-active-card,
+#report-modal .glass-card:not(.modal-content):has(.searchable-player-picker.is-open),
+#report-modal .glass-card:not(.modal-content).is-active-card {
   position: relative !important;
   z-index: 110 !important;
 }

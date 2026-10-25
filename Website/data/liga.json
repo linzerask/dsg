@@ -18300,16 +18300,56 @@
         },
         {
           "date": "24.10.2026",
-          "status": "Ausstehend",
-          "referee": "",
+          "status": "Gespielt",
+          "referee": "Klaus Pammer",
           "seasonKey": "2026/2027",
           "away": "Walker FC",
           "round": "8. Runde",
-          "ht": "",
+          "ht": "0:1",
           "location": "DSG-Platz",
-          "events": [],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Max Grund",
+              "name": "Max Grund",
+              "team": "Walker FC",
+              "minute": 30
+            },
+            {
+              "type": "yellow",
+              "player": "Dominik Pfannhauser",
+              "name": "Dominik Pfannhauser",
+              "team": "Walker FC",
+              "minute": 61,
+              "reason": "Unsportlichkeit",
+              "reasonCode": "U"
+            },
+            {
+              "type": "goal",
+              "player": "Nicolaus Steurer",
+              "name": "Nicolaus Steurer",
+              "team": "DSG St. Josef/Oed FC",
+              "minute": 61
+            },
+            {
+              "type": "yellow",
+              "player": "Simon Pöhl",
+              "name": "Simon Pöhl",
+              "team": "Walker FC",
+              "minute": 75,
+              "reason": "Foul",
+              "reasonCode": "F"
+            },
+            {
+              "type": "goal",
+              "player": "Paul Feichtenschlager",
+              "name": "Paul Feichtenschlager",
+              "team": "DSG St. Josef/Oed FC",
+              "minute": 75
+            }
+          ],
           "time": "16:00",
-          "score": "-:-",
+          "score": "2:1",
           "league": "DSG Liga",
           "home": "DSG St. Josef/Oed FC",
           "id": 23,
@@ -18325,11 +18365,71 @@
           "round": "8. Runde",
           "seasonKey": "2026/2027",
           "league": "DSG Liga",
-          "ht": "",
-          "events": [],
-          "referee": "",
-          "score": "-:-",
-          "status": "Ausstehend",
+          "ht": "2:3",
+          "events": [
+            {
+              "type": "goal",
+              "player": "Johannes Steinbock",
+              "name": "Johannes Steinbock",
+              "team": "Union Heiligenberg",
+              "minute": 3
+            },
+            {
+              "type": "goal",
+              "player": "Johannes Steinbock",
+              "name": "Johannes Steinbock",
+              "team": "Union Heiligenberg",
+              "minute": 11
+            },
+            {
+              "type": "goal",
+              "player": "Manuel Zaugner-Wagner",
+              "name": "Manuel Zaugner-Wagner",
+              "team": "Union Heiligenberg",
+              "minute": 16
+            },
+            {
+              "type": "goal",
+              "player": "Habib Mohseni",
+              "name": "Habib Mohseni",
+              "team": "Etehad Linz",
+              "minute": 18
+            },
+            {
+              "type": "goal",
+              "player": "Mohammad Sharifi",
+              "name": "Mohammad Sharifi",
+              "team": "Etehad Linz",
+              "minute": 45
+            },
+            {
+              "type": "yellow",
+              "player": "Zaker Gulzari",
+              "name": "Zaker Gulzari",
+              "team": "Etehad Linz",
+              "reason": "Foul",
+              "reasonCode": "F"
+            },
+            {
+              "type": "yellow",
+              "player": "Farhad Karmand",
+              "name": "Farhad Karmand",
+              "team": "Etehad Linz",
+              "reason": "Kritik",
+              "reasonCode": "K"
+            },
+            {
+              "type": "yellow",
+              "player": "Andreas Lederer",
+              "name": "Andreas Lederer",
+              "team": "Union Heiligenberg",
+              "reason": "Foul",
+              "reasonCode": "F"
+            }
+          ],
+          "referee": "Julian Bukschik",
+          "score": "2:3",
+          "status": "Gespielt",
           "home": "Etehad Linz"
         },
         {

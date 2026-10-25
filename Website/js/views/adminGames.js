@@ -228,7 +228,7 @@ export const renderAdminGames = () => {
                         <h4 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Übersicht Tore</h4>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
                             <!-- Home Goals -->
-                            <div class="glass-card" style="padding: var(--space-sm);">
+                            <div class="glass-card report-team-card" style="padding: var(--space-sm);">
                                 <h5 id="report-goal-heading-home" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Torschützen Heim</h5>
                                 <div style="display: flex; gap: 6px; align-items: stretch;">
                                     <div class="searchable-player-picker" id="picker-report-scorer-player-home" style="flex: 1; position: relative;">
@@ -249,7 +249,7 @@ export const renderAdminGames = () => {
                             </div>
 
                             <!-- Away Goals -->
-                            <div class="glass-card" style="padding: var(--space-sm);">
+                            <div class="glass-card report-team-card" style="padding: var(--space-sm);">
                                 <h5 id="report-goal-heading-away" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Torschützen Auswärts</h5>
                                 <div style="display: flex; gap: 6px; align-items: stretch;">
                                     <div class="searchable-player-picker" id="picker-report-scorer-player-away" style="flex: 1; position: relative;">
@@ -276,7 +276,7 @@ export const renderAdminGames = () => {
                         <h4 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Übersicht Karten</h4>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
                             <!-- Home Cards -->
-                            <div class="glass-card" style="padding: var(--space-sm);">
+                            <div class="glass-card report-team-card" style="padding: var(--space-sm);">
                                 <h5 id="report-card-heading-home" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Karten Heim</h5>
                                 <div style="display: flex; gap: 6px; margin-bottom: 6px; align-items: stretch;">
                                     <select id="report-card-type-home" class="admin-input" style="width: 95px; font-size: 0.8rem; height: 34px;">
@@ -304,7 +304,7 @@ export const renderAdminGames = () => {
                             </div>
 
                             <!-- Away Cards -->
-                            <div class="glass-card" style="padding: var(--space-sm);">
+                            <div class="glass-card report-team-card" style="padding: var(--space-sm);">
                                 <h5 id="report-card-heading-away" style="margin: 0 0 8px 0; color: var(--color-text-primary);">Karten Auswärts</h5>
                                 <div style="display: flex; gap: 6px; margin-bottom: 6px; align-items: stretch;">
                                     <select id="report-card-type-away" class="admin-input" style="width: 95px; font-size: 0.8rem; height: 34px;">
@@ -1403,7 +1403,7 @@ const updateActiveComboboxClasses = (activePicker) => {
     document.querySelectorAll('#report-modal .is-active-card').forEach(el => el.classList.remove('is-active-card'));
     document.querySelectorAll('#report-modal .is-active-section').forEach(el => el.classList.remove('is-active-section'));
     if (activePicker) {
-        const card = activePicker.closest('.glass-card');
+        const card = activePicker.closest('.report-team-card') || activePicker.closest('.glass-card:not(.modal-content)');
         if (card) card.classList.add('is-active-card');
         const sec = activePicker.closest('.report-section');
         if (sec) sec.classList.add('is-active-section');
