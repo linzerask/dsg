@@ -224,7 +224,7 @@ export const renderAdminGames = () => {
                     </div>
 
                     <!-- Übersicht Tore (Scorers) -->
-                    <div>
+                    <div class="report-section">
                         <h4 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Übersicht Tore</h4>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
                             <!-- Home Goals -->
@@ -272,7 +272,7 @@ export const renderAdminGames = () => {
                     </div>
 
                     <!-- Übersicht Karten (Disciplinary) -->
-                    <div>
+                    <div class="report-section">
                         <h4 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">Übersicht Karten</h4>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
                             <!-- Home Cards -->
@@ -1388,12 +1388,26 @@ const renderComboboxDropdown = (id, filterText = '') => {
     }).join('');
 
     dropdown.querySelectorAll('.player-option-item').forEach(item => {
-        item.onmousedown = (e) => {
+        const handleSelect = (e) => {
             e.preventDefault();
+            e.stopPropagation();
             const val = item.getAttribute('data-val');
             selectComboboxOption(id, val);
         };
+        item.onmousedown = handleSelect;
+        item.onclick = handleSelect;
     });
+};
+
+const updateActiveComboboxClasses = (activePicker) => {
+    document.querySelectorAll('#report-modal .is-active-card').forEach(el => el.classList.remove('is-active-card'));
+    document.querySelectorAll('#report-modal .is-active-section').forEach(el => el.classList.remove('is-active-section'));
+    if (activePicker) {
+        const card = activePicker.closest('.glass-card');
+        if (card) card.classList.add('is-active-card');
+        const sec = activePicker.closest('.report-section');
+        if (sec) sec.classList.add('is-active-section');
+    }
 };
 
 const selectComboboxOption = (id, value) => {
@@ -1405,6 +1419,7 @@ const selectComboboxOption = (id, value) => {
     if (dropdown) dropdown.style.display = 'none';
     const picker = document.getElementById('picker-' + id);
     if (picker) picker.classList.remove('is-open');
+    updateActiveComboboxClasses(null);
     renderComboboxDropdown(id, value);
 };
 
@@ -1424,6 +1439,7 @@ const resetPlayerCombobox = (id, autoFocus = false) => {
     if (dropdown) dropdown.style.display = 'none';
     const picker = document.getElementById('picker-' + id);
     if (picker) picker.classList.remove('is-open');
+    updateActiveComboboxClasses(null);
     renderComboboxDropdown(id, '');
 };
 
@@ -1459,6 +1475,7 @@ const setupSearchableComboboxes = () => {
             renderComboboxDropdown(id, searchInput.value);
             dropdown.style.display = 'block';
             picker.classList.add('is-open');
+            updateActiveComboboxClasses(picker);
             setTimeout(() => {
                 picker.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }, 50);
@@ -1527,6 +1544,7 @@ const setupSearchableComboboxes = () => {
                 const picker = document.getElementById('picker-' + id);
                 if (picker) picker.classList.remove('is-open');
             });
+            updateActiveComboboxClasses(null);
         }
     });
 };

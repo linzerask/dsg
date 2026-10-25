@@ -3822,6 +3822,35 @@ main {
   color: var(--color-accent);
 }
 
+/* Match Report Modal: Ensure player dropdowns always float ON TOP of subsequent team cards and sections */
+#report-modal .glass-card {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  position: relative;
+  overflow: visible !important;
+}
+
+#report-modal .report-section {
+  position: relative;
+  z-index: 1;
+}
+
+#report-modal .report-section:has(.searchable-player-picker.is-open),
+#report-modal .report-section.is-active-section {
+  z-index: 100 !important;
+}
+
+#report-modal .glass-card:has(.searchable-player-picker.is-open),
+#report-modal .glass-card.is-active-card {
+  position: relative !important;
+  z-index: 110 !important;
+}
+
+.searchable-player-picker.is-open {
+  position: relative !important;
+  z-index: 120 !important;
+}
+
 .searchable-player-dropdown {
   position: absolute;
   top: calc(100% + 4px);
