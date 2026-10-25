@@ -1691,6 +1691,54 @@ main {
   }
   .match-event-reason {
     font-size: 0.72rem;
+    line-height: 1.2;
+  }
+  .match-event-row.has-reason.match-event-home {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "name badge"
+      "reason .";
+    justify-content: end;
+    justify-items: end;
+    row-gap: 2px;
+    column-gap: 6px;
+    max-width: 100%;
+  }
+  .match-event-row.has-reason.match-event-home .match-event-player {
+    grid-area: name;
+    text-align: right;
+  }
+  .match-event-row.has-reason.match-event-home .match-event-badges {
+    grid-area: badge;
+  }
+  .match-event-row.has-reason.match-event-home .match-event-reason {
+    grid-area: reason;
+    text-align: right;
+  }
+
+  .match-event-row.has-reason.match-event-away {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "badge name"
+      ". reason";
+    justify-content: start;
+    justify-items: start;
+    row-gap: 2px;
+    column-gap: 6px;
+    max-width: 100%;
+  }
+  .match-event-row.has-reason.match-event-away .match-event-badges {
+    grid-area: badge;
+  }
+  .match-event-row.has-reason.match-event-away .match-event-player {
+    grid-area: name;
+    text-align: left;
+  }
+  .match-event-row.has-reason.match-event-away .match-event-reason {
+    grid-area: reason;
+    text-align: left;
   }
 }
 

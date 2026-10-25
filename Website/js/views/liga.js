@@ -840,7 +840,7 @@ export function viewLiga() {
             <div class="events-container">
               <div class="events-col-home">
                 ${homeGrouped.length > 0 ? homeGrouped.map(e => `
-                  <div class="match-event-row match-event-home">
+                  <div class="match-event-row match-event-home ${e.reason ? 'has-reason' : ''}">
                     <a href="${getPlayerLink(e.player, m.home)}" class="match-event-player player-link">${e.player}</a>
                     ${e.reason ? `<span class="match-event-reason">(${e.reason})</span>` : ''}
                     <div class="match-event-badges">${renderBadge(e.type, e.count, e.reason)}</div>
@@ -849,7 +849,7 @@ export function viewLiga() {
               </div>
               <div class="events-col-away">
                 ${awayGrouped.length > 0 ? awayGrouped.map(e => `
-                  <div class="match-event-row match-event-away">
+                  <div class="match-event-row match-event-away ${e.reason ? 'has-reason' : ''}">
                     <div class="match-event-badges">${renderBadge(e.type, e.count, e.reason)}</div>
                     <a href="${getPlayerLink(e.player, m.away)}" class="match-event-player player-link">${e.player}</a>
                     ${e.reason ? `<span class="match-event-reason">(${e.reason})</span>` : ''}

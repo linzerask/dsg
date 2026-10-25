@@ -1009,7 +1009,7 @@ const openViewRoundGamesModal = (idx) => {
                                 <div class="events-container">
                                     <div class="events-col-home">
                                         ${homeGrouped.length > 0 ? homeGrouped.map(e => `
-                                            <div class="match-event-row match-event-home">
+                                            <div class="match-event-row match-event-home ${e.reason ? 'has-reason' : ''}">
                                                 <span class="match-event-player">${e.player}</span>
                                                 ${e.reason ? `<span class="match-event-reason">(${e.reason})</span>` : ''}
                                                 <div class="match-event-badges">${renderBadge(e.type, e.count, e.reason)}</div>
@@ -1018,7 +1018,7 @@ const openViewRoundGamesModal = (idx) => {
                                     </div>
                                     <div class="events-col-away">
                                         ${awayGrouped.length > 0 ? awayGrouped.map(e => `
-                                            <div class="match-event-row match-event-away">
+                                            <div class="match-event-row match-event-away ${e.reason ? 'has-reason' : ''}">
                                                 <div class="match-event-badges">${renderBadge(e.type, e.count, e.reason)}</div>
                                                 <span class="match-event-player">${e.player}</span>
                                                 ${e.reason ? `<span class="match-event-reason">(${e.reason})</span>` : ''}
