@@ -1,5 +1,5 @@
 {
-  "lastUpdated": 1792257478867,
+  "lastUpdated": 1792910979051,
   "seasons": {
     "2024/2025_unteres": {
       "teams": [
@@ -16471,6 +16471,14 @@
               "name": "Thomas Wagner",
               "count": 1,
               "team": "Union Heiligenberg"
+            },
+            {
+              "type": "yellow",
+              "player": "Cosmin Christian Vaduva",
+              "name": "Cosmin Christian Vaduva",
+              "count": 1,
+              "team": "DSG Union Traun",
+              "reason": "test"
             }
           ],
           "league": "DSG Liga",
@@ -16478,7 +16486,34 @@
           "weekday": "Sa",
           "ht": "0:4",
           "location": "Sportplatz Traun",
-          "status": "Gespielt"
+          "status": "Gespielt",
+          "cards": [
+            {
+              "name": "Georgia Adrian Melci",
+              "player": "Georgia Adrian Melci",
+              "team": "DSG Union Traun",
+              "type": "yellow"
+            },
+            {
+              "name": "Thomas Mathis",
+              "player": "Thomas Mathis",
+              "team": "DSG Union Traun",
+              "type": "yellow"
+            },
+            {
+              "name": "Cosmin Christian Vaduva",
+              "player": "Cosmin Christian Vaduva",
+              "team": "DSG Union Traun",
+              "type": "yellow",
+              "reason": "test"
+            },
+            {
+              "name": "Thomas Wagner",
+              "player": "Thomas Wagner",
+              "team": "Union Heiligenberg",
+              "type": "yellow"
+            }
+          ]
         },
         {
           "home": "SV Croatia Linz",
@@ -18701,6 +18736,15 @@
             "yellowRed": 0,
             "red": 0,
             "rank": 39
+          },
+          {
+            "name": "Cosmin Christian Vaduva",
+            "player": "Cosmin Christian Vaduva",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 40
           }
         ],
         "topScorers": [

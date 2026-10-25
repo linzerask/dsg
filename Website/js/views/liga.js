@@ -728,10 +728,27 @@ export function viewLiga() {
         const homeNorm = norm(m.home);
         const awayNorm = norm(m.away);
 
-        let combinedEvents = (m.events && m.events.length > 0) ? [...m.events] : [];
+        let combinedEvents = (m.events && m.events.length > 0) ? m.events.map(e => {
+          let reason = (e.reason || '').trim();
+          if (!reason && m.cards) {
+            const pName = (e.player || e.name || '').trim();
+            const matchCard = m.cards.find(c => 
+              ((c.player || c.name || '').trim() === pName) && 
+              (c.type === e.type || (e.type && e.type.startsWith('yellow') && c.type && c.type.startsWith('yellow')))
+            );
+            if (matchCard && matchCard.reason) reason = matchCard.reason.trim();
+          }
+          return { ...e, reason };
+        }) : [];
+
         if (combinedEvents.length === 0) {
           (m.scorers || []).forEach(s => combinedEvents.push({ type: 'goal', player: s.name || s.player, team: s.team, count: 1 }));
-          (m.cards || []).forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1 }));
+          (m.cards || []).forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1, reason: (c.reason || '').trim() }));
+        } else if (m.cards && m.cards.length > 0) {
+          const hasCardInEvents = combinedEvents.some(e => e.type === 'yellow' || e.type === 'yellowRed' || e.type === 'red');
+          if (!hasCardInEvents) {
+            m.cards.forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1, reason: (c.reason || '').trim() }));
+          }
         }
 
         const isHomeEvent = (e) => {
@@ -751,7 +768,7 @@ export function viewLiga() {
             if (!player) return;
             const type = e.type || 'goal';
             if (!playerEvents.has(player)) playerEvents.set(player, []);
-            playerEvents.get(player).push({ type, count: parseInt(e.count) || 1 });
+            playerEvents.get(player).push({ type, count: parseInt(e.count) || 1, reason: (e.reason || '').trim() });
           });
 
           const results = [];
@@ -764,12 +781,17 @@ export function viewLiga() {
             if (goalCount > 0) {
               results.push({ player, type: 'goal', count: goalCount });
             }
+
+            const cardEvents = types.filter(t => t.type === 'yellow' || t.type === 'yellowRed' || t.type === 'red');
+            const cardReasons = cardEvents.map(t => t.reason).filter(Boolean);
+            const reason = cardReasons.join(', ');
+
             if (hasYellowRed || (hasRed && yellowCount > 0) || yellowCount >= 2) {
-              results.push({ player, type: 'yellowRed', count: 1 });
+              results.push({ player, type: 'yellowRed', count: 1, reason });
             } else if (hasRed) {
-              results.push({ player, type: 'red', count: 1 });
+              results.push({ player, type: 'red', count: 1, reason });
             } else if (yellowCount > 0) {
-              results.push({ player, type: 'yellow', count: yellowCount });
+              results.push({ player, type: 'yellow', count: yellowCount, reason });
             }
           });
           return results;
@@ -790,7 +812,8 @@ export function viewLiga() {
           </svg>
         `;
 
-        const renderBadge = (type, count) => {
+        const renderBadge = (type, count, reason) => {
+          const reasonTooltip = reason ? ` • Begründung: ${reason}` : '';
           if (type === 'goal') {
             const ballCount = Math.max(1, parseInt(count) || 1);
             const balls = Array(ballCount).fill(soccerBallSvg).join('');
@@ -799,15 +822,15 @@ export function viewLiga() {
           if (type === 'yellow') {
             const cardCount = Math.max(1, parseInt(count) || 1);
             if (cardCount >= 2) {
-              return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte (2. Gelbe)"></span>`;
+              return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte (2. Gelbe)${reasonTooltip}"></span>`;
             }
-            return `<span class="match-card-badge-card badge-yellow" title="Gelbe Karte"></span>`;
+            return `<span class="match-card-badge-card badge-yellow" title="Gelbe Karte${reasonTooltip}"></span>`;
           }
           if (type === 'yellowRed') {
-            return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte"></span>`;
+            return `<span class="match-card-badge-card badge-yellow-red" title="Gelb-Rote Karte${reasonTooltip}"></span>`;
           }
           if (type === 'red') {
-            return `<span class="match-card-badge-card badge-red" title="Rote Karte"></span>`;
+            return `<span class="match-card-badge-card badge-red" title="Rote Karte${reasonTooltip}"></span>`;
           }
           return '';
         };
@@ -819,15 +842,17 @@ export function viewLiga() {
                 ${homeGrouped.length > 0 ? homeGrouped.map(e => `
                   <div class="match-event-row match-event-home">
                     <a href="${getPlayerLink(e.player, m.home)}" class="match-event-player player-link">${e.player}</a>
-                    <div class="match-event-badges">${renderBadge(e.type, e.count)}</div>
+                    ${e.reason ? `<span class="match-event-reason">(${e.reason})</span>` : ''}
+                    <div class="match-event-badges">${renderBadge(e.type, e.count, e.reason)}</div>
                   </div>
                 `).join('') : '<span style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0.5;">-</span>'}
               </div>
               <div class="events-col-away">
                 ${awayGrouped.length > 0 ? awayGrouped.map(e => `
                   <div class="match-event-row match-event-away">
-                    <div class="match-event-badges">${renderBadge(e.type, e.count)}</div>
+                    <div class="match-event-badges">${renderBadge(e.type, e.count, e.reason)}</div>
                     <a href="${getPlayerLink(e.player, m.away)}" class="match-event-player player-link">${e.player}</a>
+                    ${e.reason ? `<span class="match-event-reason">(${e.reason})</span>` : ''}
                   </div>
                 `).join('') : '<span style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0.5;">-</span>'}
               </div>
@@ -846,6 +871,11 @@ export function viewLiga() {
         let combinedEvents = (m.events && m.events.length > 0) ? [...m.events] : [];
         if (combinedEvents.length === 0) {
           (m.cards || []).forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1 }));
+        } else if (m.cards && m.cards.length > 0) {
+          const hasCardInEvents = combinedEvents.some(e => e.type === 'yellow' || e.type === 'yellowRed' || e.type === 'red');
+          if (!hasCardInEvents) {
+            m.cards.forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1 }));
+          }
         }
 
         const isHome = (e) => {
