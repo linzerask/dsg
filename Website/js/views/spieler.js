@@ -585,7 +585,6 @@ export const bindSpieler = async () => {
     const avatarUrl = getPlayerAvatar(player.raw);
     const teamLogo = renderTeamLogo(player.team, 'md');
     const ageText = player.age ? `${player.age} Jahre` : 'Unbekannt';
-    const bDateFormatted = player.birthDate ? player.birthDate.split('-').reverse().join('.') : '-';
     const sinceText = formatMemberSince(player.memberSince) || '-';
     const positionLabel = getPlayerPositionLabel(player.raw || player);
 
@@ -647,7 +646,7 @@ export const bindSpieler = async () => {
           </div>
           <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--color-border);">
             <span style="color: var(--color-text-secondary); font-weight: 600;">Alter:</span>
-            <span style="font-weight: 700; color: var(--color-text-primary);">${ageText} (${bDateFormatted})</span>
+            <span style="font-weight: 700; color: var(--color-text-primary);">${ageText}</span>
           </div>
           <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--color-border);">
             <span style="color: var(--color-text-secondary); font-weight: 600;">DSG-Mitgliedschaft:</span>
