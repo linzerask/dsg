@@ -1369,8 +1369,8 @@ const renderComboboxDropdown = (id, filterText = '') => {
         }
 
         const iconHtml = isOwnGoal
-            ? `<span style="display: inline-flex; align-items: center; gap: 5px; color: var(--color-accent); font-weight: 700;">
-                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+            ? `<span style="display: inline-flex; align-items: center; gap: 5px; color: #ef4444; font-weight: 700;">
+                 <svg class="goal-svg-icon goal-svg-icon-own" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
                  ${labelHtml}
                </span>`
             : labelHtml;
@@ -1687,20 +1687,24 @@ const renderReportLists = () => {
     const homeGoalsDiv = document.getElementById('report-goals-list-home');
     if (homeGoalsDiv) {
         const groupedHome = groupScorersList(reportScorersHome);
-        homeGoalsDiv.innerHTML = groupedHome.map((item) => `
-            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 5px 8px; border-radius: 4px; font-size: 0.85rem;">
+        homeGoalsDiv.innerHTML = groupedHome.map((item) => {
+            const isOwnGoal = (item.name || '').toLowerCase().includes('eigentor');
+            const ballColor = isOwnGoal ? '#ef4444' : 'var(--color-accent)';
+            return `
+            <div style="display: flex; justify-content: space-between; align-items: center; background: ${isOwnGoal ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0,0,0,0.03)'}; padding: 5px 8px; border-radius: 4px; font-size: 0.85rem; ${isOwnGoal ? 'border-left: 2px solid #ef4444;' : ''}">
                 <span style="display: inline-flex; align-items: center; gap: 6px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
-                    <strong>${item.name}</strong>
-                    ${item.count > 1 ? `<span style="background: rgba(46, 125, 50, 0.12); color: #2e7d32; font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${item.count}x Tore</span>` : ''}
+                    <svg class="goal-svg-icon ${isOwnGoal ? 'goal-svg-icon-own' : ''}" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ballColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${ballColor};"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                    <strong style="${isOwnGoal ? 'color: #ef4444;' : ''}">${item.name}</strong>
+                    ${item.count > 1 ? `<span style="background: ${isOwnGoal ? 'rgba(239, 68, 68, 0.15)' : 'rgba(46, 125, 50, 0.12)'}; color: ${isOwnGoal ? '#ef4444' : '#2e7d32'}; font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${item.count}x ${isOwnGoal ? 'Eigentore' : 'Tore'}</span>` : ''}
                 </span>
                 <div style="display: flex; align-items: center; gap: 4px;">
                     <button type="button" class="btn-step-goal-h" data-action="minus" data-player="${encodeURIComponent(item.name)}" title="1 Tor abziehen" style="background: #e9ecef; color: #333; border: 1px solid #ced4da; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">−</button>
-                    <button type="button" class="btn-step-goal-h" data-action="plus" data-player="${encodeURIComponent(item.name)}" title="1 Tor hinzufügen" style="background: var(--color-accent); color: #fff; border: none; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">+</button>
+                    <button type="button" class="btn-step-goal-h" data-action="plus" data-player="${encodeURIComponent(item.name)}" title="1 Tor hinzufügen" style="background: ${isOwnGoal ? '#ef4444' : 'var(--color-accent)'}; color: #fff; border: none; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">+</button>
                     <button type="button" class="btn-del-goal-h" data-player="${encodeURIComponent(item.name)}" title="Alle Tore von ${item.name} entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer; margin-left: 2px;">✕</button>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
 
         homeGoalsDiv.querySelectorAll('.btn-step-goal-h').forEach(btn => {
             btn.onclick = (e) => {
@@ -1729,20 +1733,24 @@ const renderReportLists = () => {
     const awayGoalsDiv = document.getElementById('report-goals-list-away');
     if (awayGoalsDiv) {
         const groupedAway = groupScorersList(reportScorersAway);
-        awayGoalsDiv.innerHTML = groupedAway.map((item) => `
-            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 5px 8px; border-radius: 4px; font-size: 0.85rem;">
+        awayGoalsDiv.innerHTML = groupedAway.map((item) => {
+            const isOwnGoal = (item.name || '').toLowerCase().includes('eigentor');
+            const ballColor = isOwnGoal ? '#ef4444' : 'var(--color-accent)';
+            return `
+            <div style="display: flex; justify-content: space-between; align-items: center; background: ${isOwnGoal ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0,0,0,0.03)'}; padding: 5px 8px; border-radius: 4px; font-size: 0.85rem; ${isOwnGoal ? 'border-left: 2px solid #ef4444;' : ''}">
                 <span style="display: inline-flex; align-items: center; gap: 6px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
-                    <strong>${item.name}</strong>
-                    ${item.count > 1 ? `<span style="background: rgba(46, 125, 50, 0.12); color: #2e7d32; font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${item.count}x Tore</span>` : ''}
+                    <svg class="goal-svg-icon ${isOwnGoal ? 'goal-svg-icon-own' : ''}" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ballColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${ballColor};"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                    <strong style="${isOwnGoal ? 'color: #ef4444;' : ''}">${item.name}</strong>
+                    ${item.count > 1 ? `<span style="background: ${isOwnGoal ? 'rgba(239, 68, 68, 0.15)' : 'rgba(46, 125, 50, 0.12)'}; color: ${isOwnGoal ? '#ef4444' : '#2e7d32'}; font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${item.count}x ${isOwnGoal ? 'Eigentore' : 'Tore'}</span>` : ''}
                 </span>
                 <div style="display: flex; align-items: center; gap: 4px;">
                     <button type="button" class="btn-step-goal-a" data-action="minus" data-player="${encodeURIComponent(item.name)}" title="1 Tor abziehen" style="background: #e9ecef; color: #333; border: 1px solid #ced4da; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">−</button>
-                    <button type="button" class="btn-step-goal-a" data-action="plus" data-player="${encodeURIComponent(item.name)}" title="1 Tor hinzufügen" style="background: var(--color-accent); color: #fff; border: none; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">+</button>
+                    <button type="button" class="btn-step-goal-a" data-action="plus" data-player="${encodeURIComponent(item.name)}" title="1 Tor hinzufügen" style="background: ${isOwnGoal ? '#ef4444' : 'var(--color-accent)'}; color: #fff; border: none; border-radius: 3px; padding: 2px 7px; font-size: 0.75rem; font-weight: bold; cursor: pointer;">+</button>
                     <button type="button" class="btn-del-goal-a" data-player="${encodeURIComponent(item.name)}" title="Alle Tore von ${item.name} entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer; margin-left: 2px;">✕</button>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
 
         awayGoalsDiv.querySelectorAll('.btn-step-goal-a').forEach(btn => {
             btn.onclick = (e) => {

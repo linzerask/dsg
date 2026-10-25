@@ -849,12 +849,26 @@ const openViewRoundGamesModal = (idx) => {
             </svg>
         `;
 
-        const renderBadge = (type, count, reason) => {
+        const ownGoalBallSvg = `
+            <svg class="goal-svg-icon goal-svg-icon-own" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; flex-shrink: 0; color: #ef4444;">
+                <circle cx="12" cy="12" r="10" stroke-width="1.8"></circle>
+                <path d="M12 7.5L15.8 10.2L14.4 15H9.6L8.2 10.2L12 7.5Z" fill="#ef4444" fill-opacity="0.25" stroke-width="1.8"></path>
+                <path d="M12 2v5.5"></path>
+                <path d="M21.5 8.5l-5.7 1.7"></path>
+                <path d="M18 20.3l-3.6-5.3"></path>
+                <path d="M6 20.3l3.6-5.3"></path>
+                <path d="M2.5 8.5l5.7 1.7"></path>
+            </svg>
+        `;
+
+        const renderBadge = (type, count, reason, player) => {
             const reasonTooltip = reason ? ` • Begründung: ${reason}` : '';
             if (type === 'goal') {
                 const ballCount = Math.max(1, parseInt(count) || 1);
-                const balls = Array(ballCount).fill(soccerBallSvg).join('');
-                return `<span class="event-icon-wrapper" title="${ballCount > 1 ? ballCount + ' Tore' : 'Tor'}">${balls}</span>`;
+                const isOwnGoal = (player || '').toLowerCase().includes('eigentor');
+                const ballHtml = isOwnGoal ? ownGoalBallSvg : soccerBallSvg;
+                const balls = Array(ballCount).fill(ballHtml).join('');
+                return `<span class="event-icon-wrapper" title="${isOwnGoal ? (ballCount > 1 ? ballCount + ' Eigentore' : 'Eigentor') : (ballCount > 1 ? ballCount + ' Tore' : 'Tor')}">${balls}</span>`;
             }
             if (type === 'yellow') {
                 const cardCount = Math.max(1, parseInt(count) || 1);
@@ -1022,17 +1036,17 @@ const openViewRoundGamesModal = (idx) => {
                                     <div class="events-col-home">
                                         ${homeGrouped.length > 0 ? homeGrouped.map(e => `
                                             <div class="match-event-row match-event-home ${e.reason ? 'has-reason' : ''}">
-                                                <span class="match-event-player">${e.player}</span>
+                                                <span class="match-event-player" style="${(e.player || '').toLowerCase().includes('eigentor') ? 'color: #ef4444; font-weight: 700;' : ''}">${e.player}</span>
                                                 ${e.reason ? `<span class="match-event-reason">(${e.reason})</span>` : ''}
-                                                <div class="match-event-badges">${renderBadge(e.type, e.count, e.reason)}</div>
+                                                <div class="match-event-badges">${renderBadge(e.type, e.count, e.reason, e.player)}</div>
                                             </div>
                                         `).join('') : '<span style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0.5;">-</span>'}
                                     </div>
                                     <div class="events-col-away">
                                         ${awayGrouped.length > 0 ? awayGrouped.map(e => `
                                             <div class="match-event-row match-event-away ${e.reason ? 'has-reason' : ''}">
-                                                <div class="match-event-badges">${renderBadge(e.type, e.count, e.reason)}</div>
-                                                <span class="match-event-player">${e.player}</span>
+                                                <div class="match-event-badges">${renderBadge(e.type, e.count, e.reason, e.player)}</div>
+                                                <span class="match-event-player" style="${(e.player || '').toLowerCase().includes('eigentor') ? 'color: #ef4444; font-weight: 700;' : ''}">${e.player}</span>
                                                 ${e.reason ? `<span class="match-event-reason">(${e.reason})</span>` : ''}
                                             </div>
                                         `).join('') : '<span style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0.5;">-</span>'}

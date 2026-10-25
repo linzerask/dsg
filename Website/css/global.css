@@ -1627,6 +1627,11 @@ main {
   color: var(--color-accent);
 }
 
+.goal-svg-icon.goal-svg-icon-own,
+.goal-svg-icon-own {
+  color: #ef4444 !important;
+}
+
 .event-multiplier {
   font-size: 0.72rem;
   font-weight: 800;
@@ -3867,9 +3872,18 @@ main {
 }
 
 .player-option-special {
-  color: var(--color-accent);
+  color: #ef4444;
   font-weight: 700;
-  background: rgba(0, 150, 64, 0.05);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.player-option-special:hover {
+  background: rgba(239, 68, 68, 0.12) !important;
+}
+
+.player-option-special svg {
+  color: #ef4444;
+  stroke: #ef4444;
 }
 
 .player-option-empty {
