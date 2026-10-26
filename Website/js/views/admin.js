@@ -6,6 +6,8 @@ import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=179291500
 import { renderAdminGames, initAdminGames } from './adminGames.js?v=1792924000000';
 import { renderAdminNews, initAdminNews } from './adminNews.js?v=1791230000000';
 import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1791230000000';
+import { renderAdminApprovals, initAdminApprovals } from './adminApprovals.js?v=1793040000000';
+import { logout } from '../auth.js?v=1793040000000';
 
 export const showToast = (message, isError = false) => {
   let toast = document.getElementById('dsg-admin-toast');
@@ -63,6 +65,7 @@ try {
 } catch(e) {}
 
 const tabLabels = {
+  'admin-approvals': 'Passanträge',
   'admin-games': 'Spiele',
   'admin-rounds': 'Spielrunden',
   'admin-leagues': 'Ligen verwalten',
@@ -73,6 +76,7 @@ const tabLabels = {
 };
 
 const tabIcons = {
+  'admin-approvals': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11l-3 3-2-2"/></svg>`,
   'admin-games': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>`,
   'admin-rounds': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
   'admin-leagues': `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H7.5"></path><path d="M14 14.66V17c0 .55.45 1 1 1h1.5"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>`,
@@ -107,6 +111,10 @@ export const viewAdmin = () => {
           </button>
         </div>
         <nav id="admin-nav-menu" class="admin-nav-accordion-content">
+          <button class="admin-nav-btn ${isTabActive('admin-approvals') ? 'active' : ''}" data-target="admin-approvals">
+            ${tabIcons['admin-approvals']}
+            <span>Passanträge</span>
+          </button>
           <button class="admin-nav-btn ${isTabActive('admin-games') ? 'active' : ''}" data-target="admin-games">
             ${tabIcons['admin-games']}
             <span>Spiele</span>
@@ -135,9 +143,16 @@ export const viewAdmin = () => {
             ${tabIcons['admin-gallery']}
             <span>Galerie verwalten</span>
           </button>
+          <button id="admin-logout-btn" class="admin-nav-btn" style="margin-top: 16px; border-top: 1px solid var(--glass-border); padding-top: 14px; color: #ef4444 !important;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <span>Abmelden</span>
+          </button>
         </nav>
       </aside>
       <div class="admin-content" style="padding: 0; min-width: 0;">
+        <div id="admin-approvals" class="admin-section ${isTabActive('admin-approvals') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-approvals') ? 'block' : 'none'};">
+          ${renderAdminApprovals()}
+        </div>
         <div id="admin-games" class="admin-section ${isTabActive('admin-games') ? 'stagger-item' : ''}" style="display: ${isTabActive('admin-games') ? 'block' : 'none'};">
           ${renderAdminGames()}
         </div>
@@ -313,7 +328,8 @@ export const bindAdmin = () => {
   ensureAllAdminModalsInBody();
 
   const activeTab = currentAdminTab || 'admin-games';
-  if (activeTab === 'admin-games') initAdminGames();
+  if (activeTab === 'admin-approvals') initAdminApprovals();
+  else if (activeTab === 'admin-games') initAdminGames();
   else if (activeTab === 'admin-rounds') initAdminRounds();
   else if (activeTab === 'admin-leagues') initAdminLeagues();
   else if (activeTab === 'admin-teams') initAdminTeams();
@@ -337,6 +353,13 @@ export const bindAdmin = () => {
       }
     });
   }
+
+  // Admin Logout Button
+  document.getElementById('admin-logout-btn')?.addEventListener('click', () => {
+    logout();
+    window.location.hash = '#/admin';
+    window.location.reload();
+  });
 
   // Navigation Buttons
   const btns = document.querySelectorAll('.admin-nav-btn');
@@ -365,6 +388,7 @@ export const bindAdmin = () => {
 
       ensureAllAdminModalsInBody();
 
+      if (targetId === 'admin-approvals') initAdminApprovals();
       if (targetId === 'admin-rounds') initAdminRounds();
       if (targetId === 'admin-games') initAdminGames();
       if (targetId === 'admin-players') initAdminPlayers();

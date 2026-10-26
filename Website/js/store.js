@@ -594,6 +594,7 @@ export const Store = {
     const galleryRef = doc(db, 'system', 'gallery_data');
     const leagueRef = doc(db, 'system', 'leagues_data');
     const roundsRef = doc(db, 'system', 'rounds_data');
+    const playerReqRef = doc(db, 'system', 'player_requests_data');
 
     try {
       const withTimeout = (promise, ms = 8000) => {
@@ -603,12 +604,12 @@ export const Store = {
         ]);
       };
 
-      const [dataSnap, newsSnap, gallerySnap, leagueSnap, roundsSnap] = await withTimeout(
+      const [dataSnap, newsSnap, gallerySnap, leagueSnap, roundsSnap, playerReqSnap] = await withTimeout(
         Promise.all([
-          getDoc(dataRef), getDoc(newsRef), getDoc(galleryRef), getDoc(leagueRef), getDoc(roundsRef)
+          getDoc(dataRef), getDoc(newsRef), getDoc(galleryRef), getDoc(leagueRef), getDoc(roundsRef), getDoc(playerReqRef)
         ]),
         8000
-      ).catch(() => [ { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false } ]);
+      ).catch(() => [ { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false } ]);
 
       let needsMigration = false;
       let hasLigaUpdates = false;
@@ -866,6 +867,22 @@ export const Store = {
             }
           }
         } catch(e) {}
+      }
+
+      // Sync Player Requests
+      if (playerReqSnap && playerReqSnap.exists() && playerReqSnap.data() && Array.isArray(playerReqSnap.data().data)) {
+        const fbReqs = playerReqSnap.data().data;
+        const fbTime = playerReqSnap.data().lastUpdated || 0;
+        const localTime = parseInt(localStorage.getItem('dsg_player_requests_last_updated')) || 0;
+        const localReqs = loadLocal('dsg_player_requests', 1) || [];
+
+        if (fbTime > localTime || localReqs.length === 0) {
+          trySetLocal('dsg_player_requests_v1', JSON.stringify(fbReqs));
+          localStorage.setItem('dsg_player_requests_last_updated', String(fbTime));
+          window.dispatchEvent(new CustomEvent('player-requests-updated'));
+        } else if (localTime > fbTime) {
+          await setDoc(playerReqRef, { data: localReqs, lastUpdated: localTime }).catch(e => console.error("Firebase save error (player requests):", e));
+        }
       }
 
       // Auto-sync all leagues to seasons
@@ -2132,6 +2149,156 @@ export const Store = {
     setDoc(doc(db, 'system', 'players_data'), { data: players, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (players):", e));
     window.dispatchEvent(new CustomEvent('players-updated'));
+  },
+
+  getPlayerRequests() {
+    const local = loadLocal('dsg_player_requests', 1);
+    if (local && Array.isArray(local)) return local;
+    return [];
+  },
+
+  async getPlayerRequestsAsync() {
+    const local = loadLocal('dsg_player_requests', 1);
+    try {
+      const snap = await getDoc(doc(db, 'system', 'player_requests_data'));
+      if (snap.exists() && snap.data()?.data) {
+        const fbData = snap.data().data;
+        if (Array.isArray(fbData)) {
+          trySetLocal('dsg_player_requests_v1', JSON.stringify(fbData));
+          return fbData;
+        }
+      }
+    } catch (e) {
+      console.warn("Could not fetch player requests from Firebase:", e);
+    }
+    return local || [];
+  },
+
+  async addPlayerRequest(req) {
+    const requests = this.getPlayerRequests();
+    const newReq = {
+      id: 'req_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+      status: 'pending',
+      createdAt: Date.now(),
+      ...req
+    };
+    requests.unshift(newReq);
+    trySetLocal('dsg_player_requests_v1', JSON.stringify(requests));
+    localStorage.setItem('dsg_player_requests_last_updated', String(Date.now()));
+    try {
+      await setDoc(doc(db, 'system', 'player_requests_data'), { data: requests, lastUpdated: Date.now() });
+    } catch (e) {
+      console.error("Firebase save error (player request):", e);
+    }
+    window.dispatchEvent(new CustomEvent('player-requests-updated'));
+    return true;
+  },
+
+  async approvePlayerRequest(reqId) {
+    const requests = this.getPlayerRequests();
+    const req = requests.find(r => r.id === reqId);
+    if (!req) return false;
+
+    req.status = 'approved';
+    req.reviewedAt = Date.now();
+
+    const players = await this.getAdminPlayers();
+    const normReqFirst = (req.firstName || '').trim().toLowerCase();
+    const normReqLast = (req.lastName || '').trim().toLowerCase();
+    const normTeam = (req.teamName || '').trim().toLowerCase();
+
+    const existingIndex = players.findIndex(p => {
+      const pFirst = (p.Vorname || p.firstName || '').trim().toLowerCase();
+      const pLast = (p.Nachname || p.lastName || '').trim().toLowerCase();
+      const pTeam = (p.Mannschaft || p.team || '').trim().toLowerCase();
+      return pFirst === normReqFirst && pLast === normReqLast && (!normTeam || pTeam.includes(normTeam) || normTeam.includes(pTeam));
+    });
+
+    if (existingIndex !== -1) {
+      const existing = players[existingIndex];
+      players[existingIndex] = {
+        ...existing,
+        photo: req.photoUrl || existing.photo || '',
+        passPhoto: req.photoUrl || existing.passPhoto || '',
+        verified: true,
+        passType: 'digital',
+        Geburtsdatum: req.birthDate || existing.Geburtsdatum || existing.birthDate || '',
+        Position: req.position || existing.Position || 'Feldspieler',
+        lastUpdated: Date.now()
+      };
+    } else {
+      const maxId = players.reduce((max, p) => {
+        const idNum = parseInt(p['#'] || p.id, 10);
+        return (!isNaN(idNum) && idNum > max) ? idNum : max;
+      }, 0);
+
+      const newPlayer = {
+        '#': String(maxId + 1),
+        Vorname: req.firstName || '',
+        Nachname: req.lastName || '',
+        Mannschaft: req.teamName || '',
+        Geburtsdatum: req.birthDate || '',
+        Position: req.position || 'Feldspieler',
+        photo: req.photoUrl || '',
+        passPhoto: req.photoUrl || '',
+        verified: true,
+        passType: 'digital',
+        createdFromRequest: req.id,
+        createdAt: Date.now()
+      };
+      players.push(newPlayer);
+    }
+
+    this.saveAdminPlayers(players);
+    trySetLocal('dsg_player_requests_v1', JSON.stringify(requests));
+    localStorage.setItem('dsg_player_requests_last_updated', String(Date.now()));
+    try {
+      await setDoc(doc(db, 'system', 'player_requests_data'), { data: requests, lastUpdated: Date.now() });
+    } catch (e) {
+      console.error("Firebase save error (approve request):", e);
+    }
+    window.dispatchEvent(new CustomEvent('player-requests-updated'));
+    window.dispatchEvent(new CustomEvent('players-updated'));
+    return true;
+  },
+
+  async rejectPlayerRequest(reqId, reason = '') {
+    const requests = this.getPlayerRequests();
+    const req = requests.find(r => r.id === reqId);
+    if (!req) return false;
+
+    req.status = 'rejected';
+    req.reviewNote = reason || '';
+    req.reviewedAt = Date.now();
+
+    trySetLocal('dsg_player_requests_v1', JSON.stringify(requests));
+    localStorage.setItem('dsg_player_requests_last_updated', String(Date.now()));
+    try {
+      await setDoc(doc(db, 'system', 'player_requests_data'), { data: requests, lastUpdated: Date.now() });
+    } catch (e) {
+      console.error("Firebase save error (reject request):", e);
+    }
+    window.dispatchEvent(new CustomEvent('player-requests-updated'));
+    return true;
+  },
+
+  async updatePlayerPassPhoto(playerIdOrKey, photoUrl) {
+    if (!playerIdOrKey || !photoUrl) return false;
+    const players = await this.getAdminPlayers();
+    const playerIndex = players.findIndex(p => (p['#'] === String(playerIdOrKey) || (p.Vorname + '_' + p.Nachname) === playerIdOrKey));
+    if (playerIndex === -1) return false;
+
+    const p = players[playerIndex];
+    const req = {
+      teamName: p.Mannschaft || '',
+      firstName: p.Vorname || '',
+      lastName: p.Nachname || '',
+      birthDate: p.Geburtsdatum || '',
+      position: p.Position || 'Feldspieler',
+      photoUrl: photoUrl,
+      note: 'Passfoto / Pass-Upload für bestehenden Spieler'
+    };
+    return await this.addPlayerRequest(req);
   },
 
   getAdminTeamsSync() {

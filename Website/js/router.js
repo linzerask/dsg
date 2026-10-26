@@ -8,6 +8,9 @@ import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=17
 import { viewGalerie, bindGalerie } from './views/galerie.js?v=1791305000000';
 import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1792924000000';
 import { viewAdmin, bindAdmin } from './views/admin.js?v=1792924000000';
+import { getAuth, loginWithPin, logout } from './auth.js?v=1793040000000';
+import { viewTeamAdmin, bindTeamAdmin } from './views/teamAdmin.js?v=1793040000000';
+import { viewRefereeAdmin, bindRefereeAdmin } from './views/refereeAdmin.js?v=1793040000000';
 import { viewArticle, bindArticle } from './views/article.js?v=1791305000000';
 import { viewImpressum } from './views/impressum.js?v=1791305000000';
 import { viewDatenschutz, bindDatenschutz } from './views/datenschutz.js?v=1791306000000';
@@ -28,28 +31,64 @@ const routes = {
   '/datenschutz': { render: () => viewDatenschutz(), bind: () => bindDatenschutz() },
   '/admin': { 
     render: () => {
-      if(sessionStorage.getItem('dsg_admin') === 'true') return viewAdmin();
+      const auth = getAuth();
+      if (auth.isLoggedIn) {
+        if (auth.role === 'admin') return viewAdmin();
+        if (auth.role === 'team' || auth.role === 'team_manager') return viewTeamAdmin(auth);
+        if (auth.role === 'referee') return viewRefereeAdmin(auth);
+      }
       return `
-        <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 50vh;">
-          <div class="glass-card stagger-item" style="text-align: center; max-width: 400px; width: 100%;">
-            <h2 style="margin-bottom: var(--space-md);">Verwaltung Login</h2>
-            <input type="password" id="pin-input" placeholder="PIN eingeben" style="width: 100%; padding: var(--space-sm); background: var(--color-surface); border: var(--glass-border); color: var(--color-text-primary); text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; border-radius: 4px; margin-bottom: var(--space-md);">
-            <button id="pin-btn" style="width: 100%; background: var(--color-accent); color: #fff; font-weight: 700; padding: var(--space-sm); border-radius: 4px;">Login</button>
+        <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 55vh; padding: var(--space-md);">
+          <div class="glass-card stagger-item" style="text-align: center; max-width: 420px; width: 100%; padding: var(--space-xl) var(--space-lg); border-radius: 12px; border: 1px solid rgba(0, 240, 95, 0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(0, 240, 95, 0.12); border: 2px solid var(--color-accent); margin: 0 auto var(--space-md) auto; display: flex; align-items: center; justify-content: center; font-size: 1.6rem;">
+              🔒
+            </div>
+            <h2 style="margin-bottom: 6px; font-size: 1.4rem;">DSG Portal Login</h2>
+            <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: var(--space-lg);">
+              Gib deine PIN ein, um dich als Liga-Vorstand, Vereinsverwalter oder Schiedsrichter anzumelden.
+            </p>
+            <input type="password" id="pin-input" placeholder="••••" maxlength="6" autofocus style="width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: var(--color-text-primary); text-align: center; font-size: 2rem; letter-spacing: 0.8rem; border-radius: 6px; margin-bottom: var(--space-md); outline: none;">
+            <button id="pin-btn" class="btn-dsg" style="width: 100%; background: var(--color-accent); color: #000; font-weight: 800; font-size: 1rem; padding: 12px; border-radius: 6px; cursor: pointer;">
+              Anmelden
+            </button>
+            <div id="login-error-msg" style="color: #ef4444; font-size: 0.85rem; margin-top: 10px; display: none;"></div>
           </div>
         </div>
       `;
     },
     bind: () => {
-      if(sessionStorage.getItem('dsg_admin') === 'true') {
-        bindAdmin();
+      const auth = getAuth();
+      if (auth.isLoggedIn) {
+        if (auth.role === 'admin') bindAdmin();
+        else if (auth.role === 'team' || auth.role === 'team_manager') bindTeamAdmin(auth);
+        else if (auth.role === 'referee') bindRefereeAdmin(auth);
       } else {
-        document.getElementById('pin-btn')?.addEventListener('click', () => {
-          if(document.getElementById('pin-input').value === '1111') {
-            sessionStorage.setItem('dsg_admin', 'true');
-            Router.handleRoute(); // re-render
+        const pinInput = document.getElementById('pin-input');
+        const pinBtn = document.getElementById('pin-btn');
+        const errorMsg = document.getElementById('login-error-msg');
+
+        const doLogin = () => {
+          const val = (pinInput?.value || '').trim();
+          const res = loginWithPin(val);
+          if (res.success) {
+            Router.handleRoute();
           } else {
-            alert('Falscher PIN');
+            if (errorMsg) {
+              errorMsg.textContent = res.error || 'Ungültiger PIN. Bitte erneut versuchen.';
+              errorMsg.style.display = 'block';
+            } else {
+              alert(res.error || 'Falscher PIN');
+            }
+            if (pinInput) {
+              pinInput.value = '';
+              pinInput.focus();
+            }
           }
+        };
+
+        pinBtn?.addEventListener('click', doLogin);
+        pinInput?.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') doLogin();
         });
       }
     }
