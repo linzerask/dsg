@@ -34,10 +34,19 @@ export const viewRefereeAdmin = (auth) => {
       </div>
 
       <div style="max-width: 1200px; margin: 0 auto; padding: 0 var(--space-md);">
-        <!-- Match Selector Card -->
+        <!-- Match & Season Selector Card -->
         <div class="glass-card" style="padding: var(--space-md); margin-bottom: var(--space-lg); border-radius: 8px; border: 1px solid rgba(0, 240, 95, 0.2);">
           <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-md);">
-            <div style="flex: 1; min-width: 280px;">
+            <div style="flex: 1; min-width: 220px; max-width: 320px;">
+              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--color-accent); margin-bottom: 6px; text-transform: uppercase;">
+                Liga / Saison wählen
+              </label>
+              <select id="referee-season-select" class="admin-input" style="width: 100%; font-size: 0.95rem; font-weight: 600; padding: 10px;">
+                <option value="Testliga 2026/2027">🧪 Testliga 2026/2027 (Testbetrieb)</option>
+                <option value="2026/2027">🏆 DSG Liga 2026/2027 (Offiziell)</option>
+              </select>
+            </div>
+            <div style="flex: 2; min-width: 280px;">
               <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--color-accent); margin-bottom: 6px; text-transform: uppercase;">
                 Spiel auswählen
               </label>
@@ -78,41 +87,80 @@ export const bindRefereeAdmin = async () => {
     window.location.reload();
   });
 
+  const seasonSelect = document.getElementById('referee-season-select');
   const matchSelect = document.getElementById('referee-match-select');
   const matchMeta = document.getElementById('referee-match-meta');
   const contentContainer = document.getElementById('referee-content-container');
   const tabPasskontrolle = document.getElementById('tab-btn-passkontrolle');
   const tabSpielbericht = document.getElementById('tab-btn-spielbericht');
 
-  // Load matches
   const ligaData = Store.getData();
-  const currentSeason = ligaData.currentSeason || '2026/2027';
-  selectedSeason = currentSeason;
-  const matches = (ligaData.seasons && ligaData.seasons[currentSeason]?.matches) || [];
-  const players = await Store.getAdminPlayers();
-
-  // Populate match dropdown: sorted descending by round
-  if (matchSelect) {
-    matchSelect.innerHTML = '<option value="">-- Bitte Spiel wählen --</option>' + 
-      matches.map(m => {
-        const roundStr = m.round ? `Runde ${m.round}` : '';
-        const dateStr = m.date || '';
-        const scoreStr = (m.score && m.score !== '-:-' && m.score !== ':') ? `[${m.score}]` : '(Bevorstehend)';
-        return `<option value="${m.id}">${roundStr ? roundStr + ': ' : ''}${m.home} vs ${m.away} ${scoreStr} - ${dateStr}</option>`;
-      }).join('');
-
-    // Pre-select first match if available
-    if (matches.length > 0 && !selectedMatchId) {
-      selectedMatchId = matches[matches.length - 1].id;
-      matchSelect.value = selectedMatchId;
-    } else if (selectedMatchId) {
-      matchSelect.value = selectedMatchId;
-    }
+  if (ligaData.seasons && ligaData.seasons['Testliga 2026/2027']) {
+    selectedSeason = 'Testliga 2026/2027';
+  } else {
+    selectedSeason = ligaData.currentSeason || '2026/2027';
   }
 
+  let players = (Store.getAdminPlayersSync ? Store.getAdminPlayersSync() : []) || [];
+  Store.getAdminPlayers().then(p => {
+    if (p && Array.isArray(p) && p.length > 0) {
+      players = p;
+      renderActiveTab();
+    }
+  });
+
+  const getSeasonMatches = () => {
+    const data = Store.getData();
+    return (data.seasons && data.seasons[selectedSeason]?.matches) || [];
+  };
+
   const getActiveMatch = () => {
+    const matches = getSeasonMatches();
     return matches.find(m => String(m.id) === String(selectedMatchId));
   };
+
+  const populateMatchDropdown = () => {
+    const matches = getSeasonMatches();
+    if (!matchSelect) return;
+
+    if (matches.length === 0) {
+      matchSelect.innerHTML = '<option value="">-- Keine Spiele in dieser Saison vorhanden --</option>';
+      selectedMatchId = null;
+    } else {
+      matchSelect.innerHTML = '<option value="">-- Bitte Spiel wählen --</option>' + 
+        matches.map(m => {
+          const roundStr = m.round ? `Runde ${m.round}` : '';
+          const dateStr = m.date || '';
+          const scoreStr = (m.score && m.score !== '-:-' && m.score !== ':') ? `[${m.score}]` : '(Bevorstehend)';
+          return `<option value="${m.id}">${roundStr ? roundStr + ': ' : ''}${m.home} vs ${m.away} ${scoreStr} - ${dateStr}</option>`;
+        }).join('');
+
+      if (!selectedMatchId || !matches.some(m => String(m.id) === String(selectedMatchId))) {
+        selectedMatchId = matches[0].id;
+      }
+      matchSelect.value = selectedMatchId;
+    }
+
+    const activeMatch = getActiveMatch();
+    updateMetaDisplay(activeMatch);
+    renderActiveTab();
+  };
+
+  if (seasonSelect) {
+    seasonSelect.value = selectedSeason;
+    seasonSelect.addEventListener('change', (e) => {
+      selectedSeason = e.target.value;
+      selectedMatchId = null;
+      populateMatchDropdown();
+    });
+  }
+
+  matchSelect?.addEventListener('change', (e) => {
+    selectedMatchId = e.target.value;
+    const activeMatch = getActiveMatch();
+    updateMetaDisplay(activeMatch);
+    renderActiveTab();
+  });
 
   const updateMetaDisplay = (match) => {
     if (!matchMeta) return;
@@ -177,10 +225,7 @@ export const bindRefereeAdmin = async () => {
     renderActiveTab();
   });
 
-  matchSelect?.addEventListener('change', (e) => {
-    selectedMatchId = e.target.value;
-    renderActiveTab();
-  });
+  
 
   const renderPasskontrolle = (match, allPlayers) => {
     const homeTeam = match.home || '';
@@ -521,7 +566,7 @@ export const bindRefereeAdmin = async () => {
       try {
         Store.saveMatch(selectedSeason, updatedMatch);
         alert('Spielbericht erfolgreich gespeichert und Tabelle aktualisiert!');
-        renderActiveTab();
+        populateMatchDropdown();
       } catch (err) {
         console.error("Save match error:", err);
         alert('Fehler beim Speichern des Spielberichts.');
@@ -531,5 +576,5 @@ export const bindRefereeAdmin = async () => {
     });
   };
 
-  renderActiveTab();
+  populateMatchDropdown();
 };

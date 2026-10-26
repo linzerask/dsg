@@ -967,5 +967,32 @@
     "datumVon": "30.10.2026",
     "datumBis": "31.10.2026",
     "status": "Aktiv"
+  },
+  {
+    "id": 165,
+    "runde": 1,
+    "seasonKey": "Testliga 2026/2027",
+    "liga": "Testliga",
+    "datumVon": "10.11.2026",
+    "datumBis": "15.11.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 166,
+    "runde": 2,
+    "seasonKey": "Testliga 2026/2027",
+    "liga": "Testliga",
+    "datumVon": "17.11.2026",
+    "datumBis": "22.11.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 167,
+    "runde": 3,
+    "seasonKey": "Testliga 2026/2027",
+    "liga": "Testliga",
+    "datumVon": "24.11.2026",
+    "datumBis": "29.11.2026",
+    "status": "Aktiv"
   }
 ]

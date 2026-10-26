@@ -70,5 +70,14 @@
     "status": "Aktiv",
     "showOnHomepage": true,
     "isCurrent": true
+  },
+  {
+    "id": 9,
+    "name": "Testliga",
+    "year": "2026/2027",
+    "seasonKey": "Testliga 2026/2027",
+    "status": "Aktiv",
+    "showOnHomepage": false,
+    "isCurrent": false
   }
 ]

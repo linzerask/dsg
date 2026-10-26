@@ -356,7 +356,8 @@ export const INITIAL_LEAGUES = [
   { id: 5, name: "Oberes Playoff", year: "2024/2025", seasonKey: "2024/2025_oberes", status: "Aktiv", showOnHomepage: true },
   { id: 6, name: "Unteres Playoff", year: "2024/2025", seasonKey: "2024/2025_unteres", status: "Aktiv", showOnHomepage: true },
   { id: 7, name: "DSG Liga", year: "2025/2026", seasonKey: "2025/2026", status: "Aktiv", showOnHomepage: true },
-  { id: 8, name: "DSG Liga", year: "2026/2027", seasonKey: "2026/2027", status: "Aktiv", showOnHomepage: true, isCurrent: true }
+  { id: 8, name: "DSG Liga", year: "2026/2027", seasonKey: "2026/2027", status: "Aktiv", showOnHomepage: true, isCurrent: true },
+  { id: 9, name: "Testliga", year: "2026/2027", seasonKey: "Testliga 2026/2027", status: "Aktiv", showOnHomepage: false, isCurrent: false }
 ];
 
 export const sortLeaguesByPriority = (leagues) => {
@@ -371,6 +372,7 @@ export const sortLeaguesByPriority = (leagues) => {
     // DSG Liga (weight 1) > Oberes Playoff (weight 2) > Unteres Playoff (weight 3) > 1. Klasse (weight 4) > Other (weight 5)
     const getWeight = (item) => {
       const name = ((item.name || '') + ' ' + (item.seasonKey || '') + ' ' + (item.label || '')).toLowerCase();
+      if (name.includes('test')) return 10;
       if (name.includes('dsg liga') || (!name.includes('klasse') && !name.includes('playoff'))) return 1;
       if (name.includes('oberes')) return 2;
       if (name.includes('unteres')) return 3;
@@ -484,7 +486,8 @@ export const Store = {
 
     try {
       const fetches = [];
-      if (!hasPopulatedData) {
+      const hasTestLiga = state.memoryData?.seasons?.['Testliga 2026/2027']?.matches?.length > 0;
+      if (!hasPopulatedData || !hasTestLiga) {
         fetches.push(fetch('data/liga.json' + DATA_VERSION_STRING).then(r => r.ok ? r.json() : null).catch(() => null));
       } else {
         fetches.push(Promise.resolve(null));
@@ -510,15 +513,19 @@ export const Store = {
 
       const [fileLiga, fileLeagues, fileRounds, fileArticles] = await Promise.all(fetches);
 
-      if (fileLiga && fileLiga.seasons && !hasPopulatedData) {
+      if (fileLiga && fileLiga.seasons) {
+        if (!state.memoryData) state.memoryData = { currentSeason: "2026/2027", seasons: {} };
+        if (!state.memoryData.seasons) state.memoryData.seasons = {};
         Object.keys(fileLiga.seasons).forEach(sKey => {
           if (fileLiga.seasons[sKey]?.matches) {
             fileLiga.seasons[sKey].matches = deduplicateMatches(fileLiga.seasons[sKey].matches);
           }
+          if (!hasPopulatedData || !state.memoryData.seasons[sKey] || !state.memoryData.seasons[sKey].matches?.length) {
+            state.memoryData.seasons[sKey] = fileLiga.seasons[sKey];
+          }
         });
-        if (!fileLiga.currentSeason) fileLiga.currentSeason = "2026/2027";
-        state.memoryData = fileLiga;
-        trySetLocal('dsg_data_v94', JSON.stringify(fileLiga));
+        if (!state.memoryData.currentSeason) state.memoryData.currentSeason = "2026/2027";
+        trySetLocal('dsg_data_v94', JSON.stringify(state.memoryData));
       }
 
       if (fileLeagues && (!localLeagues || localLeagues.length === 0)) {
