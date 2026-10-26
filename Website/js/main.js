@@ -1,4 +1,4 @@
-import { Router } from './router.js?v=1792922000000';
+import { Router } from './router.js?v=1792924000000';
 import { Store } from './store.js?v=1792876000000';
 import { initConsentBanner } from './consent.js?v=1791930000000';
 

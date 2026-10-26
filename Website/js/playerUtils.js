@@ -145,12 +145,18 @@ export function computeAllPlayerStats() {
       if (m.events && Array.isArray(m.events)) {
         m.events.forEach(ev => {
           if (ev.type === 'goal') {
-            registerEvent(ev.player, 'goal', parseInt(ev.count) || 1, ev.team);
+            const pName = sanitizeMojibake((ev.player || ev.name || '').trim());
+            if (pName && !pName.toLowerCase().includes('eigentor') && !pName.toLowerCase().includes('own goal')) {
+              registerEvent(pName, 'goal', parseInt(ev.count) || 1, ev.team);
+            }
           }
         });
       } else if (m.scorers && Array.isArray(m.scorers)) {
         m.scorers.forEach(sc => {
-          registerEvent(sc.name, 'goal', parseInt(sc.count) || parseInt(sc.goals) || 1, sc.team);
+          const pName = sanitizeMojibake((sc.name || sc.player || '').trim());
+          if (pName && !pName.toLowerCase().includes('eigentor') && !pName.toLowerCase().includes('own goal')) {
+            registerEvent(pName, 'goal', parseInt(sc.count) || parseInt(sc.goals) || 1, sc.team);
+          }
         });
       }
 
@@ -175,6 +181,11 @@ export function computeAllPlayerStats() {
         if (t === 'yellow' || t === 'gelb') entry.yellows += count;
         else if (t === 'yellowred' || t === 'gelbrot') entry.yellowReds += count;
         else if (t === 'red' || t === 'rot') entry.reds += count;
+        else {
+          if (cd.yellow) entry.yellows += parseInt(cd.yellow) || 0;
+          if (cd.yellowRed || cd.gelbrot || cd['yellow-red'] || cd.yellow_red) entry.yellowReds += parseInt(cd.yellowRed || cd.gelbrot || cd['yellow-red'] || cd.yellow_red) || 0;
+          if (cd.red) entry.reds += parseInt(cd.red) || 0;
+        }
       });
 
       matchCardsPerPlayer.forEach(mc => {
@@ -193,6 +204,7 @@ export function computeAllPlayerStats() {
     if (s.stats && s.stats.scorers && Array.isArray(s.stats.scorers)) {
       s.stats.scorers.forEach(sc => {
         const pName = (sc.player || sc.name || '').trim();
+        if (!pName || pName.toLowerCase().includes('eigentor') || pName.toLowerCase().includes('own goal')) return;
         const key = normalizePlayerKey(pName);
         const g = parseInt(sc.goals || sc.count || 0) || 0;
         if (key && g > 0) {
@@ -211,7 +223,7 @@ export function computeAllPlayerStats() {
         const pName = (c.player || c.name || '').trim();
         const key = normalizePlayerKey(pName);
         const y = parseInt(c.yellow || c.gelb || 0) || 0;
-        const yr = parseInt(c.yellowRed || c.gelbrot || 0) || 0;
+        const yr = parseInt(c.yellowRed || c.gelbrot || c['yellow-red'] || c.yellow_red || 0) || 0;
         const r = parseInt(c.red || c.rot || 0) || 0;
         if (key) {
           if (!statsMap[key]) {
@@ -327,6 +339,7 @@ export function getTeamScorers(teamName, seasonFilter = 'all') {
             const belongsToTeam = evTeamNorm ? (evTeamNorm.includes(teamNorm) || teamNorm.includes(evTeamNorm)) : isTeamMatch;
             if (belongsToTeam) {
               const pName = sanitizeMojibake((ev.player || '').trim());
+              if (!pName || pName.toLowerCase().includes('eigentor') || pName.toLowerCase().includes('own goal')) return;
               const key = normalizePlayerKey(pName);
               const count = parseInt(ev.count) || 1;
               if (key) {

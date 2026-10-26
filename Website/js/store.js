@@ -436,7 +436,7 @@ export const Store = {
     // Clear all obsolete cache versions
     try {
       for (let i = 1; i <= 100; i++) {
-        if (i !== 92) localStorage.removeItem(`dsg_data_v${i}`);
+        if (i !== 94) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 38) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 27) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 13) localStorage.removeItem(`dsg_admin_players_v${i}`);
@@ -447,7 +447,7 @@ export const Store = {
     } catch(e) {}
 
     // Eagerly load synchronous local memory into shared singleton
-    state.memoryData = loadLocal('dsg_data', 92);
+    state.memoryData = loadLocal('dsg_data', 94);
     state.memoryNews = loadLocal('dsg_articles', 38) || sortArticles([...(INITIAL_DATA.news || [])]);
     state.memoryGallery = loadLocal('dsg_gallery', 27) || INITIAL_DATA.gallery || [];
 
@@ -496,7 +496,7 @@ export const Store = {
         });
         if (!fileLiga.currentSeason) fileLiga.currentSeason = "2026/2027";
         state.memoryData = fileLiga;
-        trySetLocal('dsg_data_v92', JSON.stringify(fileLiga));
+        trySetLocal('dsg_data_v94', JSON.stringify(fileLiga));
       }
 
       if (fileLeagues && (!localLeagues || localLeagues.length === 0)) {
@@ -597,7 +597,7 @@ export const Store = {
       if (dataSnap.exists() && dataSnap.data()?.data) {
         const fbData = dataSnap.data().data;
         const fbTime = dataSnap.data().lastUpdated || fbData.lastUpdated || 0;
-        const localData = loadLocal('dsg_data', 92);
+        const localData = loadLocal('dsg_data', 93);
         const localTime = localData?.lastUpdated || 0;
         
         let targetData = (localTime > fbTime && localData && localData.seasons) ? localData : fbData;
@@ -653,7 +653,7 @@ export const Store = {
         const targetLigaStr = JSON.stringify(targetData?.seasons || {});
         if (currentLigaStr !== targetLigaStr) {
           state.memoryData = targetData;
-          trySetLocal('dsg_data_v92', JSON.stringify(targetData));
+          trySetLocal('dsg_data_v94', JSON.stringify(targetData));
           hasLigaUpdates = true;
         }
 
@@ -865,7 +865,7 @@ export const Store = {
         await setDoc(galleryRef, { data: state.memoryGallery, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (gallery):", e));
       }
         
-      trySetLocal('dsg_data_v92', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_data_v94', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v38', JSON.stringify(state.memoryNews));
       trySetLocal('dsg_gallery_v27', JSON.stringify(state.memoryGallery));
 
@@ -901,7 +901,7 @@ export const Store = {
     }
     const cleanData = deepSanitize(data);
     state.memoryData = cleanData;
-    trySetLocal('dsg_data_v92', JSON.stringify(cleanData));
+    trySetLocal('dsg_data_v94', JSON.stringify(cleanData));
     setDoc(doc(db, 'system', 'liga_data'), { data: cleanData, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
@@ -1078,14 +1078,14 @@ export const Store = {
         const isPlayed = m.status === 'Gespielt' || m.status === 'Played' || m.status === 'Beendet';
         if (!isPlayed) return;
 
-        // 1. Process goals
+        // 1. Process goals (exclude own goals / Eigentor)
         const goalList = (m.events && Array.isArray(m.events) && m.events.length > 0)
           ? m.events.filter(e => e.type === 'goal')
           : (m.scorers || []);
 
         goalList.forEach(ev => {
           const playerName = (ev.player || ev.name || '').trim();
-          if (!playerName) return;
+          if (!playerName || playerName.toLowerCase().includes('eigentor') || playerName.toLowerCase().includes('own goal')) return;
           const key = `${playerName}__${(ev.team || '').trim()}`;
           const count = parseInt(ev.goals || ev.count, 10) || 1;
           if (!scorersMap.has(key)) {
@@ -1119,12 +1119,17 @@ export const Store = {
       cards.forEach((cd, idx) => { cd.rank = idx + 1; });
     }
 
-    topScorers = topScorers.map((s, idx) => ({
-      ...s,
-      rank: s.rank || (idx + 1),
-      name: s.name || s.player || '',
-      player: s.player || s.name || ''
-    }));
+    topScorers = topScorers
+      .filter(s => {
+        const pName = (s.name || s.player || '').trim().toLowerCase();
+        return pName && !pName.includes('eigentor') && !pName.includes('own goal');
+      })
+      .map((s, idx) => ({
+        ...s,
+        rank: s.rank || (idx + 1),
+        name: s.name || s.player || '',
+        player: s.player || s.name || ''
+      }));
 
     cards = cards.map((c, idx) => ({
       ...c,
@@ -1262,14 +1267,14 @@ export const Store = {
     if (!Array.isArray(seasonStats.cards)) seasonStats.cards = [];
 
     if (isPlayed) {
-      // 1. Process goals
+      // 1. Process goals (exclude own goals / Eigentor)
       const goalList = (match.events && Array.isArray(match.events) && match.events.length > 0)
         ? match.events.filter(e => e.type === 'goal')
         : (match.scorers || []);
 
       goalList.forEach(ev => {
         const playerName = (ev.player || ev.name || '').trim();
-        if (!playerName) return;
+        if (!playerName || playerName.toLowerCase().includes('eigentor') || playerName.toLowerCase().includes('own goal')) return;
         const goalCount = parseInt(ev.goals || ev.count) || 1;
         let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === ev.team);
         if (scorer) {
@@ -1368,14 +1373,14 @@ export const Store = {
     if (!Array.isArray(seasonStats.cards)) seasonStats.cards = [];
 
     if (isPlayed) {
-      // 1. Process goals reversal
+      // 1. Process goals reversal (exclude own goals / Eigentor)
       const goalList = (match.events && Array.isArray(match.events) && match.events.length > 0)
         ? match.events.filter(e => e.type === 'goal')
         : (match.scorers || []);
 
       goalList.forEach(ev => {
         const playerName = (ev.player || ev.name || '').trim();
-        if (!playerName) return;
+        if (!playerName || playerName.toLowerCase().includes('eigentor') || playerName.toLowerCase().includes('own goal')) return;
         const goalCount = parseInt(ev.goals || ev.count) || 1;
         let scorer = seasonStats.topScorers.find(s => (s.name === playerName || s.player === playerName) && s.team === ev.team);
         if (scorer) {

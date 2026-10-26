@@ -60,7 +60,10 @@ export function viewLiga() {
   };
   
   const stats = Store.getStats(currentSeason) || { topScorers: [], cards: [] };
-  const topScorers = stats.topScorers || [];
+  const topScorers = (stats.topScorers || []).filter(s => {
+    const pName = (s.player || s.name || '').trim().toLowerCase();
+    return pName && !pName.includes('eigentor') && !pName.includes('own goal');
+  });
   const matches = Store.getMatches(currentSeason) || [];
   const cancMap = Store.getTeamCancellations ? Store.getTeamCancellations(matches) : {};
   const rawTeams = Store.getLiga(currentSeason) || [];

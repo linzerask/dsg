@@ -127,7 +127,7 @@ export const computeAllTimeStats = () => {
         m.events.forEach(ev => {
           if (ev.type === 'goal' && ev.player) {
             const name = sanitizeMojibake((ev.player || '').trim());
-            if (!name) return;
+            if (!name || name.toLowerCase().includes('eigentor') || name.toLowerCase().includes('own goal')) return;
             if (!playerMap[name]) {
               playerMap[name] = {
                 name,
@@ -250,7 +250,7 @@ export const computeAllTimeStats = () => {
     if (s.stats && s.stats.topScorers && Array.isArray(s.stats.topScorers)) {
       s.stats.topScorers.forEach(sc => {
         const name = (sc.name || sc.player || '').trim();
-        if (!name) return;
+        if (!name || name.toLowerCase().includes('eigentor') || name.toLowerCase().includes('own goal')) return;
         if (!playerMap[name]) {
           playerMap[name] = {
             name,
@@ -314,7 +314,12 @@ export const computeAllTimeStats = () => {
       
       let topScorer = null;
       if (s.stats?.topScorers && Array.isArray(s.stats.topScorers) && s.stats.topScorers.length > 0) {
-        topScorer = [...s.stats.topScorers].sort((a, b) => (b.goals || 0) - (a.goals || 0))[0];
+        topScorer = [...s.stats.topScorers]
+          .filter(sc => {
+            const scName = (sc.name || sc.player || '').trim().toLowerCase();
+            return scName && !scName.includes('eigentor') && !scName.includes('own goal');
+          })
+          .sort((a, b) => (b.goals || 0) - (a.goals || 0))[0];
       }
 
       if (champion && ((champion.played || 0) > 0 || (champion.points || 0) > 0)) {
@@ -426,6 +431,8 @@ export const computeAllTimeStats = () => {
     const s = seasons[sKey];
     if (s && s.stats && s.stats.topScorers) {
       s.stats.topScorers.forEach(sc => {
+        const scName = (sc.name || sc.player || '').trim().toLowerCase();
+        if (scName && (scName.includes('eigentor') || scName.includes('own goal'))) return;
         if (sc.goals > bestSingleSeasonScorer.goals) {
           bestSingleSeasonScorer = {
             name: sc.name || sc.player || '',

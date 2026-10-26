@@ -18,7 +18,12 @@ export const viewHome = () => {
   const teams = sortedTeams.slice(0, 5);
 
   const rawScorers = defaultHomeSeason ? ((Store.getStats(defaultHomeSeason) || { topScorers: [] }).topScorers || []) : [];
-  const sortedScorers = [...rawScorers].sort((a, b) => (b.goals || 0) - (a.goals || 0));
+  const sortedScorers = [...rawScorers]
+    .filter(s => {
+      const pName = (s.player || s.name || '').trim().toLowerCase();
+      return pName && !pName.includes('eigentor') && !pName.includes('own goal');
+    })
+    .sort((a, b) => (b.goals || 0) - (a.goals || 0));
   const scorers = sortedScorers.slice(0, 5);
 
   const news = Store.getNews().slice(0, 3);
