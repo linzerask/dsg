@@ -7,7 +7,7 @@ let teamsData = [];
 let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 15;
-let currentSort = { column: 'id', asc: false };
+let currentSort = { column: null, asc: true };
 
 let editingRoundId = null;
 
@@ -36,7 +36,7 @@ export const renderAdminRounds = () => {
                     <option value="inactive">Nur Inaktiv</option>
                 </select>
                 <select id="round-sort-select" class="admin-input" style="width: 175px;">
-                    <option value="season-desc">Saison (neueste)</option>
+                    <option value="season-desc" selected>Liga / Saison (Standard)</option>
                     <option value="season-asc">Saison (älteste)</option>
                     <option value="date-desc">Datum (neueste)</option>
                     <option value="date-asc">Datum (älteste)</option>
@@ -280,6 +280,28 @@ const extractRoundNumber = (r) => {
     return m ? parseInt(m[0]) || 0 : 0;
 };
 
+const getLeagueOrderWeight = (round) => {
+    if (!round) return 0;
+    const key = String(round.seasonKey || round.jahr || round.saison || '').trim();
+    const curSeason = Store.getData()?.currentSeason || '2026/2027';
+    const isTest = key.toLowerCase().includes('test') || String(round.liga || '').toLowerCase().includes('test');
+    const yr = (extractSeasonYear(round) || 2020) - 2000;
+    const base = yr * 10000;
+
+    // Primary active season (DSG Liga 2026/2027) gets highest priority
+    if ((key === curSeason || key === '2026/2027' || key.includes('2026/2027')) && !isTest) return 990000;
+    // Current season's Testliga comes right after main league
+    if (isTest && (key.includes('2026') || yr === 26 || String(round.jahr || '').includes('2026'))) return 980000;
+
+    let sub = 500;
+    const lowerKey = key.toLowerCase();
+    if (lowerKey.includes('oberes')) sub = 400;
+    else if (lowerKey.includes('unteres')) sub = 300;
+    else if (lowerKey.includes('1klasse') || lowerKey.includes('1. klasse') || String(round.liga || '').toLowerCase().includes('1. klasse')) sub = 200;
+    if (isTest) sub = 100;
+    return base + sub;
+};
+
 const filterAndSortData = () => {
     const searchVal = (document.getElementById('round-search')?.value || '').toLowerCase().trim();
     const leagueFilter = document.getElementById('round-league-filter')?.value || 'all';
@@ -312,17 +334,23 @@ const filterAndSortData = () => {
         return matchesSearch && matchesLeague && matchesStatus;
     });
 
-    // Multi-tier sorting
+    // Multi-tier sorting based on sortVal dropdown
     filteredData.sort((a, b) => {
         if (sortVal === 'season-desc') {
-            const diffYear = extractSeasonYear(b) - extractSeasonYear(a);
-            if (diffYear !== 0) return diffYear;
-            return extractRoundNumber(a) - extractRoundNumber(b);
+            const weightA = getLeagueOrderWeight(a);
+            const weightB = getLeagueOrderWeight(b);
+            if (weightA !== weightB) return weightB - weightA;
+            const diffRound = extractRoundNumber(a) - extractRoundNumber(b);
+            if (diffRound !== 0) return diffRound;
+            return parseRoundDate(a.datumVon || a.datumBis) - parseRoundDate(b.datumVon || b.datumBis);
         }
         if (sortVal === 'season-asc') {
-            const diffYear = extractSeasonYear(a) - extractSeasonYear(b);
-            if (diffYear !== 0) return diffYear;
-            return extractRoundNumber(a) - extractRoundNumber(b);
+            const weightA = getLeagueOrderWeight(a);
+            const weightB = getLeagueOrderWeight(b);
+            if (weightA !== weightB) return weightA - weightB;
+            const diffRound = extractRoundNumber(a) - extractRoundNumber(b);
+            if (diffRound !== 0) return diffRound;
+            return parseRoundDate(a.datumVon || a.datumBis) - parseRoundDate(b.datumVon || b.datumBis);
         }
         if (sortVal === 'date-desc') {
             const dateA = parseRoundDate(a.datumVon || a.datumBis);
@@ -339,47 +367,76 @@ const filterAndSortData = () => {
         if (sortVal === 'runde-asc') {
             const diffRunde = extractRoundNumber(a) - extractRoundNumber(b);
             if (diffRunde !== 0) return diffRunde;
-            return extractSeasonYear(b) - extractSeasonYear(a);
+            const weightA = getLeagueOrderWeight(a);
+            const weightB = getLeagueOrderWeight(b);
+            return weightB - weightA;
         }
         if (sortVal === 'runde-desc') {
             const diffRunde = extractRoundNumber(b) - extractRoundNumber(a);
             if (diffRunde !== 0) return diffRunde;
-            return extractSeasonYear(b) - extractSeasonYear(a);
+            const weightA = getLeagueOrderWeight(a);
+            const weightB = getLeagueOrderWeight(b);
+            return weightB - weightA;
         }
         if (sortVal === 'league-asc') {
-            const nameA = String(a.liga || '').toLowerCase();
-            const nameB = String(b.liga || '').toLowerCase();
+            const nameA = String(getDisplayLeagueName(a) || a.liga || '').toLowerCase();
+            const nameB = String(getDisplayLeagueName(b) || b.liga || '').toLowerCase();
             const cmp = nameA.localeCompare(nameB);
             if (cmp !== 0) return cmp;
+            const diffYear = extractSeasonYear(b) - extractSeasonYear(a);
+            if (diffYear !== 0) return diffYear;
             return extractRoundNumber(a) - extractRoundNumber(b);
         }
-
-        // Fallback for direct column header sorting
-        let valA = a[currentSort.column];
-        let valB = b[currentSort.column];
-
-        if (currentSort.column === 'datumVon' || currentSort.column === 'datumBis') {
-            valA = parseRoundDate(valA);
-            valB = parseRoundDate(valB);
-        } else if (currentSort.column === 'runde') {
-            valA = extractRoundNumber(a);
-            valB = extractRoundNumber(b);
-        } else if (currentSort.column === 'jahr' || currentSort.column === 'saison') {
-            valA = extractSeasonYear(a);
-            valB = extractSeasonYear(b);
-        }
-
-        if (typeof valA === 'number' && typeof valB === 'number') {
-            return currentSort.asc ? valA - valB : valB - valA;
-        }
-
-        valA = (valA || '').toString().toLowerCase();
-        valB = (valB || '').toString().toLowerCase();
-
-        if (valA < valB) return currentSort.asc ? -1 : 1;
-        if (valA > valB) return currentSort.asc ? 1 : -1;
         return 0;
     });
+
+    // Secondary table header click sorting if active
+    if (currentSort.column) {
+        filteredData.sort((a, b) => {
+            if (currentSort.column === 'liga') {
+                const weightA = getLeagueOrderWeight(a);
+                const weightB = getLeagueOrderWeight(b);
+                if (weightA !== weightB) return currentSort.asc ? weightA - weightB : weightB - weightA;
+                return extractRoundNumber(a) - extractRoundNumber(b);
+            }
+            if (currentSort.column === 'jahr') {
+                const sA = extractSeasonYear(a);
+                const sB = extractSeasonYear(b);
+                if (sA !== sB) return currentSort.asc ? sA - sB : sB - sA;
+                return extractRoundNumber(a) - extractRoundNumber(b);
+            }
+            if (currentSort.column === 'runde') {
+                const rA = extractRoundNumber(a);
+                const rB = extractRoundNumber(b);
+                if (rA !== rB) return currentSort.asc ? rA - rB : rB - rA;
+                const weightA = getLeagueOrderWeight(a);
+                const weightB = getLeagueOrderWeight(b);
+                return weightB - weightA;
+            }
+            if (currentSort.column === 'datumVon') {
+                const dA = parseRoundDate(a.datumVon);
+                const dB = parseRoundDate(b.datumVon);
+                if (dA !== dB) return currentSort.asc ? dA - dB : dB - dA;
+                return extractRoundNumber(a) - extractRoundNumber(b);
+            }
+            if (currentSort.column === 'datumBis') {
+                const dA = parseRoundDate(a.datumBis);
+                const dB = parseRoundDate(b.datumBis);
+                if (dA !== dB) return currentSort.asc ? dA - dB : dB - dA;
+                return extractRoundNumber(a) - extractRoundNumber(b);
+            }
+            if (currentSort.column === 'status') {
+                const actA = isLeagueActive(a) ? 1 : 0;
+                const actB = isLeagueActive(b) ? 1 : 0;
+                if (actA !== actB) return currentSort.asc ? actA - actB : actB - actA;
+                return extractRoundNumber(a) - extractRoundNumber(b);
+            }
+
+            let valA = (a[currentSort.column] || '').toString().toLowerCase();
+            let valB = (b[currentSort.column] || '').toString().toLowerCase();
+            return currentSort.asc ? valA.localeCompare(valB, 'de', { numeric: true }) : valB.localeCompare(valA, 'de', { numeric: true });
+        });
+    }
 };
 
 const renderTable = () => {
@@ -608,6 +665,8 @@ const populateLeaguesDropdowns = () => {
     }
 
     if (filterSelect) {
+        let savedFilter = 'all';
+        try { savedFilter = sessionStorage.getItem('dsg_round_league_filter') || filterSelect.value || 'all'; } catch(e) {}
         const uniqueLeagueNames = [];
         roundsData.forEach(r => {
             const dName = getDisplayLeagueName(r);
@@ -617,6 +676,9 @@ const populateLeaguesDropdowns = () => {
         });
         filterSelect.innerHTML = '<option value="all">Alle Ligen</option>' + 
             uniqueLeagueNames.map(l => `<option value="${l}">${l}</option>`).join('');
+        if (savedFilter && Array.from(filterSelect.options).some(o => o.value === savedFilter)) {
+            filterSelect.value = savedFilter;
+        }
     }
 
     if (modalSelect) {
@@ -1230,10 +1292,19 @@ export const initAdminRounds = async () => {
     };
 
     const filterLeague = document.getElementById('round-league-filter');
-    if (filterLeague) filterLeague.onchange = () => {
-        currentPage = 1;
-        renderTable();
-    };
+    if (filterLeague) {
+        try {
+            const saved = sessionStorage.getItem('dsg_round_league_filter');
+            if (saved && Array.from(filterLeague.options).some(o => o.value === saved)) {
+                filterLeague.value = saved;
+            }
+        } catch(e) {}
+        filterLeague.onchange = (e) => {
+            try { sessionStorage.setItem('dsg_round_league_filter', e.target.value); } catch(err) {}
+            currentPage = 1;
+            renderTable();
+        };
+    }
 
     const statusFilter = document.getElementById('round-status-filter');
     if (statusFilter) statusFilter.onchange = () => {
@@ -1242,10 +1313,20 @@ export const initAdminRounds = async () => {
     };
 
     const sortSelect = document.getElementById('round-sort-select');
-    if (sortSelect) sortSelect.onchange = () => {
-        currentPage = 1;
-        renderTable();
-    };
+    if (sortSelect) {
+        try {
+            const saved = sessionStorage.getItem('dsg_round_sort_select');
+            if (saved && Array.from(sortSelect.options).some(o => o.value === saved)) {
+                sortSelect.value = saved;
+            }
+        } catch(e) {}
+        sortSelect.onchange = (e) => {
+            try { sessionStorage.setItem('dsg_round_sort_select', e.target.value); } catch(err) {}
+            currentSort = { column: null, asc: true };
+            currentPage = 1;
+            renderTable();
+        };
+    }
 
     // Outside-click close for modals
     const roundModal = document.getElementById('round-modal');
@@ -1265,8 +1346,8 @@ export const initAdminRounds = async () => {
     // Sorting headers
     document.querySelectorAll('.datagrid-container table.admin-table th.sortable').forEach(th => {
         th.style.cursor = 'pointer';
-        th.onclick = () => {
-            const col = th.getAttribute('data-sort');
+        th.onclick = (e) => {
+            const col = e.currentTarget.getAttribute('data-sort');
             if (currentSort.column === col) {
                 currentSort.asc = !currentSort.asc;
             } else {
