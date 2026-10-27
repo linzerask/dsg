@@ -5,6 +5,7 @@ import { logout } from '../auth.js';
 import { Router } from '../router.js';
 
 import { getPlayerAvatar } from '../playerUtils.js?v=1791182000000';
+import { calculateSeasonSuspensions, normalizePlayerName, normalizeKey } from '../suspensionUtils.js?v=1793040000000';
 
 import { storage } from '../firebase.js';
 
@@ -19,6 +20,7 @@ let searchQuery = '';
 let statusFilter = 'all'; // 'all' | 'Aktiv' | 'Inaktiv'
 
 let activeUploadPlayer = null;
+let selectedKaderMatchKey = null;
 
 
 
@@ -167,6 +169,12 @@ export const viewTeamAdmin = (auth) => {
         <button class="team-tab-btn ${currentTeamTab === 'kader' ? 'active' : ''}" data-tab="kader" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'kader' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'kader' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer;">
 
           Mein Kader
+
+        </button>
+
+        <button class="team-tab-btn ${currentTeamTab === 'spieltagskader' ? 'active' : ''}" data-tab="spieltagskader" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'spieltagskader' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'spieltagskader' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer; white-space: nowrap;">
+
+          Spieltagskader
 
         </button>
 
@@ -572,6 +580,336 @@ export const bindTeamAdmin = async (auth) => {
 
       });
 
+
+
+        } else if (currentTeamTab === 'spieltagskader') {
+      const data = Store.getData();
+      const allSeasons = data.seasons || {};
+      const normTeam = (teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+
+      const teamMatchOptions = [];
+      const seasonKeys = Object.keys(allSeasons).sort((a, b) => {
+        if (a === 'Testliga 2026/2027') return -1;
+        if (b === 'Testliga 2026/2027') return 1;
+        if (a === '2026/2027') return -1;
+        if (b === '2026/2027') return 1;
+        return b.localeCompare(a);
+      });
+
+      seasonKeys.forEach(sKey => {
+        const s = allSeasons[sKey];
+        if (s && Array.isArray(s.matches)) {
+          s.matches.forEach(m => {
+            const h = (m.home || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+            const a = (m.away || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+            if (h.includes(normTeam) || normTeam.includes(h) || a.includes(normTeam) || normTeam.includes(a)) {
+              teamMatchOptions.push({
+                seasonKey: sKey,
+                match: m,
+                key: `${sKey}___${m.id}`,
+                isPlayed: m.status === 'Gespielt' || (m.score && m.score !== '-:-' && m.score !== '- : -')
+              });
+            }
+          });
+        }
+      });
+
+      if (teamMatchOptions.length === 0) {
+        container.innerHTML = `
+          <div class="glass-card" style="padding: var(--space-xl); text-align: center; border-radius: 8px;">
+            <p style="color: var(--color-text-secondary); margin: 0;">Keine angesetzten Spiele für diesen Verein gefunden.</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (!selectedKaderMatchKey || !teamMatchOptions.some(o => o.key === selectedKaderMatchKey)) {
+        const unplayed = teamMatchOptions.find(o => !o.isPlayed);
+        selectedKaderMatchKey = unplayed ? unplayed.key : teamMatchOptions[0].key;
+      }
+
+      const currentOption = teamMatchOptions.find(o => o.key === selectedKaderMatchKey) || teamMatchOptions[0];
+      const matchSeason = currentOption.seasonKey;
+      const currentMatch = currentOption.match;
+
+      const existingRoster = Store.getMatchdayRoster(matchSeason, currentMatch.id, teamName);
+      const isSubmitted = !!(existingRoster && existingRoster.players && existingRoster.players.length > 0);
+
+      const allPlayers = await Store.getAdminPlayers();
+      const teamPlayers = allPlayers.filter(p => {
+        const t = (p.Team || p.Mannschaft || '').trim().toLowerCase();
+        const myT = teamName.trim().toLowerCase();
+        return t === myT || t.includes(myT) || myT.includes(t);
+      });
+
+      const { playerMap } = calculateSeasonSuspensions(matchSeason);
+
+      // Prepare players with suspension & roster data
+      const processedPlayers = teamPlayers.map(p => {
+        const pName = `${p.Vorname || ''} ${p.Nachname || ''}`.trim();
+        const pKey = normalizePlayerName(pName) + '___' + normalizeKey(teamName);
+        const suspInfo = playerMap.get(pKey);
+        const isSuspended = suspInfo && suspInfo.status === 'suspended';
+
+        let inRosterPlayer = null;
+        if (existingRoster && Array.isArray(existingRoster.players)) {
+          inRosterPlayer = existingRoster.players.find(rp => 
+            String(rp.id) === String(p['#'] || p.id) ||
+            normalizePlayerName((rp.firstName || '') + ' ' + (rp.lastName || '')) === normalizePlayerName(pName)
+          );
+        }
+
+        const isChecked = existingRoster ? !!inRosterPlayer : (!isSuspended && (p.Status || p.status || 'Aktiv').toLowerCase() === 'aktiv');
+        let currentJersey = '';
+        if (inRosterPlayer && inRosterPlayer.jerseyNumber) {
+          currentJersey = inRosterPlayer.jerseyNumber;
+        } else if (p['#'] && !isNaN(p['#']) && p['#'] !== '-') {
+          currentJersey = p['#'];
+        }
+
+        return {
+          raw: p,
+          id: p['#'] || p.id || pName,
+          pName,
+          position: p.Position || 'Feldspieler',
+          isSuspended,
+          isChecked,
+          jerseyNumber: currentJersey,
+          avatar: getPlayerAvatar(p)
+        };
+      });
+
+      // Sort: non-suspended first
+      processedPlayers.sort((a, b) => {
+        if (a.isSuspended !== b.isSuspended) return a.isSuspended ? 1 : -1;
+        const numA = parseInt(a.jerseyNumber, 10);
+        const numB = parseInt(b.jerseyNumber, 10);
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+        if (!isNaN(numA)) return -1;
+        if (!isNaN(numB)) return 1;
+        return a.pName.localeCompare(b.pName);
+      });
+
+      const initialCount = processedPlayers.filter(p => p.isChecked && !p.isSuspended).length;
+
+      container.innerHTML = `
+        <!-- Match Selector Card -->
+        <div class="glass-card" style="padding: var(--space-md); margin-bottom: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border);">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-md);">
+            <div style="flex: 1 1 300px; min-width: 0;">
+              <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--color-accent); margin-bottom: 6px; text-transform: uppercase;">
+                Spiel für Spieltagskader auswählen
+              </label>
+              <select id="kader-match-select" class="admin-input" style="width: 100%; font-size: 0.95rem; font-weight: 600; padding: 10px;">
+                ${teamMatchOptions.map(opt => {
+                  const m = opt.match;
+                  const sLabel = opt.seasonKey.includes('Testliga') ? 'Testliga' : 'Offiziell';
+                  const datePart = m.date ? ` &bull; ${m.date}` : '';
+                  const roundPart = m.round ? `Runde ${m.round}: ` : '';
+                  return `<option value="${opt.key}" ${opt.key === selectedKaderMatchKey ? 'selected' : ''}>[${sLabel}] ${roundPart}${m.home} vs ${m.away}${datePart}</option>`;
+                }).join('')}
+              </select>
+            </div>
+            <div style="text-align: right; flex-shrink: 0;">
+              <div style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase;">Spielstatus</div>
+              <div style="font-weight: 800; font-size: 1rem; color: ${currentOption.isPlayed ? 'var(--color-accent)' : 'var(--color-text-primary)'};">
+                ${currentOption.isPlayed ? `Gespielt (${currentMatch.score || ''})` : 'Bevorstehend'}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Alert Box -->
+        ${isSubmitted ? `
+          <div style="background: rgba(0, 240, 95, 0.08); border: 1px solid rgba(0, 240, 95, 0.35); border-radius: 8px; padding: 14px 18px; margin-bottom: var(--space-md); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+              <div>
+                <div style="font-weight: 800; color: var(--color-accent); font-size: 0.95rem;">Spieltagskader erfolgreich an Schiedsrichter freigegeben</div>
+                <div style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 2px;">
+                  ${existingRoster.players.length} Spieler nominiert &bull; Zuletzt übermittelt am ${new Date(existingRoster.submittedAt).toLocaleDateString('de-AT')} um ${new Date(existingRoster.submittedAt).toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit' })} Uhr
+                </div>
+              </div>
+            </div>
+            <span style="background: rgba(0, 240, 95, 0.2); color: #16a34a; font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(0, 240, 95, 0.4); text-transform: uppercase;">Aktiv synchronisiert</span>
+          </div>
+        ` : `
+          <div style="background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.25); border-radius: 8px; padding: 12px 16px; margin-bottom: var(--space-md); font-size: 0.85rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #d97706; flex-shrink: 0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div>Wähle die anwesenden Spieler aus und trage für jeden Spieler die heutige Trikotnummer ein. Nach der Freigabe hat der Schiedsrichter den Spieltagskader direkt auf seinem Smartphone.</div>
+          </div>
+        `}
+
+        <!-- Control Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-md);">
+          <div>
+            <h3 style="margin: 0; font-size: 1.2rem;">Kader-Nominierung & Trikotnummern</h3>
+            <div style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 2px;">Rückennummern gelten flexibel für diese Begegnung.</div>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <button type="button" id="kader-select-all-btn" class="btn btn-outline" style="font-size: 0.78rem; padding: 6px 12px; font-weight: 700;">Alle aktiven wählen</button>
+            <button type="button" id="kader-deselect-all-btn" class="btn btn-outline" style="font-size: 0.78rem; padding: 6px 12px; font-weight: 700;">Auswahl aufheben</button>
+            <span id="kader-counter-badge" style="background: rgba(0, 240, 95, 0.15); color: #16a34a; border: 1px solid rgba(0, 240, 95, 0.3); padding: 5px 12px; border-radius: 6px; font-weight: 800; font-size: 0.85rem;">
+              ${initialCount} Spieler nominiert
+            </span>
+          </div>
+        </div>
+
+        <!-- Players Grid -->
+        <div id="kader-players-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; margin-bottom: var(--space-lg);">
+          ${processedPlayers.map(p => {
+            return `
+              <div class="kader-player-card glass-card" data-player-id="${p.id}" style="padding: 10px 12px; border-radius: 8px; border: 1px solid ${p.isSuspended ? '#ef4444' : p.isChecked ? 'var(--color-accent)' : 'var(--glass-border)'}; background: ${p.isSuspended ? 'rgba(220, 38, 38, 0.06)' : 'var(--color-surface)'}; display: flex; align-items: center; justify-content: space-between; gap: 10px; transition: border-color 0.2s;">
+                <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+                  <input type="checkbox" class="kader-player-check" data-player-id="${p.id}" ${p.isChecked ? 'checked' : ''} ${p.isSuspended ? 'disabled' : ''} style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--color-accent); flex-shrink: 0;">
+                  <div style="width: 42px; height: 42px; border-radius: 50%; overflow: hidden; background: #111; border: 2px solid ${p.isChecked ? 'var(--color-accent)' : 'var(--glass-border)'}; flex-shrink: 0;">
+                    <img src="${p.avatar}" alt="${p.pName}" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center;">
+                  </div>
+                  <div style="min-width: 0; flex: 1;">
+                    <div style="font-weight: 700; font-size: 0.9rem; color: ${p.isSuspended ? '#dc2626' : 'var(--color-text-primary)'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                      ${p.pName}
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px;">
+                      <span>${p.position}</span>
+                      ${p.isSuspended ? '<span style="background: #dc2626; color: #fff; font-size: 0.68rem; font-weight: 800; padding: 1px 5px; border-radius: 3px;">GESPERRT</span>' : ''}
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                  <label style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary);">Nr.</label>
+                  <input type="number" class="admin-input kader-jersey-input" data-player-id="${p.id}" min="1" max="99" placeholder="--" value="${p.jerseyNumber}" ${p.isSuspended ? 'disabled' : ''} style="width: 54px; text-align: center; font-weight: 800; font-size: 0.95rem; padding: 5px 4px;">
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- Submit Bar -->
+        <div class="glass-card" style="padding: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
+          <div style="font-size: 0.85rem; color: var(--color-text-secondary);">
+            Nach Klick auf den Button wird der Kader live in der Cloud synchronisiert.
+          </div>
+          <button type="button" id="kader-submit-btn" class="btn btn-dsg" style="padding: 12px 24px; font-weight: 800; font-size: 0.95rem;">
+            ${isSubmitted ? 'Spieltagskader aktualisieren & freigeben' : 'Spieltagskader für Schiedsrichter freigeben'}
+          </button>
+        </div>
+      `;
+
+      // Wire Match Selector
+      document.getElementById('kader-match-select')?.addEventListener('change', (e) => {
+        selectedKaderMatchKey = e.target.value;
+        renderTab();
+      });
+
+      // Update counter helper
+      const updateKaderCounter = () => {
+        const checkedBoxes = document.querySelectorAll('.kader-player-check:checked');
+        const count = checkedBoxes.length;
+        const badge = document.getElementById('kader-counter-badge');
+        if (badge) {
+          badge.textContent = `${count} Spieler nominiert`;
+        }
+      };
+
+      // Checkbox changes
+      document.querySelectorAll('.kader-player-check').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          const card = e.target.closest('.kader-player-card');
+          if (card) {
+            card.style.borderColor = e.target.checked ? 'var(--color-accent)' : 'var(--glass-border)';
+          }
+          updateKaderCounter();
+        });
+      });
+
+      // Select All / Deselect All
+      document.getElementById('kader-select-all-btn')?.addEventListener('click', () => {
+        document.querySelectorAll('.kader-player-check:not(:disabled)').forEach(cb => {
+          cb.checked = true;
+          const card = cb.closest('.kader-player-card');
+          if (card) card.style.borderColor = 'var(--color-accent)';
+        });
+        updateKaderCounter();
+      });
+
+      document.getElementById('kader-deselect-all-btn')?.addEventListener('click', () => {
+        document.querySelectorAll('.kader-player-check').forEach(cb => {
+          cb.checked = false;
+          const card = cb.closest('.kader-player-card');
+          if (card) card.style.borderColor = 'var(--glass-border)';
+        });
+        updateKaderCounter();
+      });
+
+      // Submit logic
+      document.getElementById('kader-submit-btn')?.addEventListener('click', async () => {
+        const checkedBoxes = Array.from(document.querySelectorAll('.kader-player-check:checked'));
+        if (checkedBoxes.length === 0) {
+          alert('Bitte wähle mindestens einen Spieler für den Spieltagskader aus.');
+          return;
+        }
+
+        const selectedList = [];
+        const usedNumbers = new Set();
+        let hasDuplicate = false;
+        let dupNum = '';
+        let missingNumber = false;
+
+        for (const cb of checkedBoxes) {
+          const pId = cb.getAttribute('data-player-id');
+          const pObj = processedPlayers.find(p => String(p.id) === String(pId));
+          if (!pObj) continue;
+
+          const numInput = document.querySelector(`.kader-jersey-input[data-player-id="${pId}"]`);
+          const jerseyNum = (numInput?.value || '').trim();
+
+          if (!jerseyNum) {
+            missingNumber = true;
+          }
+
+          if (jerseyNum) {
+            if (usedNumbers.has(jerseyNum)) {
+              hasDuplicate = true;
+              dupNum = jerseyNum;
+            }
+            usedNumbers.add(jerseyNum);
+          }
+
+          selectedList.push({
+            id: String(pId),
+            firstName: pObj.raw.Vorname || pObj.raw.firstName || '',
+            lastName: pObj.raw.Nachname || pObj.raw.lastName || '',
+            jerseyNumber: jerseyNum,
+            position: pObj.position,
+            photo: pObj.raw.photo || pObj.raw.photoUrl || pObj.raw.passPhoto || '',
+            avatar: pObj.avatar
+          });
+        }
+
+        if (missingNumber) {
+          alert('Bitte trage für alle ausgewählten Spieler eine Trikotnummer ein.');
+          return;
+        }
+
+        if (hasDuplicate) {
+          alert(`Die Trikotnummer #${dupNum} wurde mehrfach vergeben. Bitte jede Rückennummer pro Spiel nur einmal vergeben.`);
+          return;
+        }
+
+        const btn = document.getElementById('kader-submit-btn');
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = 'Wird übermittelt...';
+        }
+
+        await Store.saveMatchdayRoster(matchSeason, currentMatch.id, teamName, selectedList, {
+          matchLabel: `${currentMatch.home} vs ${currentMatch.away}`
+        });
+
+        alert(`Spieltagskader erfolgreich freigegeben! ${selectedList.length} Spieler wurden an den Schiedsrichter übermittelt.`);
+        renderTab();
+      });
 
 
     } else if (currentTeamTab === 'nachmelden') {
@@ -1051,6 +1389,12 @@ export const bindTeamAdmin = async (auth) => {
   });
 
 
+
+  window.addEventListener('matchday-roster-updated', () => {
+    if (currentTeamTab === 'spieltagskader') {
+      renderTab();
+    }
+  });
 
   renderTab();
 

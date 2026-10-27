@@ -12,6 +12,7 @@ let selectedSeason = '2026/2027';
 let selectedMatchId = null;
 
 let currentRefereeTab = 'passkontrolle'; // 'passkontrolle' | 'spielbericht'
+let passFilterModes = { home: 'roster', away: 'roster' };
 
 
 
@@ -432,80 +433,111 @@ export const bindRefereeAdmin = async () => {
 
 
   const renderPasskontrolle = (match, allPlayers) => {
-
     const homeTeam = match.home || '';
-
     const awayTeam = match.away || '';
 
-
-
     const filterPlayers = (teamName) => {
-
       const norm = teamName.toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
-
       return allPlayers.filter(p => {
-
         const pTeam = (p.Team || p.Mannschaft || p.team || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
-
         return pTeam.includes(norm) || norm.includes(pTeam);
-
       });
-
     };
-
-
 
     const { playerMap } = calculateSeasonSuspensions(selectedSeason);
 
-
-
     const homePlayers = filterPlayers(homeTeam);
-
     const awayPlayers = filterPlayers(awayTeam);
 
-
+    const homeRoster = Store.getMatchdayRoster(selectedSeason, match.id, homeTeam);
+    const awayRoster = Store.getMatchdayRoster(selectedSeason, match.id, awayTeam);
 
     const renderTeamPassList = (teamTitle, teamPlayers, side) => {
+      const roster = side === 'home' ? homeRoster : awayRoster;
+      const hasRoster = !!(roster && Array.isArray(roster.players) && roster.players.length > 0);
+      const activeFilter = passFilterModes[side] || (hasRoster ? 'roster' : 'all');
+
+      let displayPlayers = teamPlayers;
+      if (hasRoster && activeFilter === 'roster') {
+        displayPlayers = roster.players.map(rp => {
+          const matchingRaw = teamPlayers.find(p => 
+            String(p['#'] || p.id) === String(rp.id) ||
+            normalizePlayerName(`${p.Vorname || ''} ${p.Nachname || ''}`) === normalizePlayerName(`${rp.firstName || ''} ${rp.lastName || ''}`)
+          );
+          return {
+            ...(matchingRaw || {}),
+            Vorname: rp.firstName || matchingRaw?.Vorname || '',
+            Nachname: rp.lastName || matchingRaw?.Nachname || '',
+            Position: rp.position || matchingRaw?.Position || 'Feldspieler',
+            Geburtsdatum: matchingRaw?.Geburtsdatum || '',
+            jerseyNumber: rp.jerseyNumber || '',
+            photoUrl: rp.photo || matchingRaw?.photoUrl || matchingRaw?.passPhoto || '',
+            passPhoto: rp.photo || matchingRaw?.passPhoto || '',
+            photo: rp.photo || matchingRaw?.photo || '',
+            fromRoster: true
+          };
+        });
+      } else {
+        displayPlayers = teamPlayers.map(p => {
+          const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
+          const inRoster = roster?.players?.find(rp => 
+            String(rp.id) === String(p['#'] || p.id) ||
+            normalizePlayerName(`${rp.firstName || ''} ${rp.lastName || ''}`) === normalizePlayerName(pName)
+          );
+          return {
+            ...p,
+            jerseyNumber: inRoster ? inRoster.jerseyNumber : (p['#'] && !isNaN(p['#']) && p['#'] !== '-' ? p['#'] : ''),
+            isNominated: !!inRoster
+          };
+        });
+      }
 
       return `
-
         <div class="glass-card" style="padding: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border);">
-
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent); padding-bottom: 8px; margin-bottom: var(--space-md);">
-
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent); padding-bottom: 8px; margin-bottom: var(--space-sm); flex-wrap: wrap; gap: 6px;">
             <h3 style="margin: 0; font-size: 1.15rem; color: var(--color-text-primary);">${teamTitle}</h3>
-
-            <span style="font-size: 0.8rem; background: var(--color-surface); border: 1px solid var(--glass-border); padding: 3px 8px; border-radius: 4px; font-weight: 700; color: var(--color-text-secondary);">${teamPlayers.length} gemeldet</span>
-
+            ${hasRoster ? `
+              <span style="font-size: 0.75rem; background: rgba(0, 240, 95, 0.15); color: #16a34a; border: 1px solid rgba(0, 240, 95, 0.35); padding: 3px 8px; border-radius: 4px; font-weight: 800;">
+                Spieltagskader übermittelt (${roster.players.length})
+              </span>
+            ` : `
+              <span style="font-size: 0.75rem; background: var(--color-surface); border: 1px solid var(--glass-border); padding: 3px 8px; border-radius: 4px; font-weight: 700; color: var(--color-text-secondary);">
+                ${teamPlayers.length} gemeldet (Kein Spieltagskader)
+              </span>
+            `}
           </div>
 
-
+          ${hasRoster ? `
+            <div style="display: flex; gap: 6px; margin-bottom: var(--space-md);">
+              <button type="button" class="btn btn-pass-filter ${activeFilter === 'roster' ? 'btn-dsg' : 'btn-outline'}" data-side="${side}" data-mode="roster" style="font-size: 0.75rem; padding: 4px 10px; font-weight: 700;">
+                Nur Spieltagskader (${roster.players.length})
+              </button>
+              <button type="button" class="btn btn-pass-filter ${activeFilter === 'all' ? 'btn-dsg' : 'btn-outline'}" data-side="${side}" data-mode="all" style="font-size: 0.75rem; padding: 4px 10px; font-weight: 700;">
+                Alle gemeldeten (${teamPlayers.length})
+              </button>
+            </div>
+          ` : ''}
 
           <div style="display: flex; flex-direction: column; gap: 8px; max-height: 520px; overflow-y: auto; padding-right: 4px;">
-
-            ${teamPlayers.length === 0 ? `
-
-              <div style="font-size: 0.85rem; color: var(--color-text-secondary); text-align: center; padding: 20px;">Keine Spieler für dieses Team registriert.</div>
-
-            ` : teamPlayers.map(p => {
-
+            ${displayPlayers.length === 0 ? `
+              <div style="font-size: 0.85rem; color: var(--color-text-secondary); text-align: center; padding: 20px;">Keine Spieler für dieses Team vorhanden.</div>
+            ` : displayPlayers.map(p => {
               const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
-
               const pKey = normalizePlayerName(pName) + '___' + normalizeKey(teamTitle);
-
               const suspInfo = playerMap.get(pKey);
-
               const isSuspended = suspInfo && suspInfo.status === 'suspended';
-
-
 
               const hasCustomPhoto = !!(p.photoUrl || p.passPhoto || p.photo || p.foto || p.avatar || p.Foto || p.image);
               const avatarSrc = getPlayerAvatar(p);
-              const isVerified = p.verified || p.passType === 'digital' || hasCustomPhoto;
 
               return `
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: ${isSuspended ? 'rgba(220, 38, 38, 0.08)' : 'var(--color-surface)'}; border: 1px solid ${isSuspended ? '#ef4444' : 'var(--glass-border)'}; border-radius: 6px; padding: 8px 10px;">
                   <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+                    ${p.jerseyNumber ? `
+                      <span style="background: var(--color-accent); color: #000; font-weight: 800; padding: 3px 7px; border-radius: 4px; font-size: 0.8rem; flex-shrink: 0; min-width: 28px; text-align: center;">#${p.jerseyNumber}</span>
+                    ` : `
+                      <span style="background: var(--color-surface); border: 1px solid var(--glass-border); color: var(--color-text-secondary); font-weight: 700; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; flex-shrink: 0; min-width: 28px; text-align: center;">--</span>
+                    `}
                     <div style="width: 42px; height: 42px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid ${hasCustomPhoto ? 'var(--color-accent)' : 'var(--glass-border)'}; flex-shrink: 0;">
                       <img src="${avatarSrc}" alt="${pName}" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center; cursor: pointer;" title="Klicken für Vollbild" onclick="window.open('${avatarSrc}', '_blank')">
                     </div>
@@ -514,7 +546,7 @@ export const bindRefereeAdmin = async () => {
                         ${pName}
                       </div>
                       <div style="font-size: 0.75rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        ${p.Geburtsdatum ? `Geb.: ${p.Geburtsdatum}` : ''} ${p.Position ? `&bull; ${p.Position}` : ''}
+                        ${p.Geburtsdatum ? `Geb.: ${p.Geburtsdatum} &bull; ` : ''}${p.Position || 'Feldspieler'}
                       </div>
                     </div>
                   </div>
@@ -525,7 +557,7 @@ export const bindRefereeAdmin = async () => {
                     ` : hasCustomPhoto ? `
                       <span style="color: #16a34a; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 3px;">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        Digital verifiziert
+                        Verifiziert
                       </span>
                     ` : `
                       <label style="display: flex; align-items: center; gap: 4px; font-size: 0.75rem; color: #d97706; cursor: pointer; font-weight: 600;">
@@ -536,44 +568,33 @@ export const bindRefereeAdmin = async () => {
                   </div>
                 </div>
               `;
-
             }).join('')}
-
           </div>
-
         </div>
-
       `;
-
     };
 
-
-
     contentContainer.innerHTML = `
-
       <div style="margin-bottom: var(--space-md); padding: 12px 16px; background: rgba(0, 240, 95, 0.08); border: 1px solid rgba(0, 240, 95, 0.3); border-radius: 6px; font-size: 0.85rem; color: var(--color-text-primary); display: flex; align-items: flex-start; gap: 10px;">
-
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-
-        <div><strong>Schiedsrichter-Passkontrolle:</strong> Bitte vergleiche vor Spielbeginn die anwesenden Spieler mit dieser Liste. Spieler mit <strong>[GESPERRT]</strong> dürfen keinesfalls eingesetzt werden. Spieler ohne digitales Foto müssen den physischen Spielerpass vorlegen.</div>
-
+        <div><strong>Schiedsrichter-Passkontrolle:</strong> Bitte vergleiche vor Spielbeginn die anwesenden Spieler mit dieser Liste. Spieler mit <strong>[GESPERRT]</strong> dürfen keinesfalls eingesetzt werden. Bei Teams mit übermitteltem <strong>Spieltagskader</strong> wird standardmäßig nur die gemeldete Aufstellung angezeigt.</div>
       </div>
-
-
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--space-md);">
-
         ${renderTeamPassList(homeTeam, homePlayers, 'home')}
-
         ${renderTeamPassList(awayTeam, awayPlayers, 'away')}
-
       </div>
-
     `;
 
+    contentContainer.querySelectorAll('.btn-pass-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const side = btn.getAttribute('data-side');
+        const mode = btn.getAttribute('data-mode');
+        passFilterModes[side] = mode;
+        renderPasskontrolle(match, allPlayers);
+      });
+    });
   };
-
-
 
   const renderSpielbericht = (match, allPlayers) => {
 
@@ -619,9 +640,59 @@ export const bindRefereeAdmin = async () => {
 
 
 
-    contentContainer.innerHTML = `
+        const homeRoster = Store.getMatchdayRoster(selectedSeason, match.id, match.home);
+    const awayRoster = Store.getMatchdayRoster(selectedSeason, match.id, match.away);
+
+    const getTeamPlayerOptions = (teamName, roster) => {
+      const norm = teamName.toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+      const tPlayers = allPlayers.filter(p => {
+        const pTeam = (p.Team || p.Mannschaft || p.team || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+        return pTeam.includes(norm) || norm.includes(pTeam);
+      });
+
+      const options = [];
+      const addedNames = new Set();
+
+      if (roster && Array.isArray(roster.players)) {
+        roster.players.forEach(rp => {
+          const full = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
+          if (full && !addedNames.has(full.toLowerCase())) {
+            addedNames.add(full.toLowerCase());
+            options.push({
+              name: full,
+              label: `#${rp.jerseyNumber || '?'} ${full} (${rp.position || 'Kader'})`
+            });
+          }
+        });
+      }
+
+      tPlayers.forEach(p => {
+        const full = `${p.Vorname || ''} ${p.Nachname || ''}`.trim();
+        if (full && !addedNames.has(full.toLowerCase())) {
+          addedNames.add(full.toLowerCase());
+          options.push({
+            name: full,
+            label: `${p['#'] && p['#'] !== '-' ? '#' + p['#'] + ' ' : ''}${full}`
+          });
+        }
+      });
+
+      return options;
+    };
+
+    const homeOptions = getTeamPlayerOptions(match.home, homeRoster);
+    const awayOptions = getTeamPlayerOptions(match.away, awayRoster);
+
+contentContainer.innerHTML = `
 
       <form id="referee-report-form" class="glass-card" style="padding: var(--space-lg); border-radius: 8px; border: 1px solid var(--glass-border);">
+        <datalist id="datalist-home-players">
+          ${homeOptions.map(o => `<option value="${o.name}">${o.label}</option>`).join('')}
+        </datalist>
+        <datalist id="datalist-away-players">
+          ${awayOptions.map(o => `<option value="${o.name}">${o.label}</option>`).join('')}
+        </datalist>
+
 
         <h3 style="margin-top: 0; margin-bottom: var(--space-md); border-bottom: 1px solid var(--glass-border); padding-bottom: 8px; color: var(--color-text-primary);">
 
@@ -823,7 +894,7 @@ export const bindRefereeAdmin = async () => {
 
         </select>
 
-        <input type="text" class="admin-input scorer-name" placeholder="Spieler Name" value="${initialData.player || ''}" style="font-size: 0.85rem; padding: 6px;">
+        <input type="text" class="admin-input scorer-name" placeholder="Spieler Name" value="${initialData.player || ''}" list="${initialData.team === match.away ? 'datalist-away-players' : 'datalist-home-players'}" style="font-size: 0.85rem; padding: 6px;">
 
         <input type="number" class="admin-input scorer-count" placeholder="Tore" min="1" max="20" value="${initialData.goals || 1}" style="font-size: 0.85rem; padding: 6px; text-align: center;">
 
@@ -833,6 +904,11 @@ export const bindRefereeAdmin = async () => {
 
 
 
+      const sTeamSel = row.querySelector('.scorer-team');
+      const sNameInput = row.querySelector('.scorer-name');
+      sTeamSel?.addEventListener('change', () => {
+        sNameInput.setAttribute('list', sTeamSel.value === match.away ? 'datalist-away-players' : 'datalist-home-players');
+      });
       row.querySelector('.btn-remove-row').addEventListener('click', () => row.remove());
 
       scorersContainer.appendChild(row);
@@ -923,7 +999,7 @@ export const bindRefereeAdmin = async () => {
 
         </select>
 
-        <input type="text" class="admin-input card-player" placeholder="Spieler Name" value="${initialData.player || ''}" style="font-size: 0.85rem; padding: 6px;">
+        <input type="text" class="admin-input card-player" placeholder="Spieler Name" value="${initialData.player || ''}" list="${initialData.team === match.away ? 'datalist-away-players' : 'datalist-home-players'}" style="font-size: 0.85rem; padding: 6px;">
 
         <select class="admin-input card-type" style="font-size: 0.82rem; padding: 6px;">
 
@@ -941,6 +1017,11 @@ export const bindRefereeAdmin = async () => {
 
 
 
+      const cTeamSel = row.querySelector('.card-team');
+      const cNameInput = row.querySelector('.card-player');
+      cTeamSel?.addEventListener('change', () => {
+        cNameInput.setAttribute('list', cTeamSel.value === match.away ? 'datalist-away-players' : 'datalist-home-players');
+      });
       row.querySelector('.btn-remove-row').addEventListener('click', () => row.remove());
 
       cardsContainer.appendChild(row);
@@ -1116,6 +1197,12 @@ export const bindRefereeAdmin = async () => {
   };
 
 
+
+  window.addEventListener('matchday-roster-updated', () => {
+    if (selectedMatchId) {
+      renderActiveTab();
+    }
+  });
 
   populateMatchDropdown();
 

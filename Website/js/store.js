@@ -154,7 +154,7 @@ const INITIAL_DATA = {
 const DATA_VERSION_STRING = '?v=1793040000000';
 
 import { db } from './firebase.js';
-import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+import { doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 const getState = () => {
   if (typeof window !== 'undefined') {
@@ -467,6 +467,8 @@ export const Store = {
         if (i !== 13) localStorage.removeItem(`dsg_admin_teams_v${i}`);
         if (i !== 44) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
         if (i !== 44) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
+        if (i !== 1) localStorage.removeItem(`dsg_player_requests_v${i}`);
+        if (i !== 1) localStorage.removeItem(`dsg_matchday_rosters_v${i}`);
       }
     } catch(e) {}
 
@@ -602,6 +604,7 @@ export const Store = {
     const leagueRef = doc(db, 'system', 'leagues_data');
     const roundsRef = doc(db, 'system', 'rounds_data');
     const playerReqRef = doc(db, 'system', 'player_requests_data');
+    const rostersRef = doc(db, 'system', 'matchday_rosters_data');
 
     try {
       const withTimeout = (promise, ms = 8000) => {
@@ -611,12 +614,12 @@ export const Store = {
         ]);
       };
 
-      const [dataSnap, newsSnap, gallerySnap, leagueSnap, roundsSnap, playerReqSnap] = await withTimeout(
+      const [dataSnap, newsSnap, gallerySnap, leagueSnap, roundsSnap, playerReqSnap, rostersSnap] = await withTimeout(
         Promise.all([
-          getDoc(dataRef), getDoc(newsRef), getDoc(galleryRef), getDoc(leagueRef), getDoc(roundsRef), getDoc(playerReqRef)
+          getDoc(dataRef), getDoc(newsRef), getDoc(galleryRef), getDoc(leagueRef), getDoc(roundsRef), getDoc(playerReqRef), getDoc(rostersRef)
         ]),
         8000
-      ).catch(() => [ { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false } ]);
+      ).catch(() => [ { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false } ]);
 
       let needsMigration = false;
       let hasLigaUpdates = false;
@@ -892,6 +895,22 @@ export const Store = {
         }
       }
 
+      // Sync Matchday Rosters
+      if (rostersSnap && rostersSnap.exists() && rostersSnap.data() && typeof rostersSnap.data().data === 'object') {
+        const fbRosters = rostersSnap.data().data;
+        const fbTime = rostersSnap.data().lastUpdated || 0;
+        const localTime = parseInt(localStorage.getItem('dsg_matchday_rosters_last_updated')) || 0;
+        const localRosters = loadLocal('dsg_matchday_rosters', 1) || {};
+
+        if (fbTime > localTime || Object.keys(localRosters).length === 0) {
+          trySetLocal('dsg_matchday_rosters_v1', JSON.stringify(fbRosters));
+          localStorage.setItem('dsg_matchday_rosters_last_updated', String(fbTime));
+          window.dispatchEvent(new CustomEvent('matchday-roster-updated', { detail: fbRosters }));
+        } else if (localTime > fbTime && Object.keys(localRosters).length > 0) {
+          await setDoc(rostersRef, { data: localRosters, lastUpdated: localTime }).catch(e => console.error("Firebase save error (matchday rosters):", e));
+        }
+      }
+
       // Auto-sync all leagues to seasons
       if (leagueSnap && leagueSnap.exists() && leagueSnap.data()?.data) {
         const leagues = leagueSnap.data().data;
@@ -963,6 +982,8 @@ export const Store = {
       if (hasRoundsUpdates) {
         window.dispatchEvent(new CustomEvent('rounds-updated'));
       }
+
+      this.initRealtimeSync();
     } catch(e) {
       console.error("Firebase sync failed or timed out. Relying on local cache.", e);
     }
@@ -2287,6 +2308,117 @@ export const Store = {
     }
     window.dispatchEvent(new CustomEvent('player-requests-updated'));
     return true;
+  },
+
+  buildRosterKey(season, matchId, teamName) {
+    const s = String(season || '').trim();
+    const m = String(matchId || '').trim();
+    const normTeam = (teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim().replace(/[^a-z0-9]/g, '');
+    return `${s}___${m}___${normTeam}`;
+  },
+
+  getMatchdayRosters() {
+    const local = loadLocal('dsg_matchday_rosters', 1);
+    if (local && typeof local === 'object' && !Array.isArray(local)) return local;
+    return {};
+  },
+
+  async getMatchdayRostersAsync() {
+    const local = this.getMatchdayRosters();
+    try {
+      const snap = await getDoc(doc(db, 'system', 'matchday_rosters_data'));
+      if (snap.exists() && snap.data()?.data) {
+        const fbData = snap.data().data;
+        if (typeof fbData === 'object' && !Array.isArray(fbData)) {
+          trySetLocal('dsg_matchday_rosters_v1', JSON.stringify(fbData));
+          return fbData;
+        }
+      }
+    } catch (e) {
+      console.warn("Could not fetch matchday rosters from Firebase:", e);
+    }
+    return local || {};
+  },
+
+  getMatchdayRoster(season, matchId, teamName) {
+    const rosters = this.getMatchdayRosters();
+    const key = this.buildRosterKey(season, matchId, teamName);
+    if (rosters[key]) return rosters[key];
+
+    // Fallback fuzzy search by season + matchId + teamName
+    const normTeam = (teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+    const foundKey = Object.keys(rosters).find(k => {
+      const r = rosters[k];
+      if (!r) return false;
+      if (String(r.season) !== String(season)) return false;
+      if (String(r.matchId) !== String(matchId)) return false;
+      const rTeam = (r.teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+      return rTeam.includes(normTeam) || normTeam.includes(rTeam);
+    });
+    return foundKey ? rosters[foundKey] : null;
+  },
+
+  async saveMatchdayRoster(season, matchId, teamName, players, metadata = {}) {
+    const rosters = this.getMatchdayRosters();
+    const key = this.buildRosterKey(season, matchId, teamName);
+    const now = Date.now();
+    const rosterData = {
+      key,
+      season: String(season),
+      matchId: String(matchId),
+      teamName: String(teamName),
+      players: Array.isArray(players) ? players : [],
+      submittedAt: now,
+      submittedBy: teamName,
+      ...metadata
+    };
+    rosters[key] = rosterData;
+    trySetLocal('dsg_matchday_rosters_v1', JSON.stringify(rosters));
+    localStorage.setItem('dsg_matchday_rosters_last_updated', String(now));
+    Promise.race([
+      setDoc(doc(db, 'system', 'matchday_rosters_data'), { data: rosters, lastUpdated: now }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Firestore timeout')), 2500))
+    ]).catch(e => console.warn("Firebase save warning (matchday roster):", e));
+    window.dispatchEvent(new CustomEvent('matchday-roster-updated', { detail: { key, roster: rosterData } }));
+    return rosterData;
+  },
+
+  initRealtimeSync() {
+    if (this._realtimeSyncActive) return;
+    this._realtimeSyncActive = true;
+    try {
+      onSnapshot(doc(db, 'system', 'matchday_rosters_data'), (snap) => {
+        if (snap.exists() && snap.data()?.data) {
+          const fbRosters = snap.data().data;
+          const fbTime = snap.data().lastUpdated || 0;
+          const localTime = parseInt(localStorage.getItem('dsg_matchday_rosters_last_updated'), 10) || 0;
+          if (fbTime >= localTime || !localStorage.getItem('dsg_matchday_rosters_v1')) {
+            trySetLocal('dsg_matchday_rosters_v1', JSON.stringify(fbRosters));
+            localStorage.setItem('dsg_matchday_rosters_last_updated', String(fbTime));
+            window.dispatchEvent(new CustomEvent('matchday-roster-updated', { detail: fbRosters }));
+          }
+        }
+      }, (err) => {
+        console.warn("Realtime listener (matchday_rosters) skipped or offline:", err);
+      });
+
+      onSnapshot(doc(db, 'system', 'player_requests_data'), (snap) => {
+        if (snap.exists() && snap.data()?.data) {
+          const fbReqs = snap.data().data;
+          const fbTime = snap.data().lastUpdated || 0;
+          const localTime = parseInt(localStorage.getItem('dsg_player_requests_last_updated'), 10) || 0;
+          if (fbTime >= localTime || !localStorage.getItem('dsg_player_requests_v1')) {
+            trySetLocal('dsg_player_requests_v1', JSON.stringify(fbReqs));
+            localStorage.setItem('dsg_player_requests_last_updated', String(fbTime));
+            window.dispatchEvent(new CustomEvent('player-requests-updated', { detail: fbReqs }));
+          }
+        }
+      }, (err) => {
+        console.warn("Realtime listener (player_requests) skipped or offline:", err);
+      });
+    } catch (e) {
+      console.warn("Realtime sync initialization skipped:", e);
+    }
   },
 
   async updatePlayerPassPhoto(playerIdOrKey, photoUrl) {
