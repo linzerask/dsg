@@ -2391,9 +2391,9 @@ main {
 
 .btn-dsg {
     background: var(--color-accent);
-    color: #ffffff !important;
+    color: #ffffff;
     font-weight: 700;
-    border: none;
+    border: 1px solid transparent;
     border-radius: var(--border-radius-sm);
     padding: 8px 16px;
     cursor: pointer;
@@ -2404,6 +2404,26 @@ main {
     gap: 6px;
     box-shadow: 0 4px 12px var(--color-accent-glow);
     text-decoration: none;
+    box-sizing: border-box;
+}
+
+.btn-dsg-secondary,
+.btn-dsg.secondary,
+.btn-dsg.btn-outline,
+.btn-dsg.outline {
+    background: var(--color-surface) !important;
+    color: var(--color-text-primary) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: none !important;
+}
+
+.btn-dsg-secondary:hover,
+.btn-dsg.secondary:hover,
+.btn-dsg.btn-outline:hover,
+.btn-dsg.outline:hover {
+    background: var(--color-surface-hover, rgba(0, 0, 0, 0.05)) !important;
+    border-color: var(--color-accent) !important;
+    color: var(--color-accent) !important;
 }
 
 .btn-dsg:hover:not(:disabled) {

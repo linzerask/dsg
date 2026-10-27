@@ -6,8 +6,8 @@ import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=179291500
 import { renderAdminGames, initAdminGames } from './adminGames.js?v=1792924000000';
 import { renderAdminNews, initAdminNews } from './adminNews.js?v=1791230000000';
 import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1791230000000';
-import { renderAdminApprovals, initAdminApprovals } from './adminApprovals.js?v=1793040000000';
-import { logout } from '../auth.js?v=1793040000000';
+import { renderAdminApprovals, initAdminApprovals } from './adminApprovals.js?v=1793086000000';
+import { logout } from '../auth.js?v=1793086000000';
 
 export const showToast = (message, isError = false) => {
   let toast = document.getElementById('dsg-admin-toast');

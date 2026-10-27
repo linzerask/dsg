@@ -15,8 +15,8 @@ export const renderAdminApprovals = () => {
           <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin-top: 4px;">Überprüfe und genehmige Neuanmeldungen und Passfotos der Vereine</p>
         </div>
         <div style="display: flex; gap: 8px;">
-          <button id="filter-pending-btn" class="btn-dsg ${currentFilter === 'pending' ? 'active' : ''}" style="background: ${currentFilter === 'pending' ? 'var(--color-accent)' : 'var(--color-surface)'}; color: ${currentFilter === 'pending' ? '#fff' : 'var(--color-text-primary)'}; font-weight: 600;">Offene Anträge</button>
-          <button id="filter-all-btn" class="btn-dsg ${currentFilter === 'all' ? 'active' : ''}" style="background: ${currentFilter === 'all' ? 'var(--color-accent)' : 'var(--color-surface)'}; color: ${currentFilter === 'all' ? '#fff' : 'var(--color-text-primary)'}; font-weight: 600;">Alle / Verlauf</button>
+          <button id="filter-pending-btn" class="btn ${currentFilter === 'pending' ? 'btn-dsg' : 'btn-outline'}" style="font-weight: 700; padding: 7px 14px; font-size: 0.85rem;">Offene Anträge</button>
+          <button id="filter-all-btn" class="btn ${currentFilter === 'all' ? 'btn-dsg' : 'btn-outline'}" style="font-weight: 700; padding: 7px 14px; font-size: 0.85rem;">Alle / Verlauf</button>
         </div>
       </div>
 
@@ -93,8 +93,8 @@ export const initAdminApprovals = () => {
                 <span>Eingereicht: ${dateFormatted}</span>
                 ${isPending ? `
                   <div style="display: flex; gap: 6px;">
-                    <button class="btn-dsg btn-approve-request" data-id="${r.id}" style="background: #22c55e; color: #fff; font-size: 0.82rem; padding: 5px 12px; font-weight: 700;">✓ Genehmigen</button>
-                    <button class="btn-dsg btn-reject-request" data-id="${r.id}" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; font-size: 0.82rem; padding: 5px 10px;">✕ Ablehnen</button>
+                    <button class="btn btn-dsg btn-approve-request" data-id="${r.id}" style="background: #22c55e; color: #fff; font-size: 0.82rem; padding: 6px 12px; font-weight: 700; border: none; border-radius: 4px;">Genehmigen</button>
+                    <button class="btn btn-outline btn-reject-request" data-id="${r.id}" style="color: #dc2626 !important; border-color: rgba(220, 38, 38, 0.3) !important; font-size: 0.82rem; padding: 6px 10px; font-weight: 600; border-radius: 4px;">Ablehnen</button>
                   </div>
                 ` : `
                   <span>${r.reviewNote ? `Hinweis: ${r.reviewNote}` : ''}</span>
@@ -143,25 +143,28 @@ export const initAdminApprovals = () => {
     });
   };
 
+  const updateFilterStyles = () => {
+    if (btnPending) {
+      btnPending.className = `btn ${currentFilter === 'pending' ? 'btn-dsg' : 'btn-outline'}`;
+      btnPending.style.background = currentFilter === 'pending' ? 'var(--color-accent)' : '';
+      btnPending.style.color = currentFilter === 'pending' ? '#fff' : 'var(--color-text-primary)';
+    }
+    if (btnAll) {
+      btnAll.className = `btn ${currentFilter === 'all' ? 'btn-dsg' : 'btn-outline'}`;
+      btnAll.style.background = currentFilter === 'all' ? 'var(--color-accent)' : '';
+      btnAll.style.color = currentFilter === 'all' ? '#fff' : 'var(--color-text-primary)';
+    }
+  };
+
   btnPending?.addEventListener('click', () => {
     currentFilter = 'pending';
-    btnPending.style.background = 'var(--color-accent)';
-    btnPending.style.color = '#fff';
-    if (btnAll) {
-      btnAll.style.background = 'var(--color-surface)';
-      btnAll.style.color = 'var(--color-text-primary)';
-    }
+    updateFilterStyles();
     renderList();
   });
 
   btnAll?.addEventListener('click', () => {
     currentFilter = 'all';
-    btnAll.style.background = 'var(--color-accent)';
-    btnAll.style.color = '#fff';
-    if (btnPending) {
-      btnPending.style.background = 'var(--color-surface)';
-      btnPending.style.color = 'var(--color-text-primary)';
-    }
+    updateFilterStyles();
     renderList();
   });
 
