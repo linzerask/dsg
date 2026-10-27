@@ -1,7 +1,7 @@
 import { Store } from '../store.js?v=1793230000000';
 import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1792914000000';
 import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1791230000000';
-import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1792915000000';
+import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1793235000000';
 import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1793129100000';
 import { renderAdminGames, initAdminGames } from './adminGames.js?v=1793128711000';
 import { renderAdminNews, initAdminNews } from './adminNews.js?v=1791230000000';

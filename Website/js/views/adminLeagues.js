@@ -890,7 +890,7 @@ const updateModalTabsUI = () => {
 
             btn.style.background = 'var(--color-accent)';
 
-            btn.style.color = '#000';
+            btn.style.color = '#ffffff';
 
             btn.style.borderColor = 'var(--color-accent)';
 

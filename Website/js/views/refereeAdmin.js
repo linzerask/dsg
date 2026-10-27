@@ -807,7 +807,7 @@ export const bindRefereeAdmin = async () => {
           <div id="pass-control-status-desc" style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 3px;"></div>
         </div>
         <div style="display: flex; gap: 10px; align-items: center;">
-          <button type="button" id="btn-save-pass-control" class="btn btn-dsg" style="padding: 10px 22px; font-weight: 800; font-size: 0.92rem; border-radius: 6px; transition: all 0.2s;">
+          <button type="button" id="btn-save-pass-control" class="btn btn-dsg" style="padding: 10px 22px; font-weight: 800; font-size: 0.92rem; border-radius: 6px; transition: all 0.2s; color: #ffffff;">
             Passkontrolle abschließen &amp; speichern
           </button>
         </div>
@@ -884,7 +884,7 @@ export const bindRefereeAdmin = async () => {
           btn.style.opacity = '1';
           btn.style.cursor = 'pointer';
           btn.style.background = 'var(--color-accent)';
-          btn.style.color = '#000';
+          btn.style.color = '#ffffff';
           if (isCompleted) {
             btn.innerHTML = '✓ Gespeichert &amp; Freigegeben &bull; Zum Spielbericht &rarr;';
           } else {
