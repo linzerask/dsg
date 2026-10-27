@@ -591,8 +591,13 @@ League table wallpapers feature official standings, goal records, and points acr
 - **Collab Tagging Standard (`Beitragenden einladen`):**
   - Whenever publishing *Spielergebnisse*, *Tabelle*, or *Matchday Preview*, the user should invite the featured clubs as **Instagram Co-Authors / Collaborators**.
   - Cross-posts the graphic directly onto the clubs' official feeds, instantly unlocking hundreds of local players and supporters with zero ad spend.
-- **Player & Scorer Tagging Standard:**
-  - Captions for *Spielergebnisse* and *In Zahlen* MUST include taggable handles for clubs and top scorers. Players actively repost tagged content to their personal stories.
+- **Mandatory Caption Tagging Implementation Standard:**
+  - **STRICT MANDATE:** Whenever writing or generating ANY new Instagram caption (for Round Previews, Single Matchday Stories, Results / *Spielergebnisse*, Table, *In Zahlen*, Memes, or Stories), the assistant MUST automatically pull the verified Instagram handles from [`DSG_Liga_Instagram_Directory.md`](file:///c:/Users/43670/Desktop/Graphics/AnonymCreator%20-%20Digitalstudion/Webseiten/DSG%20Liga/Wallpapers/Instagram%20Accounts/DSG_Liga_Instagram_Directory.md) and implement them directly into the caption!
+  - **Strict Direct-Mention Rule for Players:** ONLY tag an individual player's Instagram handle when that player is explicitly discussed, named, or highlighted in the caption (e.g., goalscorer, MOTM, milestone record holder). NEVER mass-tag or spam players who are not directly part of the story/text. Clubs can be tagged for team fixtures and results, but players are tagged strictly on direct editorial relevance.
+  - **In Matchday Previews & Overviews:** Tag the participating official club accounts (e.g., `@union_heiligenberg`, `@dsgjosefoed`, `@etehadlinz`, `@walkerfc_linz`, `@dsg_traun`, `@svcroatialinz`) and only key players who are directly discussed in the text.
+  - **In Results & Stats Drops:** Tag every goalscorer, MOTM, clean-sheet goalkeeper, and carded player directly next to their name or in a dedicated "⚽ Torschützen & Akteure" tag section (e.g. `⚽ @moritz_rad, @serban_nicolae_alexandru14, @dejan_1950, @mehraliamiri`).
+  - **Zero Generic Placeholders:** Never output plain untagged text or placeholder names when verified Instagram handles exist in the directory.
+  - **Master Directory Location:** Permanently maintained in [`Wallpapers/Instagram Accounts/DSG_Liga_Instagram_Directory.md`](file:///c:/Users/43670/Desktop/Graphics/AnonymCreator%20-%20Digitalstudion/Webseiten/DSG%20Liga/Wallpapers/Instagram%20Accounts/DSG_Liga_Instagram_Directory.md) (72+ verified accounts).
 - **Interactive Story Stickers Standard:**
   - Every 9:16 matchday and overview story should incorporate native Instagram engagement stickers (Polls, Tippspiel Sliders, Quizzes, Question boxes) to maximize sticker tap rates and boost story tray priority to the first position.
 - **MANDATORY PROACTIVE REMINDER DIRECTIVE:**

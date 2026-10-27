@@ -4709,12 +4709,14 @@ main {
     width: 100% !important;
     text-align: left !important;
     justify-content: flex-start !important;
-    padding: 10px 14px !important;
+    padding: 11px 16px !important;
     font-size: 0.95rem !important;
-    border-radius: var(--border-radius-sm, 6px) !important;
-    background: var(--color-surface, #ffffff) !important;
-    border: 1px solid var(--color-border, #e2e8f0) !important;
-    color: var(--color-text-primary) !important;
+    font-weight: 700 !important;
+    border-radius: var(--border-radius-sm, 8px) !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
   }
   .team-nav-accordion-content .team-tab-btn.active {
     background: rgba(0, 150, 64, 0.1) !important;
