@@ -289,43 +289,26 @@ export const bindRefereeAdmin = async () => {
 
 
     const activeMatch = getActiveMatch();
-
     updateMetaDisplay(activeMatch);
-
+    updateTabButtonStyles();
     renderActiveTab();
-
   };
 
-
-
   if (seasonSelect) {
-
     seasonSelect.value = selectedSeason;
-
     seasonSelect.addEventListener('change', (e) => {
-
       selectedSeason = e.target.value;
-
       selectedMatchId = null;
-
       populateMatchDropdown();
-
     });
-
   }
 
-
-
   matchSelect?.addEventListener('change', (e) => {
-
     selectedMatchId = e.target.value;
-
     const activeMatch = getActiveMatch();
-
     updateMetaDisplay(activeMatch);
-
+    updateTabButtonStyles();
     renderActiveTab();
-
   });
 
 
@@ -354,97 +337,82 @@ export const bindRefereeAdmin = async () => {
 
   };
 
+  const passControlCompletedKey = (m) => `dsg_pass_control_completed_${selectedSeason}___${m?.id}`;
 
+  const isPassControlCompleted = (m) => {
+    if (!m) return false;
+    if (m.passControlCompleted === true) return true;
+    if (m.reportStatus === 'approved') return true;
+    return localStorage.getItem(passControlCompletedKey(m)) === 'true';
+  };
 
   const updateTabButtonStyles = () => {
+    const match = getActiveMatch();
+    const isCompleted = isPassControlCompleted(match);
 
     if (tabPasskontrolle) {
-
       tabPasskontrolle.className = `btn ${currentRefereeTab === 'passkontrolle' ? 'btn-dsg' : 'btn-outline'}`;
-
+      tabPasskontrolle.innerHTML = `1. Passkontrolle ${isCompleted ? '<span style="color: #16a34a; font-weight: 800; margin-left: 4px;">✓</span>' : ''}`;
     }
 
     if (tabSpielbericht) {
-
       tabSpielbericht.className = `btn ${currentRefereeTab === 'spielbericht' ? 'btn-dsg' : 'btn-outline'}`;
-
+      tabSpielbericht.innerHTML = `2. Digitaler Spielbericht ${!isCompleted ? '<span style="font-size: 0.8rem; margin-left: 4px;" title="Gesperrt bis Passkontrolle abgeschlossen ist">🔒</span>' : ''}`;
     }
-
   };
 
-
-
   const renderActiveTab = () => {
-
     if (!contentContainer) return;
-
     const match = getActiveMatch();
 
-
-
     if (!match) {
-
       contentContainer.innerHTML = `
-
         <div class="glass-card" style="text-align: center; padding: 50px 20px; color: var(--color-text-secondary); border-radius: 8px;">
-
           <h3 style="color: var(--color-text-primary);">Kein Spiel ausgewählt</h3>
-
           <p style="font-size: 0.95rem;">Wähle oben im Dropdown ein Spiel aus, um die Passkontrolle durchzuführen oder den Spielbericht zu bearbeiten.</p>
-
         </div>
-
       `;
-
       return;
-
     }
-
-
 
     updateMetaDisplay(match);
 
-
-
     if (currentRefereeTab === 'passkontrolle') {
-
       renderPasskontrolle(match, players);
-
     } else {
-
       renderSpielbericht(match, players);
-
     }
-
   };
 
-
-
   // Tab switching
-
   tabPasskontrolle?.addEventListener('click', () => {
-
     currentRefereeTab = 'passkontrolle';
-
     updateTabButtonStyles();
-
     renderActiveTab();
-
   });
-
-
 
   tabSpielbericht?.addEventListener('click', () => {
-
     currentRefereeTab = 'spielbericht';
-
     updateTabButtonStyles();
-
     renderActiveTab();
-
   });
 
 
+
+  const cleanShirtNumber = (candidate, passNum, fallbackIdx) => {
+    const c = String(candidate || '').trim();
+    const p = String(passNum || '').trim();
+    if (c && c !== '-' && c !== '?' && c !== p) {
+      const num = parseInt(c, 10);
+      if (!isNaN(num) && num >= 1 && num <= 99) {
+        return String(num);
+      }
+    }
+    if (fallbackIdx !== undefined && fallbackIdx !== null && fallbackIdx >= 0) {
+      return String(fallbackIdx + 1);
+    }
+    return '';
+  };
 
   const renderPasskontrolle = (match, allPlayers) => {
     const homeTeam = match.home || '';
@@ -579,50 +547,73 @@ export const bindRefereeAdmin = async () => {
     const homeRoster = Store.getMatchdayRoster(selectedSeason, match.id, homeTeam);
     const awayRoster = Store.getMatchdayRoster(selectedSeason, match.id, awayTeam);
 
-    const renderTeamPassList = (teamTitle, teamPlayers, side) => {
+    const buildDisplayPlayers = (teamTitle, teamPlayers, side) => {
       const roster = side === 'home' ? homeRoster : awayRoster;
       const hasRoster = !!(roster && Array.isArray(roster.players) && roster.players.length > 0);
       const activeFilter = passFilterModes[side] || (hasRoster ? 'roster' : 'active');
 
-      let displayPlayers = teamPlayers;
       if (hasRoster && activeFilter === 'roster') {
-        displayPlayers = roster.players.map(rp => {
+        let starterIdx = 0;
+        let subIdx = 0;
+        return roster.players.map(rp => {
           const matchingRaw = teamPlayers.find(p => 
             String(p['#'] || p.id) === String(rp.id) ||
             normalizePlayerName(`${p.Vorname || ''} ${p.Nachname || ''}`) === normalizePlayerName(`${rp.firstName || ''} ${rp.lastName || ''}`)
           );
+          const passNum = matchingRaw?.['#'] || matchingRaw?.id || rp.id || '-';
+          const isStarter = (rp.isStarter !== false && rp.role !== 'sub');
+          let shirtNum = '';
+          if (isStarter) {
+            shirtNum = cleanShirtNumber(rp.jerseyNumber || matchingRaw?.jerseyNumber, passNum, starterIdx);
+            starterIdx++;
+          } else {
+            shirtNum = cleanShirtNumber(rp.jerseyNumber || matchingRaw?.jerseyNumber, passNum, 11 + subIdx);
+            subIdx++;
+          }
           return {
             ...(matchingRaw || {}),
             Vorname: rp.firstName || matchingRaw?.Vorname || '',
             Nachname: rp.lastName || matchingRaw?.Nachname || '',
             Position: rp.position || matchingRaw?.Position || 'Feldspieler',
             Geburtsdatum: matchingRaw?.Geburtsdatum || '',
-            jerseyNumber: rp.jerseyNumber || '',
-            passNumber: matchingRaw?.['#'] || matchingRaw?.id || rp.id || '-',
+            jerseyNumber: shirtNum,
+            passNumber: passNum,
             photoUrl: rp.photo || matchingRaw?.photoUrl || matchingRaw?.passPhoto || '',
             passPhoto: rp.photo || matchingRaw?.passPhoto || '',
             photo: rp.photo || matchingRaw?.photo || '',
-            fromRoster: true
+            fromRoster: true,
+            isStarter
           };
         });
       } else {
         const rawList = (!hasRoster && activeFilter !== 'all')
           ? teamPlayers.filter(p => (p.Status || p.status || 'Aktiv').toLowerCase() === 'aktiv')
           : teamPlayers;
-        displayPlayers = rawList.map(p => {
+        return rawList.map((p, idx) => {
           const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
           const inRoster = roster?.players?.find(rp => 
             String(rp.id) === String(p['#'] || p.id) ||
             normalizePlayerName(`${rp.firstName || ''} ${rp.lastName || ''}`) === normalizePlayerName(pName)
           );
+          const passNum = p['#'] || p.id || '-';
+          const shirtNum = cleanShirtNumber(inRoster?.jerseyNumber || p.jerseyNumber, passNum, idx);
           return {
             ...p,
-            jerseyNumber: inRoster?.jerseyNumber || '',
-            passNumber: p['#'] || p.id || '-',
+            jerseyNumber: shirtNum,
+            passNumber: passNum,
             isNominated: !!inRoster
           };
         });
       }
+    };
+
+    const homeDisplayPlayers = buildDisplayPlayers(homeTeam, homePlayers, 'home');
+    const awayDisplayPlayers = buildDisplayPlayers(awayTeam, awayPlayers, 'away');
+
+    const renderTeamPassList = (teamTitle, teamPlayers, displayPlayers, side) => {
+      const roster = side === 'home' ? homeRoster : awayRoster;
+      const hasRoster = !!(roster && Array.isArray(roster.players) && roster.players.length > 0);
+      const activeFilter = passFilterModes[side] || (hasRoster ? 'roster' : 'active');
 
       const verifiedCount = displayPlayers.filter(p => {
         const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
@@ -656,7 +647,7 @@ export const bindRefereeAdmin = async () => {
           <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent); padding-bottom: 8px; margin-bottom: var(--space-sm); flex-wrap: wrap; gap: 6px;">
             <div>
               <h3 style="margin: 0; font-size: 1.15rem; color: var(--color-text-primary);">${teamTitle}</h3>
-              <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">
+              <div id="pass-header-meta-${side}" style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">
                 ${verifiedCount} von ${eligibleCount} spielberechtigten Spielern verifiziert
                 ${suspendedInList.length > 0 ? ` &bull; <span style="color: #dc2626; font-weight: 800;">${suspendedInList.length} Gesperrt</span>` : ''}
                 ${warningInList.length > 0 ? ` &bull; <span style="color: #d97706; font-weight: 700;">${warningInList.length} Vorverwarnt</span>` : ''}
@@ -780,7 +771,7 @@ export const bindRefereeAdmin = async () => {
                       </span>
                     ` : `
                       <label style="display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: ${isPassChecked ? '#16a34a' : '#d97706'}; cursor: pointer; font-weight: 700; background: ${isPassChecked ? 'rgba(22, 163, 74, 0.12)' : 'rgba(217, 119, 6, 0.1)'}; border: 1px solid ${isPassChecked ? 'rgba(22, 163, 74, 0.35)' : 'rgba(217, 119, 6, 0.3)'}; padding: 4px 8px; border-radius: 4px; transition: all 0.2s;">
-                        <input type="checkbox" class="physical-pass-check" data-player="${pKey}" ${isPassChecked ? 'checked' : ''} style="cursor: pointer; accent-color: var(--color-accent);">
+                        <input type="checkbox" class="physical-pass-check" data-side="${side}" data-player="${pKey}" ${isPassChecked ? 'checked' : ''} style="cursor: pointer; accent-color: var(--color-accent);">
                         <span>${isPassChecked ? 'Pass vorgelegt' : 'Pass ok?'}</span>
                       </label>
                     `}
@@ -796,14 +787,140 @@ export const bindRefereeAdmin = async () => {
     contentContainer.innerHTML = `
       <div style="margin-bottom: var(--space-md); padding: 12px 16px; background: rgba(0, 240, 95, 0.08); border: 1px solid rgba(0, 240, 95, 0.3); border-radius: 6px; font-size: 0.85rem; color: var(--color-text-primary); display: flex; align-items: flex-start; gap: 10px;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent); flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <div><strong>Schiedsrichter-Passkontrolle:</strong> Bitte vergleiche vor Spielbeginn die anwesenden Spieler mit dieser Liste. Spieler mit <strong>[GESPERRT]</strong> dürfen keinesfalls eingesetzt werden. Bei Teams mit übermitteltem <strong>Spieltagskader</strong> wird standardmäßig nur die gemeldete Aufstellung angezeigt.</div>
+        <div><strong>Schiedsrichter-Passkontrolle:</strong> Bitte vergleiche vor Spielbeginn die anwesenden Spieler mit dieser Liste. Spieler mit <strong>[GESPERRT]</strong> dürfen keinesfalls eingesetzt werden. Nach vollständiger Prüfung beider Teams bitte auf <strong>"Passkontrolle abschließen &amp; speichern"</strong> klicken, um den Spielbericht freizuschalten.</div>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--space-md);">
-        ${renderTeamPassList(homeTeam, homePlayers, 'home')}
-        ${renderTeamPassList(awayTeam, awayPlayers, 'away')}
+        ${renderTeamPassList(homeTeam, homePlayers, homeDisplayPlayers, 'home')}
+        ${renderTeamPassList(awayTeam, awayPlayers, awayDisplayPlayers, 'away')}
+      </div>
+
+      <!-- Pass Control Completion Action Card -->
+      <div class="glass-card" style="margin-top: var(--space-md); padding: 16px 20px; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; background: rgba(0, 240, 95, 0.03);">
+        <div style="flex: 1; min-width: 260px;">
+          <div style="font-weight: 800; font-size: 0.98rem; color: var(--color-text-primary); display: flex; align-items: center; gap: 8px;">
+            <span id="pass-control-status-badge"></span>
+            <span>Passkontrolle bestätigen</span>
+          </div>
+          <div id="pass-control-status-desc" style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 3px;"></div>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button type="button" id="btn-save-pass-control" class="btn btn-dsg" style="padding: 10px 22px; font-weight: 800; font-size: 0.92rem; border-radius: 6px; transition: all 0.2s;">
+            Passkontrolle abschließen &amp; speichern
+          </button>
+        </div>
       </div>
     `;
+
+    const getStatsForSide = (side) => {
+      const teamTitle = side === 'home' ? homeTeam : awayTeam;
+      const displayList = side === 'home' ? homeDisplayPlayers : awayDisplayPlayers;
+      const verifiedMap = getVerifiedPasses();
+      
+      let verifiedCount = 0;
+      let eligibleCount = 0;
+      let suspendedCount = 0;
+      let warningCount = 0;
+
+      displayList.forEach(p => {
+        const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
+        const pKey = normalizePlayerName(pName) + '___' + normalizeKey(teamTitle);
+        const susp = getPlayerSuspensionData(pName, teamTitle);
+        if (susp.isSuspended) {
+          suspendedCount++;
+          return;
+        }
+        eligibleCount++;
+        if (susp.isWarning) warningCount++;
+        const hasPhoto = !!(p.photoUrl || p.passPhoto || p.photo || p.foto || p.avatar || p.Foto || p.image);
+        if (hasPhoto || verifiedMap[pKey]) {
+          verifiedCount++;
+        }
+      });
+
+      return { eligibleCount, verifiedCount, suspendedCount, warningCount };
+    };
+
+    const updatePassStatsUI = () => {
+      const homeStats = getStatsForSide('home');
+      const awayStats = getStatsForSide('away');
+
+      const metaHome = document.getElementById('pass-header-meta-home');
+      if (metaHome) {
+        metaHome.innerHTML = `
+          ${homeStats.verifiedCount} von ${homeStats.eligibleCount} spielberechtigten Spielern verifiziert
+          ${homeStats.suspendedCount > 0 ? ` &bull; <span style="color: #dc2626; font-weight: 800;">${homeStats.suspendedCount} Gesperrt</span>` : ''}
+          ${homeStats.warningCount > 0 ? ` &bull; <span style="color: #d97706; font-weight: 700;">${homeStats.warningCount} Vorverwarnt</span>` : ''}
+          ${homeStats.verifiedCount === homeStats.eligibleCount && homeStats.eligibleCount > 0 ? ' <span style="color: #16a34a; font-weight: 800;">(Vollständig überprüft)</span>' : ''}
+        `;
+      }
+
+      const metaAway = document.getElementById('pass-header-meta-away');
+      if (metaAway) {
+        metaAway.innerHTML = `
+          ${awayStats.verifiedCount} von ${awayStats.eligibleCount} spielberechtigten Spielern verifiziert
+          ${awayStats.suspendedCount > 0 ? ` &bull; <span style="color: #dc2626; font-weight: 800;">${awayStats.suspendedCount} Gesperrt</span>` : ''}
+          ${awayStats.warningCount > 0 ? ` &bull; <span style="color: #d97706; font-weight: 700;">${awayStats.warningCount} Vorverwarnt</span>` : ''}
+          ${awayStats.verifiedCount === awayStats.eligibleCount && awayStats.eligibleCount > 0 ? ' <span style="color: #16a34a; font-weight: 800;">(Vollständig überprüft)</span>' : ''}
+        `;
+      }
+
+      const totalEligible = homeStats.eligibleCount + awayStats.eligibleCount;
+      const totalVerified = homeStats.verifiedCount + awayStats.verifiedCount;
+      const totalRemaining = totalEligible - totalVerified;
+      const allOk = totalEligible > 0 && totalRemaining === 0;
+
+      const badge = document.getElementById('pass-control-status-badge');
+      const desc = document.getElementById('pass-control-status-desc');
+      const btn = document.getElementById('btn-save-pass-control');
+
+      const isCompleted = isPassControlCompleted(match);
+
+      if (btn) {
+        if (allOk) {
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          btn.style.cursor = 'pointer';
+          btn.style.background = 'var(--color-accent)';
+          btn.style.color = '#000';
+          if (isCompleted) {
+            btn.innerHTML = '✓ Gespeichert &amp; Freigegeben &bull; Zum Spielbericht &rarr;';
+          } else {
+            btn.innerHTML = '✓ Passkontrolle abschließen &amp; speichern';
+          }
+        } else {
+          btn.disabled = true;
+          btn.style.opacity = '0.55';
+          btn.style.cursor = 'not-allowed';
+          btn.style.background = 'var(--color-surface)';
+          btn.style.color = 'var(--color-text-secondary)';
+          btn.innerHTML = `Passkontrolle unvollständig (${totalRemaining} offen)`;
+        }
+      }
+
+      if (badge) {
+        if (isCompleted) {
+          badge.innerHTML = `<span style="background: rgba(22, 163, 74, 0.2); color: #16a34a; border: 1px solid rgba(22, 163, 74, 0.4); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 800;">Freigegeben</span>`;
+        } else if (allOk) {
+          badge.innerHTML = `<span style="background: rgba(0, 240, 95, 0.2); color: var(--color-accent); border: 1px solid rgba(0, 240, 95, 0.4); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 800;">Prüfung komplett</span>`;
+        } else {
+          badge.innerHTML = `<span style="background: rgba(234, 179, 8, 0.2); color: #d97706; border: 1px solid rgba(234, 179, 8, 0.4); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 800;">${totalRemaining} ausständig</span>`;
+        }
+      }
+
+      if (desc) {
+        if (isCompleted) {
+          desc.innerHTML = `Passkontrolle wurde erfolgreich gespeichert. Der Spielbericht ist freigeschaltet.`;
+        } else if (allOk) {
+          desc.innerHTML = `Alle spielberechtigten Spieler beider Teams wurden überprüft. Bitte jetzt speichern.`;
+        } else {
+          desc.innerHTML = `Bitte alle anwesenden Spieler beider Teams überprüfen (Passkontrolle für Spieler ohne Digitalfoto), um den Spielbericht freizuschalten.`;
+        }
+      }
+    };
+
+    // Initial update of stats & button state
+    updatePassStatsUI();
 
     contentContainer.querySelectorAll('.btn-pass-filter').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -830,13 +947,58 @@ export const bindRefereeAdmin = async () => {
       });
     });
 
+    // In-place checkbox updates: avoids re-rendering whole list and maintains scroll position
     contentContainer.querySelectorAll('.physical-pass-check').forEach(cb => {
       cb.addEventListener('change', (e) => {
         const pKey = cb.getAttribute('data-player');
         const checked = cb.checked;
         setVerifiedPass(pKey, checked);
-        renderPasskontrolle(match, allPlayers);
+
+        const card = cb.closest('.ref-pass-player-card');
+        if (card) {
+          card.style.background = checked ? 'rgba(0, 240, 95, 0.04)' : 'var(--color-surface)';
+          card.style.borderColor = checked ? 'rgba(0, 240, 95, 0.45)' : 'var(--glass-border)';
+        }
+        const label = cb.closest('label');
+        if (label) {
+          const span = label.querySelector('span');
+          if (span) span.textContent = checked ? 'Pass vorgelegt' : 'Pass ok?';
+          label.style.color = checked ? '#16a34a' : '#d97706';
+          label.style.background = checked ? 'rgba(22, 163, 74, 0.12)' : 'rgba(217, 119, 6, 0.1)';
+          label.style.borderColor = checked ? 'rgba(22, 163, 74, 0.35)' : 'rgba(217, 119, 6, 0.3)';
+        }
+
+        updatePassStatsUI();
       });
+    });
+
+    // Pass Control Save button handler
+    document.getElementById('btn-save-pass-control')?.addEventListener('click', async () => {
+      const homeStats = getStatsForSide('home');
+      const awayStats = getStatsForSide('away');
+      const totalRemaining = (homeStats.eligibleCount - homeStats.verifiedCount) + (awayStats.eligibleCount - awayStats.verifiedCount);
+      
+      if (totalRemaining > 0) {
+        alert(`Passkontrolle noch nicht vollständig. Bitte überprüfe zuerst alle Spieler (${totalRemaining} noch offen).`);
+        return;
+      }
+
+      match.passControlCompleted = true;
+      localStorage.setItem(passControlCompletedKey(match), 'true');
+      try {
+        await Store.saveMatch(selectedSeason, match);
+      } catch (err) {
+        console.warn('Error saving match pass control state:', err);
+      }
+
+      updateTabButtonStyles();
+      updatePassStatsUI();
+
+      if (confirm('Passkontrolle erfolgreich abgeschlossen und gespeichert!\n\nMöchtest du jetzt direkt zum Digitalen Spielbericht wechseln?')) {
+        currentRefereeTab = 'spielbericht';
+        updateTabButtonStyles();
+        renderActiveTab();
+      }
     });
   };
   const refPlayerComboboxState = {
@@ -1219,6 +1381,32 @@ export const bindRefereeAdmin = async () => {
   };
 
   const renderSpielbericht = (match, allPlayers) => {
+    if (!isPassControlCompleted(match)) {
+      contentContainer.innerHTML = `
+        <div class="glass-card" style="padding: 44px 24px; text-align: center; max-width: 620px; margin: 30px auto; border: 1px solid rgba(234, 179, 8, 0.45); background: rgba(234, 179, 8, 0.04); border-radius: 8px;">
+          <div style="width: 58px; height: 58px; border-radius: 50%; background: rgba(234, 179, 8, 0.15); border: 2px solid rgba(234, 179, 8, 0.45); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: #d97706;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <h3 style="margin: 0 0 8px; color: var(--color-text-primary); font-size: 1.25rem;">Passkontrolle erforderlich</h3>
+          <p style="font-size: 0.92rem; color: var(--color-text-secondary); line-height: 1.5; margin: 0 0 24px;">
+            Der digitale Spielbericht kann erst bearbeitet und eingereicht werden, sobald die offizielle <strong>Passkontrolle vor dem Spiel</strong> für beide Mannschaften abgeschlossen und mit <strong>"Passkontrolle abschließen &amp; speichern"</strong> bestätigt wurde.
+          </p>
+          <button type="button" id="btn-gate-to-passkontrolle" class="btn btn-dsg" style="padding: 10px 24px; font-weight: 800; font-size: 0.95rem;">
+            Zur Passkontrolle wechseln
+          </button>
+        </div>
+      `;
+      document.getElementById('btn-gate-to-passkontrolle')?.addEventListener('click', () => {
+        currentRefereeTab = 'passkontrolle';
+        updateTabButtonStyles();
+        renderActiveTab();
+      });
+      return;
+    }
+
     // Parse current scores
     let scoreHome = '';
     let scoreAway = '';
@@ -1316,29 +1504,42 @@ export const bindRefereeAdmin = async () => {
       const addedNames = new Set();
 
       if (roster && Array.isArray(roster.players)) {
+        let starterIdx = 0;
+        let subIdx = 0;
         roster.players.forEach(rp => {
           const full = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
           if (full && !addedNames.has(full.toLowerCase())) {
             addedNames.add(full.toLowerCase());
+            const passNum = String(rp.id || '');
+            const isStart = (rp.isStarter !== false && rp.role !== 'sub');
+            let shirt = '';
+            if (isStart) {
+              shirt = cleanShirtNumber(rp.jerseyNumber, passNum, starterIdx);
+              starterIdx++;
+            } else {
+              shirt = cleanShirtNumber(rp.jerseyNumber, passNum, 11 + subIdx);
+              subIdx++;
+            }
             options.push({
               name: full,
-              label: `#${rp.jerseyNumber || '?'} ${full} (${rp.position || 'Kader'})`,
-              jerseyNumber: rp.jerseyNumber || '',
+              label: `#${shirt} ${full} (${rp.position || 'Kader'})`,
+              jerseyNumber: shirt,
               isRoster: true
             });
           }
         });
       }
 
-      tPlayers.forEach(p => {
+      tPlayers.forEach((p, idx) => {
         const full = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
         if (full && !addedNames.has(full.toLowerCase())) {
           addedNames.add(full.toLowerCase());
-          const num = p['#'] && p['#'] !== '-' ? '#' + p['#'] + ' ' : '';
+          const passNum = p['#'] || p.id || '-';
+          const shirt = cleanShirtNumber(p.jerseyNumber, passNum, idx);
           options.push({
             name: full,
-            label: `${num}${full}`,
-            jerseyNumber: p['#'] || '',
+            label: `#${shirt} ${full}`,
+            jerseyNumber: shirt,
             isRoster: false
           });
         }
@@ -1347,7 +1548,6 @@ export const bindRefereeAdmin = async () => {
       return options;
     };
 
-    
     // Helper to compute dynamic pitch and bench lists with Rückwechsel support
     const computePitchAndBench = (teamName, roster, subs) => {
       const norm = (teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
@@ -1360,41 +1560,50 @@ export const bindRefereeAdmin = async () => {
       let initialBench = [];
 
       if (roster && Array.isArray(roster.players) && roster.players.length > 0) {
-        let starterCount = 0;
+        let starterIdx = 0;
+        let subIdx = 0;
         roster.players.forEach(rp => {
           const name = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
           if (!name) return;
+          const passNum = String(rp.id || '');
           const isStart = (rp.isStarter !== false && rp.role !== 'sub');
-          const pObj = { name, label: `#${rp.jerseyNumber || '?'} ${name}`, jersey: rp.jerseyNumber || '' };
-          if (isStart && starterCount < 11) {
+          let shirt = '';
+          if (isStart) {
+            shirt = cleanShirtNumber(rp.jerseyNumber, passNum, starterIdx);
+            starterIdx++;
+          } else {
+            shirt = cleanShirtNumber(rp.jerseyNumber, passNum, 11 + subIdx);
+            subIdx++;
+          }
+          const pObj = { name, label: `#${shirt} ${name}`, jersey: shirt };
+          if (isStart && initialPitch.length < 11) {
             initialPitch.push(pObj);
-            starterCount++;
           } else {
             initialBench.push(pObj);
           }
         });
-        if (starterCount === 0) {
-          initialPitch = roster.players.slice(0, 11).map(rp => ({
-            name: `${rp.firstName || ''} ${rp.lastName || ''}`.trim(),
-            label: `#${rp.jerseyNumber || '?'} ${rp.firstName || ''} ${rp.lastName || ''}`.trim(),
-            jersey: rp.jerseyNumber || ''
-          }));
-          initialBench = roster.players.slice(11).map(rp => ({
-            name: `${rp.firstName || ''} ${rp.lastName || ''}`.trim(),
-            label: `#${rp.jerseyNumber || '?'} ${rp.firstName || ''} ${rp.lastName || ''}`.trim(),
-            jersey: rp.jerseyNumber || ''
-          }));
+        if (initialPitch.length === 0) {
+          initialPitch = roster.players.slice(0, 11).map((rp, idx) => {
+            const name = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
+            const shirt = cleanShirtNumber(rp.jerseyNumber, rp.id, idx);
+            return { name, label: `#${shirt} ${name}`, jersey: shirt };
+          });
+          initialBench = roster.players.slice(11).map((rp, idx) => {
+            const name = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
+            const shirt = cleanShirtNumber(rp.jerseyNumber, rp.id, 11 + idx);
+            return { name, label: `#${shirt} ${name}`, jersey: shirt };
+          });
         }
       } else {
-        initialPitch = tPlayers.slice(0, 11).map(p => {
+        initialPitch = tPlayers.slice(0, 11).map((p, idx) => {
           const name = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
-          const num = p['#'] && p['#'] !== '-' ? '#' + p['#'] + ' ' : '';
-          return { name, label: `${num}${name}`, jersey: p['#'] || '' };
+          const shirt = String(idx + 1);
+          return { name, label: `#${shirt} ${name}`, jersey: shirt };
         });
-        initialBench = tPlayers.slice(11).map(p => {
+        initialBench = tPlayers.slice(11).map((p, idx) => {
           const name = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
-          const num = p['#'] && p['#'] !== '-' ? '#' + p['#'] + ' ' : '';
-          return { name, label: `${num}${name}`, jersey: p['#'] || '' };
+          const shirt = String(12 + idx);
+          return { name, label: `#${shirt} ${name}`, jersey: shirt };
         });
       }
 
@@ -1761,14 +1970,22 @@ export const bindRefereeAdmin = async () => {
         homeInSelect.innerHTML = homeState.bench.map(p => `<option value="${p.name}">${p.label || p.name}</option>`).join('');
       }
 
+      const getSubPlayerDisplay = (pName, optionsList) => {
+        const found = optionsList.find(o => (o.name || '').toLowerCase() === (pName || '').toLowerCase());
+        if (found && found.jerseyNumber) {
+          return `<span style="color: var(--color-accent); font-weight: 800; margin-right: 2px;">#${found.jerseyNumber}</span>${pName}`;
+        }
+        return pName;
+      };
+
       if (homeListDiv) {
         homeListDiv.innerHTML = refReportSubsHome.map((s, i) => `
           <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 5px 8px; border-radius: 4px; font-size: 0.85rem; border-left: 2px solid var(--color-accent);">
             <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
               ${s.minute ? `<span style="background: rgba(0, 179, 65, 0.12); color: var(--color-accent); font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${s.minute}'</span>` : ''}
-              <span style="color: #dc2626; font-weight: 700; font-size: 0.75rem;">Aus:</span> <strong>${s.playerOut}</strong>
+              <span style="color: #dc2626; font-weight: 700; font-size: 0.75rem;">Aus:</span> <strong>${getSubPlayerDisplay(s.playerOut, homeOptions)}</strong>
               <span style="color: var(--color-text-secondary);">&bull;</span>
-              <span style="color: #16a34a; font-weight: 700; font-size: 0.75rem;">Ein:</span> <strong>${s.playerIn}</strong>
+              <span style="color: #16a34a; font-weight: 700; font-size: 0.75rem;">Ein:</span> <strong>${getSubPlayerDisplay(s.playerIn, homeOptions)}</strong>
             </div>
             <button type="button" class="btn-del-ref-sub-h" data-idx="${i}" title="Wechsel entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
           </div>
@@ -1826,9 +2043,9 @@ export const bindRefereeAdmin = async () => {
           <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 5px 8px; border-radius: 4px; font-size: 0.85rem; border-left: 2px solid var(--color-accent);">
             <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
               ${s.minute ? `<span style="background: rgba(0, 179, 65, 0.12); color: var(--color-accent); font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${s.minute}'</span>` : ''}
-              <span style="color: #dc2626; font-weight: 700; font-size: 0.75rem;">Aus:</span> <strong>${s.playerOut}</strong>
+              <span style="color: #dc2626; font-weight: 700; font-size: 0.75rem;">Aus:</span> <strong>${getSubPlayerDisplay(s.playerOut, awayOptions)}</strong>
               <span style="color: var(--color-text-secondary);">&bull;</span>
-              <span style="color: #16a34a; font-weight: 700; font-size: 0.75rem;">Ein:</span> <strong>${s.playerIn}</strong>
+              <span style="color: #16a34a; font-weight: 700; font-size: 0.75rem;">Ein:</span> <strong>${getSubPlayerDisplay(s.playerIn, awayOptions)}</strong>
             </div>
             <button type="button" class="btn-del-ref-sub-a" data-idx="${i}" title="Wechsel entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
           </div>
