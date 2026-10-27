@@ -430,6 +430,27 @@ const getDisplayLeagueName = (m) => {
     return cleanKey ? (cleanKey.startsWith('DSG') || cleanKey.startsWith('1.') || cleanKey.startsWith('Saison') || cleanKey.startsWith('Liga') ? cleanKey : `DSG Liga ${cleanKey}`) : 'DSG Liga';
 };
 
+const getLeagueOrderWeight = (match) => {
+    if (!match) return 0;
+    const key = String(match.seasonKey || match.season || '').trim();
+    const curSeason = Store.getData()?.currentSeason || '2026/2027';
+    const isTest = key.toLowerCase().includes('test');
+    const yr = (extractSeasonYear(match) || 2020) - 2000;
+    const base = yr * 10000;
+
+    // Primary active season (e.g. DSG Liga 2026/2027) gets highest priority
+    if ((key === curSeason || key === '2026/2027') && !isTest) return 990000;
+    // Current season's Testliga comes right after main league
+    if (isTest && key.includes('2026')) return 980000;
+
+    let sub = 500;
+    if (key.includes('oberes')) sub = 400;
+    else if (key.includes('unteres')) sub = 300;
+    else if (key.includes('1klasse')) sub = 200;
+    if (isTest) sub = 100;
+    return base + sub;
+};
+
 const formatSeasonDisplay = (m) => {
     if (!m) return '-';
     const key = m.seasonKey || m.season || m.seasonName || '';
@@ -501,15 +522,17 @@ const filterAndSortGames = () => {
     // Multi-tier sorting based on sortVal dropdown
     filteredData.sort((a, b) => {
         if (sortVal === 'season-desc') {
-            const diffYear = extractSeasonYear(b) - extractSeasonYear(a);
-            if (diffYear !== 0) return diffYear;
+            const weightA = getLeagueOrderWeight(a);
+            const weightB = getLeagueOrderWeight(b);
+            if (weightA !== weightB) return weightB - weightA;
             const diffRound = extractRoundNumber(a) - extractRoundNumber(b);
             if (diffRound !== 0) return diffRound;
             return parseGameDate(a.date, a.time) - parseGameDate(b.date, b.time);
         }
         if (sortVal === 'season-asc') {
-            const diffYear = extractSeasonYear(a) - extractSeasonYear(b);
-            if (diffYear !== 0) return diffYear;
+            const weightA = getLeagueOrderWeight(a);
+            const weightB = getLeagueOrderWeight(b);
+            if (weightA !== weightB) return weightA - weightB;
             const diffRound = extractRoundNumber(a) - extractRoundNumber(b);
             if (diffRound !== 0) return diffRound;
             return parseGameDate(a.date, a.time) - parseGameDate(b.date, b.time);
@@ -924,11 +947,18 @@ const updateTeamsForSelectedRound = () => {
 const populateFilterAndFormDropdowns = () => {
     const leagueFilterSelect = document.getElementById('game-league-filter');
     const roundFilterSelect = document.getElementById('game-round-filter');
+    const statusFilterSelect = document.getElementById('game-status-filter');
+    const sortFilterSelect = document.getElementById('game-sort-select');
+    const searchInput = document.getElementById('game-search');
     const modalRoundSelect = document.getElementById('input-game-round');
+
+    // Restore saved league filter preference
+    let savedLeague = 'all';
+    try { savedLeague = sessionStorage.getItem('dsg_game_league_filter') || 'all'; } catch(e) {}
 
     // Populate League filter dropdown
     if (leagueFilterSelect) {
-        const prevVal = leagueFilterSelect.value || 'all';
+        const currentVal = leagueFilterSelect.value && leagueFilterSelect.value !== 'all' ? leagueFilterSelect.value : savedLeague;
         const leagueOptions = (leaguesData || []).map(l => {
             const key = l.seasonKey || l.name;
             let cleanYr = (l.year || (l.seasonKey ? String(l.seasonKey).replace(/_[a-zA-Z0-9_-]+$/, '') : '') || '').trim();
@@ -939,9 +969,14 @@ const populateFilterAndFormDropdowns = () => {
             return `<option value="${key}">${label}</option>`;
         }).join('');
         leagueFilterSelect.innerHTML = '<option value="all">Alle Ligen</option>' + leagueOptions;
-        if (prevVal && Array.from(leagueFilterSelect.options).some(o => o.value === prevVal)) {
-            leagueFilterSelect.value = prevVal;
-        }
+        
+        const targetVal = (currentVal && Array.from(leagueFilterSelect.options).some(o => o.value === currentVal))
+            ? currentVal
+            : (savedLeague && Array.from(leagueFilterSelect.options).some(o => o.value === savedLeague))
+                ? savedLeague
+                : 'all';
+        leagueFilterSelect.value = targetVal;
+        try { sessionStorage.setItem('dsg_game_league_filter', targetVal); } catch(e) {}
     }
 
     // Unique rounds from matches and roundsData
@@ -1032,13 +1067,37 @@ const populateFilterAndFormDropdowns = () => {
         return (a.label || '').localeCompare(b.label || '', 'de', { numeric: true });
     });
 
+    let savedRound = 'all';
+    try { savedRound = sessionStorage.getItem('dsg_game_round_filter') || 'all'; } catch(e) {}
     if (roundFilterSelect) {
-        const prevRound = roundFilterSelect.value || 'all';
+        const currentVal = roundFilterSelect.value && roundFilterSelect.value !== 'all' ? roundFilterSelect.value : savedRound;
         roundFilterSelect.innerHTML = '<option value="all">Alle Runden</option>' + 
             allRoundsList.map(r => `<option value="${r.full}">${r.label || r.full}</option>`).join('');
-        if (prevRound && Array.from(roundFilterSelect.options).some(o => o.value === prevRound)) {
-            roundFilterSelect.value = prevRound;
-        }
+        const targetVal = (currentVal && Array.from(roundFilterSelect.options).some(o => o.value === currentVal))
+            ? currentVal
+            : (savedRound && Array.from(roundFilterSelect.options).some(o => o.value === savedRound))
+                ? savedRound
+                : 'all';
+        roundFilterSelect.value = targetVal;
+        try { sessionStorage.setItem('dsg_game_round_filter', targetVal); } catch(e) {}
+    }
+
+    let savedStatus = 'all';
+    try { savedStatus = sessionStorage.getItem('dsg_game_status_filter') || 'all'; } catch(e) {}
+    if (statusFilterSelect && savedStatus && Array.from(statusFilterSelect.options).some(o => o.value === savedStatus)) {
+        statusFilterSelect.value = savedStatus;
+    }
+
+    let savedSort = 'season-desc';
+    try { savedSort = sessionStorage.getItem('dsg_game_sort_select') || 'season-desc'; } catch(e) {}
+    if (sortFilterSelect && savedSort && Array.from(sortFilterSelect.options).some(o => o.value === savedSort)) {
+        sortFilterSelect.value = savedSort;
+    }
+
+    let savedSearch = '';
+    try { savedSearch = sessionStorage.getItem('dsg_game_search') || ''; } catch(e) {}
+    if (searchInput && savedSearch && !searchInput.value) {
+        searchInput.value = savedSearch;
     }
 
     const activeLeagues = (leaguesData || []).filter(l => l.status === 'Aktiv' || l.Status === 'Aktiv');
@@ -2017,31 +2076,36 @@ const setupEventHandlers = () => {
     if (addBtn) addBtn.onclick = openAddGameModal;
 
     const searchInput = document.getElementById('game-search');
-    if (searchInput) searchInput.oninput = () => {
+    if (searchInput) searchInput.oninput = (e) => {
+        try { sessionStorage.setItem('dsg_game_search', e.target.value); } catch(err) {}
         currentPage = 1;
         renderGamesTable();
     };
 
     const leagueFilter = document.getElementById('game-league-filter');
-    if (leagueFilter) leagueFilter.onchange = () => {
+    if (leagueFilter) leagueFilter.onchange = (e) => {
+        try { sessionStorage.setItem('dsg_game_league_filter', e.target.value); } catch(err) {}
         currentPage = 1;
         renderGamesTable();
     };
 
     const roundFilter = document.getElementById('game-round-filter');
-    if (roundFilter) roundFilter.onchange = () => {
+    if (roundFilter) roundFilter.onchange = (e) => {
+        try { sessionStorage.setItem('dsg_game_round_filter', e.target.value); } catch(err) {}
         currentPage = 1;
         renderGamesTable();
     };
 
     const statusFilter = document.getElementById('game-status-filter');
-    if (statusFilter) statusFilter.onchange = () => {
+    if (statusFilter) statusFilter.onchange = (e) => {
+        try { sessionStorage.setItem('dsg_game_status_filter', e.target.value); } catch(err) {}
         currentPage = 1;
         renderGamesTable();
     };
 
     const sortSelect = document.getElementById('game-sort-select');
-    if (sortSelect) sortSelect.onchange = () => {
+    if (sortSelect) sortSelect.onchange = (e) => {
+        try { sessionStorage.setItem('dsg_game_sort_select', e.target.value); } catch(err) {}
         currentSort = { column: null, asc: true };
         currentPage = 1;
         renderGamesTable();
