@@ -174,6 +174,9 @@ export const renderAdminGames = () => {
                     <button type="button" class="btn-close-report-modal btn-outline" style="padding: 4px 12px; font-size: 0.85rem; border-radius: 4px; background: var(--color-surface); color: var(--color-text-primary); border: var(--glass-border); cursor: pointer;">Zurück</button>
                 </div>
 
+                <!-- Pending Approval Notice Banner -->
+                <div id="report-modal-pending-banner" style="display: none;"></div>
+
                 <!-- Match Header Information Card -->
                 <div class="glass-card" style="padding: var(--space-md); background: rgba(0,150,64,0.08); border-left: 4px solid var(--color-accent); margin-bottom: var(--space-md);">
                     <div style="font-size: 1.15rem; font-weight: 700; color: var(--color-text-primary);" id="report-match-title">Walker FC gegen DSG Union Traun</div>
@@ -1596,11 +1599,41 @@ const openReportModal = (idxOrMatch) => {
     const modal = document.getElementById('report-modal');
     if (!modal) return;
 
+    const isPending = match.reportStatus === 'pending_approval';
+    const reportData = (isPending && match.refereeReport)
+        ? { ...match, ...match.refereeReport }
+        : match;
+
+    const pendingBanner = document.getElementById('report-modal-pending-banner');
+    if (pendingBanner) {
+        if (isPending) {
+            pendingBanner.style.display = 'block';
+            pendingBanner.innerHTML = `
+                <div style="background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.45); border-radius: 8px; padding: 12px 16px; margin-bottom: var(--space-md); display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <div>
+                            <div style="font-weight: 800; color: #b45309; font-size: 0.95rem;">Schiedsrichterbericht liegt zur Prüfung vor</div>
+                            <div style="font-size: 0.8rem; color: var(--color-text-secondary); margin-top: 2px;">Überprüfe die Angaben und klicke auf „Spielbericht freigeben & Tabelle aktualisieren“, um das Ergebnis offiziell in die Wertung zu übernehmen.</div>
+                        </div>
+                    </div>
+                    <span style="font-size: 0.74rem; font-weight: 800; color: #b45309; background: rgba(234, 179, 8, 0.25); padding: 4px 10px; border-radius: 999px; text-transform: uppercase; white-space: nowrap;">Wartet auf Freigabe</span>
+                </div>
+            `;
+        } else {
+            pendingBanner.style.display = 'none';
+        }
+    }
+
     const active = isGameActive(match);
     const saveBtn = document.getElementById('btn-save-report');
     if (saveBtn) {
         saveBtn.disabled = !active;
-        saveBtn.innerText = active ? 'Spielbericht speichern' : 'Schreibgeschützt (Inaktive Liga)';
+        saveBtn.innerText = !active
+            ? 'Schreibgeschützt (Inaktive Liga)'
+            : isPending
+                ? 'Spielbericht freigeben & Tabelle aktualisieren'
+                : 'Spielbericht speichern';
         saveBtn.style.opacity = active ? '1' : '0.6';
         saveBtn.style.cursor = active ? 'pointer' : 'not-allowed';
     }
@@ -1618,11 +1651,12 @@ const openReportModal = (idxOrMatch) => {
     document.getElementById('report-goal-heading-home').innerText = `Torschützen ${match.home}`;
     document.getElementById('report-goal-heading-away').innerText = `Torschützen ${match.away}`;
 
-    // Populate Scores
+    // Populate Scores from authoritative reportData (which includes submitted refereeReport if pending)
     let scoreHome = '';
     let scoreAway = '';
-    if (match.score && match.score.includes(':') && match.score !== '-:-' && match.score !== ':') {
-        const cleanScore = match.score.replace(/\s*\([^)]*\)/g, '').replace(/[^\d:]/g, '').trim();
+    const rawScore = reportData.score || match.score || '';
+    if (rawScore && rawScore.includes(':') && rawScore !== '-:-' && rawScore !== ':') {
+        const cleanScore = rawScore.replace(/\s*\([^)]*\)/g, '').replace(/[^\d:]/g, '').trim();
         if (cleanScore.includes(':')) {
             const parts = cleanScore.split(':');
             scoreHome = parts[0]?.trim() || '';
@@ -1634,15 +1668,16 @@ const openReportModal = (idxOrMatch) => {
 
     let htHome = '';
     let htAway = '';
-    if (match.ht && match.ht.includes(':') && match.ht !== ':') {
-        const cleanHt = match.ht.replace(/[()]/g, '').replace(/[^\d:]/g, '').trim();
+    const rawHt = reportData.ht || reportData.htScore || reportData.halfTime || match.ht || '';
+    if (rawHt && rawHt.includes(':') && rawHt !== ':') {
+        const cleanHt = rawHt.replace(/[()]/g, '').replace(/[^\d:]/g, '').trim();
         if (cleanHt.includes(':')) {
             const parts = cleanHt.split(':');
             htHome = parts[0]?.trim() || '';
             htAway = parts[1]?.trim() || '';
         }
-    } else if (match.score && match.score.includes('(')) {
-        const mHt = match.score.match(/\(([^)]+)\)/);
+    } else if (rawScore && rawScore.includes('(')) {
+        const mHt = rawScore.match(/\(([^)]+)\)/);
         if (mHt && mHt[1].includes(':')) {
             const cleanHt = mHt[1].replace(/[^\d:]/g, '').trim();
             const parts = cleanHt.split(':');
@@ -1653,7 +1688,7 @@ const openReportModal = (idxOrMatch) => {
     document.getElementById('report-ht-home').value = htHome;
     document.getElementById('report-ht-away').value = htAway;
 
-    document.getElementById('report-note').value = match.note || '';
+    document.getElementById('report-note').value = reportData.refereeNotes || reportData.note || match.refereeNotes || match.note || '';
     
     let cancelVal = 'none';
     if (match.status === 'Abgesagt 3:0' || (match.status === 'Abgesagt' && match.score && match.score.includes('3:0'))) {
@@ -1682,10 +1717,10 @@ const openReportModal = (idxOrMatch) => {
     const minCardH = document.getElementById('report-card-min-home'); if (minCardH) minCardH.value = '';
     const minCardA = document.getElementById('report-card-min-away'); if (minCardA) minCardA.value = '';
 
-    // Populate Scorers & Cards lists (checking match.scorers/cards and match.events)
-    const rawScorers = (match.scorers && match.scorers.length > 0)
-        ? match.scorers
-        : (match.events || []).filter(e => e.type === 'goal');
+    // Populate Scorers & Cards lists from authoritative reportData
+    const rawScorers = (reportData.scorers && reportData.scorers.length > 0)
+        ? reportData.scorers
+        : (reportData.events || []).filter(e => e.type === 'goal');
 
     reportScorersHome = [];
     reportScorersAway = [];
@@ -1704,9 +1739,9 @@ const openReportModal = (idxOrMatch) => {
         }
     });
 
-    const rawCards = (match.cards && match.cards.length > 0)
-        ? match.cards
-        : (match.events || []).filter(e => e.type === 'yellow' || e.type === 'yellowRed' || e.type === 'yellow-red' || e.type === 'gelbrot' || e.type === 'red');
+    const rawCards = (reportData.cards && reportData.cards.length > 0)
+        ? reportData.cards
+        : (reportData.events || []).filter(e => e.type === 'yellow' || e.type === 'yellowRed' || e.type === 'yellow-red' || e.type === 'gelbrot' || e.type === 'red');
 
     reportCardsHome = [];
     reportCardsAway = [];
@@ -1926,6 +1961,9 @@ const saveReportForm = (e) => {
     scorers.forEach(s => events.push({ type: 'goal', player: s.name, name: s.name, team: s.team, minute: s.minute || '' }));
     cards.forEach(c => events.push({ type: c.type, player: c.name, name: c.name, team: c.team, reason: c.reason || '', minute: c.minute || '' }));
 
+    const isPending = currentReportMatch.reportStatus === 'pending_approval';
+    const finalReportStatus = isPending ? 'approved' : (currentReportMatch.reportStatus || 'approved');
+
     const updatedMatch = {
         ...currentReportMatch,
         score: score,
@@ -1933,18 +1971,44 @@ const saveReportForm = (e) => {
         htScore: ht,
         halfTime: ht,
         status: status,
+        reportStatus: finalReportStatus,
         note: note,
+        refereeNotes: note,
         scorers: scorers,
         cards: cards,
-        events: events
+        events: events,
+        substitutions: currentReportMatch.substitutions || currentReportMatch.refereeReport?.substitutions || [],
+        confirmedAt: isPending ? Date.now() : (currentReportMatch.confirmedAt || Date.now()),
+        confirmedBy: isPending ? 'Liga-Vorstand' : (currentReportMatch.confirmedBy || '')
     };
 
+    if (updatedMatch.refereeReport) {
+        updatedMatch.refereeReport.status = finalReportStatus;
+        if (isPending) updatedMatch.refereeReport.confirmedAt = Date.now();
+    }
+
     const targetSeasonKey = currentReportMatch.seasonKey || (Store.getData()?.currentSeason || '2026/2027');
+
+    // Update dedicated pending reports store if this was pending
+    if (isPending && Store.getPendingReportsStore) {
+        const pendingStore = Store.getPendingReportsStore();
+        const pIdx = pendingStore.findIndex(p => String(p.matchId) === String(currentReportMatch.id) && String(p.seasonKey) === String(targetSeasonKey));
+        if (pIdx !== -1) {
+            pendingStore[pIdx].status = 'approved';
+            pendingStore[pIdx].confirmedAt = Date.now();
+            pendingStore[pIdx].confirmedBy = 'Liga-Vorstand';
+            Store.savePendingReportsStore(pendingStore);
+        }
+    }
+
     Store.saveMatch(targetSeasonKey, deepSanitize(updatedMatch));
     Store.recalculateSeason(targetSeasonKey);
+    window.dispatchEvent(new CustomEvent('match-reports-updated'));
+    window.dispatchEvent(new CustomEvent('data-updated'));
+
     closeReportModal();
     loadDataAndRender();
-    showToast('Spielbericht erfolgreich gespeichert!');
+    showToast(isPending ? 'Spielbericht erfolgreich freigegeben & Tabelle aktualisiert!' : 'Spielbericht erfolgreich gespeichert!');
 };
 
 const setupEventHandlers = () => {
