@@ -484,7 +484,7 @@ League table wallpapers feature official standings, goal records, and points acr
   - Standard league database does not record match minutes. Social graphics, wallpapers, and scoreboard plates NEVER include minute markers (e.g., `(24.)`, `61.'`).
   - In website articles: When specific user context or match witness accounts are provided (e.g., injury after 10 minutes, corner header goal in the 35th minute), integrate them organically into the match narrative (*"bereits nach knapp zehn Minuten"*, *"nach etwas mehr als einer halben Stunde"* or *"in Minute 35"*). Keep summary goal blocks cleanly aggregated by player name and tally.
 - **Milestone & League Facts Integration:**
-  - Every round recap article MUST incorporate genuine database facts and statistical milestones from `dsg.anonymcreator.online` / Firestore:
+  - Every round recap article MUST incorporate genuine database facts and statistical milestones from `dsg-fussball.com` / Firestore:
     - Total round goals and average goals per match.
     - League-wide milestone counters (e.g., 100-goal barrier broken).
     - Top scorer leaderboard updates and streaks (e.g., 10-goal threshold, hattricks).
@@ -583,13 +583,17 @@ League table wallpapers feature official standings, goal records, and points acr
       - Strategic Goal: Maximum viral reach, humor, club banter, and non-follower explore traffic.
 
 
-- **Website News & Editorial Publishing Schedule:**
+- **Website News & Editorial Publishing Schedule (Drafted by Assistant, Published by User):**
+  - **Publishing Hierarchy & Workflow:**
+    - **Assistant's Role:** Assistant strictly drafts, formats, and prepares all ready-to-publish files, markdown articles (`rundeX_website_spielbericht.md`), JSON data in `Website/data/articles.json`, captions, and graphic assets. The assistant NEVER publishes anything autonomously!
+    - **User's Role:** The user personally reviews, approves, and publishes the articles on the official website and posts content to Instagram.
+    - **Official Website Domain:** The official public website is strictly **`dsg-fussball.com`** (never use temporary development URLs like anonymcreator.online in captions, stories, or graphics!).
   - **In-Season Weekly Rhythm & Social Media Synchronization:**
     - **Sunday Morning (~10:00–11:30):** **The Official Matchday Report ("Der Große Spielbericht")**
-      - Target File / Storage: `rundeX_website_spielbericht.md` saved into `Website/data/articles.json` with category `Spielberichte / News`.
-      - Strategic Timing: Published on Sunday morning when amateur players, coaches, and local fans wake up and review the weekend over breakfast/coffee. Goes live *before* the Sunday Instagram Table post (~12:00–17:00).
-      - Cross-Channel Funneling: When the Sunday Table post and Stories go live on Instagram, they incorporate a direct call-to-action and an **Instagram Story Link Sticker** (`🔗 dsg.anonymcreator.online — 👉 Zum großen Spielbericht`), converting Instagram reach directly into high-retention website readers.
-      - Featured Clubs Repost Loop: By tagging the featured clubs in the Sunday story, clubs routinely repost the story with the article link, funneling their entire squad to the website.
+      - Target File / Storage: Assistant drafts `rundeX_website_spielbericht.md` and pre-formats the entry for `Website/data/articles.json` with category `Spielberichte / News`.
+      - Strategic Timing: Prepared for the user to publish on Sunday morning when amateur players, coaches, and local fans wake up and review the weekend over breakfast/coffee. Published *before* the Sunday Instagram Table post (~12:00–17:00).
+      - Cross-Channel Funneling: When the user posts the Sunday Table post and Stories to Instagram, they incorporate a direct call-to-action and an **Instagram Story Link Sticker** (`🔗 dsg-fussball.com — 👉 Zum großen Spielbericht`), converting Instagram reach directly into high-retention website readers.
+      - Featured Clubs Repost Loop: By tagging the featured clubs in the Sunday story, clubs routinely repost the story with the article link, funneling their entire squad to the official website (`dsg-fussball.com`).
     - **Thursday Afternoon (~16:00, Optional / Big Matches):** **Matchday Preview ("Vorschau auf Runde X")**
       - Published prior to the Thursday Instagram Carousel for marquee fixtures, rivalries, or title-deciding clashes.
     - **Tuesday Afternoon (~16:00, Optional):** **In Zahlen & Record Feature ("Spieltag in Zahlen — Die Tiefenanalyse")**

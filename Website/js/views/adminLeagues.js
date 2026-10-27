@@ -1780,6 +1780,7 @@ const renderModalContent = () => {
 
                                 let combinedEvents = (m.events && m.events.length > 0) ? m.events.map(e => {
                                   let reason = (e.reason || '').trim();
+                                  let minute = (e.minute || e.min || '').trim();
                                   if (!reason && m.cards) {
                                     const pName = (e.player || e.name || '').trim();
                                     const matchCard = m.cards.find(c => 
@@ -1787,17 +1788,23 @@ const renderModalContent = () => {
                                       (c.type === e.type || (e.type && e.type.startsWith('yellow') && c.type && c.type.startsWith('yellow')))
                                     );
                                     if (matchCard && matchCard.reason) reason = matchCard.reason.trim();
+                                    if (!minute && matchCard && (matchCard.minute || matchCard.min)) minute = String(matchCard.minute || matchCard.min).trim();
                                   }
-                                  return { ...e, reason };
+                                  if (!minute && m.scorers) {
+                                    const pName = (e.player || e.name || '').trim();
+                                    const matchScorer = m.scorers.find(s => (s.player || s.name || '').trim() === pName);
+                                    if (matchScorer && (matchScorer.minute || matchScorer.min)) minute = String(matchScorer.minute || matchScorer.min).trim();
+                                  }
+                                  return { ...e, reason, minute };
                                 }) : [];
 
                                 if (combinedEvents.length === 0) {
-                                  (m.scorers || []).forEach(s => combinedEvents.push({ type: 'goal', player: s.name || s.player, team: s.team, count: s.count || 1 }));
-                                  (m.cards || []).forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1, reason: (c.reason || '').trim() }));
+                                  (m.scorers || []).forEach(s => combinedEvents.push({ type: 'goal', player: s.name || s.player, team: s.team, count: s.count || 1, minute: (s.minute || s.min || '').trim() }));
+                                  (m.cards || []).forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1, reason: (c.reason || '').trim(), minute: (c.minute || c.min || '').trim() }));
                                 } else if (m.cards && m.cards.length > 0) {
                                   const hasCardInEvents = combinedEvents.some(e => e.type === 'yellow' || e.type === 'yellowRed' || e.type === 'red');
                                   if (!hasCardInEvents) {
-                                    m.cards.forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1, reason: (c.reason || '').trim() }));
+                                    m.cards.forEach(c => combinedEvents.push({ type: c.type || 'yellow', player: c.name || c.player, team: c.team, count: 1, reason: (c.reason || '').trim(), minute: (c.minute || c.min || '').trim() }));
                                   }
                                 }
 
@@ -2009,12 +2016,58 @@ const renderModalContent = () => {
 
 
 
-                                        ${hasEvents ? `
-
+                                        ${hasEvents ? (combinedEvents.some(e => e.minute && String(e.minute).trim() !== '') ? `
                                             <div class="events-accordion" style="display: none;">
-
+                                                <div class="match-timeline-container">
+                                                    ${[...combinedEvents].sort((a, b) => {
+                                                        const parseMinute = (minStr) => {
+                                                            if (!minStr) return 999;
+                                                            const clean = String(minStr).replace(/['"]/g, '').trim();
+                                                            if (clean.includes('+')) {
+                                                                const parts = clean.split('+');
+                                                                return (parseFloat(parts[0]) || 0) + ((parseFloat(parts[1]) || 0) * 0.01);
+                                                            }
+                                                            return parseFloat(clean) || 999;
+                                                        };
+                                                        return parseMinute(a.minute) - parseMinute(b.minute);
+                                                    }).map(e => {
+                                                        const isHome = isHomeEvent(e);
+                                                        const displayMin = e.minute ? `${String(e.minute).replace(/['"]/g, '').trim()}'` : '';
+                                                        const isOwnGoal = (e.player || '').toLowerCase().includes('eigentor');
+                                                        const playerHtml = `<span class="match-event-player" style="${isOwnGoal ? 'color: #ef4444; font-weight: 700;' : ''}">${e.player}</span>`;
+                                                        const badgeHtml = renderBadge(e.type, e.count || 1, e.reason, e.player);
+                                                        const reasonHtml = e.reason ? `<span class="match-event-reason">(${e.reason})</span>` : '';
+                                                        return `
+                                                            <div class="match-timeline-row ${isHome ? 'is-home' : 'is-away'}">
+                                                                <div class="timeline-slot-home">
+                                                                    ${isHome ? `
+                                                                        <div class="timeline-event-content">
+                                                                            ${playerHtml}
+                                                                            ${reasonHtml}
+                                                                            <div class="match-event-badges">${badgeHtml}</div>
+                                                                        </div>
+                                                                    ` : ''}
+                                                                </div>
+                                                                <div class="timeline-slot-center">
+                                                                    <span class="timeline-minute-badge">${displayMin || '•'}</span>
+                                                                </div>
+                                                                <div class="timeline-slot-away">
+                                                                    ${!isHome ? `
+                                                                        <div class="timeline-event-content">
+                                                                            <div class="match-event-badges">${badgeHtml}</div>
+                                                                            ${playerHtml}
+                                                                            ${reasonHtml}
+                                                                        </div>
+                                                                    ` : ''}
+                                                                </div>
+                                                            </div>
+                                                        `;
+                                                    }).join('')}
+                                                </div>
+                                            </div>
+                                        ` : `
+                                            <div class="events-accordion" style="display: none;">
                                                 <div class="events-container">
-
                                                     <div class="events-col-home">
                                                         ${homeGrouped.length > 0 ? homeGrouped.map(e => `
                                                             <div class="match-event-row match-event-home ${e.reason ? 'has-reason' : ''}">
@@ -2034,10 +2087,8 @@ const renderModalContent = () => {
                                                         `).join('') : '<span style="font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0.5;">-</span>'}
                                                     </div>
                                                 </div>
-
                                             </div>
-
-                                        ` : ''}
+                                        `) : ''}
 
                                     </div>
 
