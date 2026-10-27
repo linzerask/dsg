@@ -36,7 +36,7 @@ export const renderAdminGames = () => {
                 Spiel anlegen
             </button>
             <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;">
-                <input type="text" id="game-search" class="admin-input" placeholder="Team / Ort / Runde..." style="width: 170px;">
+                <input type="text" id="game-search" class="admin-input" placeholder="Team / Saison / Runde..." style="width: 170px;">
                 <select id="game-league-filter" class="admin-input" style="width: 140px;">
                     <option value="all">Alle Ligen</option>
                 </select>
@@ -69,13 +69,13 @@ export const renderAdminGames = () => {
                 <thead>
                     <tr>
                         <th data-sort="date" class="sortable" style="width: 100px;">Datum ↕</th>
-                        <th data-sort="venue" class="sortable" style="max-width: 105px;">Ort ↕</th>
+                        <th data-sort="season" class="sortable" style="text-align: center; width: 85px;">Saison ↕</th>
                         <th data-sort="round" class="sortable" style="max-width: 80px;">Runde ↕</th>
                         <th data-sort="home" class="sortable" style="max-width: 125px;">Heim ↕</th>
                         <th data-sort="away" class="sortable" style="max-width: 125px;">Auswärts ↕</th>
                         <th data-sort="score" class="sortable" style="text-align: center; width: 65px;">Ergebnis ↕</th>
-                        <th data-sort="ht" class="sortable" style="text-align: center; width: 55px;">HZ ↕</th>
-                        <th style="max-width: 75px;">Sonstiges</th>
+                        <th data-sort="ht" class="sortable" style="text-align: center; width: 50px;">HZ ↕</th>
+                        <th style="text-align: center; min-width: 135px; width: 145px;">Status</th>
                         <th style="text-align: center; width: 115px;">Aktionen</th>
                     </tr>
                 </thead>
@@ -427,6 +427,13 @@ const getDisplayLeagueName = (m) => {
     return cleanKey ? (cleanKey.startsWith('DSG') || cleanKey.startsWith('1.') || cleanKey.startsWith('Saison') || cleanKey.startsWith('Liga') ? cleanKey : `DSG Liga ${cleanKey}`) : 'DSG Liga';
 };
 
+const formatSeasonDisplay = (m) => {
+    if (!m) return '-';
+    const key = m.seasonKey || m.season || m.seasonName || '';
+    if (key.toLowerCase() === 'testliga') return 'Testliga';
+    return key || '-';
+};
+
 const formatDisplayDate = (dateStr, timeStr) => {
     if (!dateStr) return '-';
     let str = String(dateStr).trim();
@@ -459,6 +466,8 @@ const filterAndSortGames = () => {
         const matchesSearch = !searchVal || 
             (m.home && m.home.toLowerCase().includes(searchVal)) ||
             (m.away && m.away.toLowerCase().includes(searchVal)) ||
+            (m.seasonKey && m.seasonKey.toLowerCase().includes(searchVal)) ||
+            (m.season && m.season.toLowerCase().includes(searchVal)) ||
             (m.venue && m.venue.toLowerCase().includes(searchVal)) ||
             (m.location && m.location.toLowerCase().includes(searchVal)) ||
             (m.round && m.round.toLowerCase().includes(searchVal)) ||
@@ -564,10 +573,11 @@ const filterAndSortGames = () => {
                 return extractSeasonYear(b) - extractSeasonYear(a);
             }
 
-            if (currentSort.column === 'venue') {
-                const vA = String(a.venue || a.location || '').toLowerCase();
-                const vB = String(b.venue || b.location || '').toLowerCase();
-                return currentSort.asc ? vA.localeCompare(vB, 'de') : vB.localeCompare(vA, 'de');
+            if (currentSort.column === 'season') {
+                const sA = extractSeasonYear(a);
+                const sB = extractSeasonYear(b);
+                if (sA !== sB) return currentSort.asc ? sA - sB : sB - sA;
+                return extractRoundNumber(a) - extractRoundNumber(b);
             }
 
             valA = String(valA).toLowerCase();
@@ -634,20 +644,41 @@ const renderGamesTable = () => {
         const venue = m.venue || m.location || 'DSG-Platz';
         const dateDisplay = formatDisplayDate(m.date, m.time);
 
-        let noteBadge = m.note || '';
-        if (m.reportStatus === 'pending_approval') noteBadge = '<span style="background: rgba(234, 179, 8, 0.2); color: #d97706; border: 1px solid rgba(234, 179, 8, 0.5); padding: 2px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 800; display: inline-flex; align-items: center; gap: 3px;">⏳ Freigabe ausstehend</span>';
-        else if (m.status === 'Abgesagt 3:0') noteBadge = '<span class="badge badge-danger" style="font-size: 0.75rem;">Abgesagt 3:0</span>';
-        else if (m.status === 'Abgesagt 0:3') noteBadge = '<span class="badge badge-danger" style="font-size: 0.75rem;">Abgesagt 0:3</span>';
-        else if (m.status === 'Postponed') noteBadge = '<span class="badge badge-secondary" style="font-size: 0.75rem;">Verschoben</span>';
-        else if (m.status === 'Canceled') noteBadge = '<span class="badge badge-danger" style="font-size: 0.75rem;">Abgesagt</span>';
+        let statusBadge = '-';
+        if (m.reportStatus === 'pending_approval') {
+            statusBadge = `
+                <span style="background: rgba(234, 179, 8, 0.15); color: #b45309; border: 1px solid rgba(234, 179, 8, 0.4); padding: 3px 8px; border-radius: 9999px; font-size: 0.74rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Freigabe offen
+                </span>
+            `;
+        } else if (m.status === 'Abgesagt 3:0') {
+            statusBadge = '<span style="background: rgba(220, 38, 38, 0.15); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.35); padding: 3px 8px; border-radius: 9999px; font-size: 0.74rem; font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;">Abgesagt 3:0</span>';
+        } else if (m.status === 'Abgesagt 0:3') {
+            statusBadge = '<span style="background: rgba(220, 38, 38, 0.15); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.35); padding: 3px 8px; border-radius: 9999px; font-size: 0.74rem; font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;">Abgesagt 0:3</span>';
+        } else if (m.status === 'Postponed' || m.status === 'Verschoben') {
+            statusBadge = '<span style="background: rgba(100, 116, 139, 0.15); color: #475569; border: 1px solid rgba(100, 116, 139, 0.35); padding: 3px 8px; border-radius: 9999px; font-size: 0.74rem; font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;">Verschoben</span>';
+        } else if (m.status === 'Canceled' || m.status === 'Abgesagt') {
+            statusBadge = '<span style="background: rgba(220, 38, 38, 0.15); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.35); padding: 3px 8px; border-radius: 9999px; font-size: 0.74rem; font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center;">Abgesagt</span>';
+        } else if (m.reportStatus === 'approved') {
+            statusBadge = `
+                <span style="background: rgba(22, 163, 74, 0.15); color: #16a34a; border: 1px solid rgba(22, 163, 74, 0.35); padding: 3px 8px; border-radius: 9999px; font-size: 0.74rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    Bestätigt
+                </span>
+            `;
+        } else if (m.note && m.note.trim() !== '') {
+            statusBadge = `<span style="color: var(--color-text-secondary); font-size: 0.78rem; font-style: italic; max-width: 135px; overflow: hidden; text-overflow: ellipsis; display: inline-block; white-space: nowrap;" title="${m.note}">${m.note}</span>`;
+        }
 
+        const seasonDisplay = formatSeasonDisplay(m);
         const roundDisplay = m.round ? m.round.replace(/\s+\d{2}\.\d{2}\..*$/, '') : '-';
 
         const isPendingReport = m.reportStatus === 'pending_approval';
         const reportBtnHtml = `
-            <button class="btn-report-game" data-idx="${rawIndex}" title="${isPendingReport ? 'Schiedsrichterbericht prüfen & freigeben' : 'Spielbericht ' + (isActive ? 'erfassen' : 'ansehen')}" style="background: ${isPendingReport ? '#eab308' : 'var(--color-accent)'}; color: ${isPendingReport ? '#000' : '#fff'}; border: none; border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;">
+            <button class="btn-report-game" data-idx="${rawIndex}" title="${isPendingReport ? 'Schiedsrichterbericht prüfen & freigeben' : 'Spielbericht ' + (isActive ? 'erfassen' : 'ansehen')}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                ${isPendingReport ? 'Prüfen' : 'Bericht'}
+                Bericht
             </button>
         `;
 
@@ -678,7 +709,7 @@ const renderGamesTable = () => {
         return `
             <tr>
                 <td style="font-weight: 600; color: var(--color-text-primary); font-size: 0.82rem; white-space: nowrap;">${dateDisplay}</td>
-                <td style="color: var(--color-text-secondary); font-size: 0.82rem; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${venue}">${venue}</td>
+                <td style="text-align: center; font-weight: 600; color: var(--color-text-secondary); font-size: 0.82rem; white-space: nowrap;">${seasonDisplay}</td>
                 <td style="font-weight: 600; color: var(--color-accent); font-size: 0.82rem; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.round || ''}">${roundDisplay}</td>
                 <td style="font-weight: 700; color: var(--color-text-primary); font-size: 0.85rem; max-width: 135px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.home || ''}">
                     <div style="display: inline-flex; align-items: center; gap: 6px;">
@@ -694,7 +725,7 @@ const renderGamesTable = () => {
                 </td>
                 <td style="text-align: center; font-weight: 800; font-size: 1rem; color: var(--color-accent); white-space: nowrap;">${scoreDisplay}</td>
                 <td style="text-align: center; color: var(--color-text-secondary); font-size: 0.82rem; white-space: nowrap;">${htDisplay}</td>
-                <td style="max-width: 75px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${m.note || m.status || ''}">${noteBadge}</td>
+                <td style="text-align: center; white-space: nowrap; padding: 6px 8px;">${statusBadge}</td>
                 <td style="text-align: center; white-space: nowrap;">
                     <div style="display: inline-flex; gap: 3px; justify-content: center; align-items: center;">
                         ${reportBtnHtml}
@@ -725,10 +756,13 @@ const renderGamesTable = () => {
                 const dateDisplay = formatDisplayDate(m.date, m.time);
 
                 let noteBadge = m.note || '';
-                if (m.status === 'Abgesagt 3:0') noteBadge = '<span class="badge badge-danger" style="font-size: 0.72rem;">Abgesagt 3:0</span>';
-                else if (m.status === 'Abgesagt 0:3') noteBadge = '<span class="badge badge-danger" style="font-size: 0.72rem;">Abgesagt 0:3</span>';
-                else if (m.status === 'Postponed') noteBadge = '<span class="badge badge-secondary" style="font-size: 0.72rem;">Verschoben</span>';
-                else if (m.status === 'Canceled') noteBadge = '<span class="badge badge-danger" style="font-size: 0.72rem;">Abgesagt</span>';
+                if (m.reportStatus === 'pending_approval') {
+                    noteBadge = '<span style="background: rgba(234, 179, 8, 0.15); color: #b45309; border: 1px solid rgba(234, 179, 8, 0.4); padding: 2px 7px; border-radius: 9999px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Freigabe offen</span>';
+                } else if (m.status === 'Abgesagt 3:0') noteBadge = '<span style="background: rgba(220, 38, 38, 0.15); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.35); padding: 2px 7px; border-radius: 9999px; font-size: 0.72rem; font-weight: 700; white-space: nowrap;">Abgesagt 3:0</span>';
+                else if (m.status === 'Abgesagt 0:3') noteBadge = '<span style="background: rgba(220, 38, 38, 0.15); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.35); padding: 2px 7px; border-radius: 9999px; font-size: 0.72rem; font-weight: 700; white-space: nowrap;">Abgesagt 0:3</span>';
+                else if (m.status === 'Postponed' || m.status === 'Verschoben') noteBadge = '<span style="background: rgba(100, 116, 139, 0.15); color: #475569; border: 1px solid rgba(100, 116, 139, 0.35); padding: 2px 7px; border-radius: 9999px; font-size: 0.72rem; font-weight: 700; white-space: nowrap;">Verschoben</span>';
+                else if (m.status === 'Canceled' || m.status === 'Abgesagt') noteBadge = '<span style="background: rgba(220, 38, 38, 0.15); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.35); padding: 2px 7px; border-radius: 9999px; font-size: 0.72rem; font-weight: 700; white-space: nowrap;">Abgesagt</span>';
+                else if (m.reportStatus === 'approved') noteBadge = '<span style="background: rgba(22, 163, 74, 0.15); color: #16a34a; border: 1px solid rgba(22, 163, 74, 0.35); padding: 2px 7px; border-radius: 9999px; font-size: 0.72rem; font-weight: 700; white-space: nowrap;">Bestätigt</span>';
 
                 const mReportBtn = `
                     <button class="btn-report-game full-width" data-idx="${rawIndex}" style="background: var(--color-accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
@@ -790,8 +824,8 @@ const renderGamesTable = () => {
                         <div class="admin-m-body">
                             <div class="admin-m-grid">
                                 <div class="admin-m-grid-item">
-                                    <span class="admin-m-label">Spielort</span>
-                                    <span class="admin-m-value">${venue}</span>
+                                    <span class="admin-m-label">Saison</span>
+                                    <span class="admin-m-value">${formatSeasonDisplay(m)}</span>
                                 </div>
                                 <div class="admin-m-grid-item">
                                     <span class="admin-m-label">Halbzeitstand</span>
