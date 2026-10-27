@@ -4,7 +4,7 @@ import { logout } from '../auth.js';
 
 import { Router } from '../router.js';
 
-import { getPlayerAvatar, calculateTeamPlayerStats } from '../playerUtils.js?v=1793100000000';
+import { getPlayerAvatar, calculateTeamPlayerStats, openPlayerStatsModal } from '../playerUtils.js?v=1793130000000';
 import { calculateSeasonSuspensions, normalizePlayerName, normalizeKey } from '../suspensionUtils.js?v=1793040000000';
 
 import { storage } from '../firebase.js';
@@ -512,7 +512,7 @@ export const bindTeamAdmin = async (auth) => {
               const formattedBirth = formatBirthdate(p.Geburtsdatum);
 
               return `
-                <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 14px; border-radius: 8px; border: 1px solid ${isSuspended ? 'rgba(239, 68, 68, 0.4)' : 'var(--glass-border)'}; background: ${isSuspended ? 'rgba(220, 38, 38, 0.05)' : 'var(--color-surface)'};">
+                <div class="glass-card kader-player-profile-card" data-player-id="${p['#'] || p.id || (p.Vorname + '_' + p.Nachname)}" style="display: flex; flex-direction: column; justify-content: space-between; padding: 14px; border-radius: 8px; border: 1px solid ${isSuspended ? 'rgba(239, 68, 68, 0.4)' : 'var(--glass-border)'}; background: ${isSuspended ? 'rgba(220, 38, 38, 0.05)' : 'var(--color-surface)'}; cursor: pointer; transition: transform 0.15s ease, border-color 0.15s ease;" title="Klicken für Spielerstatistiken">
                   <!-- Info Section -->
                   <div style="display: flex; gap: 14px; align-items: flex-start;">
                     <div style="width: 56px; height: 56px; border-radius: 50%; overflow: hidden; background: #111; flex-shrink: 0; border: 2px solid ${hasCustomPhoto ? 'var(--color-accent)' : 'rgba(255,255,255,0.12)'};">
@@ -577,6 +577,18 @@ export const bindTeamAdmin = async (auth) => {
       });
 
 
+
+      // Wire player profile modal openers on player cards
+      container.querySelectorAll('.kader-player-profile-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.btn-upload-player-photo')) return;
+          const pId = card.getAttribute('data-player-id');
+          const playerObj = filtered.find(x => String(x['#'] || x.id || (x.Vorname + '_' + x.Nachname)) === String(pId));
+          if (playerObj) {
+            openPlayerStatsModal(playerObj, { teamName, seasonKey: Store.getData()?.currentSeason });
+          }
+        });
+      });
 
       // Bind photo upload modal openers
 
@@ -963,7 +975,7 @@ export const bindTeamAdmin = async (auth) => {
           ${processedPlayers.map(p => {
             return `
               <div class="kader-player-card glass-card" data-player-id="${p.id}" style="padding: 10px 12px; border-radius: 8px; border: 1px solid ${p.isSuspended ? '#ef4444' : p.isChecked ? 'var(--color-accent)' : p.isWarning ? 'rgba(234, 179, 8, 0.45)' : 'var(--glass-border)'}; background: ${p.isSuspended ? 'rgba(220, 38, 38, 0.06)' : p.isWarning ? 'rgba(234, 179, 8, 0.03)' : 'var(--color-surface)'}; display: flex; align-items: center; justify-content: space-between; gap: 10px; transition: border-color 0.2s;">
-                <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+                <div class="kader-player-info-area" style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; cursor: pointer;" title="Klicken für Spielerstatistiken">
                   <input type="checkbox" class="kader-player-check" data-player-id="${p.id}" ${p.isChecked ? 'checked' : ''} ${p.isSuspended || isRosterLocked ? 'disabled' : ''} style="width: 18px; height: 18px; cursor: ${p.isSuspended || isRosterLocked ? 'not-allowed' : 'pointer'}; accent-color: var(--color-accent); flex-shrink: 0;">
                   <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: #111; border: 2px solid ${p.isSuspended ? '#ef4444' : p.isChecked ? 'var(--color-accent)' : 'var(--glass-border)'}; flex-shrink: 0;">
                     <img src="${p.avatar}" alt="${p.pName}" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center;">
@@ -1062,6 +1074,20 @@ export const bindTeamAdmin = async (auth) => {
           }
         }
       };
+
+      // Wire player stats modal on card click (excluding inputs/buttons)
+      document.querySelectorAll('.kader-player-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('input, button, label, .kader-player-check, .kader-jersey-input, .kader-role-btn')) {
+            return;
+          }
+          const pId = card.getAttribute('data-player-id');
+          const pObj = processedPlayers.find(x => String(x.id) === String(pId));
+          if (pObj) {
+            openPlayerStatsModal(pObj.raw || pObj, { teamName, seasonKey: selectedKaderSeasonKey });
+          }
+        });
+      });
 
       // Checkbox changes & Role button wiring
       if (!isRosterLocked) {
@@ -1313,7 +1339,7 @@ export const bindTeamAdmin = async (auth) => {
                 ${teamStats.players.map((p) => {
                   const pct = teamStats.maxMinutes > 0 ? Math.round((p.minutes / teamStats.maxMinutes) * 100) : 0;
                   return `
-                    <tr class="stats-row" style="border-bottom: 1px solid var(--glass-border); transition: background 0.15s ease;">
+                    <tr class="stats-row" data-player-id="${p.id}" style="border-bottom: 1px solid var(--glass-border); transition: background 0.15s ease;">
                       <td style="padding: 10px 10px; text-align: center; font-weight: 800; color: var(--color-text-secondary);">
                         ${p.jerseyNumber ? '#' + p.jerseyNumber : '-'}
                       </td>
@@ -1376,6 +1402,19 @@ export const bindTeamAdmin = async (auth) => {
       document.getElementById('team-stats-season-select')?.addEventListener('change', (e) => {
         selectedStatsSeasonKey = e.target.value;
         renderTab();
+      });
+
+      // Wire player modal clicks on stats table rows
+      container.querySelectorAll('#team-stats-tbody .stats-row').forEach(row => {
+        row.style.cursor = 'pointer';
+        row.setAttribute('title', 'Klicken für Spielerstatistiken & Details');
+        row.addEventListener('click', () => {
+          const pId = row.getAttribute('data-player-id');
+          const pStat = teamStats.players.find(x => String(x.id) === String(pId));
+          if (pStat) {
+            openPlayerStatsModal(pStat.raw || pStat, { teamName, seasonKey: selectedStatsSeasonKey });
+          }
+        });
       });
 
       // Wire player search filter

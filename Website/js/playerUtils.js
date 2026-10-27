@@ -1,6 +1,8 @@
 // Player Utilities & Automated Statistics Aggregator
 import { Store, sanitizeMojibake } from './store.js?v=1791182000000';
-import { calculateSeasonSuspensions } from './suspensionUtils.js?v=1793040000000';
+import { renderIcon } from './icons.js?v=1791182000000';
+import { renderTeamLogo } from './logos.js?v=1791182000000';
+import { calculateSeasonSuspensions, getPlayerSuspensionInfo } from './suspensionUtils.js?v=1793040000000';
 
 export function normalizePlayerKey(name) {
   if (!name) return '';
@@ -704,4 +706,360 @@ export function calculateTeamPlayerStats(seasonKey, teamName, allPlayersList = [
     maxMinutes: maxPossibleMinutes,
     players: statsList
   };
+}
+
+export function formatBirthdate(dateStr) {
+  if (!dateStr || dateStr === '0000-00-00') return '';
+  const str = String(dateStr).trim();
+  const parts = str.split('-');
+  if (parts.length === 3 && parts[0].length === 4) {
+    return `${parts[2]}.${parts[1]}.${parts[0]}`;
+  }
+  return str;
+}
+
+export async function openPlayerStatsModal(playerData, options = {}) {
+  if (!playerData) return;
+
+  const data = Store.getData() || {};
+  const currentSeason = data.currentSeason || '2026/2027';
+  const seasonKey = options.seasonKey || currentSeason;
+
+  let allPlayers = options.allPlayers || (Store.getAdminPlayersSync ? Store.getAdminPlayersSync() : []);
+  if (!allPlayers || allPlayers.length === 0) {
+    allPlayers = await Store.getAdminPlayers();
+  }
+
+  // Raw player resolution
+  const raw = playerData.raw || playerData;
+  const pId = raw['#'] || raw.id || raw.ID || playerData.id || '';
+  
+  // Find official player from allPlayers if possible
+  const officialPlayer = allPlayers.find(p => {
+    if (pId && (String(p['#']) === String(pId) || String(p.id) === String(pId))) return true;
+    const pFullName = `${p.Vorname || ''} ${p.Nachname || ''}`.trim();
+    const rawFullName = `${raw.Vorname || raw.firstName || ''} ${raw.Nachname || raw.lastName || ''}`.trim() || raw.name || raw.pName || '';
+    return pFullName && rawFullName && normalizePlayerKey(pFullName) === normalizePlayerKey(rawFullName);
+  }) || raw;
+
+  const firstName = officialPlayer.Vorname || officialPlayer.firstName || raw.Vorname || raw.firstName || '';
+  const lastName = officialPlayer.Nachname || officialPlayer.lastName || raw.Nachname || raw.lastName || '';
+  const fullName = `${firstName} ${lastName}`.trim() || officialPlayer.name || raw.name || raw.pName || 'Unbekannter Spieler';
+  const teamName = options.teamName || officialPlayer.Team || raw.Team || raw.team || '';
+  const avatarUrl = getPlayerAvatar(officialPlayer);
+  const positionLabel = getPlayerPositionLabel(officialPlayer) || officialPlayer.Position || raw.position || 'Feldspieler';
+  const jerseyNumber = officialPlayer.jerseyNumber || officialPlayer.shirtNumber || raw.jerseyNumber || (officialPlayer['#'] && officialPlayer['#'] !== '-' ? officialPlayer['#'] : '');
+
+  // Calculate team stats
+  const teamStats = calculateTeamPlayerStats(seasonKey, teamName, allPlayers);
+  const normKey = normalizePlayerKey(fullName);
+  const pStat = (teamStats.players || []).find(p => {
+    return normalizePlayerKey(p.name) === normKey || (p.id && pId && String(p.id) === String(pId));
+  }) || {
+    minutes: 0,
+    played: 0,
+    started: 0,
+    subbedIn: 0,
+    subbedOut: 0,
+    benchUnused: 0,
+    goals: 0,
+    yellowCards: 0,
+    yellowRedCards: 0,
+    redCards: 0,
+    yellowTotal: 0
+  };
+
+  const maxMins = teamStats.maxMinutes || (teamStats.playedMatchesCount * 90) || 0;
+  const minPct = maxMins > 0 ? Math.min(100, Math.round((pStat.minutes / maxMins) * 100)) : 0;
+
+  // Suspension information
+  const susp = getPlayerSuspensionInfo(fullName, teamName, seasonKey);
+
+  // Personal Info
+  const passNum = officialPlayer.passNumber || officialPlayer['#'] || officialPlayer.id || pId || '-';
+  const birthRaw = officialPlayer.Geburtsdatum || raw.Geburtsdatum || '';
+  const formattedBirth = formatBirthdate(birthRaw);
+  const age = calculatePlayerAge(birthRaw);
+  const ageDisplay = age ? `${formattedBirth} (${age} Jahre)` : (formattedBirth || 'Unbekannt');
+  const memberSince = formatMemberSince(officialPlayer.memberSince || officialPlayer.seit || officialPlayer.Seit || raw.memberSince || '');
+  const hasCustomPhoto = Boolean(officialPlayer.photoUrl || officialPlayer.foto || officialPlayer.avatar || officialPlayer.Foto || officialPlayer.image);
+  const playerStatus = officialPlayer.Status || officialPlayer.status || raw.Status || 'Aktiv';
+
+  // Ensure modal DOM element exists
+  let modal = document.getElementById('dsg-player-stats-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'dsg-player-stats-modal';
+    modal.className = 'dsg-player-modal';
+    document.body.appendChild(modal);
+  }
+
+  // Inject modal style once
+  if (!document.getElementById('dsg-player-modal-styles')) {
+    const styleEl = document.createElement('style');
+    styleEl.id = 'dsg-player-modal-styles';
+    styleEl.textContent = `
+      .dsg-player-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        box-sizing: border-box;
+      }
+      .dsg-player-modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.78);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+      }
+      .dsg-player-modal-content {
+        position: relative;
+        width: 100%;
+        max-width: 520px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 12px;
+        padding: 22px;
+        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+        background: var(--color-surface, #121915);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        z-index: 10;
+        color: var(--color-text-primary, #ffffff);
+      }
+      .dsg-player-modal-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: var(--color-text-secondary, #94a3b8);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        line-height: 1;
+        padding: 0;
+      }
+      .dsg-player-modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        transform: scale(1.05);
+      }
+      .dsg-kpi-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        padding: 10px 6px;
+        text-align: center;
+      }
+      @media (max-width: 480px) {
+        .dsg-player-modal-content {
+          padding: 16px;
+          max-height: 92vh;
+        }
+      }
+    `;
+    document.head.appendChild(styleEl);
+  }
+
+  const teamLogoHtml = teamName ? renderTeamLogo(teamName, 'md') : '';
+
+  modal.innerHTML = `
+    <div class="dsg-player-modal-backdrop" id="dsg-modal-backdrop"></div>
+    <div class="dsg-player-modal-content glass-card">
+      <button type="button" class="dsg-player-modal-close" id="dsg-modal-close-btn" aria-label="Schließen">&times;</button>
+      
+      <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
+        
+        <!-- Avatar & Team Crest Showcase -->
+        <div style="position: relative; width: 110px; height: 110px; border-radius: 50%; background: #ffffff; padding: 3px; border: 3px solid var(--color-accent); box-shadow: 0 8px 24px rgba(0, 179, 65, 0.25); display: flex; align-items: center; justify-content: center; overflow: visible; margin-top: 6px;">
+          <img src="${avatarUrl}" alt="${fullName}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: contain; object-position: bottom center;">
+          ${teamLogoHtml ? `
+            <div style="position: absolute; bottom: -4px; right: -4px; width: 40px; height: 40px; background: var(--color-surface); border-radius: 50%; padding: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 2px solid var(--color-border); display: flex; align-items: center; justify-content: center;">
+              ${teamLogoHtml}
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- Name, Team & Position -->
+        <div>
+          <h2 style="font-size: 1.55rem; font-weight: 800; margin: 0 0 4px 0; color: var(--color-text-primary); line-height: 1.2;">${fullName}</h2>
+          <div style="font-size: 1.0rem; font-weight: 700; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 6px;">
+            ${teamName || 'Vereinslos'}
+          </div>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
+            ${positionLabel ? `<span style="background: rgba(0, 179, 65, 0.15); color: var(--color-accent); font-weight: 800; font-size: 0.76rem; padding: 3px 10px; border-radius: 999px; text-transform: uppercase;">${positionLabel}</span>` : ''}
+            ${jerseyNumber ? `<span style="background: rgba(255, 255, 255, 0.1); color: var(--color-text-primary); font-weight: 800; font-size: 0.76rem; padding: 3px 8px; border-radius: 999px;">Trikot #${jerseyNumber}</span>` : ''}
+            <span style="background: rgba(255, 255, 255, 0.06); color: var(--color-text-secondary); font-size: 0.76rem; padding: 3px 8px; border-radius: 999px; font-weight: 600;">Saison ${seasonKey}</span>
+          </div>
+        </div>
+
+        <!-- Playing Time & Appearance Card (NEW STATS) -->
+        <div style="width: 100%; text-align: left; background: rgba(0, 240, 95, 0.04); border: 1px solid rgba(0, 240, 95, 0.2); border-radius: 10px; padding: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+            <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--color-accent); letter-spacing: 0.5px;">Einsatz & Spielzeit</span>
+            <span style="font-size: 0.85rem; font-weight: 800; color: var(--color-text-primary);">${pStat.minutes} Min. <span style="font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600;">(${minPct}%)</span></span>
+          </div>
+          
+          <!-- Progress Bar -->
+          <div style="height: 7px; width: 100%; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; margin: 6px 0 10px 0;">
+            <div style="height: 100%; width: ${minPct}%; background: linear-gradient(90deg, #16a34a, var(--color-accent)); border-radius: 999px; transition: width 0.4s ease;"></div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 0.82rem; margin-top: 8px;">
+            <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="color: var(--color-text-secondary); font-size: 0.72rem;">Einsätze absolviert</div>
+              <div style="font-weight: 800; font-size: 1.05rem; color: var(--color-text-primary); margin-top: 2px;">
+                ${pStat.played} <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary);">/ ${teamStats.playedMatchesCount} Spiele</span>
+              </div>
+              <div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 2px;">
+                ${pStat.started}x Startelf &bull; ${pStat.subbedIn}x Eingewechselt
+              </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="color: var(--color-text-secondary); font-size: 0.72rem;">Kader-Status</div>
+              <div style="font-weight: 800; font-size: 1.05rem; color: var(--color-text-primary); margin-top: 2px;">
+                ${pStat.nominated} <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary);">Nominierungen</span>
+              </div>
+              <div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 2px;">
+                ${pStat.benchUnused}x Bank ohne Einsatz &bull; ${pStat.subbedOut}x Ausgewechselt
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Goals & Cards KPI Grid -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%;">
+          <div class="dsg-kpi-box" style="background: rgba(0, 179, 65, 0.08); border-color: rgba(0, 179, 65, 0.22);">
+            <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-accent); display: flex; align-items: center; justify-content: center; gap: 4px;">
+              ${renderIcon('ball', { size: 16, color: 'var(--color-accent)' })} ${pStat.goals}
+            </div>
+            <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary); margin-top: 2px;">Tore</div>
+          </div>
+
+          <div class="dsg-kpi-box" style="background: rgba(234, 179, 8, 0.08); border-color: rgba(234, 179, 8, 0.25);">
+            <div style="font-size: 1.35rem; font-weight: 800; color: #eab308; display: flex; align-items: center; justify-content: center; gap: 4px;">
+              <span style="display:inline-block;width:11px;height:15px;background:#eab308;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></span> ${pStat.yellowCards}
+            </div>
+            <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary); margin-top: 2px;">Gelb (${pStat.yellowTotal || pStat.yellowCards})</div>
+          </div>
+
+          <div class="dsg-kpi-box" style="background: rgba(249, 115, 22, 0.08); border-color: rgba(249, 115, 22, 0.25);">
+            <div style="font-size: 1.35rem; font-weight: 800; color: #f97316; display: flex; align-items: center; justify-content: center; gap: 4px;">
+              <span style="display:inline-block;width:11px;height:15px;background:linear-gradient(135deg, #f1c40f 50%, #e74c3c 50%);border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></span> ${pStat.yellowRedCards}
+            </div>
+            <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary); margin-top: 2px;">Gelb-Rot</div>
+          </div>
+
+          <div class="dsg-kpi-box" style="background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.25);">
+            <div style="font-size: 1.35rem; font-weight: 800; color: #ef4444; display: flex; align-items: center; justify-content: center; gap: 4px;">
+              <span style="display:inline-block;width:11px;height:15px;background:#ef4444;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></span> ${pStat.redCards}
+            </div>
+            <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary); margin-top: 2px;">Rot</div>
+          </div>
+        </div>
+
+        <!-- Disciplinary Eligibility Box -->
+        <div style="width: 100%;">
+          ${susp.active ? `
+            <div style="background: rgba(220, 38, 38, 0.12); border: 1px solid #ef4444; border-radius: 8px; padding: 10px 12px; text-align: left; color: #fca5a5; font-size: 0.82rem;">
+              <div style="font-weight: 800; color: #ef4444; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444;"></span> GESPERRT (${susp.active.reason})
+              </div>
+              <div style="margin-top: 4px; color: #fee2e2;">
+                Fehlt in <strong>${susp.active.nextMatch.round || 'kommender Runde'}</strong> &bull; ${susp.active.gamesRemaining} Spiel${susp.active.gamesRemaining > 1 ? 'e' : ''} Sperre verbleibend.
+              </div>
+            </div>
+          ` : susp.warning ? `
+            <div style="background: rgba(234, 179, 8, 0.12); border: 1px solid rgba(234, 179, 8, 0.5); border-radius: 8px; padding: 10px 12px; text-align: left; color: #fde047; font-size: 0.82rem;">
+              <div style="font-weight: 800; color: #eab308; display: flex; align-items: center; gap: 6px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #eab308;"></span> VORVERWARNUNG: SPERRE DROHT
+              </div>
+              <div style="margin-top: 4px; color: #fef08a;">
+                Bereits <strong>${susp.warning.yellowCount} von ${susp.warning.threshold}</strong> Gelben Karten. Bei der nächsten Gelben Karte im folgenden Spiel automatisch gesperrt!
+              </div>
+            </div>
+          ` : `
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 240, 95, 0.08); border: 1px solid rgba(0, 240, 95, 0.25); border-radius: 8px; padding: 8px 12px; font-size: 0.82rem;">
+              <span style="color: var(--color-text-secondary); font-weight: 600;">Disziplinarstatus:</span>
+              <span style="color: #16a34a; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #16a34a;"></span> Spielberechtigt
+              </span>
+            </div>
+          `}
+        </div>
+
+        <!-- Master Data / Pass Information -->
+        <div style="width: 100%; text-align: left; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 10px 14px; font-size: 0.84rem;">
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <span style="color: var(--color-text-secondary); font-weight: 600;">Pass-Nr. / ID:</span>
+            <span style="font-weight: 700; color: var(--color-text-primary);">#${passNum}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <span style="color: var(--color-text-secondary); font-weight: 600;">Geburtsdatum / Alter:</span>
+            <span style="font-weight: 700; color: var(--color-text-primary);">${ageDisplay}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <span style="color: var(--color-text-secondary); font-weight: 600;">DSG-Mitgliedschaft:</span>
+            <span style="font-weight: 700; color: var(--color-text-primary);">${memberSince || '-'}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+            <span style="color: var(--color-text-secondary); font-weight: 600;">Passfoto-Status:</span>
+            <span style="font-weight: 700; color: ${hasCustomPhoto ? '#16a34a' : '#d97706'}; display: inline-flex; align-items: center; gap: 4px;">
+              ${hasCustomPhoto ? 'Digital verifiziert' : 'Passfoto fehlt'}
+            </span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display: flex; gap: 8px; width: 100%; margin-top: 4px;">
+          <button type="button" id="dsg-modal-close-action-btn" class="btn btn-outline" style="flex: 1; padding: 9px; font-size: 0.85rem; font-weight: 700;">
+            Schließen
+          </button>
+        </div>
+
+      </div>
+    </div>
+  `;
+
+  modal.style.display = 'flex';
+  document.body.classList.add('no-scroll');
+  document.documentElement.classList.add('no-scroll');
+
+  const closeModal = () => {
+    modal.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
+  };
+
+  document.getElementById('dsg-modal-close-btn')?.addEventListener('click', closeModal);
+  document.getElementById('dsg-modal-close-action-btn')?.addEventListener('click', closeModal);
+  document.getElementById('dsg-modal-backdrop')?.addEventListener('click', closeModal);
+
+  const escHandler = (e) => {
+    if (e.key === 'Escape' && modal.style.display === 'flex') {
+      closeModal();
+      window.removeEventListener('keydown', escHandler);
+    }
+  };
+  window.addEventListener('keydown', escHandler);
+}
+
+export function closePlayerStatsModal() {
+  const modal = document.getElementById('dsg-player-stats-modal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+    document.documentElement.classList.remove('no-scroll');
+  }
 }

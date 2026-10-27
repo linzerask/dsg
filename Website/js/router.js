@@ -20,9 +20,9 @@ import { viewAdmin, bindAdmin } from './views/admin.js?v=1792924000000';
 
 import { getAuth, loginWithPin, logout } from './auth.js?v=1793100000000';
 
-import { viewTeamAdmin, bindTeamAdmin } from './views/teamAdmin.js?v=1793100000000';
+import { viewTeamAdmin, bindTeamAdmin } from './views/teamAdmin.js?v=1793130000000';
 
-import { viewRefereeAdmin, bindRefereeAdmin } from './views/refereeAdmin.js?v=1793110000000';
+import { viewRefereeAdmin, bindRefereeAdmin } from './views/refereeAdmin.js?v=1793130000000';
 
 import { viewArticle, bindArticle } from './views/article.js?v=1791305000000';
 
@@ -424,7 +424,7 @@ export const Router = {
 
       if (path !== '/admin') {
 
-        document.querySelectorAll('#player-modal, #team-modal, #round-modal, #add-game-modal, #round-games-modal, #league-modal, #league-data-modal, #game-modal, #report-modal').forEach(m => m.remove());
+        document.querySelectorAll('#player-modal, #team-modal, #round-modal, #add-game-modal, #round-games-modal, #league-modal, #league-data-modal, #game-modal, #report-modal, #dsg-player-stats-modal').forEach(m => m.remove());
 
       }
 

@@ -3,7 +3,7 @@ import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=17930400000
 import { logout } from '../auth.js?v=1793040000000';
 
 import { calculateSeasonSuspensions, normalizePlayerName, normalizeKey, isMatchFinished } from '../suspensionUtils.js?v=1793040000000';
-import { getPlayerAvatar } from '../playerUtils.js?v=1792924000000';
+import { getPlayerAvatar, openPlayerStatsModal } from '../playerUtils.js?v=1793130000000';
 
 
 
@@ -721,7 +721,7 @@ export const bindRefereeAdmin = async () => {
               const passNum = p.passNumber || p['#'] || p.id || '-';
 
               return `
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: ${isSuspended ? 'rgba(220, 38, 38, 0.08)' : isWarning ? 'rgba(234, 179, 8, 0.04)' : isPassChecked ? 'rgba(0, 240, 95, 0.04)' : 'var(--color-surface)'}; border: 1px solid ${isSuspended ? '#ef4444' : isWarning ? 'rgba(234, 179, 8, 0.45)' : isPassChecked ? 'rgba(0, 240, 95, 0.45)' : 'var(--glass-border)'}; border-radius: 6px; padding: 8px 10px; transition: all 0.2s;">
+                <div class="ref-pass-player-card" data-player-key="${pKey}" data-player-name="${pName}" data-player-id="${p['#'] || p.id || ''}" data-team="${teamTitle}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: ${isSuspended ? 'rgba(220, 38, 38, 0.08)' : isWarning ? 'rgba(234, 179, 8, 0.04)' : isPassChecked ? 'rgba(0, 240, 95, 0.04)' : 'var(--color-surface)'}; border: 1px solid ${isSuspended ? '#ef4444' : isWarning ? 'rgba(234, 179, 8, 0.45)' : isPassChecked ? 'rgba(0, 240, 95, 0.45)' : 'var(--glass-border)'}; border-radius: 6px; padding: 8px 10px; transition: all 0.2s; cursor: pointer;" title="Klicken für Spielerstatistiken">
                   <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
                     ${p.jerseyNumber ? `
                       <span style="background: ${isSuspended ? '#ef4444' : 'var(--color-accent)'}; color: ${isSuspended ? '#fff' : '#000'}; font-weight: 800; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; flex-shrink: 0; min-width: 32px; text-align: center;">#${p.jerseyNumber}</span>
@@ -811,6 +811,22 @@ export const bindRefereeAdmin = async () => {
         const mode = btn.getAttribute('data-mode');
         passFilterModes[side] = mode;
         renderPasskontrolle(match, allPlayers);
+      });
+    });
+
+    // Wire clicks on player cards to open stats modal (excluding pass check)
+    contentContainer.querySelectorAll('.ref-pass-player-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.physical-pass-check, label, input')) return;
+        const pName = card.getAttribute('data-player-name');
+        const tName = card.getAttribute('data-team');
+        const pId = card.getAttribute('data-player-id');
+        const allTeamPlayers = [...homePlayers, ...awayPlayers];
+        const p = allTeamPlayers.find(x => {
+          const fn = `${x.Vorname || x.firstName || "" } ${x.Nachname || x.lastName || ""}`.trim();
+          return fn === pName || (pId && String(x['#'] || x.id) === String(pId));
+        }) || { name: pName, Vorname: pName ? pName.split(' ')[0] : '', Nachname: pName ? pName.split(' ').slice(1).join(' ') : '', Team: tName };
+        openPlayerStatsModal(p, { teamName: tName, seasonKey: selectedSeason });
       });
     });
 
