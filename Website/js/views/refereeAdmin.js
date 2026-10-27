@@ -444,6 +444,36 @@ export const bindRefereeAdmin = async () => {
       });
     };
 
+    const formatBirth = (dateStr) => {
+      if (!dateStr) return '';
+      const str = String(dateStr).trim();
+      if (str.includes('.')) return str;
+      if (str.includes('-')) {
+        const parts = str.split('-');
+        if (parts.length === 3) return `${parts[2]}.${parts[1]}.${parts[0]}`;
+      }
+      return str;
+    };
+
+    const passStorageKey = `dsg_pass_verified_${selectedSeason}___${match.id}`;
+    const getVerifiedPasses = () => {
+      try {
+        return JSON.parse(localStorage.getItem(passStorageKey) || '{}');
+      } catch(e) {
+        return {};
+      }
+    };
+    const setVerifiedPass = (playerKey, isChecked) => {
+      const map = getVerifiedPasses();
+      if (isChecked) {
+        map[playerKey] = true;
+      } else {
+        delete map[playerKey];
+      }
+      localStorage.setItem(passStorageKey, JSON.stringify(map));
+    };
+    const verifiedPasses = getVerifiedPasses();
+
     const { playerMap } = calculateSeasonSuspensions(selectedSeason);
 
     const homePlayers = filterPlayers(homeTeam);
@@ -455,7 +485,7 @@ export const bindRefereeAdmin = async () => {
     const renderTeamPassList = (teamTitle, teamPlayers, side) => {
       const roster = side === 'home' ? homeRoster : awayRoster;
       const hasRoster = !!(roster && Array.isArray(roster.players) && roster.players.length > 0);
-      const activeFilter = passFilterModes[side] || (hasRoster ? 'roster' : 'all');
+      const activeFilter = passFilterModes[side] || (hasRoster ? 'roster' : 'active');
 
       let displayPlayers = teamPlayers;
       if (hasRoster && activeFilter === 'roster') {
@@ -471,6 +501,7 @@ export const bindRefereeAdmin = async () => {
             Position: rp.position || matchingRaw?.Position || 'Feldspieler',
             Geburtsdatum: matchingRaw?.Geburtsdatum || '',
             jerseyNumber: rp.jerseyNumber || '',
+            passNumber: matchingRaw?.['#'] || matchingRaw?.id || rp.id || '-',
             photoUrl: rp.photo || matchingRaw?.photoUrl || matchingRaw?.passPhoto || '',
             passPhoto: rp.photo || matchingRaw?.passPhoto || '',
             photo: rp.photo || matchingRaw?.photo || '',
@@ -478,7 +509,10 @@ export const bindRefereeAdmin = async () => {
           };
         });
       } else {
-        displayPlayers = teamPlayers.map(p => {
+        const rawList = (!hasRoster && activeFilter !== 'all')
+          ? teamPlayers.filter(p => (p.Status || p.status || 'Aktiv').toLowerCase() === 'aktiv')
+          : teamPlayers;
+        displayPlayers = rawList.map(p => {
           const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
           const inRoster = roster?.players?.find(rp => 
             String(rp.id) === String(p['#'] || p.id) ||
@@ -486,16 +520,29 @@ export const bindRefereeAdmin = async () => {
           );
           return {
             ...p,
-            jerseyNumber: inRoster ? inRoster.jerseyNumber : (p['#'] && !isNaN(p['#']) && p['#'] !== '-' ? p['#'] : ''),
+            jerseyNumber: inRoster?.jerseyNumber || '',
+            passNumber: p['#'] || p.id || '-',
             isNominated: !!inRoster
           };
         });
       }
 
+      const verifiedCount = displayPlayers.filter(p => {
+        const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
+        const pKey = normalizePlayerName(pName) + '___' + normalizeKey(teamTitle);
+        const hasPhoto = !!(p.photoUrl || p.passPhoto || p.photo || p.foto || p.avatar || p.Foto || p.image);
+        return hasPhoto || !!verifiedPasses[pKey];
+      }).length;
+
       return `
         <div class="glass-card" style="padding: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border);">
           <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-accent); padding-bottom: 8px; margin-bottom: var(--space-sm); flex-wrap: wrap; gap: 6px;">
-            <h3 style="margin: 0; font-size: 1.15rem; color: var(--color-text-primary);">${teamTitle}</h3>
+            <div>
+              <h3 style="margin: 0; font-size: 1.15rem; color: var(--color-text-primary);">${teamTitle}</h3>
+              <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">
+                ${verifiedCount} von ${displayPlayers.length} Spielern spielberechtigt ${verifiedCount === displayPlayers.length && displayPlayers.length > 0 ? '<span style="color: #16a34a; font-weight: 800;">(Vollständig überprüft)</span>' : ''}
+              </div>
+            </div>
             ${hasRoster ? `
               <span style="font-size: 0.75rem; background: rgba(0, 240, 95, 0.15); color: #16a34a; border: 1px solid rgba(0, 240, 95, 0.35); padding: 3px 8px; border-radius: 4px; font-weight: 800;">
                 Spieltagskader übermittelt (${roster.players.length})
@@ -516,7 +563,19 @@ export const bindRefereeAdmin = async () => {
                 Alle gemeldeten (${teamPlayers.length})
               </button>
             </div>
-          ` : ''}
+          ` : `
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: var(--space-md); flex-wrap: wrap;">
+              <div style="display: flex; gap: 6px;">
+                <button type="button" class="btn btn-pass-filter ${activeFilter !== 'all' ? 'btn-dsg' : 'btn-outline'}" data-side="${side}" data-mode="active" style="font-size: 0.75rem; padding: 4px 10px; font-weight: 700;">
+                  Nur Aktive (${teamPlayers.filter(p => (p.Status || 'Aktiv').toLowerCase() === 'aktiv').length})
+                </button>
+                <button type="button" class="btn btn-pass-filter ${activeFilter === 'all' ? 'btn-dsg' : 'btn-outline'}" data-side="${side}" data-mode="all" style="font-size: 0.75rem; padding: 4px 10px; font-weight: 700;">
+                  Alle gemeldeten (${teamPlayers.length})
+                </button>
+              </div>
+              <span style="font-size: 0.72rem; color: #d97706; font-weight: 700;">Kein Spieltagskader</span>
+            </div>
+          `}
 
           <div style="display: flex; flex-direction: column; gap: 8px; max-height: 520px; overflow-y: auto; padding-right: 4px;">
             ${displayPlayers.length === 0 ? `
@@ -529,24 +588,29 @@ export const bindRefereeAdmin = async () => {
 
               const hasCustomPhoto = !!(p.photoUrl || p.passPhoto || p.photo || p.foto || p.avatar || p.Foto || p.image);
               const avatarSrc = getPlayerAvatar(p);
+              const isPassChecked = !!verifiedPasses[pKey];
+              const formattedBirth = formatBirth(p.Geburtsdatum);
+              const passNum = p.passNumber || p['#'] || p.id || '-';
 
               return `
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: ${isSuspended ? 'rgba(220, 38, 38, 0.08)' : 'var(--color-surface)'}; border: 1px solid ${isSuspended ? '#ef4444' : 'var(--glass-border)'}; border-radius: 6px; padding: 8px 10px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: ${isSuspended ? 'rgba(220, 38, 38, 0.08)' : isPassChecked ? 'rgba(0, 240, 95, 0.04)' : 'var(--color-surface)'}; border: 1px solid ${isSuspended ? '#ef4444' : isPassChecked ? 'rgba(0, 240, 95, 0.45)' : 'var(--glass-border)'}; border-radius: 6px; padding: 8px 10px; transition: all 0.2s;">
                   <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
                     ${p.jerseyNumber ? `
-                      <span style="background: var(--color-accent); color: #000; font-weight: 800; padding: 3px 7px; border-radius: 4px; font-size: 0.8rem; flex-shrink: 0; min-width: 28px; text-align: center;">#${p.jerseyNumber}</span>
+                      <span style="background: var(--color-accent); color: #000; font-weight: 800; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; flex-shrink: 0; min-width: 32px; text-align: center;">#${p.jerseyNumber}</span>
                     ` : `
-                      <span style="background: var(--color-surface); border: 1px solid var(--glass-border); color: var(--color-text-secondary); font-weight: 700; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; flex-shrink: 0; min-width: 28px; text-align: center;">--</span>
+                      <span style="background: var(--color-surface); border: 1px solid var(--glass-border); color: var(--color-text-secondary); font-weight: 700; padding: 4px 6px; border-radius: 4px; font-size: 0.75rem; flex-shrink: 0; min-width: 32px; text-align: center;">--</span>
                     `}
-                    <div style="width: 42px; height: 42px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid ${hasCustomPhoto ? 'var(--color-accent)' : 'var(--glass-border)'}; flex-shrink: 0;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid ${hasCustomPhoto ? 'var(--color-accent)' : 'var(--glass-border)'}; flex-shrink: 0;">
                       <img src="${avatarSrc}" alt="${pName}" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center; cursor: pointer;" title="Klicken für Vollbild" onclick="window.open('${avatarSrc}', '_blank')">
                     </div>
                     <div style="min-width: 0; flex: 1;">
-                      <div style="font-weight: 700; font-size: 0.88rem; color: ${isSuspended ? '#dc2626' : 'var(--color-text-primary)'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                      <div style="font-weight: 700; font-size: 0.92rem; color: ${isSuspended ? '#dc2626' : 'var(--color-text-primary)'}; line-height: 1.25; word-break: break-word;">
                         ${pName}
                       </div>
-                      <div style="font-size: 0.75rem; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        ${p.Geburtsdatum ? `Geb.: ${p.Geburtsdatum} &bull; ` : ''}${p.Position || 'Feldspieler'}
+                      <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 3px; display: flex; flex-direction: column; gap: 2px;">
+                        <div>${formattedBirth ? `Geb.: ${formattedBirth}` : 'Kein Geburtsdatum'}</div>
+                        <div style="color: var(--color-accent); font-weight: 600;">${p.Position || p.position || 'Feldspieler'}</div>
+                        <div>Pass-Nr.: <span style="font-weight: 700; color: var(--color-text-primary);">${passNum}</span></div>
                       </div>
                     </div>
                   </div>
@@ -555,14 +619,14 @@ export const bindRefereeAdmin = async () => {
                     ${isSuspended ? `
                       <span style="background: #dc2626; color: #fff; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; display: inline-block;">GESPERRT</span>
                     ` : hasCustomPhoto ? `
-                      <span style="color: #16a34a; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 3px;">
+                      <span style="color: #16a34a; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; background: rgba(22, 163, 74, 0.1); border: 1px solid rgba(22, 163, 74, 0.25); padding: 3px 8px; border-radius: 4px;">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        Verifiziert
+                        Digital verifiziert
                       </span>
                     ` : `
-                      <label style="display: flex; align-items: center; gap: 4px; font-size: 0.75rem; color: #d97706; cursor: pointer; font-weight: 600;">
-                        <input type="checkbox" class="physical-pass-check" data-player="${pName}" style="cursor: pointer;">
-                        <span>Pass ok</span>
+                      <label style="display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: ${isPassChecked ? '#16a34a' : '#d97706'}; cursor: pointer; font-weight: 700; background: ${isPassChecked ? 'rgba(22, 163, 74, 0.12)' : 'rgba(217, 119, 6, 0.1)'}; border: 1px solid ${isPassChecked ? 'rgba(22, 163, 74, 0.35)' : 'rgba(217, 119, 6, 0.3)'}; padding: 4px 8px; border-radius: 4px; transition: all 0.2s;">
+                        <input type="checkbox" class="physical-pass-check" data-player="${pKey}" ${isPassChecked ? 'checked' : ''} style="cursor: pointer; accent-color: var(--color-accent);">
+                        <span>${isPassChecked ? 'Pass vorgelegt' : 'Pass ok?'}</span>
                       </label>
                     `}
                   </div>
@@ -594,8 +658,16 @@ export const bindRefereeAdmin = async () => {
         renderPasskontrolle(match, allPlayers);
       });
     });
-  };
 
+    contentContainer.querySelectorAll('.physical-pass-check').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        const pKey = cb.getAttribute('data-player');
+        const checked = cb.checked;
+        setVerifiedPass(pKey, checked);
+        renderPasskontrolle(match, allPlayers);
+      });
+    });
+  };
   const refPlayerComboboxState = {
     'ref-report-card-player-home': { players: [], includeOwnGoal: false, filtered: [], highlightedIndex: -1 },
     'ref-report-card-player-away': { players: [], includeOwnGoal: false, filtered: [], highlightedIndex: -1 },
