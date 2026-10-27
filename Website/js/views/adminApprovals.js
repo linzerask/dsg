@@ -17,13 +17,13 @@ export const renderAdminApprovals = () => {
         </div>
         
         <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-          <div style="display: flex; background: rgba(0,0,0,0.1); padding: 3px; border-radius: 8px; border: 1px solid var(--glass-border);">
-            <button id="cat-reports-btn" class="btn ${currentCategory === 'reports' ? 'btn-dsg' : 'btn-outline'}" style="font-weight: 700; padding: 6px 14px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px;">
+          <div class="approvals-pill-group">
+            <button id="cat-reports-btn" class="btn ${currentCategory === 'reports' ? 'btn-dsg' : 'btn-outline'}" style="padding: 6px 14px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
               Spielberichte
               <span id="badge-cat-reports" style="display: none; background: #eab308; color: #000; font-size: 0.7rem; padding: 1px 6px; border-radius: 999px; font-weight: 800;"></span>
             </button>
-            <button id="cat-passes-btn" class="btn ${currentCategory === 'passes' ? 'btn-dsg' : 'btn-outline'}" style="font-weight: 700; padding: 6px 14px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px;">
+            <button id="cat-passes-btn" class="btn ${currentCategory === 'passes' ? 'btn-dsg' : 'btn-outline'}" style="padding: 6px 14px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
               Passanträge
               <span id="badge-cat-passes" style="display: none; background: #eab308; color: #000; font-size: 0.7rem; padding: 1px 6px; border-radius: 999px; font-weight: 800;"></span>
@@ -31,8 +31,8 @@ export const renderAdminApprovals = () => {
           </div>
 
           <div id="pass-subfilters" style="display: ${currentCategory === 'passes' ? 'flex' : 'none'}; gap: 6px;">
-            <button id="filter-pending-btn" class="btn ${currentFilter === 'pending' ? 'btn-dsg' : 'btn-outline'}" style="font-weight: 700; padding: 6px 12px; font-size: 0.82rem;">Offen</button>
-            <button id="filter-all-btn" class="btn ${currentFilter === 'all' ? 'btn-dsg' : 'btn-outline'}" style="font-weight: 700; padding: 6px 12px; font-size: 0.82rem;">Alle / Verlauf</button>
+            <button id="filter-pending-btn" class="btn ${currentFilter === 'pending' ? 'btn-dsg' : 'btn-outline'}" style="font-weight: 700; padding: 6px 14px; font-size: 0.82rem;">Offen</button>
+            <button id="filter-all-btn" class="btn ${currentFilter === 'all' ? 'btn-dsg' : 'btn-outline'}" style="font-weight: 700; padding: 6px 14px; font-size: 0.82rem;">Alle / Verlauf</button>
           </div>
         </div>
       </div>
@@ -194,10 +194,10 @@ export const initAdminApprovals = () => {
 
               <!-- Action Bar -->
               <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--glass-border);">
-                <button type="button" class="btn btn-outline btn-reject-match-report" data-season="${seasonKey}" data-match-id="${match.id}" style="color: #dc2626 !important; border-color: rgba(220, 38, 38, 0.3) !important; font-size: 0.85rem; padding: 8px 16px; font-weight: 700; border-radius: 6px; cursor: pointer;">
+                <button type="button" class="btn btn-outline btn-reject-match-report" data-season="${seasonKey}" data-match-id="${match.id}" style="color: #dc2626 !important; background: #ffffff !important; border: 1px solid rgba(220, 38, 38, 0.35) !important; font-size: 0.85rem; padding: 8px 16px; font-weight: 700; border-radius: 6px; cursor: pointer;">
                   Bericht ablehnen
                 </button>
-                <button type="button" class="btn btn-dsg btn-approve-match-report" data-season="${seasonKey}" data-match-id="${match.id}" style="background: #16a34a; color: #fff; font-size: 0.85rem; padding: 8px 18px; font-weight: 800; border: none; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                <button type="button" class="btn btn-dsg btn-approve-match-report" data-season="${seasonKey}" data-match-id="${match.id}" style="background: var(--color-accent); color: #fff; font-size: 0.85rem; padding: 8px 18px; font-weight: 800; border: 1px solid var(--color-accent); border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                   Spielbericht freigeben &amp; Tabelle aktualisieren
                 </button>
@@ -309,8 +309,8 @@ export const initAdminApprovals = () => {
                 <span>Eingereicht: ${dateFormatted}</span>
                 ${isPending ? `
                   <div style="display: flex; gap: 6px;">
-                    <button class="btn btn-dsg btn-approve-request" data-id="${r.id}" style="background: #22c55e; color: #fff; font-size: 0.82rem; padding: 6px 12px; font-weight: 700; border: none; border-radius: 4px; cursor: pointer;">Genehmigen</button>
-                    <button class="btn btn-outline btn-reject-request" data-id="${r.id}" style="color: #dc2626 !important; border-color: rgba(220, 38, 38, 0.3) !important; font-size: 0.82rem; padding: 6px 10px; font-weight: 600; border-radius: 4px; cursor: pointer;">Ablehnen</button>
+                    <button class="btn btn-dsg btn-approve-request" data-id="${r.id}" style="background: var(--color-accent); color: #fff; font-size: 0.82rem; padding: 6px 14px; font-weight: 700; border: 1px solid var(--color-accent); border-radius: 6px; cursor: pointer;">Genehmigen</button>
+                    <button class="btn btn-outline btn-reject-request" data-id="${r.id}" style="color: #dc2626 !important; background: #ffffff !important; border: 1px solid rgba(220, 38, 38, 0.35) !important; font-size: 0.82rem; padding: 6px 12px; font-weight: 600; border-radius: 6px; cursor: pointer;">Ablehnen</button>
                   </div>
                 ` : `
                   <span>${r.reviewNote ? `Hinweis: ${r.reviewNote}` : ''}</span>

@@ -2465,10 +2465,12 @@ main {
 .edit-news-btn,
 .edit-gal-btn,
 .admin-item-btn.btn-outline {
-    background: rgba(0, 0, 0, 0.04);
+    background: #ffffff !important;
     color: var(--color-text-primary) !important;
-    border: 1px solid var(--color-border) !important;
-    border-radius: 4px;
+    border: 1px solid rgba(0, 179, 65, 0.35) !important;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
 }
 
 .btn-outline:hover,
@@ -2478,9 +2480,11 @@ main {
 .edit-news-btn:hover,
 .edit-gal-btn:hover,
 .admin-item-btn.btn-outline:hover {
-    background: rgba(0, 0, 0, 0.08);
-    color: var(--color-text-primary) !important;
-    border-color: var(--color-text-secondary) !important;
+    background: rgba(0, 179, 65, 0.08) !important;
+    color: var(--color-accent) !important;
+    border-color: var(--color-accent) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 179, 65, 0.15);
 }
 
 .admin-item-btn {
@@ -3687,9 +3691,9 @@ main {
 [data-theme="dark"] .edit-news-btn,
 [data-theme="dark"] .edit-gal-btn,
 [data-theme="dark"] .admin-item-btn.btn-outline {
-    background: rgba(255, 255, 255, 0.08) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
     color: #f7fafc !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(0, 179, 65, 0.45) !important;
 }
 
 [data-theme="dark"] .btn-outline:hover,
@@ -3699,9 +3703,9 @@ main {
 [data-theme="dark"] .edit-news-btn:hover,
 [data-theme="dark"] .edit-gal-btn:hover,
 [data-theme="dark"] .admin-item-btn.btn-outline:hover {
-    background: rgba(255, 255, 255, 0.16) !important;
+    background: rgba(0, 179, 65, 0.2) !important;
     color: #ffffff !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
+    border-color: var(--color-accent) !important;
 }
 
 [data-theme="dark"] .admin-item-actions .btn-danger,
@@ -4733,4 +4737,54 @@ main {
   .team-tabs-mobile {
     display: none !important;
   }
+}
+
+
+/* Admin Approvals & Segmented Control System */
+.approvals-pill-group {
+    display: inline-flex;
+    background: #ffffff;
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 179, 65, 0.35);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    gap: 4px;
+}
+
+[data-theme="dark"] .approvals-pill-group {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 179, 65, 0.45);
+}
+
+.approvals-pill-group .btn-dsg {
+    background: var(--color-accent) !important;
+    color: #ffffff !important;
+    border: 1px solid var(--color-accent) !important;
+    border-radius: 6px;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0, 179, 65, 0.25);
+}
+
+.approvals-pill-group .btn-outline {
+    background: transparent !important;
+    color: var(--color-text-primary) !important;
+    border: 1px solid transparent !important;
+    box-shadow: none !important;
+    border-radius: 6px;
+    font-weight: 700;
+}
+
+.approvals-pill-group .btn-outline:hover {
+    background: rgba(0, 179, 65, 0.08) !important;
+    color: var(--color-accent) !important;
+    border: 1px solid rgba(0, 179, 65, 0.2) !important;
+}
+
+[data-theme="dark"] .approvals-pill-group .btn-outline {
+    color: #f7fafc !important;
+}
+
+[data-theme="dark"] .approvals-pill-group .btn-outline:hover {
+    background: rgba(0, 179, 65, 0.2) !important;
+    color: #ffffff !important;
 }
