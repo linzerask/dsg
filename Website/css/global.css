@@ -4630,3 +4630,51 @@ main {
     gap: 4px;
   }
 }
+
+/* Team Admin - Stats Table & Mobile Accordion Responsiveness */
+.stats-desktop-table-container {
+  display: block;
+  width: 100%;
+}
+
+.stats-mobile-accordion {
+  display: none;
+}
+
+.stats-mobile-sort-bar {
+  display: none;
+}
+
+.player-name-link {
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.player-name-link:hover {
+  color: var(--color-accent) !important;
+  text-decoration-color: var(--color-accent) !important;
+}
+
+.stats-sort-th {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.stats-sort-th:hover {
+  color: var(--color-accent) !important;
+}
+
+@media (max-width: 768px) {
+  .stats-desktop-table-container {
+    display: none !important;
+  }
+  .stats-mobile-accordion {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  .stats-mobile-sort-bar {
+    display: block !important;
+  }
+}

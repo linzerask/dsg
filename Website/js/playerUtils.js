@@ -591,7 +591,8 @@ export function calculateTeamPlayerStats(seasonKey, teamName, allPlayersList = [
       raw: p,
       position: p.Position || p.position || 'Feldspieler',
       avatar: getPlayerAvatar(p),
-      jerseyNumber: p['#'] && p['#'] !== '-' ? p['#'] : '',
+      passNumber: p['#'] && p['#'] !== '-' ? p['#'] : (p.passNumber || p.id || '-'),
+      jerseyNumber: p.shirtNumber || (p.jerseyNumber && p.jerseyNumber !== p['#'] ? p.jerseyNumber : ''),
       nominated: 0,
       played: 0,
       started: 0,
@@ -647,6 +648,8 @@ export function calculateTeamPlayerStats(seasonKey, teamName, allPlayersList = [
           const pStat = playerStatsMap.get(key);
           pStat.nominated++;
           if (rp.jerseyNumber && !pStat.jerseyNumber) pStat.jerseyNumber = rp.jerseyNumber;
+          if (rp.passNumber && (!pStat.passNumber || pStat.passNumber === '-')) pStat.passNumber = rp.passNumber;
+          if (rp['#'] && (!pStat.passNumber || pStat.passNumber === '-')) pStat.passNumber = rp['#'];
         }
       });
     }
@@ -779,7 +782,7 @@ export async function openPlayerStatsModal(playerData, options = {}) {
   const positionLabel = getPlayerPositionLabel(officialPlayer) || officialPlayer.Position || raw.position || 'Feldspieler';
   
   // Pass number vs. jersey number resolution
-  const passNum = officialPlayer.passNumber || officialPlayer['#'] || officialPlayer.id || pId || '-';
+  const passNum = officialPlayer.passNumber || officialPlayer['#'] || raw.passNumber || raw['#'] || officialPlayer.id || pId || '-';
   const rawShirt = raw.jerseyNumber || officialPlayer.jerseyNumber || officialPlayer.shirtNumber || '';
   const trueShirtNum = (rawShirt && String(rawShirt) !== String(passNum) && parseInt(rawShirt, 10) > 0 && parseInt(rawShirt, 10) < 100) ? rawShirt : '';
 
@@ -972,7 +975,7 @@ export async function openPlayerStatsModal(playerData, options = {}) {
         <!-- Playing Time & Appearance Card -->
         <div class="dsg-card-section" style="width: 100%; text-align: left; padding: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
-            <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: #16a34a; letter-spacing: 0.5px;">Einsatz & Spielzeit</span>
+            <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: #16a34a; letter-spacing: 0.5px;">Einsatz &amp; Spielzeit</span>
             <span style="font-size: 0.85rem; font-weight: 800; color: var(--color-text-primary);">${pStat.minutes} Min. <span style="font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600;">(${minPct}%)</span></span>
           </div>
           
@@ -982,23 +985,23 @@ export async function openPlayerStatsModal(playerData, options = {}) {
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 0.82rem; margin-top: 8px;">
-            <div class="dsg-card-white" style="padding: 10px;">
-              <div style="color: var(--color-text-secondary); font-size: 0.72rem; font-weight: 600;">Einsätze absolviert</div>
-              <div style="font-weight: 800; font-size: 1.05rem; color: var(--color-text-primary); margin-top: 2px;">
-                ${pStat.played} <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary);">/ ${teamStats.playedMatchesCount} Spiele</span>
+            <div class="dsg-card-white" style="padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div style="color: #64748b; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;">Einsätze absolviert</div>
+              <div style="font-weight: 900; font-size: 1.15rem; color: var(--color-text-primary); margin: 3px 0 2px 0; line-height: 1.1;">
+                ${pStat.played} <span style="font-size: 0.76rem; font-weight: 600; color: #64748b;">/ ${teamStats.playedMatchesCount} Spiele</span>
               </div>
-              <div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 2px;">
-                ${pStat.started}x Startelf &bull; ${pStat.subbedIn}x Eingewechselt
+              <div style="font-size: 0.72rem; color: #475569; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${pStat.started}x Start &bull; ${pStat.subbedIn}x Ein
               </div>
             </div>
 
-            <div class="dsg-card-white" style="padding: 10px;">
-              <div style="color: var(--color-text-secondary); font-size: 0.72rem; font-weight: 600;">Kader-Status</div>
-              <div style="font-weight: 800; font-size: 1.05rem; color: var(--color-text-primary); margin-top: 2px;">
-                ${pStat.nominated} <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary);">Nominierungen</span>
+            <div class="dsg-card-white" style="padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div style="color: #64748b; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;">Kader-Status</div>
+              <div style="font-weight: 900; font-size: 1.15rem; color: var(--color-text-primary); margin: 3px 0 2px 0; line-height: 1.1;">
+                ${pStat.nominated} <span style="font-size: 0.76rem; font-weight: 600; color: #64748b;">Nominierungen</span>
               </div>
-              <div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 2px;">
-                ${pStat.benchUnused}x Bank ohne Einsatz &bull; ${pStat.subbedOut}x Ausgewechselt
+              <div style="font-size: 0.72rem; color: #475569; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${pStat.benchUnused}x Bank &bull; ${pStat.subbedOut}x Aus
               </div>
             </div>
           </div>
@@ -1009,32 +1012,32 @@ export async function openPlayerStatsModal(playerData, options = {}) {
           <div style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; color: var(--color-text-secondary); letter-spacing: 0.5px; margin-bottom: 8px;">
             Trainer-Entscheidungshilfe &amp; Effizienz
           </div>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-            <div class="dsg-card-white" style="padding: 10px 8px; text-align: center;">
-              <div style="font-size: 0.7rem; font-weight: 600; color: var(--color-text-secondary);">Minuten / Tor</div>
-              <div style="font-weight: 900; font-size: 1.15rem; color: ${minPerGoal !== null ? '#16a34a' : 'var(--color-text-secondary)'}; margin-top: 2px;">
-                ${minPerGoal !== null ? minPerGoal + ' <span style="font-size: 0.7rem; font-weight: 600;">Min.</span>' : '-'}
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+            <div class="dsg-card-white" style="padding: 10px 6px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
+              <div style="font-size: 0.68rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap;">Min. / Tor</div>
+              <div style="font-weight: 900; font-size: 1.15rem; color: ${minPerGoal !== null ? '#16a34a' : '#94a3b8'}; margin: 3px 0 2px 0; line-height: 1.1;">
+                ${minPerGoal !== null ? minPerGoal + '<span style="font-size: 0.7rem; font-weight: 600; margin-left: 2px;">Min.</span>' : '&mdash;'}
               </div>
-              <div style="font-size: 0.68rem; color: var(--color-text-secondary); margin-top: 2px;">
-                ${goalsPerMatch} Tore/Spiel
+              <div style="font-size: 0.68rem; color: #64748b; font-weight: 500; white-space: nowrap;">
+                ${pStat.goals > 0 ? goalsPerMatch + ' T/Sp.' : '0 Tore'}
               </div>
             </div>
-            <div class="dsg-card-white" style="padding: 10px 8px; text-align: center;">
-              <div style="font-size: 0.7rem; font-weight: 600; color: var(--color-text-secondary);">Startelf-Quote</div>
-              <div style="font-weight: 900; font-size: 1.15rem; color: ${startPct >= 70 ? '#16a34a' : startPct >= 40 ? '#2563eb' : 'var(--color-text-secondary)'}; margin-top: 2px;">
+            <div class="dsg-card-white" style="padding: 10px 6px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
+              <div style="font-size: 0.68rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap;">Startelf</div>
+              <div style="font-weight: 900; font-size: 1.15rem; color: ${startPct >= 70 ? '#16a34a' : startPct >= 40 ? '#2563eb' : '#94a3b8'}; margin: 3px 0 2px 0; line-height: 1.1;">
                 ${startPct}%
               </div>
-              <div style="font-size: 0.68rem; color: var(--color-text-secondary); margin-top: 2px;">
-                ${pStat.started} von ${pStat.played} Starts
+              <div style="font-size: 0.68rem; color: #64748b; font-weight: 500; white-space: nowrap;">
+                ${pStat.started} / ${pStat.played || 0} Starts
               </div>
             </div>
-            <div class="dsg-card-white" style="padding: 10px 8px; text-align: center;">
-              <div style="font-size: 0.7rem; font-weight: 600; color: var(--color-text-secondary);">Kader-Quote</div>
-              <div style="font-weight: 900; font-size: 1.15rem; color: ${squadPct >= 80 ? '#16a34a' : squadPct >= 50 ? '#d97706' : 'var(--color-text-secondary)'}; margin-top: 2px;">
+            <div class="dsg-card-white" style="padding: 10px 6px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
+              <div style="font-size: 0.68rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap;">Kader</div>
+              <div style="font-weight: 900; font-size: 1.15rem; color: ${squadPct >= 80 ? '#16a34a' : squadPct >= 50 ? '#d97706' : '#94a3b8'}; margin: 3px 0 2px 0; line-height: 1.1;">
                 ${squadPct}%
               </div>
-              <div style="font-size: 0.68rem; color: var(--color-text-secondary); margin-top: 2px;">
-                ${pStat.nominated}/${teamStats.playedMatchesCount} im Kader
+              <div style="font-size: 0.68rem; color: #64748b; font-weight: 500; white-space: nowrap;">
+                ${pStat.nominated} / ${teamStats.playedMatchesCount} Nom.
               </div>
             </div>
           </div>

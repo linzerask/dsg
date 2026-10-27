@@ -4,7 +4,7 @@ import { logout } from '../auth.js';
 
 import { Router } from '../router.js';
 
-import { getPlayerAvatar, calculateTeamPlayerStats, openPlayerStatsModal } from '../playerUtils.js?v=1793131000000';
+import { getPlayerAvatar, calculateTeamPlayerStats, openPlayerStatsModal } from '../playerUtils.js?v=1793220000000';
 import { calculateSeasonSuspensions, normalizePlayerName, normalizeKey } from '../suspensionUtils.js?v=1793040000000';
 
 import { storage } from '../firebase.js';
@@ -328,6 +328,8 @@ export const bindTeamAdmin = async (auth) => {
   let stagedPhotoUrl = null;
   let statsStatusFilter = 'Aktiv';
   let statsSearchQuery = '';
+  let statsSortKey = 'minuten';
+  let statsSortDir = 'desc';
 
 
 
@@ -514,7 +516,7 @@ export const bindTeamAdmin = async (auth) => {
               const formattedBirth = formatBirthdate(p.Geburtsdatum);
 
               return `
-                <div class="glass-card kader-player-profile-card" data-player-id="${p['#'] || p.id || (p.Vorname + '_' + p.Nachname)}" style="display: flex; flex-direction: column; justify-content: space-between; padding: 14px; border-radius: 8px; border: 1px solid ${isSuspended ? 'rgba(239, 68, 68, 0.4)' : 'var(--glass-border)'}; background: ${isSuspended ? 'rgba(220, 38, 38, 0.05)' : 'var(--color-surface)'}; cursor: pointer; transition: transform 0.15s ease, border-color 0.15s ease;" title="Klicken für Spielerstatistiken">
+                <div class="glass-card kader-player-profile-card" data-player-id="${p['#'] || p.id || (p.Vorname + '_' + p.Nachname)}" style="display: flex; flex-direction: column; justify-content: space-between; padding: 14px; border-radius: 8px; border: 1px solid ${isSuspended ? 'rgba(239, 68, 68, 0.4)' : 'var(--glass-border)'}; background: ${isSuspended ? 'rgba(220, 38, 38, 0.05)' : 'var(--color-surface)'}; transition: transform 0.15s ease, border-color 0.15s ease;">
                   <!-- Info Section -->
                   <div style="display: flex; gap: 14px; align-items: flex-start;">
                     <div style="width: 56px; height: 56px; border-radius: 50%; overflow: hidden; background: #111; flex-shrink: 0; border: 2px solid ${hasCustomPhoto ? 'var(--color-accent)' : 'rgba(255,255,255,0.12)'};">
@@ -522,7 +524,7 @@ export const bindTeamAdmin = async (auth) => {
                     </div>
                     <div style="flex: 1; min-width: 0;">
                       <div style="font-weight: 700; font-size: 0.98rem; color: var(--color-text-primary); line-height: 1.3; word-break: break-word;">
-                        ${p.Vorname} ${p.Nachname}
+                        <span class="player-name-link" data-player-id="${p['#'] || p.id || (p.Vorname + '_' + p.Nachname)}" style="cursor: pointer; text-decoration: underline dotted var(--color-accent);" title="Klicken für Spielerstatistiken">${p.Vorname} ${p.Nachname}</span>
                       </div>
                       ${pPosition && pPosition !== '-' ? `
                         <div style="font-size: 0.78rem; font-weight: 600; color: var(--color-accent); margin-top: 2px;">
@@ -580,11 +582,11 @@ export const bindTeamAdmin = async (auth) => {
 
 
 
-      // Wire player profile modal openers on player cards
-      container.querySelectorAll('.kader-player-profile-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-          if (e.target.closest('.btn-upload-player-photo')) return;
-          const pId = card.getAttribute('data-player-id');
+      // Wire player profile modal openers ONLY on player name link
+      container.querySelectorAll('.kader-player-profile-card .player-name-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const pId = link.getAttribute('data-player-id');
           const playerObj = filtered.find(x => String(x['#'] || x.id || (x.Vorname + '_' + x.Nachname)) === String(pId));
           if (playerObj) {
             openPlayerStatsModal(playerObj, { teamName, seasonKey: Store.getData()?.currentSeason });
@@ -977,14 +979,14 @@ export const bindTeamAdmin = async (auth) => {
           ${processedPlayers.map(p => {
             return `
               <div class="kader-player-card glass-card" data-player-id="${p.id}" style="padding: 10px 12px; border-radius: 8px; border: 1px solid ${p.isSuspended ? '#ef4444' : p.isChecked ? 'var(--color-accent)' : p.isWarning ? 'rgba(234, 179, 8, 0.45)' : 'var(--glass-border)'}; background: ${p.isSuspended ? 'rgba(220, 38, 38, 0.06)' : p.isWarning ? 'rgba(234, 179, 8, 0.03)' : 'var(--color-surface)'}; display: flex; align-items: center; justify-content: space-between; gap: 10px; transition: border-color 0.2s;">
-                <div class="kader-player-info-area" style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; cursor: pointer;" title="Klicken für Spielerstatistiken">
+                <div class="kader-player-info-area" style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
                   <input type="checkbox" class="kader-player-check" data-player-id="${p.id}" ${p.isChecked ? 'checked' : ''} ${p.isSuspended || isRosterLocked ? 'disabled' : ''} style="width: 18px; height: 18px; cursor: ${p.isSuspended || isRosterLocked ? 'not-allowed' : 'pointer'}; accent-color: var(--color-accent); flex-shrink: 0;">
                   <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: #111; border: 2px solid ${p.isSuspended ? '#ef4444' : p.isChecked ? 'var(--color-accent)' : 'var(--glass-border)'}; flex-shrink: 0;">
                     <img src="${p.avatar}" alt="${p.pName}" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center;">
                   </div>
                   <div style="min-width: 0; flex: 1;">
                     <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                      <span style="font-weight: 700; font-size: 0.92rem; color: ${p.isSuspended ? '#dc2626' : 'var(--color-text-primary)'}; word-break: break-word;">
+                      <span class="player-name-link" data-player-id="${p.id}" style="font-weight: 700; font-size: 0.92rem; color: ${p.isSuspended ? '#dc2626' : 'var(--color-text-primary)'}; word-break: break-word; cursor: pointer; text-decoration: underline dotted var(--color-accent);" title="Klicken für Spielerstatistiken">
                         ${p.pName}
                       </span>
                       ${p.isSuspended ? `
@@ -1077,13 +1079,11 @@ export const bindTeamAdmin = async (auth) => {
         }
       };
 
-      // Wire player stats modal on card click (excluding inputs/buttons)
-      document.querySelectorAll('.kader-player-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-          if (e.target.closest('input, button, label, .kader-player-check, .kader-jersey-input, .kader-role-btn')) {
-            return;
-          }
-          const pId = card.getAttribute('data-player-id');
+      // Wire player stats modal ONLY on player name link click
+      document.querySelectorAll('#kader-players-list .player-name-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const pId = link.getAttribute('data-player-id');
           const pObj = processedPlayers.find(x => String(x.id) === String(pId));
           if (pObj) {
             openPlayerStatsModal(pObj.raw || pObj, { teamName, seasonKey: selectedKaderSeasonKey });
@@ -1269,7 +1269,8 @@ export const bindTeamAdmin = async (auth) => {
       const activeCount = allTeamStatsPlayers.filter(p => (p.raw?.Status || p.raw?.status || p.status || 'Aktiv').toLowerCase() === 'aktiv').length;
       const inactiveCount = allTeamStatsPlayers.length - activeCount;
 
-      const filteredStatsPlayers = allTeamStatsPlayers.filter(p => {
+      // Filter by status and search query
+      let filteredStatsPlayers = allTeamStatsPlayers.filter(p => {
         const pStatus = (p.raw?.Status || p.raw?.status || p.status || 'Aktiv').toLowerCase();
         if (statsStatusFilter !== 'all') {
           if (statsStatusFilter.toLowerCase() === 'aktiv' && pStatus !== 'aktiv') return false;
@@ -1277,8 +1278,51 @@ export const bindTeamAdmin = async (auth) => {
         }
         if (!statsSearchQuery) return true;
         const q = statsSearchQuery.toLowerCase();
-        return (p.name || '').toLowerCase().includes(q) || String(p.jerseyNumber || '').includes(q);
+        return (p.name || '').toLowerCase().includes(q) || String(p.passNumber || p['#'] || '').includes(q);
       });
+
+      // Sort players according to statsSortKey and statsSortDir
+      filteredStatsPlayers.sort((a, b) => {
+        let valA, valB;
+        if (statsSortKey === 'passNumber') {
+          valA = parseInt(a.passNumber || a['#'] || 0, 10) || 0;
+          valB = parseInt(b.passNumber || b['#'] || 0, 10) || 0;
+          return statsSortDir === 'asc' ? valA - valB : valB - valA;
+        } else if (statsSortKey === 'name') {
+          return statsSortDir === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+        } else if (statsSortKey === 'einsaetze') {
+          if (a.played !== b.played) return statsSortDir === 'asc' ? a.played - b.played : b.played - a.played;
+          return statsSortDir === 'asc' ? a.started - b.started : b.started - a.started;
+        } else if (statsSortKey === 'minuten') {
+          return statsSortDir === 'asc' ? a.minutes - b.minutes : b.minutes - a.minutes;
+        } else if (statsSortKey === 'tore') {
+          if (a.goals !== b.goals) return statsSortDir === 'asc' ? a.goals - b.goals : b.goals - a.goals;
+          return a.minutes - b.minutes; // Fewer minutes with same goals ranks higher
+        } else if (statsSortKey === 'min_tor') {
+          const mpgA = a.goals > 0 ? (a.minutes > 0 ? a.minutes / a.goals : 90) : 99999;
+          const mpgB = b.goals > 0 ? (b.minutes > 0 ? b.minutes / b.goals : 90) : 99999;
+          return statsSortDir === 'asc' ? mpgA - mpgB : mpgB - mpgA;
+        } else if (statsSortKey === 'karten') {
+          const scoreA = (a.redCards * 100) + (a.yellowRedCards * 50) + (a.yellowCards * 5) + (a.yellowTotal || 0);
+          const scoreB = (b.redCards * 100) + (b.yellowRedCards * 50) + (b.yellowCards * 5) + (b.yellowTotal || 0);
+          return statsSortDir === 'asc' ? scoreA - scoreB : scoreB - scoreA;
+        } else if (statsSortKey === 'status') {
+          const stA = (a.raw?.Status || a.raw?.status || 'Aktiv').toLowerCase();
+          const stB = (b.raw?.Status || b.raw?.status || 'Aktiv').toLowerCase();
+          return statsSortDir === 'asc' ? stA.localeCompare(stB) : stB.localeCompare(stA);
+        }
+        return b.minutes - a.minutes;
+      });
+
+      // Helper for sort indicators on table headers
+      const renderSortArrow = (key) => {
+        if (statsSortKey !== key) {
+          return '<span style="color: var(--color-text-secondary); opacity: 0.4; font-size: 0.72rem; margin-left: 4px;">⇅</span>';
+        }
+        return statsSortDir === 'asc' 
+          ? '<span style="color: var(--color-accent); font-weight: 900; font-size: 0.75rem; margin-left: 4px;">▲</span>' 
+          : '<span style="color: var(--color-accent); font-weight: 900; font-size: 0.75rem; margin-left: 4px;">▼</span>';
+      };
 
       container.innerHTML = `
         <!-- Season Selector & Header -->
@@ -1328,39 +1372,60 @@ export const bindTeamAdmin = async (auth) => {
           </div>
         </div>
 
-        <!-- Squad Performance Table -->
-        <div class="glass-card" style="padding: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: 10px;">
+        <!-- Filter, Mobile Sort & Search Bar -->
+        <div class="glass-card" style="padding: var(--space-md); border-radius: 8px; margin-bottom: var(--space-md);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <div>
-              <div id="stats-player-count" style="font-weight: 800; font-size: 1.1rem; color: var(--color-text-primary);">
+              <h4 id="stats-player-count" style="margin: 0; font-size: 1.05rem;">
                 Kaderübersicht (${filteredStatsPlayers.length} von ${allTeamStatsPlayers.length} Spielern)
-              </div>
-              <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">
-                ${activeCount} Aktiv &bull; ${inactiveCount} Inaktiv / Archiviert
+              </h4>
+              <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">
+                ${activeCount} Aktiv &bull; ${inactiveCount} Inaktiv &bull; Auf Spalten oder Spielername klicken für Details
               </div>
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-              <select id="stats-status-filter" class="admin-input" style="width: 140px; font-size: 0.85rem; font-weight: 600; padding: 6px 10px;">
+              <select id="stats-status-filter" class="admin-input" style="width: 135px; font-size: 0.85rem; font-weight: 600; padding: 6px 10px;">
                 <option value="Aktiv" ${statsStatusFilter === 'Aktiv' ? 'selected' : ''}>Nur Aktive</option>
                 <option value="all" ${statsStatusFilter === 'all' ? 'selected' : ''}>Alle Spieler</option>
                 <option value="Inaktiv" ${statsStatusFilter === 'Inaktiv' ? 'selected' : ''}>Nur Inaktive</option>
               </select>
-              <input type="text" id="stats-player-search" class="admin-input" placeholder="Spieler suchen..." value="${statsSearchQuery}" style="padding: 6px 12px; font-size: 0.85rem; width: 170px;">
+              <input type="text" id="stats-player-search" class="admin-input" placeholder="Spieler suchen..." value="${statsSearchQuery}" style="padding: 6px 12px; font-size: 0.85rem; width: 160px;">
             </div>
           </div>
 
+          <!-- Mobile Sort Controls (Visible on mobile viewports) -->
+          <div class="stats-mobile-sort-bar" style="margin-top: 10px; display: none;">
+            <label style="font-size: 0.72rem; font-weight: 700; color: var(--color-accent); text-transform: uppercase; margin-bottom: 4px; display: block;">
+              Sortieren nach:
+            </label>
+            <select id="stats-mobile-sort-select" class="admin-input" style="width: 100%; font-size: 0.85rem; font-weight: 600; padding: 7px 10px;">
+              <option value="minuten_desc" ${statsSortKey === 'minuten' && statsSortDir === 'desc' ? 'selected' : ''}>Einsatzzeit: Meiste Minuten</option>
+              <option value="minuten_asc" ${statsSortKey === 'minuten' && statsSortDir === 'asc' ? 'selected' : ''}>Einsatzzeit: Geringste Minuten</option>
+              <option value="tore_desc" ${statsSortKey === 'tore' && statsSortDir === 'desc' ? 'selected' : ''}>Tore: Meiste Treffer</option>
+              <option value="min_tor_asc" ${statsSortKey === 'min_tor' && statsSortDir === 'asc' ? 'selected' : ''}>Effizienz: Min. / Tor (Beste)</option>
+              <option value="einsaetze_desc" ${statsSortKey === 'einsaetze' && statsSortDir === 'desc' ? 'selected' : ''}>Einsätze: Meiste Spiele</option>
+              <option value="name_asc" ${statsSortKey === 'name' && statsSortDir === 'asc' ? 'selected' : ''}>Spielername: A bis Z</option>
+              <option value="passNumber_asc" ${statsSortKey === 'passNumber' && statsSortDir === 'asc' ? 'selected' : ''}>Pass-Nr.: Aufsteigend</option>
+              <option value="karten_desc" ${statsSortKey === 'karten' && statsSortDir === 'desc' ? 'selected' : ''}>Fairplay: Meiste Karten</option>
+              <option value="status_asc" ${statsSortKey === 'status' && statsSortDir === 'asc' ? 'selected' : ''}>Status: Aktiv zuerst</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 1. DESKTOP VIEW: Sortable Responsive Table -->
+        <div class="stats-desktop-table-container glass-card" style="border-radius: 8px; padding: 0; overflow: hidden; margin-bottom: var(--space-lg);">
           <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
             <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
               <thead>
                 <tr style="border-bottom: 2px solid var(--glass-border); color: var(--color-text-secondary); font-size: 0.75rem; text-transform: uppercase;">
-                  <th style="padding: 10px 10px; width: 45px; text-align: center;">Nr.</th>
-                  <th style="padding: 10px 10px;">Spieler</th>
-                  <th style="padding: 10px 10px;">Einsätze &amp; Startelf</th>
-                  <th style="padding: 10px 10px; min-width: 130px;">Einsatzzeit (Min.)</th>
-                  <th style="padding: 10px 10px; text-align: center;">Tore</th>
-                  <th style="padding: 10px 10px; text-align: center;">Min. / Tor</th>
-                  <th style="padding: 10px 10px; text-align: center;">Karten</th>
-                  <th style="padding: 10px 10px; text-align: right;">Status</th>
+                  <th class="stats-sort-th" data-sort-key="passNumber" style="padding: 12px 10px; width: 75px; text-align: center;">Pass-Nr. ${renderSortArrow('passNumber')}</th>
+                  <th class="stats-sort-th" data-sort-key="name" style="padding: 12px 10px;">Spieler ${renderSortArrow('name')}</th>
+                  <th class="stats-sort-th" data-sort-key="einsaetze" style="padding: 12px 10px;">Einsätze &amp; Startelf ${renderSortArrow('einsaetze')}</th>
+                  <th class="stats-sort-th" data-sort-key="minuten" style="padding: 12px 10px; min-width: 130px;">Einsatzzeit (Min.) ${renderSortArrow('minuten')}</th>
+                  <th class="stats-sort-th" data-sort-key="tore" style="padding: 12px 10px; text-align: center;">Tore ${renderSortArrow('tore')}</th>
+                  <th class="stats-sort-th" data-sort-key="min_tor" style="padding: 12px 10px; text-align: center;">Min. / Tor ${renderSortArrow('min_tor')}</th>
+                  <th class="stats-sort-th" data-sort-key="karten" style="padding: 12px 10px; text-align: center;">Karten ${renderSortArrow('karten')}</th>
+                  <th class="stats-sort-th" data-sort-key="status" style="padding: 12px 10px; text-align: right;">Status ${renderSortArrow('status')}</th>
                 </tr>
               </thead>
               <tbody id="team-stats-tbody">
@@ -1374,18 +1439,21 @@ export const bindTeamAdmin = async (auth) => {
                   const pct = teamStats.maxMinutes > 0 ? Math.round((p.minutes / teamStats.maxMinutes) * 100) : 0;
                   const startPct = p.played > 0 ? Math.round((p.started / p.played) * 100) : 0;
                   const minPerGoal = p.goals > 0 ? (p.minutes > 0 ? Math.round(p.minutes / p.goals) : '<90') : null;
-                  const goalsPerGame = p.played > 0 ? (p.goals / p.played).toFixed(2) : '0.00';
+                  const pStatus = (p.raw?.Status || p.raw?.status || p.status || 'Aktiv').toLowerCase();
+                  const pPass = p.passNumber && p.passNumber !== '-' ? p.passNumber : (p['#'] || '-');
 
                   return `
                     <tr class="stats-row" data-player-id="${p.id}" style="border-bottom: 1px solid var(--glass-border); transition: background 0.15s ease;">
                       <td style="padding: 10px 10px; text-align: center; font-weight: 800; color: var(--color-text-secondary);">
-                        ${p.jerseyNumber ? '#' + p.jerseyNumber : '-'}
+                        #${pPass}
                       </td>
                       <td style="padding: 10px 10px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                           <img src="${p.avatar}" alt="${p.name}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); flex-shrink: 0;">
                           <div>
-                            <div style="font-weight: 800; color: var(--color-text-primary);">${p.name}</div>
+                            <div style="font-weight: 800; color: var(--color-text-primary);">
+                              <span class="player-name-link" data-player-id="${p.id}" style="cursor: pointer; text-decoration: underline dotted var(--color-accent);" title="Klicken für Spielerstatistiken">${p.name}</span>
+                            </div>
                             <div style="font-size: 0.72rem; color: var(--color-text-secondary);">${p.position || 'Feldspieler'}</div>
                           </div>
                         </div>
@@ -1412,32 +1480,36 @@ export const bindTeamAdmin = async (auth) => {
                       </td>
                       <td style="padding: 10px 10px; text-align: center;">
                         ${minPerGoal !== null ? `
-                          <div style="font-weight: 800; font-size: 0.9rem; color: #22c55e;">
-                            ${minPerGoal} <span style="font-size: 0.7rem; font-weight: 600;">Min.</span>
-                          </div>
-                          <div style="font-size: 0.68rem; color: var(--color-text-secondary); margin-top: 1px;">
-                            ${goalsPerGame} T/Sp.
-                          </div>
+                          <div style="font-weight: 800; color: #16a34a; font-size: 0.88rem;">${minPerGoal}'</div>
+                          <div style="font-size: 0.68rem; color: var(--color-text-secondary);">Min. / Tor</div>
                         ` : `
-                          <span style="color: var(--color-text-secondary);">-</span>
+                          <span style="color: var(--color-text-secondary);">&mdash;</span>
                         `}
                       </td>
                       <td style="padding: 10px 10px; text-align: center;">
-                        <div style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 0.75rem;">
-                          ${p.yellowCards > 0 ? `<span style="background: #eab308; color: #000; padding: 1px 5px; border-radius: 2px;">${p.yellowCards}G</span>` : ''}
-                          ${p.yellowRedCards > 0 ? `<span style="background: #f97316; color: #fff; padding: 1px 5px; border-radius: 2px;">${p.yellowRedCards}GR</span>` : ''}
-                          ${p.redCards > 0 ? `<span style="background: #dc2626; color: #fff; padding: 1px 5px; border-radius: 2px;">${p.redCards}R</span>` : ''}
-                          ${p.yellowCards === 0 && p.yellowRedCards === 0 && p.redCards === 0 ? '<span style="color: var(--color-text-secondary);">-</span>' : ''}
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                          ${p.yellowCards > 0 ? `
+                            <span style="background: #eab308; color: #000; font-size: 0.7rem; font-weight: 800; padding: 1px 5px; border-radius: 2px;" title="${p.yellowCards} Gelb in dieser Saison (${p.yellowTotal || p.yellowCards} Gesamt)">${p.yellowCards}</span>
+                          ` : ''}
+                          ${p.yellowRedCards > 0 ? `
+                            <span style="background: #f97316; color: #fff; font-size: 0.7rem; font-weight: 800; padding: 1px 5px; border-radius: 2px;" title="${p.yellowRedCards} Gelb-Rot">${p.yellowRedCards}</span>
+                          ` : ''}
+                          ${p.redCards > 0 ? `
+                            <span style="background: #dc2626; color: #fff; font-size: 0.7rem; font-weight: 800; padding: 1px 5px; border-radius: 2px;" title="${p.redCards} Rot">${p.redCards}</span>
+                          ` : ''}
+                          ${p.yellowCards === 0 && p.yellowRedCards === 0 && p.redCards === 0 ? `
+                            <span style="color: var(--color-text-secondary);">&mdash;</span>
+                          ` : ''}
                         </div>
                       </td>
                       <td style="padding: 10px 10px; text-align: right;">
-                        ${p.isSuspended ? `
-                          <span style="background: rgba(220, 38, 38, 0.15); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.35); padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 0.72rem;">Gesperrt</span>
-                        ` : p.isWarning ? `
-                          <span style="background: rgba(234, 179, 8, 0.18); color: #d97706; border: 1px solid rgba(234, 179, 8, 0.45); padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 0.72rem;">Sperre droht</span>
-                        ` : `
-                          <span style="background: rgba(34, 197, 94, 0.12); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 0.72rem;">Berechtigt</span>
-                        `}
+                        <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; ${
+                          pStatus === 'aktiv' 
+                            ? 'background: rgba(22, 163, 74, 0.15); color: #16a34a;' 
+                            : 'background: rgba(100, 116, 139, 0.15); color: #64748b;'
+                        }">
+                          ${pStatus === 'aktiv' ? 'Aktiv' : 'Inaktiv'}
+                        </span>
                       </td>
                     </tr>
                   `;
@@ -1445,6 +1517,101 @@ export const bindTeamAdmin = async (auth) => {
               </tbody>
             </table>
           </div>
+        </div>
+
+        <!-- 2. MOBILE ACCORDION VIEW: Zero Horizontal Scrolling, Tap to Reveal Details -->
+        <div class="stats-mobile-accordion" id="stats-mobile-accordion-list">
+          ${filteredStatsPlayers.length === 0 ? `
+            <div class="glass-card" style="padding: 24px; text-align: center; color: var(--color-text-secondary);">
+              Keine Spieler gefunden. Passe den Status-Filter oder Suchbegriff an.
+            </div>
+          ` : filteredStatsPlayers.map(p => {
+            const pct = teamStats.maxMinutes > 0 ? Math.round((p.minutes / teamStats.maxMinutes) * 100) : 0;
+            const startPct = p.played > 0 ? Math.round((p.started / p.played) * 100) : 0;
+            const minPerGoal = p.goals > 0 ? (p.minutes > 0 ? Math.round(p.minutes / p.goals) : '<90') : null;
+            const goalsPerGame = p.played > 0 ? (p.goals / p.played).toFixed(2) : '0.00';
+            const pStatus = (p.raw?.Status || p.raw?.status || p.status || 'Aktiv').toLowerCase();
+            const pPass = p.passNumber && p.passNumber !== '-' ? p.passNumber : (p['#'] || '-');
+
+            return `
+              <div class="glass-card stats-accordion-card" data-player-id="${p.id}" style="border-radius: 8px; border: 1px solid var(--glass-border); overflow: hidden;">
+                <!-- Main Header: Summary Row (Always Visible) -->
+                <div class="stats-accordion-header" style="padding: 12px 14px; cursor: pointer; user-select: none; display: flex; flex-direction: column; gap: 8px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+                      <img src="${p.avatar}" alt="${p.name}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); flex-shrink: 0;">
+                      <div style="min-width: 0; flex: 1;">
+                        <div style="font-weight: 800; font-size: 0.96rem; color: var(--color-text-primary); line-height: 1.2;">
+                          <span class="player-name-link" data-player-id="${p.id}" style="cursor: pointer; text-decoration: underline dotted var(--color-accent);" title="Klicken für Spielerstatistiken">${p.name}</span>
+                        </div>
+                        <div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 2px;">
+                          Pass #${pPass} &bull; ${p.position || 'Feldspieler'} &bull; <span style="font-weight: 700; color: ${pStatus === 'aktiv' ? '#16a34a' : '#64748b'};">${pStatus.toUpperCase()}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <span class="stats-accordion-chevron" style="color: var(--color-text-secondary); font-size: 0.8rem; transition: transform 0.2s ease;">▼</span>
+                    </div>
+                  </div>
+
+                  <!-- Quick Stats Bar (Spiele, Minuten, Tore) -->
+                  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 6px 8px; background: rgba(255, 255, 255, 0.03); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05); text-align: center;">
+                    <div>
+                      <div style="font-size: 0.65rem; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700;">Spiele</div>
+                      <div style="font-size: 0.88rem; font-weight: 800; color: var(--color-text-primary);">${p.played} <span style="font-size: 0.7rem; color: var(--color-text-secondary);">/ ${teamStats.playedMatchesCount}</span></div>
+                    </div>
+                    <div>
+                      <div style="font-size: 0.65rem; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700;">Minuten</div>
+                      <div style="font-size: 0.88rem; font-weight: 800; color: var(--color-accent);">${p.minutes}'</div>
+                    </div>
+                    <div>
+                      <div style="font-size: 0.65rem; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700;">Tore</div>
+                      <div style="font-size: 0.88rem; font-weight: 900; color: ${p.goals > 0 ? '#22c55e' : 'var(--color-text-primary)'};">${p.goals}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Accordion Drawer: Detailed breakdown (Hidden by default) -->
+                <div class="stats-accordion-drawer" style="display: none; padding: 12px 14px; border-top: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.15);">
+                  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; font-size: 0.8rem;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                      <div style="font-size: 0.68rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Startelf-Quote</div>
+                      <div style="font-weight: 800; font-size: 1.0rem; color: ${startPct >= 70 ? 'var(--color-accent)' : 'inherit'}; margin-top: 2px;">${startPct}%</div>
+                      <div style="font-size: 0.7rem; color: var(--color-text-secondary); margin-top: 1px;">
+                        ${p.started}x Start &bull; ${p.subbedIn}x Ein &bull; ${p.benchUnused}x Bank
+                      </div>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                      <div style="font-size: 0.68rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Tor-Effizienz</div>
+                      <div style="font-weight: 800; font-size: 1.0rem; color: ${minPerGoal !== null ? '#16a34a' : 'inherit'}; margin-top: 2px;">
+                        ${minPerGoal !== null ? minPerGoal + ' Min.' : '&mdash;'}
+                      </div>
+                      <div style="font-size: 0.7rem; color: var(--color-text-secondary); margin-top: 1px;">
+                        ${goalsPerGame} Tore / Spiel
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Cards & Fairplay Row -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; margin-bottom: 10px;">
+                    <span style="font-size: 0.72rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Kartenkonto:</span>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <span style="background: #eab308; color: #000; font-weight: 800; font-size: 0.72rem; padding: 1px 6px; border-radius: 2px;">${p.yellowCards} Gelb</span>
+                      ${p.yellowRedCards > 0 ? `<span style="background: #f97316; color: #fff; font-weight: 800; font-size: 0.72rem; padding: 1px 6px; border-radius: 2px;">${p.yellowRedCards} GR</span>` : ''}
+                      ${p.redCards > 0 ? `<span style="background: #dc2626; color: #fff; font-weight: 800; font-size: 0.72rem; padding: 1px 6px; border-radius: 2px;">${p.redCards} Rot</span>` : ''}
+                    </div>
+                  </div>
+
+                  <!-- Direct Player Modal Trigger Button -->
+                  <button type="button" class="btn btn-outline btn-open-player-modal" data-player-id="${p.id}" style="width: 100%; color: var(--color-text-primary); font-size: 0.82rem; font-weight: 700; padding: 9px 12px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: rgba(255, 255, 255, 0.04);">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Vollständiges Profil &amp; Trainer-KPIs
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('')}
         </div>
       `;
 
@@ -1460,12 +1627,40 @@ export const bindTeamAdmin = async (auth) => {
         renderTab();
       });
 
-      // Wire player modal clicks on stats table rows
-      container.querySelectorAll('#team-stats-tbody .stats-row').forEach(row => {
-        row.style.cursor = 'pointer';
-        row.setAttribute('title', 'Klicken für Spielerstatistiken & Details');
-        row.addEventListener('click', () => {
-          const pId = row.getAttribute('data-player-id');
+      // Wire desktop sortable column headers
+      container.querySelectorAll('.stats-sort-th').forEach(th => {
+        th.style.cursor = 'pointer';
+        th.addEventListener('click', () => {
+          const sortKey = th.getAttribute('data-sort-key');
+          if (statsSortKey === sortKey) {
+            statsSortDir = statsSortDir === 'desc' ? 'asc' : 'desc';
+          } else {
+            statsSortKey = sortKey;
+            // Default directions
+            if (['passNumber', 'name', 'status'].includes(sortKey)) {
+              statsSortDir = 'asc';
+            } else {
+              statsSortDir = 'desc';
+            }
+          }
+          renderTab();
+        });
+      });
+
+      // Wire mobile sort select
+      document.getElementById('stats-mobile-sort-select')?.addEventListener('change', (e) => {
+        const val = e.target.value;
+        const [k, d] = val.split('_');
+        statsSortKey = k;
+        statsSortDir = d;
+        renderTab();
+      });
+
+      // Wire modal trigger ONLY on player-name-link across desktop table and mobile cards
+      container.querySelectorAll('.player-name-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const pId = link.getAttribute('data-player-id');
           const pStat = allTeamStatsPlayers.find(x => String(x.id) === String(pId));
           if (pStat) {
             openPlayerStatsModal(pStat.raw || pStat, { teamName, seasonKey: selectedStatsSeasonKey });
@@ -1473,23 +1668,56 @@ export const bindTeamAdmin = async (auth) => {
         });
       });
 
-      // Wire player search filter (instant live search)
+      // Wire mobile accordion expand/collapse toggles
+      container.querySelectorAll('.stats-accordion-header').forEach(header => {
+        header.addEventListener('click', (e) => {
+          if (e.target.closest('.player-name-link')) return;
+          const card = header.closest('.stats-accordion-card');
+          const drawer = card.querySelector('.stats-accordion-drawer');
+          const chevron = header.querySelector('.stats-accordion-chevron');
+          const isExpanded = drawer.style.display === 'block';
+          drawer.style.display = isExpanded ? 'none' : 'block';
+          chevron.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+      });
+
+      // Wire direct player modal button inside mobile accordion drawer
+      container.querySelectorAll('.btn-open-player-modal').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const pId = btn.getAttribute('data-player-id');
+          const pStat = allTeamStatsPlayers.find(x => String(x.id) === String(pId));
+          if (pStat) {
+            openPlayerStatsModal(pStat.raw || pStat, { teamName, seasonKey: selectedStatsSeasonKey });
+          }
+        });
+      });
+
+      // Wire real-time instant player search
       document.getElementById('stats-player-search')?.addEventListener('input', (e) => {
         statsSearchQuery = e.target.value.toLowerCase().trim();
         const rows = container.querySelectorAll('#team-stats-tbody .stats-row');
+        const cards = container.querySelectorAll('.stats-accordion-card');
         let visibleCount = 0;
+
         rows.forEach(row => {
           const text = row.textContent.toLowerCase();
           const matches = text.includes(statsSearchQuery);
           row.style.display = matches ? '' : 'none';
           if (matches) visibleCount++;
         });
+
+        cards.forEach(card => {
+          const text = card.textContent.toLowerCase();
+          const matches = text.includes(statsSearchQuery);
+          card.style.display = matches ? '' : 'none';
+        });
+
         const countEl = document.getElementById('stats-player-count');
         if (countEl) {
           countEl.textContent = `Kaderübersicht (${visibleCount} von ${allTeamStatsPlayers.length} Spielern)`;
         }
       });
-
 
     } else if (currentTeamTab === 'nachmelden') {
 

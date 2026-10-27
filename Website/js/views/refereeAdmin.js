@@ -3,7 +3,7 @@ import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=17930400000
 import { logout } from '../auth.js?v=1793040000000';
 
 import { calculateSeasonSuspensions, normalizePlayerName, normalizeKey, isMatchFinished } from '../suspensionUtils.js?v=1793040000000';
-import { getPlayerAvatar, openPlayerStatsModal } from '../playerUtils.js?v=1793131000000';
+import { getPlayerAvatar, openPlayerStatsModal } from '../playerUtils.js?v=1793220000000';
 
 
 
@@ -721,7 +721,7 @@ export const bindRefereeAdmin = async () => {
               const passNum = p.passNumber || p['#'] || p.id || '-';
 
               return `
-                <div class="ref-pass-player-card" data-player-key="${pKey}" data-player-name="${pName}" data-player-id="${p['#'] || p.id || ''}" data-team="${teamTitle}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: ${isSuspended ? 'rgba(220, 38, 38, 0.08)' : isWarning ? 'rgba(234, 179, 8, 0.04)' : isPassChecked ? 'rgba(0, 240, 95, 0.04)' : 'var(--color-surface)'}; border: 1px solid ${isSuspended ? '#ef4444' : isWarning ? 'rgba(234, 179, 8, 0.45)' : isPassChecked ? 'rgba(0, 240, 95, 0.45)' : 'var(--glass-border)'}; border-radius: 6px; padding: 8px 10px; transition: all 0.2s; cursor: pointer;" title="Klicken für Spielerstatistiken">
+                <div class="ref-pass-player-card" data-player-key="${pKey}" data-player-name="${pName}" data-player-id="${p['#'] || p.id || ''}" data-team="${teamTitle}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: ${isSuspended ? 'rgba(220, 38, 38, 0.08)' : isWarning ? 'rgba(234, 179, 8, 0.04)' : isPassChecked ? 'rgba(0, 240, 95, 0.04)' : 'var(--color-surface)'}; border: 1px solid ${isSuspended ? '#ef4444' : isWarning ? 'rgba(234, 179, 8, 0.45)' : isPassChecked ? 'rgba(0, 240, 95, 0.45)' : 'var(--glass-border)'}; border-radius: 6px; padding: 8px 10px; transition: all 0.2s; ">
                   <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
                     ${p.jerseyNumber ? `
                       <span style="background: ${isSuspended ? '#ef4444' : 'var(--color-accent)'}; color: ${isSuspended ? '#fff' : '#000'}; font-weight: 800; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; flex-shrink: 0; min-width: 32px; text-align: center;">#${p.jerseyNumber}</span>
@@ -733,7 +733,7 @@ export const bindRefereeAdmin = async () => {
                     </div>
                     <div style="min-width: 0; flex: 1;">
                       <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                        <span style="font-weight: 700; font-size: 0.92rem; color: ${isSuspended ? '#dc2626' : 'var(--color-text-primary)'}; line-height: 1.25; word-break: break-word;">
+                        <span class="player-name-link" data-player-key="${pKey}" data-player-name="${pName}" data-player-id="${p['#'] || p.id || ''}" data-team="${teamTitle}" style="font-weight: 700; font-size: 0.92rem; color: ${isSuspended ? '#dc2626' : 'var(--color-text-primary)'}; line-height: 1.25; word-break: break-word; cursor: pointer; text-decoration: underline dotted var(--color-accent);" title="Klicken für Spielerstatistiken">
                           ${pName}
                         </span>
                         ${isSuspended ? `
@@ -814,13 +814,13 @@ export const bindRefereeAdmin = async () => {
       });
     });
 
-    // Wire clicks on player cards to open stats modal (excluding pass check)
-    contentContainer.querySelectorAll('.ref-pass-player-card').forEach(card => {
-      card.addEventListener('click', (e) => {
-        if (e.target.closest('.physical-pass-check, label, input')) return;
-        const pName = card.getAttribute('data-player-name');
-        const tName = card.getAttribute('data-team');
-        const pId = card.getAttribute('data-player-id');
+    // Wire clicks ONLY on player name link to open stats modal
+    contentContainer.querySelectorAll('.ref-pass-player-card .player-name-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const pName = link.getAttribute('data-player-name');
+        const tName = link.getAttribute('data-team');
+        const pId = link.getAttribute('data-player-id');
         const allTeamPlayers = [...homePlayers, ...awayPlayers];
         const p = allTeamPlayers.find(x => {
           const fn = `${x.Vorname || x.firstName || "" } ${x.Nachname || x.lastName || ""}`.trim();

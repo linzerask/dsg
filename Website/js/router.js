@@ -20,7 +20,7 @@ import { viewAdmin, bindAdmin } from './views/admin.js?v=1792924000000';
 
 import { getAuth, loginWithPin, logout } from './auth.js?v=1793100000000';
 
-import { viewTeamAdmin, bindTeamAdmin } from './views/teamAdmin.js?v=1793200000000';
+import { viewTeamAdmin, bindTeamAdmin } from './views/teamAdmin.js?v=1793220000000';
 
 import { viewRefereeAdmin, bindRefereeAdmin } from './views/refereeAdmin.js?v=1793130000000';
 
