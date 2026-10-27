@@ -4,7 +4,7 @@ import { logout } from '../auth.js';
 
 import { Router } from '../router.js';
 
-import { getPlayerAvatar, calculateTeamPlayerStats, openPlayerStatsModal } from '../playerUtils.js?v=1793130000000';
+import { getPlayerAvatar, calculateTeamPlayerStats, openPlayerStatsModal } from '../playerUtils.js?v=1793131000000';
 import { calculateSeasonSuspensions, normalizePlayerName, normalizeKey } from '../suspensionUtils.js?v=1793040000000';
 
 import { storage } from '../firebase.js';

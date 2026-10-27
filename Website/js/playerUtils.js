@@ -777,7 +777,11 @@ export async function openPlayerStatsModal(playerData, options = {}) {
   const teamName = options.teamName || officialPlayer.Team || raw.Team || raw.team || '';
   const avatarUrl = getPlayerAvatar(officialPlayer);
   const positionLabel = getPlayerPositionLabel(officialPlayer) || officialPlayer.Position || raw.position || 'Feldspieler';
-  const jerseyNumber = officialPlayer.jerseyNumber || officialPlayer.shirtNumber || raw.jerseyNumber || (officialPlayer['#'] && officialPlayer['#'] !== '-' ? officialPlayer['#'] : '');
+  
+  // Pass number vs. jersey number resolution
+  const passNum = officialPlayer.passNumber || officialPlayer['#'] || officialPlayer.id || pId || '-';
+  const rawShirt = raw.jerseyNumber || officialPlayer.jerseyNumber || officialPlayer.shirtNumber || '';
+  const trueShirtNum = (rawShirt && String(rawShirt) !== String(passNum) && parseInt(rawShirt, 10) > 0 && parseInt(rawShirt, 10) < 100) ? rawShirt : '';
 
   // Calculate team stats
   const teamStats = calculateTeamPlayerStats(seasonKey, teamName, allPlayers);
@@ -811,7 +815,6 @@ export async function openPlayerStatsModal(playerData, options = {}) {
   const squadPct = teamStats.playedMatchesCount > 0 ? Math.round((pStat.nominated / teamStats.playedMatchesCount) * 100) : 0;
 
   // Personal Info
-  const passNum = officialPlayer.passNumber || officialPlayer['#'] || officialPlayer.id || pId || '-';
   const birthRaw = officialPlayer.Geburtsdatum || raw.Geburtsdatum || '';
   const formattedBirth = formatBirthdate(birthRaw);
   const age = calculatePlayerAge(birthRaw);
@@ -847,7 +850,7 @@ export async function openPlayerStatsModal(playerData, options = {}) {
       .dsg-player-modal-backdrop {
         position: absolute;
         inset: 0;
-        background: rgba(0, 0, 0, 0.78);
+        background: rgba(0, 0, 0, 0.72);
         backdrop-filter: blur(6px);
         -webkit-backdrop-filter: blur(6px);
       }
@@ -859,19 +862,19 @@ export async function openPlayerStatsModal(playerData, options = {}) {
         overflow-y: auto;
         border-radius: 12px;
         padding: 22px;
-        border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
-        background: var(--color-surface, #121915);
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        border: 1px solid var(--color-border, #e2e8f0);
+        background: var(--color-surface, #ffffff);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
         z-index: 10;
-        color: var(--color-text-primary, #ffffff);
+        color: var(--color-text-primary, #1a1a24);
       }
       .dsg-player-modal-close {
         position: absolute;
         top: 14px;
         right: 14px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: var(--color-text-secondary, #94a3b8);
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        color: #64748b;
         width: 32px;
         height: 32px;
         border-radius: 50%;
@@ -885,16 +888,43 @@ export async function openPlayerStatsModal(playerData, options = {}) {
         padding: 0;
       }
       .dsg-player-modal-close:hover {
-        background: rgba(255, 255, 255, 0.2);
-        color: #ffffff;
+        background: #e2e8f0;
+        color: #0f172a;
         transform: scale(1.05);
       }
-      .dsg-kpi-box {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+      .dsg-card-white {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 8px;
-        padding: 10px 6px;
-        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      }
+      .dsg-card-section {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+      }
+      [data-theme="dark"] .dsg-player-modal-content {
+        background: #1e293b;
+        border-color: rgba(255, 255, 255, 0.12);
+        color: #f8fafc;
+      }
+      [data-theme="dark"] .dsg-player-modal-close {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+        color: #94a3b8;
+      }
+      [data-theme="dark"] .dsg-player-modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+      }
+      [data-theme="dark"] .dsg-card-white {
+        background: #0f172a !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        color: #f8fafc !important;
+      }
+      [data-theme="dark"] .dsg-card-section {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
       }
       @media (max-width: 480px) {
         .dsg-player-modal-content {
@@ -910,7 +940,7 @@ export async function openPlayerStatsModal(playerData, options = {}) {
 
   modal.innerHTML = `
     <div class="dsg-player-modal-backdrop" id="dsg-modal-backdrop"></div>
-    <div class="dsg-player-modal-content glass-card">
+    <div class="dsg-player-modal-content">
       <button type="button" class="dsg-player-modal-close" id="dsg-modal-close-btn" aria-label="Schließen">&times;</button>
       
       <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
@@ -932,27 +962,28 @@ export async function openPlayerStatsModal(playerData, options = {}) {
             ${teamName || 'Vereinslos'}
           </div>
           <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
-            ${positionLabel ? `<span style="background: rgba(0, 179, 65, 0.15); color: var(--color-accent); font-weight: 800; font-size: 0.76rem; padding: 3px 10px; border-radius: 999px; text-transform: uppercase;">${positionLabel}</span>` : ''}
-            ${jerseyNumber ? `<span style="background: rgba(255, 255, 255, 0.1); color: var(--color-text-primary); font-weight: 800; font-size: 0.76rem; padding: 3px 8px; border-radius: 999px;">Trikot #${jerseyNumber}</span>` : ''}
-            <span style="background: rgba(255, 255, 255, 0.06); color: var(--color-text-secondary); font-size: 0.76rem; padding: 3px 8px; border-radius: 999px; font-weight: 600;">Saison ${seasonKey}</span>
+            ${positionLabel ? `<span style="background: rgba(0, 179, 65, 0.12); border: 1px solid rgba(0, 179, 65, 0.25); color: #16a34a; font-weight: 800; font-size: 0.76rem; padding: 3px 10px; border-radius: 999px; text-transform: uppercase;">${positionLabel}</span>` : ''}
+            ${passNum && passNum !== '-' ? `<span class="dsg-card-white" style="font-weight: 800; font-size: 0.76rem; padding: 3px 10px; border-radius: 999px; color: var(--color-text-primary);">Pass #${passNum}</span>` : ''}
+            ${trueShirtNum ? `<span class="dsg-card-white" style="font-weight: 800; font-size: 0.76rem; padding: 3px 10px; border-radius: 999px; color: var(--color-text-primary);">Trikot #${trueShirtNum}</span>` : ''}
+            <span class="dsg-card-white" style="font-size: 0.76rem; padding: 3px 10px; border-radius: 999px; font-weight: 600; color: var(--color-text-secondary);">Saison ${seasonKey}</span>
           </div>
         </div>
 
-        <!-- Playing Time & Appearance Card (NEW STATS) -->
-        <div style="width: 100%; text-align: left; background: rgba(0, 240, 95, 0.04); border: 1px solid rgba(0, 240, 95, 0.2); border-radius: 10px; padding: 14px;">
+        <!-- Playing Time & Appearance Card -->
+        <div class="dsg-card-section" style="width: 100%; text-align: left; padding: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
-            <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--color-accent); letter-spacing: 0.5px;">Einsatz & Spielzeit</span>
+            <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: #16a34a; letter-spacing: 0.5px;">Einsatz & Spielzeit</span>
             <span style="font-size: 0.85rem; font-weight: 800; color: var(--color-text-primary);">${pStat.minutes} Min. <span style="font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600;">(${minPct}%)</span></span>
           </div>
           
           <!-- Progress Bar -->
-          <div style="height: 7px; width: 100%; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; margin: 6px 0 10px 0;">
+          <div style="height: 7px; width: 100%; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin: 6px 0 10px 0;">
             <div style="height: 100%; width: ${minPct}%; background: linear-gradient(90deg, #16a34a, var(--color-accent)); border-radius: 999px; transition: width 0.4s ease;"></div>
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 0.82rem; margin-top: 8px;">
-            <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
-              <div style="color: var(--color-text-secondary); font-size: 0.72rem;">Einsätze absolviert</div>
+            <div class="dsg-card-white" style="padding: 10px;">
+              <div style="color: var(--color-text-secondary); font-size: 0.72rem; font-weight: 600;">Einsätze absolviert</div>
               <div style="font-weight: 800; font-size: 1.05rem; color: var(--color-text-primary); margin-top: 2px;">
                 ${pStat.played} <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary);">/ ${teamStats.playedMatchesCount} Spiele</span>
               </div>
@@ -961,8 +992,8 @@ export async function openPlayerStatsModal(playerData, options = {}) {
               </div>
             </div>
 
-            <div style="background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
-              <div style="color: var(--color-text-secondary); font-size: 0.72rem;">Kader-Status</div>
+            <div class="dsg-card-white" style="padding: 10px;">
+              <div style="color: var(--color-text-secondary); font-size: 0.72rem; font-weight: 600;">Kader-Status</div>
               <div style="font-weight: 800; font-size: 1.05rem; color: var(--color-text-primary); margin-top: 2px;">
                 ${pStat.nominated} <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary);">Nominierungen</span>
               </div>
@@ -974,32 +1005,32 @@ export async function openPlayerStatsModal(playerData, options = {}) {
         </div>
 
         <!-- Trainer-Entscheidungshilfe & Effizienz-KPIs -->
-        <div style="width: 100%; text-align: left; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--glass-border); border-radius: 10px; padding: 12px 14px;">
+        <div class="dsg-card-section" style="width: 100%; text-align: left; padding: 14px;">
           <div style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; color: var(--color-text-secondary); letter-spacing: 0.5px; margin-bottom: 8px;">
             Trainer-Entscheidungshilfe &amp; Effizienz
           </div>
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-            <div style="background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
-              <div style="font-size: 0.7rem; color: var(--color-text-secondary);">Minuten / Tor</div>
-              <div style="font-weight: 900; font-size: 1.1rem; color: ${minPerGoal !== null ? '#22c55e' : 'var(--color-text-secondary)'}; margin-top: 2px;">
+            <div class="dsg-card-white" style="padding: 10px 8px; text-align: center;">
+              <div style="font-size: 0.7rem; font-weight: 600; color: var(--color-text-secondary);">Minuten / Tor</div>
+              <div style="font-weight: 900; font-size: 1.15rem; color: ${minPerGoal !== null ? '#16a34a' : 'var(--color-text-secondary)'}; margin-top: 2px;">
                 ${minPerGoal !== null ? minPerGoal + ' <span style="font-size: 0.7rem; font-weight: 600;">Min.</span>' : '-'}
               </div>
               <div style="font-size: 0.68rem; color: var(--color-text-secondary); margin-top: 2px;">
                 ${goalsPerMatch} Tore/Spiel
               </div>
             </div>
-            <div style="background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
-              <div style="font-size: 0.7rem; color: var(--color-text-secondary);">Startelf-Quote</div>
-              <div style="font-weight: 900; font-size: 1.1rem; color: ${startPct >= 70 ? 'var(--color-accent)' : startPct >= 40 ? '#3b82f6' : 'var(--color-text-secondary)'}; margin-top: 2px;">
+            <div class="dsg-card-white" style="padding: 10px 8px; text-align: center;">
+              <div style="font-size: 0.7rem; font-weight: 600; color: var(--color-text-secondary);">Startelf-Quote</div>
+              <div style="font-weight: 900; font-size: 1.15rem; color: ${startPct >= 70 ? '#16a34a' : startPct >= 40 ? '#2563eb' : 'var(--color-text-secondary)'}; margin-top: 2px;">
                 ${startPct}%
               </div>
               <div style="font-size: 0.68rem; color: var(--color-text-secondary); margin-top: 2px;">
                 ${pStat.started} von ${pStat.played} Starts
               </div>
             </div>
-            <div style="background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
-              <div style="font-size: 0.7rem; color: var(--color-text-secondary);">Kader-Quote</div>
-              <div style="font-weight: 900; font-size: 1.1rem; color: ${squadPct >= 80 ? '#22c55e' : squadPct >= 50 ? '#eab308' : 'var(--color-text-secondary)'}; margin-top: 2px;">
+            <div class="dsg-card-white" style="padding: 10px 8px; text-align: center;">
+              <div style="font-size: 0.7rem; font-weight: 600; color: var(--color-text-secondary);">Kader-Quote</div>
+              <div style="font-weight: 900; font-size: 1.15rem; color: ${squadPct >= 80 ? '#16a34a' : squadPct >= 50 ? '#d97706' : 'var(--color-text-secondary)'}; margin-top: 2px;">
                 ${squadPct}%
               </div>
               <div style="font-size: 0.68rem; color: var(--color-text-secondary); margin-top: 2px;">
@@ -1010,30 +1041,30 @@ export async function openPlayerStatsModal(playerData, options = {}) {
         </div>
 
         <!-- Goals & Cards KPI Grid -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%;">
-          <div class="dsg-kpi-box" style="background: rgba(0, 179, 65, 0.08); border-color: rgba(0, 179, 65, 0.22);">
-            <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-accent); display: flex; align-items: center; justify-content: center; gap: 4px;">
-              ${renderIcon('ball', { size: 16, color: 'var(--color-accent)' })} ${pStat.goals}
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%;">
+          <div class="dsg-card-white" style="padding: 10px 4px; text-align: center;">
+            <div style="font-size: 1.35rem; font-weight: 800; color: #16a34a; display: flex; align-items: center; justify-content: center; gap: 4px;">
+              ${renderIcon('ball', { size: 16, color: '#16a34a' })} ${pStat.goals}
             </div>
             <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary); margin-top: 2px;">Tore</div>
           </div>
 
-          <div class="dsg-kpi-box" style="background: rgba(234, 179, 8, 0.08); border-color: rgba(234, 179, 8, 0.25);">
-            <div style="font-size: 1.35rem; font-weight: 800; color: #eab308; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          <div class="dsg-card-white" style="padding: 10px 4px; text-align: center;">
+            <div style="font-size: 1.35rem; font-weight: 800; color: #d97706; display: flex; align-items: center; justify-content: center; gap: 4px;">
               <span style="display:inline-block;width:11px;height:15px;background:#eab308;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></span> ${pStat.yellowCards}
             </div>
             <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary); margin-top: 2px;">Gelb (${pStat.yellowTotal || pStat.yellowCards})</div>
           </div>
 
-          <div class="dsg-kpi-box" style="background: rgba(249, 115, 22, 0.08); border-color: rgba(249, 115, 22, 0.25);">
-            <div style="font-size: 1.35rem; font-weight: 800; color: #f97316; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          <div class="dsg-card-white" style="padding: 10px 4px; text-align: center;">
+            <div style="font-size: 1.35rem; font-weight: 800; color: #ea580c; display: flex; align-items: center; justify-content: center; gap: 4px;">
               <span style="display:inline-block;width:11px;height:15px;background:linear-gradient(135deg, #f1c40f 50%, #e74c3c 50%);border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></span> ${pStat.yellowRedCards}
             </div>
             <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary); margin-top: 2px;">Gelb-Rot</div>
           </div>
 
-          <div class="dsg-kpi-box" style="background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.25);">
-            <div style="font-size: 1.35rem; font-weight: 800; color: #ef4444; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          <div class="dsg-card-white" style="padding: 10px 4px; text-align: center;">
+            <div style="font-size: 1.35rem; font-weight: 800; color: #dc2626; display: flex; align-items: center; justify-content: center; gap: 4px;">
               <span style="display:inline-block;width:11px;height:15px;background:#ef4444;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,0.25);"></span> ${pStat.redCards}
             </div>
             <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--color-text-secondary); margin-top: 2px;">Rot</div>
@@ -1043,27 +1074,27 @@ export async function openPlayerStatsModal(playerData, options = {}) {
         <!-- Disciplinary Eligibility Box -->
         <div style="width: 100%;">
           ${susp.active ? `
-            <div style="background: rgba(220, 38, 38, 0.12); border: 1px solid #ef4444; border-radius: 8px; padding: 10px 12px; text-align: left; color: #fca5a5; font-size: 0.82rem;">
-              <div style="font-weight: 800; color: #ef4444; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
-                <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444;"></span> GESPERRT (${susp.active.reason})
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px 12px; text-align: left; color: #991b1b; font-size: 0.82rem;">
+              <div style="font-weight: 800; color: #dc2626; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #dc2626;"></span> GESPERRT (${susp.active.reason})
               </div>
-              <div style="margin-top: 4px; color: #fee2e2;">
+              <div style="margin-top: 4px; color: #b91c1c;">
                 Fehlt in <strong>${susp.active.nextMatch.round || 'kommender Runde'}</strong> &bull; ${susp.active.gamesRemaining} Spiel${susp.active.gamesRemaining > 1 ? 'e' : ''} Sperre verbleibend.
               </div>
             </div>
           ` : susp.warning ? `
-            <div style="background: rgba(234, 179, 8, 0.12); border: 1px solid rgba(234, 179, 8, 0.5); border-radius: 8px; padding: 10px 12px; text-align: left; color: #fde047; font-size: 0.82rem;">
-              <div style="font-weight: 800; color: #eab308; display: flex; align-items: center; gap: 6px;">
-                <span style="width: 8px; height: 8px; border-radius: 50%; background: #eab308;"></span> VORVERWARNUNG: SPERRE DROHT
+            <div style="background: #fefce8; border: 1px solid #fef08a; border-radius: 8px; padding: 10px 12px; text-align: left; color: #854d0e; font-size: 0.82rem;">
+              <div style="font-weight: 800; color: #ca8a04; display: flex; align-items: center; gap: 6px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #ca8a04;"></span> VORVERWARNUNG: SPERRE DROHT
               </div>
-              <div style="margin-top: 4px; color: #fef08a;">
+              <div style="margin-top: 4px; color: #a16207;">
                 Bereits <strong>${susp.warning.yellowCount} von ${susp.warning.threshold}</strong> Gelben Karten. Bei der nächsten Gelben Karte im folgenden Spiel automatisch gesperrt!
               </div>
             </div>
           ` : `
-            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 240, 95, 0.08); border: 1px solid rgba(0, 240, 95, 0.25); border-radius: 8px; padding: 8px 12px; font-size: 0.82rem;">
-              <span style="color: var(--color-text-secondary); font-weight: 600;">Disziplinarstatus:</span>
-              <span style="color: #16a34a; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 9px 14px; font-size: 0.82rem;">
+              <span style="color: #166534; font-weight: 600;">Disziplinarstatus:</span>
+              <span style="color: #15803d; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
                 <span style="width: 8px; height: 8px; border-radius: 50%; background: #16a34a;"></span> Spielberechtigt
               </span>
             </div>
@@ -1071,16 +1102,16 @@ export async function openPlayerStatsModal(playerData, options = {}) {
         </div>
 
         <!-- Master Data / Pass Information -->
-        <div style="width: 100%; text-align: left; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 10px 14px; font-size: 0.84rem;">
-          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+        <div class="dsg-card-white" style="width: 100%; text-align: left; padding: 12px 14px; font-size: 0.84rem;">
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--color-border, #e2e8f0);">
             <span style="color: var(--color-text-secondary); font-weight: 600;">Pass-Nr. / ID:</span>
             <span style="font-weight: 700; color: var(--color-text-primary);">#${passNum}</span>
           </div>
-          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--color-border, #e2e8f0);">
             <span style="color: var(--color-text-secondary); font-weight: 600;">Geburtsdatum / Alter:</span>
             <span style="font-weight: 700; color: var(--color-text-primary);">${ageDisplay}</span>
           </div>
-          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--color-border, #e2e8f0);">
             <span style="color: var(--color-text-secondary); font-weight: 600;">DSG-Mitgliedschaft:</span>
             <span style="font-weight: 700; color: var(--color-text-primary);">${memberSince || '-'}</span>
           </div>
@@ -1094,7 +1125,7 @@ export async function openPlayerStatsModal(playerData, options = {}) {
 
         <!-- Actions -->
         <div style="display: flex; gap: 8px; width: 100%; margin-top: 4px;">
-          <button type="button" id="dsg-modal-close-action-btn" class="btn btn-outline" style="flex: 1; padding: 9px; font-size: 0.85rem; font-weight: 700;">
+          <button type="button" id="dsg-modal-close-action-btn" class="dsg-card-white" style="flex: 1; padding: 10px; font-size: 0.88rem; font-weight: 700; color: var(--color-text-primary); cursor: pointer; text-align: center;">
             Schließen
           </button>
         </div>
