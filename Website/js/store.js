@@ -469,11 +469,13 @@ export const Store = {
         if (i !== 44) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
         if (i !== 1) localStorage.removeItem(`dsg_player_requests_v${i}`);
         if (i !== 1) localStorage.removeItem(`dsg_matchday_rosters_v${i}`);
+        if (i !== 1) localStorage.removeItem(`dsg_pending_reports_v${i}`);
       }
     } catch(e) {}
 
     // Eagerly load synchronous local memory into shared singleton
     state.memoryData = loadLocal('dsg_data', 95);
+    this.reconcilePendingReports();
     state.memoryNews = loadLocal('dsg_articles', 40) || sortArticles([...(INITIAL_DATA.news || [])]);
     state.memoryGallery = loadLocal('dsg_gallery', 27) || INITIAL_DATA.gallery || [];
 
@@ -605,6 +607,7 @@ export const Store = {
     const roundsRef = doc(db, 'system', 'rounds_data');
     const playerReqRef = doc(db, 'system', 'player_requests_data');
     const rostersRef = doc(db, 'system', 'matchday_rosters_data');
+    const pendingReportsRef = doc(db, 'system', 'pending_reports_data');
 
     try {
       const withTimeout = (promise, ms = 8000) => {
@@ -614,12 +617,12 @@ export const Store = {
         ]);
       };
 
-      const [dataSnap, newsSnap, gallerySnap, leagueSnap, roundsSnap, playerReqSnap, rostersSnap] = await withTimeout(
+      const [dataSnap, newsSnap, gallerySnap, leagueSnap, roundsSnap, playerReqSnap, rostersSnap, pendingReportsSnap] = await withTimeout(
         Promise.all([
-          getDoc(dataRef), getDoc(newsRef), getDoc(galleryRef), getDoc(leagueRef), getDoc(roundsRef), getDoc(playerReqRef), getDoc(rostersRef)
+          getDoc(dataRef), getDoc(newsRef), getDoc(galleryRef), getDoc(leagueRef), getDoc(roundsRef), getDoc(playerReqRef), getDoc(rostersRef), getDoc(pendingReportsRef)
         ]),
         8000
-      ).catch(() => [ { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false } ]);
+      ).catch(() => [ { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false }, { exists: () => false } ]);
 
       let needsMigration = false;
       let hasLigaUpdates = false;
@@ -630,7 +633,7 @@ export const Store = {
       if (dataSnap.exists() && dataSnap.data()?.data) {
         const fbData = dataSnap.data().data;
         const fbTime = dataSnap.data().lastUpdated || fbData.lastUpdated || 0;
-        const localData = loadLocal('dsg_data', 93);
+        const localData = loadLocal('dsg_data', 95);
         const localTime = localData?.lastUpdated || 0;
         
         let targetData = (localTime > fbTime && localData && localData.seasons) ? localData : fbData;
@@ -972,6 +975,21 @@ export const Store = {
       trySetLocal('dsg_data_v95', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v40', JSON.stringify(state.memoryNews));
       trySetLocal('dsg_gallery_v27', JSON.stringify(state.memoryGallery));
+
+      // Sync Pending Match Reports from Firestore
+      if (pendingReportsSnap && pendingReportsSnap.exists() && pendingReportsSnap.data()?.data) {
+        const fbPending = pendingReportsSnap.data().data;
+        if (Array.isArray(fbPending)) {
+          const localPending = loadLocal('dsg_pending_reports', 1) || [];
+          const fbTime = pendingReportsSnap.data().lastUpdated || 0;
+          const localTime = parseInt(localStorage.getItem('dsg_pending_reports_last_updated'), 10) || 0;
+          if (fbTime >= localTime || localPending.length === 0) {
+            trySetLocal('dsg_pending_reports_v1', JSON.stringify(fbPending));
+            localStorage.setItem('dsg_pending_reports_last_updated', String(fbTime));
+          }
+        }
+      }
+      this.reconcilePendingReports();
 
       if (hasLigaUpdates) {
         window.dispatchEvent(new CustomEvent('data-updated'));
@@ -2234,7 +2252,47 @@ export const Store = {
     return true;
   },
 
-  // --- Match Report Approval Workflow ---
+  // --- Match Report Approval & Dedicated Persistence Workflow ---
+  getPendingReportsStore() {
+    const local = loadLocal('dsg_pending_reports', 1);
+    if (local && Array.isArray(local)) return local;
+    return [];
+  },
+
+  savePendingReportsStore(reports) {
+    trySetLocal('dsg_pending_reports_v1', JSON.stringify(reports));
+    localStorage.setItem('dsg_pending_reports_last_updated', String(Date.now()));
+    try {
+      setDoc(doc(db, 'system', 'pending_reports_data'), { data: reports, lastUpdated: Date.now() })
+        .catch(e => console.error("Firebase save error (pending reports):", e));
+    } catch(e) {}
+  },
+
+  reconcilePendingReports() {
+    const data = this.getData();
+    if (!data.seasons) return;
+    const pendingStore = this.getPendingReportsStore();
+
+    pendingStore.forEach(p => {
+      const s = data.seasons[p.seasonKey];
+      if (s && Array.isArray(s.matches)) {
+        const m = s.matches.find(match => String(match.id) === String(p.matchId) || (match.home === p.match?.home && match.away === p.match?.away));
+        if (m) {
+          if (p.status === 'pending_approval') {
+            m.reportStatus = 'pending_approval';
+            m.refereeReport = p.report;
+            m.lastReportSubmittedAt = p.submittedAt;
+          } else if (p.status === 'rejected' && m.reportStatus !== 'approved') {
+            m.reportStatus = 'rejected';
+            m.reportRejectReason = p.rejectReason || '';
+          } else if (p.status === 'approved') {
+            m.reportStatus = 'approved';
+          }
+        }
+      }
+    });
+  },
+
   async submitRefereeReport(seasonKey, matchId, reportData) {
     if (!seasonKey || !matchId || !reportData) return false;
     const data = this.getData();
@@ -2247,7 +2305,7 @@ export const Store = {
     const currentMatch = matches[matchIndex];
     const submission = {
       ...reportData,
-      matchId: matchId,
+      matchId: String(matchId),
       seasonKey: seasonKey,
       submittedAt: Date.now(),
       status: 'pending_approval'
@@ -2259,6 +2317,35 @@ export const Store = {
       reportStatus: 'pending_approval',
       lastReportSubmittedAt: Date.now()
     };
+
+    // Update dedicated pending reports store
+    const pendingStore = this.getPendingReportsStore();
+    const existingIdx = pendingStore.findIndex(p => String(p.matchId) === String(matchId) && String(p.seasonKey) === String(seasonKey));
+    const pendingEntry = {
+      id: 'rep_' + matchId,
+      matchId: String(matchId),
+      seasonKey: seasonKey,
+      seasonName: data.seasons[seasonKey]?.name || seasonKey,
+      status: 'pending_approval',
+      submittedAt: Date.now(),
+      report: submission,
+      match: {
+        id: currentMatch.id,
+        round: currentMatch.round,
+        date: currentMatch.date,
+        time: currentMatch.time,
+        venue: currentMatch.venue || currentMatch.location,
+        home: currentMatch.home,
+        away: currentMatch.away
+      }
+    };
+
+    if (existingIdx !== -1) {
+      pendingStore[existingIdx] = pendingEntry;
+    } else {
+      pendingStore.unshift(pendingEntry);
+    }
+    this.savePendingReportsStore(pendingStore);
 
     this.saveData(data);
     window.dispatchEvent(new CustomEvent('match-reports-updated'));
@@ -2304,6 +2391,16 @@ export const Store = {
       matches[matchIndex].refereeReport.confirmedAt = Date.now();
     }
 
+    // Update dedicated pending reports store
+    const pendingStore = this.getPendingReportsStore();
+    const pIdx = pendingStore.findIndex(p => String(p.matchId) === String(matchId) && String(p.seasonKey) === String(seasonKey));
+    if (pIdx !== -1) {
+      pendingStore[pIdx].status = 'approved';
+      pendingStore[pIdx].confirmedAt = Date.now();
+      pendingStore[pIdx].confirmedBy = adminReviewer;
+      this.savePendingReportsStore(pendingStore);
+    }
+
     this.saveData(data);
     this.recalculateSeason(seasonKey);
     window.dispatchEvent(new CustomEvent('match-reports-updated'));
@@ -2327,6 +2424,16 @@ export const Store = {
       matches[matchIndex].refereeReport.rejectReason = reason;
     }
 
+    // Update dedicated pending reports store
+    const pendingStore = this.getPendingReportsStore();
+    const pIdx = pendingStore.findIndex(p => String(p.matchId) === String(matchId) && String(p.seasonKey) === String(seasonKey));
+    if (pIdx !== -1) {
+      pendingStore[pIdx].status = 'rejected';
+      pendingStore[pIdx].rejectReason = reason;
+      pendingStore[pIdx].reviewedAt = Date.now();
+      this.savePendingReportsStore(pendingStore);
+    }
+
     this.saveData(data);
     window.dispatchEvent(new CustomEvent('match-reports-updated'));
     window.dispatchEvent(new CustomEvent('data-updated'));
@@ -2334,25 +2441,41 @@ export const Store = {
   },
 
   getPendingMatchReports() {
+    this.reconcilePendingReports();
     const data = this.getData();
+    const pendingStore = this.getPendingReportsStore().filter(p => p.status === 'pending_approval');
     const results = [];
-    if (!data.seasons) return results;
+    const seenMatchIds = new Set();
 
-    Object.keys(data.seasons).forEach(sKey => {
-      const s = data.seasons[sKey];
-      if (s && Array.isArray(s.matches)) {
-        s.matches.forEach(m => {
-          if (m.reportStatus === 'pending_approval' && m.refereeReport) {
-            results.push({
-              seasonKey: sKey,
-              seasonName: s.name || sKey,
-              match: m,
-              report: m.refereeReport
-            });
-          }
-        });
-      }
+    pendingStore.forEach(p => {
+      seenMatchIds.add(`${p.seasonKey}_${p.matchId}`);
+      results.push({
+        seasonKey: p.seasonKey,
+        seasonName: p.seasonName || p.seasonKey,
+        match: p.match || (data.seasons && data.seasons[p.seasonKey]?.matches?.find(m => String(m.id) === String(p.matchId))),
+        report: p.report
+      });
     });
+
+    if (data.seasons) {
+      Object.keys(data.seasons).forEach(sKey => {
+        const s = data.seasons[sKey];
+        if (s && Array.isArray(s.matches)) {
+          s.matches.forEach(m => {
+            const key = `${sKey}_${m.id}`;
+            if (!seenMatchIds.has(key) && m.reportStatus === 'pending_approval' && m.refereeReport) {
+              seenMatchIds.add(key);
+              results.push({
+                seasonKey: sKey,
+                seasonName: s.name || sKey,
+                match: m,
+                report: m.refereeReport
+              });
+            }
+          });
+        }
+      });
+    }
 
     return results;
   },
@@ -2571,6 +2694,22 @@ export const Store = {
         }
       }, (err) => {
         console.warn("Realtime listener (player_requests) skipped or offline:", err);
+      });
+
+      onSnapshot(doc(db, 'system', 'pending_reports_data'), (snap) => {
+        if (snap.exists() && snap.data()?.data) {
+          const fbReports = snap.data().data;
+          const fbTime = snap.data().lastUpdated || 0;
+          const localTime = parseInt(localStorage.getItem('dsg_pending_reports_last_updated'), 10) || 0;
+          if (fbTime >= localTime || !localStorage.getItem('dsg_pending_reports_v1')) {
+            trySetLocal('dsg_pending_reports_v1', JSON.stringify(fbReports));
+            localStorage.setItem('dsg_pending_reports_last_updated', String(fbTime));
+            this.reconcilePendingReports();
+            window.dispatchEvent(new CustomEvent('match-reports-updated', { detail: fbReports }));
+          }
+        }
+      }, (err) => {
+        console.warn("Realtime listener (pending_reports) skipped or offline:", err);
       });
     } catch (e) {
       console.warn("Realtime sync initialization skipped:", e);

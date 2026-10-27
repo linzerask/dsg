@@ -270,7 +270,9 @@ export const bindRefereeAdmin = async () => {
 
           const scoreStr = (m.score && m.score !== '-:-' && m.score !== ':') ? `[${m.score}]` : '(Bevorstehend)';
 
-          return `<option value="${m.id}">${roundStr ? roundStr + ': ' : ''}${m.home} vs ${m.away} ${scoreStr} - ${dateStr}</option>`;
+          const pendingTag = m.reportStatus === 'pending_approval' ? ' [Freigabe ausstehend]' : '';
+
+          return `<option value="${m.id}">${roundStr ? roundStr + ': ' : ''}${m.home} vs ${m.away} ${scoreStr}${pendingTag} - ${dateStr}</option>`;
 
         }).join('');
 
@@ -342,7 +344,7 @@ export const bindRefereeAdmin = async () => {
   const isPassControlCompleted = (m) => {
     if (!m) return false;
     if (m.passControlCompleted === true) return true;
-    if (m.reportStatus === 'approved') return true;
+    if (m.reportStatus === 'pending_approval' || m.reportStatus === 'approved') return true;
     return localStorage.getItem(passControlCompletedKey(m)) === 'true';
   };
 
@@ -1407,11 +1409,17 @@ export const bindRefereeAdmin = async () => {
       return;
     }
 
+    // Authoritative report data source: if pending approval, load the submitted refereeReport
+    const reportData = (match.reportStatus === 'pending_approval' && match.refereeReport)
+      ? { ...match, ...match.refereeReport }
+      : match;
+
     // Parse current scores
     let scoreHome = '';
     let scoreAway = '';
-    if (match.score && match.score.includes(':') && match.score !== '-:-' && match.score !== ':') {
-      const cleanScore = match.score.replace(/\s*\([^)]*\)/g, '').replace(/[^\d:]/g, '').trim();
+    const rawScore = reportData.score || match.score;
+    if (rawScore && rawScore.includes(':') && rawScore !== '-:-' && rawScore !== ':') {
+      const cleanScore = rawScore.replace(/\s*\([^)]*\)/g, '').replace(/[^\d:]/g, '').trim();
       if (cleanScore.includes(':')) {
         const parts = cleanScore.split(':');
         scoreHome = parts[0]?.trim() || '';
@@ -1421,15 +1429,16 @@ export const bindRefereeAdmin = async () => {
 
     let htHome = '';
     let htAway = '';
-    if (match.ht && match.ht.includes(':') && match.ht !== ':') {
-      const cleanHt = match.ht.replace(/[()]/g, '').replace(/[^\d:]/g, '').trim();
+    const rawHt = reportData.ht || reportData.htScore || reportData.halfTime || match.ht || '';
+    if (rawHt && rawHt.includes(':') && rawHt !== ':') {
+      const cleanHt = rawHt.replace(/[()]/g, '').replace(/[^\d:]/g, '').trim();
       if (cleanHt.includes(':')) {
         const parts = cleanHt.split(':');
         htHome = parts[0]?.trim() || '';
         htAway = parts[1]?.trim() || '';
       }
-    } else if (match.score && match.score.includes('(')) {
-      const mHt = match.score.match(/\(([^)]+)\)/);
+    } else if (rawScore && rawScore.includes('(')) {
+      const mHt = rawScore.match(/\(([^)]+)\)/);
       if (mHt && mHt[1].includes(':')) {
         const cleanHt = mHt[1].replace(/[^\d:]/g, '').trim();
         const parts = cleanHt.split(':');
@@ -1438,10 +1447,10 @@ export const bindRefereeAdmin = async () => {
       }
     }
 
-    // Populate Scorers & Cards from existing match data
-    const rawScorers = (match.scorers && match.scorers.length > 0)
-      ? match.scorers
-      : (match.events || []).filter(e => e.type === 'goal');
+    // Populate Scorers & Cards from authoritative reportData
+    const rawScorers = (reportData.scorers && reportData.scorers.length > 0)
+      ? reportData.scorers
+      : (reportData.events || []).filter(e => e.type === 'goal');
 
     refReportScorersHome = [];
     refReportScorersAway = [];
@@ -1460,9 +1469,9 @@ export const bindRefereeAdmin = async () => {
       }
     });
 
-    const rawCards = (match.cards && match.cards.length > 0)
-      ? match.cards
-      : (match.events || []).filter(e => e.type === 'yellow' || e.type === 'yellowRed' || e.type === 'yellow-red' || e.type === 'gelbrot' || e.type === 'red' || e.type === 'card');
+    const rawCards = (reportData.cards && reportData.cards.length > 0)
+      ? reportData.cards
+      : (reportData.events || []).filter(e => e.type === 'yellow' || e.type === 'yellowRed' || e.type === 'yellow-red' || e.type === 'gelbrot' || e.type === 'red' || e.type === 'card');
 
     refReportCardsHome = [];
     refReportCardsAway = [];
@@ -1487,6 +1496,28 @@ export const bindRefereeAdmin = async () => {
         } else {
           refReportCardsAway.push({ ...cObj });
         }
+      }
+    });
+
+    // Populate Substitutions from authoritative reportData
+    const rawSubs = (reportData.substitutions && reportData.substitutions.length > 0)
+      ? reportData.substitutions
+      : (reportData.events || []).filter(e => e.type === 'substitution');
+
+    refReportSubsHome = [];
+    refReportSubsAway = [];
+    rawSubs.forEach(s => {
+      const sTeam = sanitizeMojibake(s.team || '');
+      const sObj = {
+        playerOut: sanitizeMojibake(s.playerOut || ''),
+        playerIn: sanitizeMojibake(s.playerIn || ''),
+        minute: sanitizeMojibake(s.minute || '')
+      };
+      const isHome = sTeam === match.home || (match.home && sTeam && (sTeam.toLowerCase().includes(match.home.toLowerCase()) || match.home.toLowerCase().includes(sTeam.toLowerCase())));
+      if (isHome) {
+        refReportSubsHome.push(sObj);
+      } else {
+        refReportSubsAway.push(sObj);
       }
     });
 
@@ -1649,37 +1680,37 @@ export const bindRefereeAdmin = async () => {
       <form id="referee-report-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
         
         ${match.reportStatus === 'pending_approval' ? `
-          <div style="background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.45); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <span style="font-size: 1.3rem;">⏳</span>
+          <div style="background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.45); border-radius: 8px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: var(--space-sm);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
               <div>
-                <div style="font-weight: 800; color: #d97706; font-size: 0.95rem;">Spielbericht eingereicht (Wartet auf Admin-Freigabe)</div>
-                <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">Der Bericht liegt der Ligaleitung zur Prüfung &amp; offiziellen Bestätigung vor.</div>
+                <div style="font-weight: 800; color: #d97706; font-size: 0.95rem;">Spielbericht eingereicht (Wartet auf Admin-Bestätigung)</div>
+                <div style="font-size: 0.82rem; color: var(--color-text-secondary); margin-top: 3px;">Der Spielbericht liegt der Ligaleitung zur Prüfung vor. Du kannst alle Daten (Ergebnis, Torschützen, Karten, Wechsel) weiterhin bearbeiten und den aktualisierten Bericht einreichen.</div>
               </div>
             </div>
-            <span style="font-size: 0.76rem; font-weight: 800; color: #d97706; background: rgba(234, 179, 8, 0.2); padding: 4px 10px; border-radius: 999px; text-transform: uppercase;">Ausstehend</span>
+            <span style="font-size: 0.76rem; font-weight: 800; color: #d97706; background: rgba(234, 179, 8, 0.2); padding: 4px 10px; border-radius: 999px; text-transform: uppercase; white-space: nowrap;">Wartet auf Freigabe</span>
           </div>
         ` : match.reportStatus === 'approved' ? `
-          <div style="background: rgba(22, 163, 74, 0.15); border: 1px solid rgba(22, 163, 74, 0.45); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <span style="font-size: 1.3rem; color: #16a34a;">✓</span>
+          <div style="background: rgba(22, 163, 74, 0.15); border: 1px solid rgba(22, 163, 74, 0.45); border-radius: 8px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: var(--space-sm);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
               <div>
                 <div style="font-weight: 800; color: #16a34a; font-size: 0.95rem;">Spielbericht offiziell von Ligaleitung bestätigt</div>
-                <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">Das Spielergebnis und alle Ereignisse sind offiziell in der Tabelle gewertet.</div>
+                <div style="font-size: 0.82rem; color: var(--color-text-secondary); margin-top: 3px;">Das Spielergebnis und alle Ereignisse sind offiziell in der Tabelle gewertet.</div>
               </div>
             </div>
-            <span style="font-size: 0.76rem; font-weight: 800; color: #16a34a; background: rgba(22, 163, 74, 0.2); padding: 4px 10px; border-radius: 999px; text-transform: uppercase;">Bestätigt</span>
+            <span style="font-size: 0.76rem; font-weight: 800; color: #16a34a; background: rgba(22, 163, 74, 0.2); padding: 4px 10px; border-radius: 999px; text-transform: uppercase; white-space: nowrap;">Bestätigt</span>
           </div>
         ` : match.reportStatus === 'rejected' ? `
-          <div style="background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.45); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <span style="font-size: 1.3rem; color: #dc2626;">⚠</span>
+          <div style="background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.45); border-radius: 8px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: var(--space-sm);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
               <div>
                 <div style="font-weight: 800; color: #dc2626; font-size: 0.95rem;">Spielbericht von Ligaleitung abgelehnt</div>
-                <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">Hinweis: ${match.reportRejectReason || 'Bitte Angaben überprüfen und erneut einreichen.'}</div>
+                <div style="font-size: 0.82rem; color: var(--color-text-secondary); margin-top: 3px;">Hinweis: ${match.reportRejectReason || 'Bitte Angaben überprüfen und erneut einreichen.'}</div>
               </div>
             </div>
-            <span style="font-size: 0.76rem; font-weight: 800; color: #dc2626; background: rgba(220, 38, 38, 0.2); padding: 4px 10px; border-radius: 999px; text-transform: uppercase;">Überarbeitung nötig</span>
+            <span style="font-size: 0.76rem; font-weight: 800; color: #dc2626; background: rgba(220, 38, 38, 0.2); padding: 4px 10px; border-radius: 999px; text-transform: uppercase; white-space: nowrap;">Überarbeitung nötig</span>
           </div>
         ` : ''}
         <!-- Match Header Information Card (Admin Style) -->
@@ -1903,7 +1934,7 @@ export const bindRefereeAdmin = async () => {
           <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; color: var(--color-text-primary);">
             Vorkommnisse & Schiedsrichter-Bemerkungen (optional)
           </label>
-          <textarea id="ref-report-notes" class="admin-input" rows="3" placeholder="Besondere Vorfälle, Ausschlüsse, Verletzungen, Platzverhältnisse..." style="width: 100%; font-size: 0.85rem;">${match.refereeNotes || match.note || ''}</textarea>
+          <textarea id="ref-report-notes" class="admin-input" rows="3" placeholder="Besondere Vorfälle, Ausschlüsse, Verletzungen, Platzverhältnisse..." style="width: 100%; font-size: 0.85rem;">${reportData.refereeNotes || reportData.note || match.refereeNotes || match.note || ''}</textarea>
         </div>
 
         <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-md); display: flex; justify-content: flex-end; gap: 12px;">
@@ -2321,8 +2352,13 @@ export const bindRefereeAdmin = async () => {
       };
 
       try {
-        await Store.submitRefereeReport(selectedSeason, match.id, deepSanitize(updatedMatch));
-        alert('Spielbericht erfolgreich an die Ligaleitung übermittelt! Der Bericht wird nun vom Administrator geprüft und bestätigt.');
+        match.passControlCompleted = true;
+      try { localStorage.setItem(passControlCompletedKey(match), 'true'); } catch(e) {}
+      await Store.submitRefereeReport(selectedSeason, match.id, deepSanitize(updatedMatch));
+        const msg = (match.reportStatus === 'pending_approval')
+          ? 'Aktualisierter Spielbericht erfolgreich an die Ligaleitung übermittelt! Der Bericht wird nun vom Administrator geprüft und bestätigt.'
+          : 'Spielbericht erfolgreich an die Ligaleitung übermittelt! Der Bericht wird nun vom Administrator geprüft und bestätigt.';
+        alert(msg);
         populateMatchDropdown();
       } catch (err) {
         console.error("Save match error:", err);
