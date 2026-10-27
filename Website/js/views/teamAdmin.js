@@ -710,12 +710,94 @@ export const bindTeamAdmin = async (auth) => {
 
       const { playerMap } = calculateSeasonSuspensions(selectedKaderSeasonKey);
 
+      const getPlayerSuspensionData = (pName, teamTitle) => {
+        const pNorm = normalizePlayerName(pName);
+        const tNorm = normalizeKey(teamTitle);
+        let susp = playerMap.get(pNorm + '___' + tNorm);
+
+        if (!susp) {
+          for (const [key, val] of playerMap.entries()) {
+            if (key.startsWith(pNorm + '___')) {
+              const entryTeam = key.split('___')[1] || '';
+              if (entryTeam.includes(tNorm) || tNorm.includes(entryTeam) || !tNorm) {
+                susp = val;
+                break;
+              }
+            }
+          }
+        }
+        if (!susp) {
+          for (const [key, val] of playerMap.entries()) {
+            if (key.startsWith(pNorm + '___')) {
+              susp = val;
+              break;
+            }
+          }
+        }
+
+        if (!susp) {
+          return {
+            isSuspended: false,
+            isWarning: false,
+            reason: '',
+            yellowCount: 0,
+            redCount: 0,
+            yellowRedCount: 0,
+            warningThreshold: 3
+          };
+        }
+
+        const matchRound = (currentMatch.round || '').trim();
+        const matchId = String(currentMatch.id || '');
+        const isFinished = isPlayed;
+
+        let isSuspended = false;
+        let reason = '';
+
+        if (susp.status === 'suspended' && susp.active) {
+          const nextM = susp.active.nextMatch?.match;
+          if (!isFinished || (nextM && String(nextM.id) === matchId)) {
+            isSuspended = true;
+            reason = susp.active.reason || 'Spielsperre';
+          }
+        } else if (susp.served && Array.isArray(susp.served) && susp.served.length > 0) {
+          const servedInThisMatch = susp.served.some(s => 
+            s.gamesServed && (s.gamesServed.includes(matchRound) || s.gamesServed.includes(currentMatch.date))
+          );
+          if (servedInThisMatch) {
+            isSuspended = true;
+            reason = susp.served[0]?.reason || 'Spielsperre (abgesessen)';
+          }
+        }
+
+        if (!isSuspended && susp.yellowCount >= 3) {
+          const hasUnservedYellow = susp.active && susp.active.type && susp.active.type.startsWith('yellow');
+          if (hasUnservedYellow) {
+            isSuspended = true;
+            reason = `${susp.yellowCount}. Gelbe Karte`;
+          }
+        }
+
+        const isWarning = !isSuspended && (susp.status === 'warning' || !!susp.warning || susp.yellowCount === 2 || susp.yellowCount === 4);
+        const warningThreshold = susp.warning?.threshold || (susp.yellowCount >= 3 ? 5 : 3);
+
+        return {
+          isSuspended,
+          isWarning,
+          reason,
+          statusText: susp.statusText || '',
+          yellowCount: susp.yellowCount || 0,
+          redCount: susp.redCount || 0,
+          yellowRedCount: susp.yellowRedCount || 0,
+          warningThreshold
+        };
+      };
+
       // Prepare players with suspension & roster data
       const processedPlayers = teamPlayers.map(p => {
         const pName = `${p.Vorname || ''} ${p.Nachname || ''}`.trim();
-        const pKey = normalizePlayerName(pName) + '___' + normalizeKey(teamName);
-        const suspInfo = playerMap.get(pKey);
-        const isSuspended = suspInfo && suspInfo.status === 'suspended';
+        const suspData = getPlayerSuspensionData(pName, teamName);
+        const isSuspended = suspData.isSuspended;
 
         let inRosterPlayer = null;
         if (existingRoster && Array.isArray(existingRoster.players)) {
@@ -725,12 +807,12 @@ export const bindTeamAdmin = async (auth) => {
           );
         }
 
-        // STRICT REQUIREMENT: No auto-selection unless already saved in existing roster
-        const isChecked = existingRoster ? !!inRosterPlayer : false;
+        // STRICT REQUIREMENT: No auto-selection unless already saved in existing roster and not suspended
+        const isChecked = existingRoster && !isSuspended ? !!inRosterPlayer : false;
         
         // STRICT REQUIREMENT: No pre-filled jersey number unless already saved in existing roster
         let currentJersey = '';
-        if (existingRoster && inRosterPlayer && inRosterPlayer.jerseyNumber) {
+        if (existingRoster && inRosterPlayer && inRosterPlayer.jerseyNumber && !isSuspended) {
           currentJersey = inRosterPlayer.jerseyNumber;
         }
 
@@ -740,6 +822,12 @@ export const bindTeamAdmin = async (auth) => {
           pName,
           position: p.Position || p.position || 'Feldspieler',
           isSuspended,
+          suspReason: suspData.reason,
+          isWarning: suspData.isWarning,
+          yellowCount: suspData.yellowCount,
+          redCount: suspData.redCount,
+          yellowRedCount: suspData.yellowRedCount,
+          warningThreshold: suspData.warningThreshold,
           isChecked,
           jerseyNumber: currentJersey,
           avatar: getPlayerAvatar(p)
@@ -759,7 +847,6 @@ export const bindTeamAdmin = async (auth) => {
       });
 
       const initialCount = processedPlayers.filter(p => p.isChecked && !p.isSuspended).length;
-
       container.innerHTML = `
         <!-- Match & Season Selector Card -->
         <div class="glass-card" style="padding: var(--space-md); margin-bottom: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border);">
@@ -861,32 +948,51 @@ export const bindTeamAdmin = async (auth) => {
         <div id="kader-players-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; margin-bottom: var(--space-lg);">
           ${processedPlayers.map(p => {
             return `
-              <div class="kader-player-card glass-card" data-player-id="${p.id}" style="padding: 10px 12px; border-radius: 8px; border: 1px solid ${p.isSuspended ? '#ef4444' : p.isChecked ? 'var(--color-accent)' : 'var(--glass-border)'}; background: ${p.isSuspended ? 'rgba(220, 38, 38, 0.06)' : 'var(--color-surface)'}; display: flex; align-items: center; justify-content: space-between; gap: 10px; transition: border-color 0.2s;">
+              <div class="kader-player-card glass-card" data-player-id="${p.id}" style="padding: 10px 12px; border-radius: 8px; border: 1px solid ${p.isSuspended ? '#ef4444' : p.isChecked ? 'var(--color-accent)' : p.isWarning ? 'rgba(234, 179, 8, 0.45)' : 'var(--glass-border)'}; background: ${p.isSuspended ? 'rgba(220, 38, 38, 0.06)' : p.isWarning ? 'rgba(234, 179, 8, 0.03)' : 'var(--color-surface)'}; display: flex; align-items: center; justify-content: space-between; gap: 10px; transition: border-color 0.2s;">
                 <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
-                  <input type="checkbox" class="kader-player-check" data-player-id="${p.id}" ${p.isChecked ? 'checked' : ''} ${p.isSuspended || isRosterLocked ? 'disabled' : ''} style="width: 18px; height: 18px; cursor: ${isRosterLocked ? 'not-allowed' : 'pointer'}; accent-color: var(--color-accent); flex-shrink: 0;">
-                  <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: #111; border: 2px solid ${p.isChecked ? 'var(--color-accent)' : 'var(--glass-border)'}; flex-shrink: 0;">
+                  <input type="checkbox" class="kader-player-check" data-player-id="${p.id}" ${p.isChecked ? 'checked' : ''} ${p.isSuspended || isRosterLocked ? 'disabled' : ''} style="width: 18px; height: 18px; cursor: ${p.isSuspended || isRosterLocked ? 'not-allowed' : 'pointer'}; accent-color: var(--color-accent); flex-shrink: 0;">
+                  <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: #111; border: 2px solid ${p.isSuspended ? '#ef4444' : p.isChecked ? 'var(--color-accent)' : 'var(--glass-border)'}; flex-shrink: 0;">
                     <img src="${p.avatar}" alt="${p.pName}" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center;">
                   </div>
                   <div style="min-width: 0; flex: 1;">
-                    <div style="font-weight: 700; font-size: 0.92rem; color: ${p.isSuspended ? '#dc2626' : 'var(--color-text-primary)'}; word-break: break-word;">
-                      ${p.pName}
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                      <span style="font-weight: 700; font-size: 0.92rem; color: ${p.isSuspended ? '#dc2626' : 'var(--color-text-primary)'}; word-break: break-word;">
+                        ${p.pName}
+                      </span>
+                      ${p.isSuspended ? `
+                        <span style="background: #dc2626; color: #fff; font-size: 0.68rem; font-weight: 800; padding: 1px 6px; border-radius: 3px; letter-spacing: 0.5px;">GESPERRT (${p.suspReason || 'Sperre'})</span>
+                      ` : p.isWarning ? `
+                        <span style="background: rgba(234, 179, 8, 0.18); color: #d97706; border: 1px solid rgba(234, 179, 8, 0.45); font-size: 0.68rem; font-weight: 800; padding: 1px 6px; border-radius: 3px;" title="Bei einer weiteren Gelben Karte im nächsten Spiel gesperrt">Sperre droht (${p.yellowCount}/${p.warningThreshold} Gelbe)</span>
+                      ` : ''}
                     </div>
-                    <div style="font-size: 0.75rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-top: 2px;">
-                      <span>${p.position}</span>
-                      ${p.isSuspended ? '<span style="background: #dc2626; color: #fff; font-size: 0.68rem; font-weight: 800; padding: 1px 5px; border-radius: 3px;">GESPERRT</span>' : ''}
+                    <div style="font-size: 0.75rem; color: var(--color-text-secondary); display: flex; flex-direction: column; gap: 2px; margin-top: 2px;">
+                      <div style="display: flex; align-items: center; gap: 6px;">
+                        <span>${p.position}</span>
+                        ${(p.yellowCount > 0 || p.redCount > 0 || p.yellowRedCount > 0) ? `
+                          <span style="display: inline-flex; align-items: center; gap: 3px; margin-left: 4px;">
+                            ${p.yellowCount > 0 ? `<span style="background: #eab308; color: #000; font-weight: 800; font-size: 0.66rem; padding: 1px 4px; border-radius: 2px;" title="${p.yellowCount} Gelbe Karte(n)">${p.yellowCount}G</span>` : ''}
+                            ${p.yellowRedCount > 0 ? `<span style="background: #f97316; color: #fff; font-weight: 800; font-size: 0.66rem; padding: 1px 4px; border-radius: 2px;" title="${p.yellowRedCount} Gelb-Rot">${p.yellowRedCount}GR</span>` : ''}
+                            ${p.redCount > 0 ? `<span style="background: #dc2626; color: #fff; font-weight: 800; font-size: 0.66rem; padding: 1px 4px; border-radius: 2px;" title="${p.redCount} Rot">${p.redCount}R</span>` : ''}
+                          </span>
+                        ` : ''}
+                      </div>
+                      ${p.isSuspended ? `
+                        <div style="color: #dc2626; font-size: 0.72rem; font-weight: 700;">Nicht spielberechtigt &bull; Darf nicht aufgestellt werden</div>
+                      ` : p.isWarning ? `
+                        <div style="color: #d97706; font-size: 0.72rem; font-weight: 600;">Vorverwarnung: Noch 1 Gelbe Karte bis zur Sperre</div>
+                      ` : ''}
                     </div>
                   </div>
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
                   <label style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary);">Nr.</label>
-                  <input type="number" class="admin-input kader-jersey-input" data-player-id="${p.id}" min="1" max="99" placeholder="--" value="${p.jerseyNumber}" ${p.isSuspended || isRosterLocked ? 'disabled' : ''} style="width: 54px; text-align: center; font-weight: 800; font-size: 0.95rem; padding: 5px 4px; ${isRosterLocked ? 'cursor: not-allowed; opacity: 0.7;' : ''}">
+                  <input type="number" class="admin-input kader-jersey-input" data-player-id="${p.id}" min="1" max="99" placeholder="--" value="${p.jerseyNumber}" ${p.isSuspended || isRosterLocked ? 'disabled' : ''} style="width: 54px; text-align: center; font-weight: 800; font-size: 0.95rem; padding: 5px 4px; ${p.isSuspended || isRosterLocked ? 'cursor: not-allowed; opacity: 0.7;' : ''}">
                 </div>
               </div>
             `;
           }).join('')}
         </div>
-
         <!-- Submit Bar -->
         <div class="glass-card" style="padding: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
           <div style="font-size: 0.85rem; color: var(--color-text-secondary);">

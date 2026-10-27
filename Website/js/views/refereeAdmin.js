@@ -2,7 +2,7 @@ import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=17930400000
 
 import { logout } from '../auth.js?v=1793040000000';
 
-import { calculateSeasonSuspensions, normalizePlayerName, normalizeKey } from '../suspensionUtils.js?v=1793040000000';
+import { calculateSeasonSuspensions, normalizePlayerName, normalizeKey, isMatchFinished } from '../suspensionUtils.js?v=1793040000000';
 import { getPlayerAvatar } from '../playerUtils.js?v=1792924000000';
 
 
@@ -17,6 +17,26 @@ let passFilterModes = { home: 'roster', away: 'roster' };
 
 
 export const viewRefereeAdmin = (auth) => {
+  const data = Store.getData();
+  const allSeasons = data.seasons || {};
+  const allLeagues = (Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : []) || [];
+  const currentSeasonKey = data.currentSeason || "2026/2027";
+
+  let availableSeasons = allLeagues.map(l => ({
+    seasonKey: l.seasonKey || l.id,
+    label: l.name || l.title || l.seasonKey
+  })).filter(s => !!allSeasons[s.seasonKey]);
+
+  if (availableSeasons.length === 0) {
+    availableSeasons = Object.keys(allSeasons).map(k => ({
+      seasonKey: k,
+      label: k.includes('DSG') ? k : `DSG Liga ${k}`
+    }));
+  }
+
+  if (!selectedSeason || !allSeasons[selectedSeason]) {
+    selectedSeason = currentSeasonKey;
+  }
 
   return `
 
@@ -73,11 +93,9 @@ export const viewRefereeAdmin = (auth) => {
               </label>
 
               <select id="referee-season-select" class="admin-input" style="width: 100%; font-size: 0.95rem; font-weight: 600; padding: 10px;">
-
-                <option value="Testliga 2026/2027">Testliga 2026/2027 (Testbetrieb)</option>
-
-                <option value="2026/2027">DSG Liga 2026/2027 (Offiziell)</option>
-
+                ${availableSeasons.map(s => `
+                  <option value="${s.seasonKey}" ${s.seasonKey === selectedSeason ? 'selected' : ''}>${s.label}</option>
+                `).join('')}
               </select>
 
             </div>
@@ -181,32 +199,28 @@ export const bindRefereeAdmin = async () => {
 
 
   const ligaData = Store.getData();
-
-  if (ligaData.seasons && ligaData.seasons['Testliga 2026/2027']) {
-
-    selectedSeason = 'Testliga 2026/2027';
-
-  } else {
-
-    selectedSeason = ligaData.currentSeason || '2026/2027';
-
+  const currentSeasonKey = ligaData.currentSeason || '2026/2027';
+  if (!selectedSeason || !ligaData.seasons || !ligaData.seasons[selectedSeason]) {
+    selectedSeason = currentSeasonKey;
   }
 
 
 
   let players = (Store.getAdminPlayersSync ? Store.getAdminPlayersSync() : []) || [];
-
-  Store.getAdminPlayers().then(p => {
-
-    if (p && Array.isArray(p) && p.length > 0) {
-
-      players = p;
-
-      renderActiveTab();
-
+  if (!players || players.length === 0) {
+    try {
+      players = (await Store.getAdminPlayers()) || [];
+    } catch(e) {
+      console.warn('Error loading admin players:', e);
     }
-
-  });
+  } else {
+    Store.getAdminPlayers().then(p => {
+      if (p && Array.isArray(p) && p.length > 0) {
+        players = p;
+        renderActiveTab();
+      }
+    });
+  }
 
 
 
@@ -474,7 +488,90 @@ export const bindRefereeAdmin = async () => {
     };
     const verifiedPasses = getVerifiedPasses();
 
-    const { playerMap } = calculateSeasonSuspensions(selectedSeason);
+    const { playerMap, activeSuspensions } = calculateSeasonSuspensions(selectedSeason);
+
+    const getPlayerSuspensionData = (pName, teamTitle) => {
+      const pNorm = normalizePlayerName(pName);
+      const tNorm = normalizeKey(teamTitle);
+      let susp = playerMap.get(pNorm + '___' + tNorm);
+
+      if (!susp) {
+        for (const [key, val] of playerMap.entries()) {
+          if (key.startsWith(pNorm + '___')) {
+            const entryTeam = key.split('___')[1] || '';
+            if (entryTeam.includes(tNorm) || tNorm.includes(entryTeam) || !tNorm) {
+              susp = val;
+              break;
+            }
+          }
+        }
+      }
+      if (!susp) {
+        for (const [key, val] of playerMap.entries()) {
+          if (key.startsWith(pNorm + '___')) {
+            susp = val;
+            break;
+          }
+        }
+      }
+
+      if (!susp) {
+        return {
+          isSuspended: false,
+          isWarning: false,
+          reason: '',
+          yellowCount: 0,
+          redCount: 0,
+          yellowRedCount: 0,
+          warningThreshold: 3
+        };
+      }
+
+      const matchRound = (match.round || '').trim();
+      const matchId = String(match.id || '');
+      const isFinished = isMatchFinished(match);
+
+      let isSuspended = false;
+      let reason = '';
+
+      if (susp.status === 'suspended' && susp.active) {
+        const nextM = susp.active.nextMatch?.match;
+        if (!isFinished || (nextM && String(nextM.id) === matchId)) {
+          isSuspended = true;
+          reason = susp.active.reason || 'Spielsperre';
+        }
+      } else if (susp.served && Array.isArray(susp.served) && susp.served.length > 0) {
+        const servedInThisMatch = susp.served.some(s => 
+          s.gamesServed && (s.gamesServed.includes(matchRound) || s.gamesServed.includes(match.date))
+        );
+        if (servedInThisMatch) {
+          isSuspended = true;
+          reason = susp.served[0]?.reason || 'Spielsperre (abgesessen)';
+        }
+      }
+
+      if (!isSuspended && susp.yellowCount >= 3) {
+        const hasUnservedYellow = susp.active && susp.active.type && susp.active.type.startsWith('yellow');
+        if (hasUnservedYellow) {
+          isSuspended = true;
+          reason = `${susp.yellowCount}. Gelbe Karte`;
+        }
+      }
+
+      const isWarning = !isSuspended && (susp.status === 'warning' || !!susp.warning || susp.yellowCount === 2 || susp.yellowCount === 4);
+      const warningThreshold = susp.warning?.threshold || (susp.yellowCount >= 3 ? 5 : 3);
+
+      return {
+        isSuspended,
+        isWarning,
+        reason,
+        statusText: susp.statusText || '',
+        yellowCount: susp.yellowCount || 0,
+        redCount: susp.redCount || 0,
+        yellowRedCount: susp.yellowRedCount || 0,
+        warningThreshold
+      };
+    };
 
     const homePlayers = filterPlayers(homeTeam);
     const awayPlayers = filterPlayers(awayTeam);
@@ -530,9 +627,29 @@ export const bindRefereeAdmin = async () => {
       const verifiedCount = displayPlayers.filter(p => {
         const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
         const pKey = normalizePlayerName(pName) + '___' + normalizeKey(teamTitle);
+        const suspData = getPlayerSuspensionData(pName, teamTitle);
+        if (suspData.isSuspended) return false;
         const hasPhoto = !!(p.photoUrl || p.passPhoto || p.photo || p.foto || p.avatar || p.Foto || p.image);
         return hasPhoto || !!verifiedPasses[pKey];
       }).length;
+
+      const eligibleCount = displayPlayers.filter(p => {
+        const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
+        const suspData = getPlayerSuspensionData(pName, teamTitle);
+        return !suspData.isSuspended;
+      }).length;
+
+      const suspendedInList = displayPlayers.filter(p => {
+        const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
+        const suspData = getPlayerSuspensionData(pName, teamTitle);
+        return suspData.isSuspended;
+      });
+
+      const warningInList = displayPlayers.filter(p => {
+        const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
+        const suspData = getPlayerSuspensionData(pName, teamTitle);
+        return !suspData.isSuspended && suspData.isWarning;
+      });
 
       return `
         <div class="glass-card" style="padding: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border);">
@@ -540,7 +657,10 @@ export const bindRefereeAdmin = async () => {
             <div>
               <h3 style="margin: 0; font-size: 1.15rem; color: var(--color-text-primary);">${teamTitle}</h3>
               <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px;">
-                ${verifiedCount} von ${displayPlayers.length} Spielern spielberechtigt ${verifiedCount === displayPlayers.length && displayPlayers.length > 0 ? '<span style="color: #16a34a; font-weight: 800;">(Vollständig überprüft)</span>' : ''}
+                ${verifiedCount} von ${eligibleCount} spielberechtigten Spielern verifiziert
+                ${suspendedInList.length > 0 ? ` &bull; <span style="color: #dc2626; font-weight: 800;">${suspendedInList.length} Gesperrt</span>` : ''}
+                ${warningInList.length > 0 ? ` &bull; <span style="color: #d97706; font-weight: 700;">${warningInList.length} Vorverwarnt</span>` : ''}
+                ${verifiedCount === eligibleCount && eligibleCount > 0 ? ' <span style="color: #16a34a; font-weight: 800;">(Vollständig überprüft)</span>' : ''}
               </div>
             </div>
             ${hasRoster ? `
@@ -553,6 +673,13 @@ export const bindRefereeAdmin = async () => {
               </span>
             `}
           </div>
+
+          ${suspendedInList.length > 0 ? `
+            <div style="background: rgba(220, 38, 38, 0.12); border: 1px solid #ef4444; color: #dc2626; padding: 10px 14px; border-radius: 6px; font-weight: 700; font-size: 0.82rem; margin-bottom: var(--space-sm); display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <div><strong>ACHTUNG:</strong> ${suspendedInList.length} Spieler in dieser Liste ist <strong>GESPERRT</strong> (${suspendedInList.map(p => `${p.Vorname || ''} ${p.Nachname || ''}`.trim()).join(', ')}) und darf <strong>nicht eingesetzt werden</strong>!</div>
+            </div>
+          ` : ''}
 
           ${hasRoster ? `
             <div style="display: flex; gap: 6px; margin-bottom: var(--space-md);">
@@ -583,8 +710,9 @@ export const bindRefereeAdmin = async () => {
             ` : displayPlayers.map(p => {
               const pName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
               const pKey = normalizePlayerName(pName) + '___' + normalizeKey(teamTitle);
-              const suspInfo = playerMap.get(pKey);
-              const isSuspended = suspInfo && suspInfo.status === 'suspended';
+              const suspData = getPlayerSuspensionData(pName, teamTitle);
+              const isSuspended = suspData.isSuspended;
+              const isWarning = suspData.isWarning;
 
               const hasCustomPhoto = !!(p.photoUrl || p.passPhoto || p.photo || p.foto || p.avatar || p.Foto || p.image);
               const avatarSrc = getPlayerAvatar(p);
@@ -593,31 +721,58 @@ export const bindRefereeAdmin = async () => {
               const passNum = p.passNumber || p['#'] || p.id || '-';
 
               return `
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: ${isSuspended ? 'rgba(220, 38, 38, 0.08)' : isPassChecked ? 'rgba(0, 240, 95, 0.04)' : 'var(--color-surface)'}; border: 1px solid ${isSuspended ? '#ef4444' : isPassChecked ? 'rgba(0, 240, 95, 0.45)' : 'var(--glass-border)'}; border-radius: 6px; padding: 8px 10px; transition: all 0.2s;">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; background: ${isSuspended ? 'rgba(220, 38, 38, 0.08)' : isWarning ? 'rgba(234, 179, 8, 0.04)' : isPassChecked ? 'rgba(0, 240, 95, 0.04)' : 'var(--color-surface)'}; border: 1px solid ${isSuspended ? '#ef4444' : isWarning ? 'rgba(234, 179, 8, 0.45)' : isPassChecked ? 'rgba(0, 240, 95, 0.45)' : 'var(--glass-border)'}; border-radius: 6px; padding: 8px 10px; transition: all 0.2s;">
                   <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
                     ${p.jerseyNumber ? `
-                      <span style="background: var(--color-accent); color: #000; font-weight: 800; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; flex-shrink: 0; min-width: 32px; text-align: center;">#${p.jerseyNumber}</span>
+                      <span style="background: ${isSuspended ? '#ef4444' : 'var(--color-accent)'}; color: ${isSuspended ? '#fff' : '#000'}; font-weight: 800; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; flex-shrink: 0; min-width: 32px; text-align: center;">#${p.jerseyNumber}</span>
                     ` : `
                       <span style="background: var(--color-surface); border: 1px solid var(--glass-border); color: var(--color-text-secondary); font-weight: 700; padding: 4px 6px; border-radius: 4px; font-size: 0.75rem; flex-shrink: 0; min-width: 32px; text-align: center;">--</span>
                     `}
-                    <div style="width: 44px; height: 44px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid ${hasCustomPhoto ? 'var(--color-accent)' : 'var(--glass-border)'}; flex-shrink: 0;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid ${isSuspended ? '#ef4444' : hasCustomPhoto ? 'var(--color-accent)' : 'var(--glass-border)'}; flex-shrink: 0;">
                       <img src="${avatarSrc}" alt="${pName}" style="width: 100%; height: 100%; object-fit: contain; object-position: bottom center; cursor: pointer;" title="Klicken für Vollbild" onclick="window.open('${avatarSrc}', '_blank')">
                     </div>
                     <div style="min-width: 0; flex: 1;">
-                      <div style="font-weight: 700; font-size: 0.92rem; color: ${isSuspended ? '#dc2626' : 'var(--color-text-primary)'}; line-height: 1.25; word-break: break-word;">
-                        ${pName}
+                      <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                        <span style="font-weight: 700; font-size: 0.92rem; color: ${isSuspended ? '#dc2626' : 'var(--color-text-primary)'}; line-height: 1.25; word-break: break-word;">
+                          ${pName}
+                        </span>
+                        ${isSuspended ? `
+                          <span style="background: #dc2626; color: #fff; font-size: 0.68rem; font-weight: 800; padding: 2px 6px; border-radius: 3px; letter-spacing: 0.5px; text-transform: uppercase;">GESPERRT</span>
+                        ` : isWarning ? `
+                          <span style="background: rgba(234, 179, 8, 0.18); color: #d97706; border: 1px solid rgba(234, 179, 8, 0.45); font-size: 0.68rem; font-weight: 800; padding: 1px 6px; border-radius: 3px;" title="Bei einer weiteren Gelben Karte im nächsten Spiel gesperrt">Sperre droht (${suspData.yellowCount}/${suspData.warningThreshold} Gelbe)</span>
+                        ` : ''}
                       </div>
                       <div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 3px; display: flex; flex-direction: column; gap: 2px;">
                         <div>${formattedBirth ? `Geb.: ${formattedBirth}` : 'Kein Geburtsdatum'}</div>
-                        <div style="color: var(--color-accent); font-weight: 600;">${p.Position || p.position || 'Feldspieler'}</div>
-                        <div>Pass-Nr.: <span style="font-weight: 700; color: var(--color-text-primary);">${passNum}</span></div>
+                        <div style="color: ${isSuspended ? '#dc2626' : 'var(--color-accent)'}; font-weight: 600;">${p.Position || p.position || 'Feldspieler'}</div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                          <span>Pass-Nr.: <span style="font-weight: 700; color: var(--color-text-primary);">${passNum}</span></span>
+                          ${(suspData.yellowCount > 0 || suspData.redCount > 0 || suspData.yellowRedCount > 0) ? `
+                            <span style="display: inline-flex; align-items: center; gap: 4px;">
+                              ${suspData.yellowCount > 0 ? `<span style="background: #eab308; color: #000; font-weight: 800; font-size: 0.68rem; padding: 1px 5px; border-radius: 3px;" title="${suspData.yellowCount} Gelbe Karte(n) in dieser Saison">${suspData.yellowCount} Gelb</span>` : ''}
+                              ${suspData.yellowRedCount > 0 ? `<span style="background: #f97316; color: #fff; font-weight: 800; font-size: 0.68rem; padding: 1px 5px; border-radius: 3px;" title="${suspData.yellowRedCount} Gelb-Rote Karte(n)">${suspData.yellowRedCount} Gelb-Rot</span>` : ''}
+                              ${suspData.redCount > 0 ? `<span style="background: #dc2626; color: #fff; font-weight: 800; font-size: 0.68rem; padding: 1px 5px; border-radius: 3px;" title="${suspData.redCount} Rote Karte(n)">${suspData.redCount} Rot</span>` : ''}
+                            </span>
+                          ` : ''}
+                        </div>
+                        ${isSuspended ? `
+                          <div style="color: #dc2626; font-weight: 700; font-size: 0.74rem; margin-top: 2px;">
+                            Grund: ${suspData.reason || 'Spielsperre'} &bull; Nicht einsatzberechtigt!
+                          </div>
+                        ` : isWarning ? `
+                          <div style="color: #d97706; font-weight: 600; font-size: 0.72rem; margin-top: 1px;">
+                            Vorverwarnung: Noch 1 Gelbe Karte bis zur automatischen Sperre
+                          </div>
+                        ` : ''}
                       </div>
                     </div>
                   </div>
 
                   <div style="text-align: right; flex-shrink: 0;">
                     ${isSuspended ? `
-                      <span style="background: #dc2626; color: #fff; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; display: inline-block;">GESPERRT</span>
+                      <span style="background: rgba(220, 38, 38, 0.15); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.35); font-size: 0.72rem; font-weight: 800; padding: 4px 8px; border-radius: 4px; display: inline-block;">
+                        Keine Freigabe
+                      </span>
                     ` : hasCustomPhoto ? `
                       <span style="color: #16a34a; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; background: rgba(22, 163, 74, 0.1); border: 1px solid rgba(22, 163, 74, 0.25); padding: 3px 8px; border-radius: 4px;">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
