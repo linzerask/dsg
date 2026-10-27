@@ -68,7 +68,7 @@ export const renderAdminTeams = () => {
     <div class="datagrid-container stagger-item">
         <div>
             <h2 style="margin: 0;">Teams verwalten</h2>
-            <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin-top: 4px;">Ãœbersicht aller aktiven und inaktiven Mannschaften</p>
+            <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin-top: 4px;">Übersicht aller aktiven und inaktiven Mannschaften</p>
         </div>
 
         <!-- Controls Toolbar immediately above table -->
@@ -99,12 +99,12 @@ export const renderAdminTeams = () => {
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th data-sort="ID" class="sortable">ID â†•</th>
-                        <th data-sort="Name" class="sortable">Name â†•</th>
-                        <th data-sort="Aktive Spieler" class="sortable">Aktive Spieler â†•</th>
-                        <th data-sort="Aktiv seit" class="sortable">Aktiv seit â†•</th>
-                        <th data-sort="Inaktiv seit" class="sortable">Inaktiv seit â†•</th>
-                        <th data-sort="Status" class="sortable">Status â†•</th>
+                        <th data-sort="ID" class="sortable">ID ↕</th>
+                        <th data-sort="Name" class="sortable">Name ↕</th>
+                        <th data-sort="Aktive Spieler" class="sortable">Aktive Spieler ↕</th>
+                        <th data-sort="Aktiv seit" class="sortable">Aktiv seit ↕</th>
+                        <th data-sort="Inaktiv seit" class="sortable">Inaktiv seit ↕</th>
+                        <th data-sort="Status" class="sortable">Status ↕</th>
                         <th style="width: 100px; text-align: center;">Aktion</th>
                     </tr>
                 </thead>
@@ -122,7 +122,7 @@ export const renderAdminTeams = () => {
         <div class="datagrid-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md);">
             <span id="teams-page-info" style="color: var(--color-text-secondary); font-size: 0.9rem;">Zeige 0 bis 0 von 0</span>
             <div style="display: flex; gap: var(--space-xs);">
-                <button id="btn-prev-page-t" class="btn-dsg" style="padding: 6px 14px; font-size: 0.85rem;">&laquo; ZurÃ¼ck</button>
+                <button id="btn-prev-page-t" class="btn-dsg" style="padding: 6px 14px; font-size: 0.85rem;">&laquo; Zurück</button>
                 <button id="btn-next-page-t" class="btn-dsg" style="padding: 6px 14px; font-size: 0.85rem;">Vor &raquo;</button>
             </div>
         </div>
@@ -338,7 +338,7 @@ const renderTable = () => {
                                 </div>
                                 <div class="admin-m-subtitle">
                                     <span class="badge ${badgeClass}" style="font-size: 0.72rem;">${status}</span>
-                                    <span>â€¢</span>
+                                    <span>•</span>
                                     <span>${t["Aktive Spieler"] || '0'} Spieler</span>
                                 </div>
                             </div>
@@ -355,7 +355,7 @@ const renderTable = () => {
                                     <span class="admin-m-value">${t["Inaktiv seit"] || '-'}</span>
                                 </div>
                                 <div class="admin-m-grid-item" style="grid-column: 1 / -1;">
-                                    <span class="admin-m-label">KadergrÃ¶ÃŸe</span>
+                                    <span class="admin-m-label">Kadergröße</span>
                                     <span class="admin-m-value">${t["Aktive Spieler"] || '0'} aktive registrierte Spieler</span>
                                 </div>
                             </div>
@@ -675,12 +675,12 @@ const bindEvents = () => {
             if (idVal !== 'new') {
                 const idx = parseInt(idVal);
                 const t = teamsData[idx];
-                if (confirm(`MÃ¶chten Sie das Team "${t.Name}" wirklich lÃ¶schen?`)) {
+                if (confirm(`Möchten Sie das Team "${t.Name}" wirklich löschen?`)) {
                     teamsData.splice(idx, 1);
                     Store.saveAdminTeams(teamsData);
                     closeEditModal();
                     applyFilters();
-                    showToast('Mannschaft gelÃ¶scht.');
+                    showToast('Mannschaft gelöscht.');
                 }
             }
         };

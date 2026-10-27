@@ -1,6 +1,6 @@
 import { Store } from '../store.js?v=1793230000000';
 import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1793238000000';
-import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1791230000000';
+import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1793245000000';
 import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1793235000000';
 import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1793129100000';
 import { renderAdminGames, initAdminGames } from './adminGames.js?v=1793240000000';

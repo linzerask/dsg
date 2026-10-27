@@ -16,7 +16,7 @@ import { viewGalerie, bindGalerie } from './views/galerie.js?v=1791305000000';
 
 import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1792924000000';
 
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1793240000000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1793245000000';
 
 import { getAuth, loginWithPin, logout } from './auth.js?v=1793127696174';
 
