@@ -582,6 +582,28 @@ League table wallpapers feature official standings, goal records, and points acr
       - Stories: Individual 9:16 meme slides.
       - Strategic Goal: Maximum viral reach, humor, club banter, and non-follower explore traffic.
 
+
+- **Website News & Editorial Publishing Schedule:**
+  - **In-Season Weekly Rhythm & Social Media Synchronization:**
+    - **Sunday Morning (~10:00–11:30):** **The Official Matchday Report ("Der Große Spielbericht")**
+      - Target File / Storage: `rundeX_website_spielbericht.md` saved into `Website/data/articles.json` with category `Spielberichte / News`.
+      - Strategic Timing: Published on Sunday morning when amateur players, coaches, and local fans wake up and review the weekend over breakfast/coffee. Goes live *before* the Sunday Instagram Table post (~12:00–17:00).
+      - Cross-Channel Funneling: When the Sunday Table post and Stories go live on Instagram, they incorporate a direct call-to-action and an **Instagram Story Link Sticker** (`🔗 dsg.anonymcreator.online — 👉 Zum großen Spielbericht`), converting Instagram reach directly into high-retention website readers.
+      - Featured Clubs Repost Loop: By tagging the featured clubs in the Sunday story, clubs routinely repost the story with the article link, funneling their entire squad to the website.
+    - **Thursday Afternoon (~16:00, Optional / Big Matches):** **Matchday Preview ("Vorschau auf Runde X")**
+      - Published prior to the Thursday Instagram Carousel for marquee fixtures, rivalries, or title-deciding clashes.
+    - **Tuesday Afternoon (~16:00, Optional):** **In Zahlen & Record Feature ("Spieltag in Zahlen — Die Tiefenanalyse")**
+      - Highlights individual milestones, top-scorer leaderboards, and record stats.
+  - **Off-Season / Winter Break Publishing Schedule (November – February):**
+    - The winter break shifts the editorial focus from fast score reporting to community debates, awards, history, and spring preparations (1 in-depth article every 10–14 days published on Sundays at ~11:00):
+      - **Mid-November:** *"Die Große Herbst-Bilanz: Zahlen, Überraschungen & Meisterrennen"* (Comprehensive analytical and narrative review of the first half of the season).
+      - **Late-November:** *"Die Offiziellen DSG Liga Herbst-Awards 2026"* (Player of the Autumn, Top Scorer, Best Goalkeeper, Fair Play winners).
+      - **Mid-December:** *"Die Elf des Herbstes (Team of the Half-Season)"* (Position-by-position deep-dive of the top 11 players and manager).
+      - **Late-December:** Hallenturniere / Winter Cup recaps & Jahresrückblick 2026.
+      - **Mid-January:** Club Spotlight Series (*"Im Fokus: DSG Union Traun — Tradition, Gemeinschaft und Kampfgeist"* / SV Croatia, Etehad, etc.).
+      - **Late-January:** Trainer & Captain Talk (Q&A interviews on spring ambitions).
+      - **Mid-February:** Winter-Vorbereitung & Testspiel-Ticker (Friendly match results and winter training news).
+      - **Late-February:** *"Der Große Frühjahrs-Check: Wer holt den Meistertitel?"* (Comprehensive championship preview 2 weeks prior to spring kickoff).
 ---
 
 ## 18. Organic Growth Engine & Proactive Generation Reminders
