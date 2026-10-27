@@ -3852,29 +3852,43 @@ main {
   -webkit-overflow-scrolling: touch !important;
 }
 
-#report-modal .report-team-card {
+#report-modal .report-team-card,
+#referee-report-form .report-team-card {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   position: relative;
   overflow: visible !important;
 }
 
-#report-modal .report-section {
+#report-modal .report-section,
+#referee-report-form .report-section {
   position: relative;
   z-index: 1;
 }
 
 #report-modal .report-section:has(.searchable-player-picker.is-open),
-#report-modal .report-section.is-active-section {
+#referee-report-form .report-section:has(.searchable-player-picker.is-open),
+#report-modal .report-section.is-active-section,
+#referee-report-form .report-section.is-active-section {
   z-index: 100 !important;
 }
 
 #report-modal .report-team-card:has(.searchable-player-picker.is-open),
+#referee-report-form .report-team-card:has(.searchable-player-picker.is-open),
 #report-modal .report-team-card.is-active-card,
+#referee-report-form .report-team-card.is-active-card,
 #report-modal .glass-card:not(.modal-content):has(.searchable-player-picker.is-open),
-#report-modal .glass-card:not(.modal-content).is-active-card {
+#referee-report-form .glass-card:not(.modal-content):has(.searchable-player-picker.is-open),
+#report-modal .glass-card:not(.modal-content).is-active-card,
+#referee-report-form .glass-card:not(.modal-content).is-active-card {
   position: relative !important;
   z-index: 110 !important;
+}
+
+@media (max-width: 768px) {
+  .report-two-columns {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 .searchable-player-picker.is-open {

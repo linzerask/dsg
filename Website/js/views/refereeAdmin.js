@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1793040000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793040000000';
 
 import { logout } from '../auth.js?v=1793040000000';
 
@@ -596,55 +596,470 @@ export const bindRefereeAdmin = async () => {
     });
   };
 
-  const renderSpielbericht = (match, allPlayers) => {
+  const refPlayerComboboxState = {
+    'ref-report-card-player-home': { players: [], includeOwnGoal: false, filtered: [], highlightedIndex: -1 },
+    'ref-report-card-player-away': { players: [], includeOwnGoal: false, filtered: [], highlightedIndex: -1 },
+    'ref-report-scorer-player-home': { players: [], includeOwnGoal: true, filtered: [], highlightedIndex: -1 },
+    'ref-report-scorer-player-away': { players: [], includeOwnGoal: true, filtered: [], highlightedIndex: -1 }
+  };
 
-    const existingEvents = match.events || [];
+  let refReportScorersHome = [];
+  let refReportScorersAway = [];
+  let refReportCardsHome = [];
+  let refReportCardsAway = [];
 
-    const existingScorers = match.scorers || [];
+  const populateRefPlayerCombobox = (id, players, includeOwnGoal = false) => {
+    if (!refPlayerComboboxState[id]) {
+      refPlayerComboboxState[id] = { players: [], includeOwnGoal: false, filtered: [], highlightedIndex: -1 };
+    }
+    refPlayerComboboxState[id].players = players || [];
+    refPlayerComboboxState[id].includeOwnGoal = includeOwnGoal;
+    refPlayerComboboxState[id].highlightedIndex = -1;
 
-    const existingCards = match.cards || [];
+    const hiddenInput = document.getElementById(id);
+    if (hiddenInput) hiddenInput.value = '';
+    const searchInput = document.getElementById('input-search-' + id);
+    if (searchInput) searchInput.value = '';
 
+    const dropdown = document.getElementById('dropdown-' + id);
+    if (dropdown) dropdown.style.display = 'none';
+    const picker = document.getElementById('picker-' + id);
+    if (picker) picker.classList.remove('is-open');
 
+    renderRefComboboxDropdown(id, '');
+  };
 
-    // Separate scorers
+  const renderRefComboboxDropdown = (id, filterText = '') => {
+    const state = refPlayerComboboxState[id];
+    if (!state) return;
 
-    let homeScore = 0;
+    const dropdown = document.getElementById('dropdown-' + id);
+    if (!dropdown) return;
 
-    let awayScore = 0;
+    const cleanFilter = (filterText || '').toLowerCase().trim();
+    let allOptions = [];
+    if (state.includeOwnGoal) {
+      allOptions.push({ name: 'Eigentor', label: 'Eigentor', isOwnGoal: true });
+    }
+    allOptions = allOptions.concat(state.players);
 
-    if (match.score && match.score.includes(':')) {
+    let filtered = allOptions;
+    if (cleanFilter) {
+      filtered = allOptions.filter(opt => {
+        const val = typeof opt === 'object' ? opt.name : opt;
+        const lab = typeof opt === 'object' ? opt.label : opt;
+        return val.toLowerCase().includes(cleanFilter) || lab.toLowerCase().includes(cleanFilter);
+      });
+    }
+    state.filtered = filtered;
+    state.highlightedIndex = -1;
 
-      const parts = match.score.split(':');
-
-      homeScore = parseInt(parts[0].trim(), 10) || 0;
-
-      awayScore = parseInt(parts[1].trim(), 10) || 0;
-
+    if (filtered.length === 0) {
+      dropdown.innerHTML = '<div class="player-option-empty">Keine passenden Spieler gefunden</div>';
+      return;
     }
 
+    dropdown.innerHTML = filtered.map((item, idx) => {
+      const optVal = typeof item === 'object' ? item.name : item;
+      const optLabel = typeof item === 'object' ? item.label : item;
+      const isRoster = typeof item === 'object' && item.isRoster;
+      const jerseyNum = typeof item === 'object' ? item.jerseyNumber : '';
+      const isSelected = document.getElementById(id)?.value === optVal;
+      const isOwnGoal = optVal === 'Eigentor';
 
+      let labelHtml = optLabel;
+      if (cleanFilter && !isOwnGoal) {
+        const startIdx = optLabel.toLowerCase().indexOf(cleanFilter);
+        if (startIdx !== -1) {
+          const before = optLabel.slice(0, startIdx);
+          const match = optLabel.slice(startIdx, startIdx + cleanFilter.length);
+          const after = optLabel.slice(startIdx + cleanFilter.length);
+          labelHtml = `${before}<span class="option-highlight">${match}</span>${after}`;
+        }
+      }
+
+      let contentHtml = labelHtml;
+      if (isOwnGoal) {
+        contentHtml = `<span style="display: inline-flex; align-items: center; gap: 5px; color: #ef4444; font-weight: 700;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+          ${labelHtml}
+        </span>`;
+      } else if (isRoster && jerseyNum) {
+        contentHtml = `<span style="display: inline-flex; align-items: center; gap: 6px;">
+          <span style="background: var(--color-accent); color: #000; font-weight: 800; font-size: 0.72rem; padding: 2px 5px; border-radius: 3px;">#${jerseyNum}</span>
+          <span>${labelHtml.replace(/^#[0-9?]+\s*/, '')}</span>
+        </span>`;
+      }
+
+      return `
+        <div class="player-option-item ${isSelected ? 'selected' : ''} ${isOwnGoal ? 'player-option-special' : ''}" data-idx="${idx}" data-val="${optVal}">
+          <span>${contentHtml}</span>
+          ${isSelected ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent);"><polyline points="20 6 9 17 4 12"></polyline></svg>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    dropdown.querySelectorAll('.player-option-item').forEach(el => {
+      const handleSelect = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const val = el.getAttribute('data-val');
+        selectRefComboboxOption(id, val);
+      };
+      el.onmousedown = handleSelect;
+      el.onclick = handleSelect;
+    });
+  };
+
+  const updateRefActiveComboboxClasses = (activePicker) => {
+    document.querySelectorAll('#referee-report-form .is-active-card').forEach(el => el.classList.remove('is-active-card'));
+    document.querySelectorAll('#referee-report-form .is-active-section').forEach(el => el.classList.remove('is-active-section'));
+    if (activePicker) {
+      const card = activePicker.closest('.report-team-card') || activePicker.closest('.glass-card');
+      if (card) card.classList.add('is-active-card');
+      const sec = activePicker.closest('.report-section');
+      if (sec) sec.classList.add('is-active-section');
+    }
+  };
+
+  const selectRefComboboxOption = (id, value) => {
+    const hiddenInput = document.getElementById(id);
+    if (hiddenInput) hiddenInput.value = value;
+    const searchInput = document.getElementById('input-search-' + id);
+    if (searchInput) searchInput.value = value;
+    const dropdown = document.getElementById('dropdown-' + id);
+    if (dropdown) dropdown.style.display = 'none';
+    const picker = document.getElementById('picker-' + id);
+    if (picker) picker.classList.remove('is-open');
+    updateRefActiveComboboxClasses(null);
+    renderRefComboboxDropdown(id, value);
+  };
+
+  const resetRefPlayerCombobox = (id, autoFocus = false) => {
+    const hiddenInput = document.getElementById(id);
+    if (hiddenInput) hiddenInput.value = '';
+    const searchInput = document.getElementById('input-search-' + id);
+    if (searchInput) {
+      searchInput.value = '';
+      if (autoFocus) {
+        setTimeout(() => searchInput.focus(), 60);
+      }
+    }
+    const dropdown = document.getElementById('dropdown-' + id);
+    if (dropdown) dropdown.style.display = 'none';
+    const picker = document.getElementById('picker-' + id);
+    if (picker) picker.classList.remove('is-open');
+    updateRefActiveComboboxClasses(null);
+    renderRefComboboxDropdown(id, '');
+  };
+
+  const getRefComboboxValue = (id) => {
+    const hiddenInput = document.getElementById(id);
+    const searchInput = document.getElementById('input-search-' + id);
+    return (hiddenInput?.value || searchInput?.value || '').trim();
+  };
+
+  const setupRefSearchableComboboxes = () => {
+    const ids = [
+      'ref-report-card-player-home',
+      'ref-report-card-player-away',
+      'ref-report-scorer-player-home',
+      'ref-report-scorer-player-away'
+    ];
+
+    ids.forEach(id => {
+      const searchInput = document.getElementById('input-search-' + id);
+      const dropdown = document.getElementById('dropdown-' + id);
+      const picker = document.getElementById('picker-' + id);
+      if (!searchInput || !dropdown || !picker) return;
+
+      const openPicker = () => {
+        ids.forEach(otherId => {
+          if (otherId !== id) {
+            const otherDropdown = document.getElementById('dropdown-' + otherId);
+            if (otherDropdown) otherDropdown.style.display = 'none';
+            const otherPicker = document.getElementById('picker-' + otherId);
+            if (otherPicker) otherPicker.classList.remove('is-open');
+          }
+        });
+        renderRefComboboxDropdown(id, searchInput.value);
+        dropdown.style.display = 'block';
+        picker.classList.add('is-open');
+        updateRefActiveComboboxClasses(picker);
+        setTimeout(() => {
+          picker.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 50);
+      };
+
+      searchInput.onfocus = openPicker;
+      searchInput.onclick = openPicker;
+
+      searchInput.oninput = () => {
+        dropdown.style.display = 'block';
+        picker.classList.add('is-open');
+        const hiddenInput = document.getElementById(id);
+        if (hiddenInput) hiddenInput.value = searchInput.value.trim();
+        renderRefComboboxDropdown(id, searchInput.value);
+      };
+
+      searchInput.onkeydown = (e) => {
+        const state = refPlayerComboboxState[id];
+        if (!state || !state.filtered || state.filtered.length === 0) return;
+
+        const items = dropdown.querySelectorAll('.player-option-item');
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          dropdown.style.display = 'block';
+          picker.classList.add('is-open');
+          state.highlightedIndex = (state.highlightedIndex + 1) % items.length;
+          items.forEach((it, idx) => {
+            it.classList.toggle('highlighted', idx === state.highlightedIndex);
+            if (idx === state.highlightedIndex) it.scrollIntoView({ block: 'nearest' });
+          });
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          dropdown.style.display = 'block';
+          picker.classList.add('is-open');
+          state.highlightedIndex = (state.highlightedIndex - 1 + items.length) % items.length;
+          items.forEach((it, idx) => {
+            it.classList.toggle('highlighted', idx === state.highlightedIndex);
+            if (idx === state.highlightedIndex) it.scrollIntoView({ block: 'nearest' });
+          });
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (state.highlightedIndex >= 0 && state.highlightedIndex < state.filtered.length) {
+            const item = state.filtered[state.highlightedIndex];
+            selectRefComboboxOption(id, typeof item === 'object' ? item.name : item);
+          } else if (state.filtered.length === 1) {
+            const item = state.filtered[0];
+            selectRefComboboxOption(id, typeof item === 'object' ? item.name : item);
+          } else if (searchInput.value.trim()) {
+            selectRefComboboxOption(id, searchInput.value.trim());
+          }
+        } else if (e.key === 'Escape') {
+          dropdown.style.display = 'none';
+          picker.classList.remove('is-open');
+        }
+      };
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.searchable-player-picker')) {
+        ids.forEach(id => {
+          const dropdown = document.getElementById('dropdown-' + id);
+          if (dropdown) dropdown.style.display = 'none';
+          const picker = document.getElementById('picker-' + id);
+          if (picker) picker.classList.remove('is-open');
+        });
+        updateRefActiveComboboxClasses(null);
+      }
+    });
+  };
+
+  const renderRefReportLists = () => {
+    // Render Home Scorers
+    const homeGoalsDiv = document.getElementById('ref-report-goals-list-home');
+    if (homeGoalsDiv) {
+      homeGoalsDiv.innerHTML = refReportScorersHome.map((item, i) => {
+        const pName = typeof item === 'string' ? item : (item.player || item.name || '');
+        const pMin = typeof item === 'object' ? (item.minute || item.min || '') : '';
+        const isOwnGoal = pName.toLowerCase().includes('eigentor');
+        const ballColor = isOwnGoal ? '#ef4444' : 'var(--color-accent)';
+        return `
+          <div style="display: flex; justify-content: space-between; align-items: center; background: ${isOwnGoal ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0,0,0,0.03)'}; padding: 5px 8px; border-radius: 4px; font-size: 0.85rem; ${isOwnGoal ? 'border-left: 2px solid #ef4444;' : ''}">
+            <span style="display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ballColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${ballColor};"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+              ${pMin ? `<span style="background: rgba(0, 179, 65, 0.12); color: var(--color-accent); font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${pMin}'</span>` : ''}
+              <strong style="${isOwnGoal ? 'color: #ef4444;' : ''}">${pName}</strong>
+            </span>
+            <button type="button" class="btn-del-ref-goal-h" data-idx="${i}" title="Tor entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
+          </div>
+        `;
+      }).join('');
+
+      homeGoalsDiv.querySelectorAll('.btn-del-ref-goal-h').forEach(btn => {
+        btn.onclick = (e) => {
+          const idx = parseInt(e.currentTarget.getAttribute('data-idx'), 10);
+          refReportScorersHome.splice(idx, 1);
+          renderRefReportLists();
+        };
+      });
+    }
+
+    // Render Away Scorers
+    const awayGoalsDiv = document.getElementById('ref-report-goals-list-away');
+    if (awayGoalsDiv) {
+      awayGoalsDiv.innerHTML = refReportScorersAway.map((item, i) => {
+        const pName = typeof item === 'string' ? item : (item.player || item.name || '');
+        const pMin = typeof item === 'object' ? (item.minute || item.min || '') : '';
+        const isOwnGoal = pName.toLowerCase().includes('eigentor');
+        const ballColor = isOwnGoal ? '#ef4444' : 'var(--color-accent)';
+        return `
+          <div style="display: flex; justify-content: space-between; align-items: center; background: ${isOwnGoal ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0,0,0,0.03)'}; padding: 5px 8px; border-radius: 4px; font-size: 0.85rem; ${isOwnGoal ? 'border-left: 2px solid #ef4444;' : ''}">
+            <span style="display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ballColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${ballColor};"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+              ${pMin ? `<span style="background: rgba(0, 179, 65, 0.12); color: var(--color-accent); font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${pMin}'</span>` : ''}
+              <strong style="${isOwnGoal ? 'color: #ef4444;' : ''}">${pName}</strong>
+            </span>
+            <button type="button" class="btn-del-ref-goal-a" data-idx="${i}" title="Tor entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
+          </div>
+        `;
+      }).join('');
+
+      awayGoalsDiv.querySelectorAll('.btn-del-ref-goal-a').forEach(btn => {
+        btn.onclick = (e) => {
+          const idx = parseInt(e.currentTarget.getAttribute('data-idx'), 10);
+          refReportScorersAway.splice(idx, 1);
+          renderRefReportLists();
+        };
+      });
+    }
+
+    const cardBadge = (type) => {
+      if (type === 'yellow' || type === 'Gelb') return '<span style="background: #f1c40f; color: #000; padding: 2px 6px; border-radius: 3px; font-weight: 700; font-size: 0.7rem;">Gelb</span>';
+      if (type === 'yellowRed' || type === 'yellow-red' || type === 'gelbrot' || type === 'Gelb-Rot') return '<span style="background: #e67e22; color: #fff; padding: 2px 6px; border-radius: 3px; font-weight: 700; font-size: 0.7rem;">Gelb-Rot</span>';
+      if (type === 'red' || type === 'Rot') return '<span style="background: #e74c3c; color: #fff; padding: 2px 6px; border-radius: 3px; font-weight: 700; font-size: 0.7rem;">Rot</span>';
+      return '';
+    };
+
+    // Render Home Cards
+    const homeCardsDiv = document.getElementById('ref-report-cards-list-home');
+    if (homeCardsDiv) {
+      homeCardsDiv.innerHTML = refReportCardsHome.map((c, i) => `
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            ${cardBadge(c.type)}
+            ${c.minute ? `<span style="background: rgba(0,0,0,0.07); color: var(--color-text-secondary); font-weight: 700; padding: 1px 5px; border-radius: 3px; font-size: 0.75rem;">${c.minute}'</span>` : ''}
+            <strong>${c.player}</strong>
+            ${c.reason ? `<span style="color: var(--color-text-secondary); font-size: 0.75rem;">(${c.reason})</span>` : ''}
+          </div>
+          <button type="button" class="btn-del-ref-card-h" data-idx="${i}" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
+        </div>
+      `).join('');
+
+      homeCardsDiv.querySelectorAll('.btn-del-ref-card-h').forEach(btn => {
+        btn.onclick = (e) => {
+          const idx = parseInt(e.currentTarget.getAttribute('data-idx'), 10);
+          refReportCardsHome.splice(idx, 1);
+          renderRefReportLists();
+        };
+      });
+    }
+
+    // Render Away Cards
+    const awayCardsDiv = document.getElementById('ref-report-cards-list-away');
+    if (awayCardsDiv) {
+      awayCardsDiv.innerHTML = refReportCardsAway.map((c, i) => `
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            ${cardBadge(c.type)}
+            ${c.minute ? `<span style="background: rgba(0,0,0,0.07); color: var(--color-text-secondary); font-weight: 700; padding: 1px 5px; border-radius: 3px; font-size: 0.75rem;">${c.minute}'</span>` : ''}
+            <strong>${c.player}</strong>
+            ${c.reason ? `<span style="color: var(--color-text-secondary); font-size: 0.75rem;">(${c.reason})</span>` : ''}
+          </div>
+          <button type="button" class="btn-del-ref-card-a" data-idx="${i}" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
+        </div>
+      `).join('');
+
+      awayCardsDiv.querySelectorAll('.btn-del-ref-card-a').forEach(btn => {
+        btn.onclick = (e) => {
+          const idx = parseInt(e.currentTarget.getAttribute('data-idx'), 10);
+          refReportCardsAway.splice(idx, 1);
+          renderRefReportLists();
+        };
+      });
+    }
+  };
+
+  const renderSpielbericht = (match, allPlayers) => {
+    // Parse current scores
+    let scoreHome = '';
+    let scoreAway = '';
+    if (match.score && match.score.includes(':') && match.score !== '-:-' && match.score !== ':') {
+      const cleanScore = match.score.replace(/\s*\([^)]*\)/g, '').replace(/[^\d:]/g, '').trim();
+      if (cleanScore.includes(':')) {
+        const parts = cleanScore.split(':');
+        scoreHome = parts[0]?.trim() || '';
+        scoreAway = parts[1]?.trim() || '';
+      }
+    }
 
     let htHome = '';
-
     let htAway = '';
-
-    if (match.ht && match.ht.includes(':')) {
-
-      const parts = match.ht.split(':');
-
-      htHome = parts[0].trim();
-
-      htAway = parts[1].trim();
-
+    if (match.ht && match.ht.includes(':') && match.ht !== ':') {
+      const cleanHt = match.ht.replace(/[()]/g, '').replace(/[^\d:]/g, '').trim();
+      if (cleanHt.includes(':')) {
+        const parts = cleanHt.split(':');
+        htHome = parts[0]?.trim() || '';
+        htAway = parts[1]?.trim() || '';
+      }
+    } else if (match.score && match.score.includes('(')) {
+      const mHt = match.score.match(/\(([^)]+)\)/);
+      if (mHt && mHt[1].includes(':')) {
+        const cleanHt = mHt[1].replace(/[^\d:]/g, '').trim();
+        const parts = cleanHt.split(':');
+        htHome = parts[0]?.trim() || '';
+        htAway = parts[1]?.trim() || '';
+      }
     }
 
+    // Populate Scorers & Cards from existing match data
+    const rawScorers = (match.scorers && match.scorers.length > 0)
+      ? match.scorers
+      : (match.events || []).filter(e => e.type === 'goal');
 
+    refReportScorersHome = [];
+    refReportScorersAway = [];
+    rawScorers.forEach(s => {
+      const sName = sanitizeMojibake(typeof s === 'string' ? s : (s.name || s.player || ''));
+      const sMinute = sanitizeMojibake(typeof s === 'object' ? (s.minute || s.min || '') : '');
+      const sTeam = sanitizeMojibake(typeof s === 'object' ? (s.team || '') : '');
+      const count = typeof s === 'object' ? (s.count || s.goals || 1) : 1;
+      const isHome = sTeam === match.home || (match.home && sTeam && (sTeam.toLowerCase().includes(match.home.toLowerCase()) || match.home.toLowerCase().includes(sTeam.toLowerCase())));
+      for (let i = 0; i < count; i++) {
+        if (isHome) {
+          refReportScorersHome.push({ player: sName, minute: sMinute });
+        } else {
+          refReportScorersAway.push({ player: sName, minute: sMinute });
+        }
+      }
+    });
 
-        const homeRoster = Store.getMatchdayRoster(selectedSeason, match.id, match.home);
+    const rawCards = (match.cards && match.cards.length > 0)
+      ? match.cards
+      : (match.events || []).filter(e => e.type === 'yellow' || e.type === 'yellowRed' || e.type === 'yellow-red' || e.type === 'gelbrot' || e.type === 'red' || e.type === 'card');
+
+    refReportCardsHome = [];
+    refReportCardsAway = [];
+    rawCards.forEach(c => {
+      const cTeam = sanitizeMojibake(c.team || '');
+      let cType = c.type || c.cardType || 'yellow';
+      if (cType === 'Gelb') cType = 'yellow';
+      else if (cType === 'Gelb-Rot') cType = 'yellowRed';
+      else if (cType === 'Rot') cType = 'red';
+
+      const cObj = { 
+        player: sanitizeMojibake(c.name || c.player || ''), 
+        type: cType, 
+        reason: sanitizeMojibake(c.reason || ''),
+        minute: sanitizeMojibake(c.minute || c.min || '')
+      };
+      const isHome = cTeam === match.home || (match.home && cTeam && (cTeam.toLowerCase().includes(match.home.toLowerCase()) || match.home.toLowerCase().includes(cTeam.toLowerCase())));
+      const count = c.count || 1;
+      for (let i = 0; i < count; i++) {
+        if (isHome) {
+          refReportCardsHome.push({ ...cObj });
+        } else {
+          refReportCardsAway.push({ ...cObj });
+        }
+      }
+    });
+
+    const homeRoster = Store.getMatchdayRoster(selectedSeason, match.id, match.home);
     const awayRoster = Store.getMatchdayRoster(selectedSeason, match.id, match.away);
 
     const getTeamPlayerOptions = (teamName, roster) => {
-      const norm = teamName.toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+      const norm = (teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
       const tPlayers = allPlayers.filter(p => {
         const pTeam = (p.Team || p.Mannschaft || p.team || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
         return pTeam.includes(norm) || norm.includes(pTeam);
@@ -660,19 +1075,24 @@ export const bindRefereeAdmin = async () => {
             addedNames.add(full.toLowerCase());
             options.push({
               name: full,
-              label: `#${rp.jerseyNumber || '?'} ${full} (${rp.position || 'Kader'})`
+              label: `#${rp.jerseyNumber || '?'} ${full} (${rp.position || 'Kader'})`,
+              jerseyNumber: rp.jerseyNumber || '',
+              isRoster: true
             });
           }
         });
       }
 
       tPlayers.forEach(p => {
-        const full = `${p.Vorname || ''} ${p.Nachname || ''}`.trim();
+        const full = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
         if (full && !addedNames.has(full.toLowerCase())) {
           addedNames.add(full.toLowerCase());
+          const num = p['#'] && p['#'] !== '-' ? '#' + p['#'] + ' ' : '';
           options.push({
             name: full,
-            label: `${p['#'] && p['#'] !== '-' ? '#' + p['#'] + ' ' : ''}${full}`
+            label: `${num}${full}`,
+            jerseyNumber: p['#'] || '',
+            isRoster: false
           });
         }
       });
@@ -683,519 +1103,397 @@ export const bindRefereeAdmin = async () => {
     const homeOptions = getTeamPlayerOptions(match.home, homeRoster);
     const awayOptions = getTeamPlayerOptions(match.away, awayRoster);
 
-contentContainer.innerHTML = `
+    contentContainer.innerHTML = `
+      <form id="referee-report-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
+        
+        <!-- Match Header Information Card (Admin Style) -->
+        <div class="glass-card" style="padding: var(--space-md); background: rgba(0,150,64,0.08); border-left: 4px solid var(--color-accent);">
+          <div style="font-size: 1.15rem; font-weight: 700; color: var(--color-text-primary);" id="ref-report-match-title">${match.home} gegen ${match.away}</div>
+          <div style="font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 4px;" id="ref-report-match-meta">${match.round || 'Runde'} | ${match.date || ''} ${match.time ? match.time + ' Uhr' : ''} | ${match.venue || match.location || 'DSG-Platz'}</div>
+        </div>
 
-      <form id="referee-report-form" class="glass-card" style="padding: var(--space-lg); border-radius: 8px; border: 1px solid var(--glass-border);">
-        <datalist id="datalist-home-players">
-          ${homeOptions.map(o => `<option value="${o.name}">${o.label}</option>`).join('')}
-        </datalist>
-        <datalist id="datalist-away-players">
-          ${awayOptions.map(o => `<option value="${o.name}">${o.label}</option>`).join('')}
-        </datalist>
-
-
-        <h3 style="margin-top: 0; margin-bottom: var(--space-md); border-bottom: 1px solid var(--glass-border); padding-bottom: 8px; color: var(--color-text-primary);">
-
-          Digitaler Spielbericht &bull; ${match.home} vs ${match.away}
-
-        </h3>
-
-
-
-        <!-- Score Row -->
-
-        <div style="background: var(--color-surface); border: 1px solid var(--glass-border); border-radius: 8px; padding: var(--space-md); margin-bottom: var(--space-lg);">
-
-          <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: var(--space-md); align-items: center; text-align: center;">
-
+        <!-- Score & Halftime Section (Admin Style) -->
+        <div style="background: var(--color-surface); padding: var(--space-md); border-radius: 6px; border: 1px solid var(--color-border);">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
             <div>
+              <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">Tore ${match.home}</label>
+              <input type="number" id="ref-report-ft-home" min="0" max="99" class="admin-input" placeholder="0" value="${scoreHome}" style="width: 100%; font-size: 1.1rem; font-weight: 700;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">Tore ${match.away}</label>
+              <input type="number" id="ref-report-ft-away" min="0" max="99" class="admin-input" placeholder="0" value="${scoreAway}" style="width: 100%; font-size: 1.1rem; font-weight: 700;">
+            </div>
+          </div>
 
-              <div style="font-weight: 800; font-size: 1.1rem; color: var(--color-accent); margin-bottom: 6px;">${match.home}</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-top: var(--space-sm);">
+            <div>
+              <label style="display: block; font-size: 0.8rem; color: var(--color-text-secondary); margin-bottom: 4px;">Tore ${match.home} Halbzeit</label>
+              <input type="number" id="ref-report-ht-home" min="0" max="99" class="admin-input" placeholder="0" value="${htHome}" style="width: 100%;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.8rem; color: var(--color-text-secondary); margin-bottom: 4px;">Tore ${match.away} Halbzeit</label>
+              <input type="number" id="ref-report-ht-away" min="0" max="99" class="admin-input" placeholder="0" value="${htAway}" style="width: 100%;">
+            </div>
+          </div>
+        </div>
 
-              <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Endstand Tore</label>
-
-              <input type="number" id="rep-home-score" min="0" max="99" value="${homeScore}" class="admin-input" style="font-size: 1.8rem; font-weight: 800; text-align: center; width: 80px; margin: 0 auto; padding: 6px;">
-
+        <!-- Übersicht Tore (Admin 2-Column Split) -->
+        <div class="report-section">
+          <h4 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 4px; color: var(--color-text-primary);">Übersicht Tore</h4>
+          <div class="report-two-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+            <!-- Home Goals -->
+            <div class="glass-card report-team-card" style="padding: var(--space-sm);">
+              <h5 style="margin: 0 0 8px 0; color: var(--color-text-primary);">Torschützen ${match.home}</h5>
+              <div style="display: flex; gap: 6px; align-items: stretch;">
+                <div class="searchable-player-picker" id="picker-ref-report-scorer-player-home" style="flex: 1; position: relative;">
+                  <input type="hidden" id="ref-report-scorer-player-home" value="">
+                  <div class="searchable-player-input-wrap">
+                    <input type="text" id="input-search-ref-report-scorer-player-home" class="admin-input searchable-player-search" placeholder="Torschütze suchen / wählen..." autocomplete="off" style="height: 34px;">
+                    <span class="combobox-indicator-icon">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </span>
+                  </div>
+                  <div class="searchable-player-dropdown" id="dropdown-ref-report-scorer-player-home" style="display: none;"></div>
+                </div>
+                <input type="text" id="ref-report-goal-min-home" class="admin-input" placeholder="Min." title="Spielminute (optional, z.B. 24)" style="width: 58px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                <input type="number" id="ref-report-goal-count-home" min="1" max="20" value="1" class="admin-input" title="Anzahl Tore" placeholder="1" style="width: 44px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                <button type="button" id="btn-add-ref-goal-home" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px; white-space: nowrap;">+ Hinzufügen</button>
+              </div>
+              <div id="ref-report-goals-list-home" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
             </div>
 
+            <!-- Away Goals -->
+            <div class="glass-card report-team-card" style="padding: var(--space-sm);">
+              <h5 style="margin: 0 0 8px 0; color: var(--color-text-primary);">Torschützen ${match.away}</h5>
+              <div style="display: flex; gap: 6px; align-items: stretch;">
+                <div class="searchable-player-picker" id="picker-ref-report-scorer-player-away" style="flex: 1; position: relative;">
+                  <input type="hidden" id="ref-report-scorer-player-away" value="">
+                  <div class="searchable-player-input-wrap">
+                    <input type="text" id="input-search-ref-report-scorer-player-away" class="admin-input searchable-player-search" placeholder="Torschütze suchen / wählen..." autocomplete="off" style="height: 34px;">
+                    <span class="combobox-indicator-icon">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </span>
+                  </div>
+                  <div class="searchable-player-dropdown" id="dropdown-ref-report-scorer-player-away" style="display: none;"></div>
+                </div>
+                <input type="text" id="ref-report-goal-min-away" class="admin-input" placeholder="Min." title="Spielminute (optional, z.B. 24)" style="width: 58px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                <input type="number" id="ref-report-goal-count-away" min="1" max="20" value="1" class="admin-input" title="Anzahl Tore" placeholder="1" style="width: 44px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                <button type="button" id="btn-add-ref-goal-away" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px; white-space: nowrap;">+ Hinzufügen</button>
+              </div>
+              <div id="ref-report-goals-list-away" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
+            </div>
+          </div>
+        </div>
 
-
-            <div style="font-size: 1.8rem; font-weight: 800; color: var(--color-text-secondary); padding-top: 20px;">:</div>
-
-
-
-            <div>
-
-              <div style="font-weight: 800; font-size: 1.1rem; color: var(--color-accent); margin-bottom: 6px;">${match.away}</div>
-
-              <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--color-text-secondary); display: block; margin-bottom: 4px;">Endstand Tore</label>
-
-              <input type="number" id="rep-away-score" min="0" max="99" value="${awayScore}" class="admin-input" style="font-size: 1.8rem; font-weight: 800; text-align: center; width: 80px; margin: 0 auto; padding: 6px;">
-
+        <!-- Übersicht Karten (Admin 2-Column Split) -->
+        <div class="report-section">
+          <h4 style="margin: 0 0 var(--space-sm) 0; font-size: 1.1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 4px; color: var(--color-text-primary);">Übersicht Karten</h4>
+          <div class="report-two-columns" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+            <!-- Home Cards -->
+            <div class="glass-card report-team-card" style="padding: var(--space-sm);">
+              <h5 style="margin: 0 0 8px 0; color: var(--color-text-primary);">Karten ${match.home}</h5>
+              <div style="display: flex; gap: 6px; margin-bottom: 6px; align-items: stretch;">
+                <select id="ref-report-card-type-home" class="admin-input" style="width: 95px; font-size: 0.8rem; height: 34px;">
+                  <option value="yellow">Gelb</option>
+                  <option value="yellowRed">Gelb-Rot</option>
+                  <option value="red">Rot</option>
+                </select>
+                <div class="searchable-player-picker" id="picker-ref-report-card-player-home" style="flex: 1; position: relative;">
+                  <input type="hidden" id="ref-report-card-player-home" value="">
+                  <div class="searchable-player-input-wrap">
+                    <input type="text" id="input-search-ref-report-card-player-home" class="admin-input searchable-player-search" placeholder="Spieler suchen / wählen..." autocomplete="off" style="height: 34px;">
+                    <span class="combobox-indicator-icon">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </span>
+                  </div>
+                  <div class="searchable-player-dropdown" id="dropdown-ref-report-card-player-home" style="display: none;"></div>
+                </div>
+                <input type="text" id="ref-report-card-min-home" class="admin-input" placeholder="Min." title="Spielminute (optional)" style="width: 52px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <input type="text" id="ref-report-card-reason-home" class="admin-input" placeholder="Begründung (optional)..." style="flex: 1; font-size: 0.8rem;">
+                <button type="button" id="btn-add-ref-card-home" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700;">+ Hinzufügen</button>
+              </div>
+              <div id="ref-report-cards-list-home" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
             </div>
 
+            <!-- Away Cards -->
+            <div class="glass-card report-team-card" style="padding: var(--space-sm);">
+              <h5 style="margin: 0 0 8px 0; color: var(--color-text-primary);">Karten ${match.away}</h5>
+              <div style="display: flex; gap: 6px; margin-bottom: 6px; align-items: stretch;">
+                <select id="ref-report-card-type-away" class="admin-input" style="width: 95px; font-size: 0.8rem; height: 34px;">
+                  <option value="yellow">Gelb</option>
+                  <option value="yellowRed">Gelb-Rot</option>
+                  <option value="red">Rot</option>
+                </select>
+                <div class="searchable-player-picker" id="picker-ref-report-card-player-away" style="flex: 1; position: relative;">
+                  <input type="hidden" id="ref-report-card-player-away" value="">
+                  <div class="searchable-player-input-wrap">
+                    <input type="text" id="input-search-ref-report-card-player-away" class="admin-input searchable-player-search" placeholder="Spieler suchen / wählen..." autocomplete="off" style="height: 34px;">
+                    <span class="combobox-indicator-icon">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </span>
+                  </div>
+                  <div class="searchable-player-dropdown" id="dropdown-ref-report-card-player-away" style="display: none;"></div>
+                </div>
+                <input type="text" id="ref-report-card-min-away" class="admin-input" placeholder="Min." title="Spielminute (optional)" style="width: 52px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <input type="text" id="ref-report-card-reason-away" class="admin-input" placeholder="Begründung (optional)..." style="flex: 1; font-size: 0.8rem;">
+                <button type="button" id="btn-add-ref-card-away" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700;">+ Hinzufügen</button>
+              </div>
+              <div id="ref-report-cards-list-away" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
+            </div>
           </div>
-
-
-
-          <!-- Half-time score -->
-
-          <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 14px; font-size: 0.85rem;">
-
-            <span style="color: var(--color-text-secondary);">Halbzeitstand (HZ):</span>
-
-            <input type="number" id="rep-ht-home" min="0" max="99" value="${htHome}" placeholder="0" class="admin-input" style="width: 50px; text-align: center; padding: 4px;">
-
-            <span>:</span>
-
-            <input type="number" id="rep-ht-away" min="0" max="99" value="${htAway}" placeholder="0" class="admin-input" style="width: 50px; text-align: center; padding: 4px;">
-
-          </div>
-
         </div>
-
-
-
-        <!-- Torschützen Section -->
-
-        <div style="margin-bottom: var(--space-lg);">
-
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-
-            <h4 style="margin: 0; font-size: 1rem; color: var(--color-text-primary); display: flex; align-items: center; gap: 6px;">
-
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent);"><circle cx="12" cy="12" r="10"/><path d="m12 7 3.5 2.5-1.5 4.5h-4L8.5 9.5z"/></svg>
-
-              Torschützen
-
-            </h4>
-
-            <button type="button" id="btn-add-scorer-row" class="btn btn-outline" style="font-size: 0.78rem; padding: 5px 12px; color: var(--color-accent) !important; border-color: var(--color-accent) !important; font-weight: 700;">
-
-              + Tor hinzufügen
-
-            </button>
-
-          </div>
-
-          <div id="scorers-container" style="display: flex; flex-direction: column; gap: 8px;">
-
-            <!-- Dynamic scorer rows -->
-
-          </div>
-
-        </div>
-
-
-
-        <!-- Disziplinarstrafen (Karten) Section -->
-
-        <div style="margin-bottom: var(--space-lg);">
-
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-
-            <h4 style="margin: 0; font-size: 1rem; color: var(--color-text-primary); display: flex; align-items: center; gap: 6px;">
-
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #eab308;"><rect x="4" y="3" width="11" height="16" rx="2"/><rect x="9" y="5" width="11" height="16" rx="2" style="opacity: 0.5;"/></svg>
-
-              Disziplinarkarten
-
-            </h4>
-
-            <button type="button" id="btn-add-card-row" class="btn btn-outline" style="font-size: 0.78rem; padding: 5px 12px; color: #d97706 !important; border-color: #d97706 !important; font-weight: 700;">
-
-              + Karte hinzufügen
-
-            </button>
-
-          </div>
-
-          <div id="cards-container" style="display: flex; flex-direction: column; gap: 8px;">
-
-            <!-- Dynamic card rows -->
-
-          </div>
-
-        </div>
-
-
 
         <!-- Schiedsrichter-Vorkommnisse (Incident Notes) -->
-
-        <div style="margin-bottom: var(--space-lg);">
-
-          <label style="display: block; font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; color: var(--color-text-primary);">
-
+        <div style="background: var(--color-surface); padding: var(--space-md); border-radius: 6px; border: 1px solid var(--color-border);">
+          <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; color: var(--color-text-primary);">
             Vorkommnisse & Schiedsrichter-Bemerkungen (optional)
-
           </label>
-
-          <textarea id="rep-referee-notes" class="admin-input" rows="3" placeholder="Besondere Vorfälle, Ausschlüsse, Verletzungen, Platzverhältnisse..." style="width: 100%; font-size: 0.85rem;">${match.refereeNotes || ''}</textarea>
-
+          <textarea id="ref-report-notes" class="admin-input" rows="3" placeholder="Besondere Vorfälle, Ausschlüsse, Verletzungen, Platzverhältnisse..." style="width: 100%; font-size: 0.85rem;">${match.refereeNotes || match.note || ''}</textarea>
         </div>
 
-
-
-        <div style="border-top: 1px solid var(--glass-border); padding-top: var(--space-md); display: flex; justify-content: flex-end; gap: 12px;">
-
-          <button type="submit" id="btn-submit-report" class="btn-dsg" style="font-weight: 800; font-size: 1rem; padding: 12px 24px; border-radius: 6px; cursor: pointer;">
-
+        <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-md); display: flex; justify-content: flex-end; gap: 12px;">
+          <button type="submit" id="btn-save-ref-report" class="btn-dsg" style="font-weight: 700; font-size: 1rem; padding: 10px 24px; border-radius: 6px; background: var(--color-accent); color: #fff; cursor: pointer;">
             Spielbericht offiziell speichern
-
           </button>
-
         </div>
 
       </form>
-
     `;
 
+    // Populate Player Comboboxes for both teams
+    populateRefPlayerCombobox('ref-report-card-player-home', homeOptions, false);
+    populateRefPlayerCombobox('ref-report-card-player-away', awayOptions, false);
+    populateRefPlayerCombobox('ref-report-scorer-player-home', homeOptions, true);
+    populateRefPlayerCombobox('ref-report-scorer-player-away', awayOptions, true);
 
+    // Setup searchable player combobox interactions
+    setupRefSearchableComboboxes();
 
-    // Scorers dynamic list
+    // Render initial goals & cards
+    renderRefReportLists();
 
-    const scorersContainer = document.getElementById('scorers-container');
-
-    const addScorerBtn = document.getElementById('btn-add-scorer-row');
-
-
-
-    const renderScorerRow = (initialData = {}) => {
-
-      const row = document.createElement('div');
-
-      row.className = 'scorer-row';
-
-      row.style.display = 'grid';
-
-      row.style.gridTemplateColumns = '140px 1fr 80px 40px';
-
-      row.style.gap = '8px';
-
-      row.style.alignItems = 'center';
-
-      row.style.background = 'var(--color-surface)';
-
-      row.style.padding = '6px 10px';
-
-      row.style.borderRadius = '6px';
-
-      row.style.border = '1px solid var(--glass-border)';
-
-
-
-      row.innerHTML = `
-
-        <select class="admin-input scorer-team" style="font-size: 0.82rem; padding: 6px;">
-
-          <option value="${match.home}" ${initialData.team === match.home ? 'selected' : ''}>${match.home}</option>
-
-          <option value="${match.away}" ${initialData.team === match.away ? 'selected' : ''}>${match.away}</option>
-
-        </select>
-
-        <input type="text" class="admin-input scorer-name" placeholder="Spieler Name" value="${initialData.player || ''}" list="${initialData.team === match.away ? 'datalist-away-players' : 'datalist-home-players'}" style="font-size: 0.85rem; padding: 6px;">
-
-        <input type="number" class="admin-input scorer-count" placeholder="Tore" min="1" max="20" value="${initialData.goals || 1}" style="font-size: 0.85rem; padding: 6px; text-align: center;">
-
-        <button type="button" class="btn btn-outline btn-remove-row" style="color: #dc2626 !important; border-color: rgba(220, 38, 38, 0.3) !important; padding: 6px; font-weight: 700; border-radius: 4px;">✕</button>
-
-      `;
-
-
-
-      const sTeamSel = row.querySelector('.scorer-team');
-      const sNameInput = row.querySelector('.scorer-name');
-      sTeamSel?.addEventListener('change', () => {
-        sNameInput.setAttribute('list', sTeamSel.value === match.away ? 'datalist-away-players' : 'datalist-home-players');
-      });
-      row.querySelector('.btn-remove-row').addEventListener('click', () => row.remove());
-
-      scorersContainer.appendChild(row);
-
-    };
-
-
-
-    // Populate existing scorers
-
-    if (existingScorers.length > 0) {
-
-      existingScorers.forEach(s => renderScorerRow(s));
-
-    } else if (existingEvents.length > 0) {
-
-      // Group goals from events
-
-      const goalsMap = new Map();
-
-      existingEvents.filter(e => e.type === 'goal').forEach(g => {
-
-        const key = `${g.team}_${g.player}`;
-
-        if (!goalsMap.has(key)) {
-
-          goalsMap.set(key, { team: g.team, player: g.player, goals: 0 });
-
+    // Goal buttons
+    const addGoalH = document.getElementById('btn-add-ref-goal-home');
+    const countInputH = document.getElementById('ref-report-goal-count-home');
+    const minGoalHInput = document.getElementById('ref-report-goal-min-home');
+    if (addGoalH) {
+      addGoalH.onclick = () => {
+        const val = getRefComboboxValue('ref-report-scorer-player-home');
+        const count = Math.max(1, parseInt(countInputH?.value, 10) || 1);
+        const minVal = minGoalHInput ? minGoalHInput.value.replace(/['"]/g, '').trim() : '';
+        if (val) {
+          for (let i = 0; i < count; i++) {
+            refReportScorersHome.push({ player: val, minute: minVal });
+          }
+          renderRefReportLists();
+          resetRefPlayerCombobox('ref-report-scorer-player-home', true);
+          if (countInputH) countInputH.value = '1';
+          if (minGoalHInput) minGoalHInput.value = '';
         }
-
-        goalsMap.get(key).goals += 1;
-
-      });
-
-      goalsMap.forEach(v => renderScorerRow(v));
-
+      };
+    }
+    if (countInputH) {
+      countInputH.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (addGoalH) addGoalH.click();
+        }
+      };
+    }
+    if (minGoalHInput) {
+      minGoalHInput.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (addGoalH) addGoalH.click();
+        }
+      };
     }
 
-
-
-    addScorerBtn?.addEventListener('click', () => {
-
-      renderScorerRow({ team: match.home, player: '', goals: 1 });
-
-    });
-
-
-
-    // Cards dynamic list
-
-    const cardsContainer = document.getElementById('cards-container');
-
-    const addCardBtn = document.getElementById('btn-add-card-row');
-
-
-
-    const renderCardRow = (initialData = {}) => {
-
-      const row = document.createElement('div');
-
-      row.className = 'card-row';
-
-      row.style.display = 'grid';
-
-      row.style.gridTemplateColumns = '140px 1fr 130px 40px';
-
-      row.style.gap = '8px';
-
-      row.style.alignItems = 'center';
-
-      row.style.background = 'var(--color-surface)';
-
-      row.style.padding = '6px 10px';
-
-      row.style.borderRadius = '6px';
-
-      row.style.border = '1px solid var(--glass-border)';
-
-
-
-      row.innerHTML = `
-
-        <select class="admin-input card-team" style="font-size: 0.82rem; padding: 6px;">
-
-          <option value="${match.home}" ${initialData.team === match.home ? 'selected' : ''}>${match.home}</option>
-
-          <option value="${match.away}" ${initialData.team === match.away ? 'selected' : ''}>${match.away}</option>
-
-        </select>
-
-        <input type="text" class="admin-input card-player" placeholder="Spieler Name" value="${initialData.player || ''}" list="${initialData.team === match.away ? 'datalist-away-players' : 'datalist-home-players'}" style="font-size: 0.85rem; padding: 6px;">
-
-        <select class="admin-input card-type" style="font-size: 0.82rem; padding: 6px;">
-
-          <option value="Gelb" ${initialData.type === 'Gelb' || initialData.type === 'yellow' ? 'selected' : ''}>Gelbe Karte</option>
-
-          <option value="Gelb-Rot" ${initialData.type === 'Gelb-Rot' || initialData.type === 'yellow_red' ? 'selected' : ''}>Gelb-Rote Karte</option>
-
-          <option value="Rot" ${initialData.type === 'Rot' || initialData.type === 'red' ? 'selected' : ''}>Rote Karte</option>
-
-        </select>
-
-        <button type="button" class="btn btn-outline btn-remove-row" style="color: #dc2626 !important; border-color: rgba(220, 38, 38, 0.3) !important; padding: 6px; font-weight: 700; border-radius: 4px;">✕</button>
-
-      `;
-
-
-
-      const cTeamSel = row.querySelector('.card-team');
-      const cNameInput = row.querySelector('.card-player');
-      cTeamSel?.addEventListener('change', () => {
-        cNameInput.setAttribute('list', cTeamSel.value === match.away ? 'datalist-away-players' : 'datalist-home-players');
-      });
-      row.querySelector('.btn-remove-row').addEventListener('click', () => row.remove());
-
-      cardsContainer.appendChild(row);
-
-    };
-
-
-
-    // Populate existing cards
-
-    if (existingCards.length > 0) {
-
-      existingCards.forEach(c => renderCardRow(c));
-
-    } else if (existingEvents.length > 0) {
-
-      existingEvents.filter(e => e.type === 'card' || e.type === 'yellow' || e.type === 'red' || e.type === 'yellowRed').forEach(c => {
-
-        let cardType = 'Gelb';
-
-        if (c.cardType) cardType = c.cardType;
-
-        else if (c.type === 'red') cardType = 'Rot';
-
-        else if (c.type === 'yellowRed') cardType = 'Gelb-Rot';
-
-        renderCardRow({ team: c.team, player: c.player, type: cardType });
-
-      });
-
+    const addGoalA = document.getElementById('btn-add-ref-goal-away');
+    const countInputA = document.getElementById('ref-report-goal-count-away');
+    const minGoalAInput = document.getElementById('ref-report-goal-min-away');
+    if (addGoalA) {
+      addGoalA.onclick = () => {
+        const val = getRefComboboxValue('ref-report-scorer-player-away');
+        const count = Math.max(1, parseInt(countInputA?.value, 10) || 1);
+        const minVal = minGoalAInput ? minGoalAInput.value.replace(/['"]/g, '').trim() : '';
+        if (val) {
+          for (let i = 0; i < count; i++) {
+            refReportScorersAway.push({ player: val, minute: minVal });
+          }
+          renderRefReportLists();
+          resetRefPlayerCombobox('ref-report-scorer-player-away', true);
+          if (countInputA) countInputA.value = '1';
+          if (minGoalAInput) minGoalAInput.value = '';
+        }
+      };
+    }
+    if (countInputA) {
+      countInputA.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (addGoalA) addGoalA.click();
+        }
+      };
+    }
+    if (minGoalAInput) {
+      minGoalAInput.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (addGoalA) addGoalA.click();
+        }
+      };
     }
 
+    // Card buttons
+    const addCardH = document.getElementById('btn-add-ref-card-home');
+    const cardTypeH = document.getElementById('ref-report-card-type-home');
+    const minCardH = document.getElementById('ref-report-card-min-home');
+    const reasonCardH = document.getElementById('ref-report-card-reason-home');
+    if (addCardH) {
+      addCardH.onclick = () => {
+        const val = getRefComboboxValue('ref-report-card-player-home');
+        const minVal = minCardH ? minCardH.value.replace(/['"]/g, '').trim() : '';
+        const reasonVal = reasonCardH ? reasonCardH.value.trim() : '';
+        const typeVal = cardTypeH ? cardTypeH.value : 'yellow';
+        if (val) {
+          refReportCardsHome.push({ player: val, type: typeVal, minute: minVal, reason: reasonVal });
+          renderRefReportLists();
+          resetRefPlayerCombobox('ref-report-card-player-home', true);
+          if (minCardH) minCardH.value = '';
+          if (reasonCardH) reasonCardH.value = '';
+        }
+      };
+    }
+    if (reasonCardH) {
+      reasonCardH.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (addCardH) addCardH.click();
+        }
+      };
+    }
 
-
-    addCardBtn?.addEventListener('click', () => {
-
-      renderCardRow({ team: match.home, player: '', type: 'Gelb' });
-
-    });
-
-
+    const addCardA = document.getElementById('btn-add-ref-card-away');
+    const cardTypeA = document.getElementById('ref-report-card-type-away');
+    const minCardA = document.getElementById('ref-report-card-min-away');
+    const reasonCardA = document.getElementById('ref-report-card-reason-away');
+    if (addCardA) {
+      addCardA.onclick = () => {
+        const val = getRefComboboxValue('ref-report-card-player-away');
+        const minVal = minCardA ? minCardA.value.replace(/['"]/g, '').trim() : '';
+        const reasonVal = reasonCardA ? reasonCardA.value.trim() : '';
+        const typeVal = cardTypeA ? cardTypeA.value : 'yellow';
+        if (val) {
+          refReportCardsAway.push({ player: val, type: typeVal, minute: minVal, reason: reasonVal });
+          renderRefReportLists();
+          resetRefPlayerCombobox('ref-report-card-player-away', true);
+          if (minCardA) minCardA.value = '';
+          if (reasonCardA) reasonCardA.value = '';
+        }
+      };
+    }
+    if (reasonCardA) {
+      reasonCardA.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (addCardA) addCardA.click();
+        }
+      };
+    }
 
     // Form submit
-
     const reportForm = document.getElementById('referee-report-form');
-
     reportForm?.addEventListener('submit', (e) => {
-
       e.preventDefault();
 
-
-
-      const submitBtn = document.getElementById('btn-submit-report');
-
+      const submitBtn = document.getElementById('btn-save-ref-report');
       submitBtn.disabled = true;
-
       submitBtn.textContent = 'Wird gespeichert...';
 
+      const ftHome = document.getElementById('ref-report-ft-home').value.trim();
+      const ftAway = document.getElementById('ref-report-ft-away').value.trim();
+      const htHome = document.getElementById('ref-report-ht-home').value.trim();
+      const htAway = document.getElementById('ref-report-ht-away').value.trim();
+      const refNotes = document.getElementById('ref-report-notes').value.trim();
 
+      let score = match.score || '-:-';
+      let ht = match.ht || '';
+      let status = match.status || 'Gespielt';
 
-      const hScore = parseInt(document.getElementById('rep-home-score').value, 10) || 0;
-
-      const aScore = parseInt(document.getElementById('rep-away-score').value, 10) || 0;
-
-      const hHt = document.getElementById('rep-ht-home').value.trim();
-
-      const aHt = document.getElementById('rep-ht-away').value.trim();
-
-      const refNotes = document.getElementById('rep-referee-notes').value.trim();
-
-
-
-      // Collect scorers
-
-      const scorers = [];
-
-      const events = [];
-
-      document.querySelectorAll('#scorers-container .scorer-row').forEach(row => {
-
-        const team = row.querySelector('.scorer-team').value;
-
-        const player = row.querySelector('.scorer-name').value.trim();
-
-        const goals = parseInt(row.querySelector('.scorer-count').value, 10) || 1;
-
-        if (player) {
-
-          scorers.push({ team, player, goals });
-
-          for (let i = 0; i < goals; i++) {
-
-            events.push({ type: 'goal', team, player });
-
-          }
-
+      if (ftHome !== '' && ftAway !== '') {
+        score = `${ftHome}:${ftAway}`;
+        status = 'Played';
+        if (htHome !== '' && htAway !== '') {
+          ht = `${htHome}:${htAway}`;
         }
-
-      });
-
-
-
-      // Collect cards
-
-      const cards = [];
-
-      document.querySelectorAll('#cards-container .card-row').forEach(row => {
-
-        const team = row.querySelector('.card-team').value;
-
-        const player = row.querySelector('.card-player').value.trim();
-
-        const type = row.querySelector('.card-type').value;
-
-        if (player) {
-
-          cards.push({ team, player, type });
-
-          events.push({ type: 'card', team, player, cardType: type });
-
-        }
-
-      });
-
-
-
-      const updatedMatch = {
-
-        ...match,
-
-        score: `${hScore}:${aScore}`,
-
-        ht: (hHt !== '' && aHt !== '') ? `${hHt}:${aHt}` : (match.ht || ''),
-
-        status: 'Gespielt',
-
-        scorers,
-
-        cards,
-
-        events,
-
-        refereeNotes: refNotes,
-
-        lastUpdated: Date.now()
-
-      };
-
-
-
-      try {
-
-        Store.saveMatch(selectedSeason, updatedMatch);
-
-        alert('Spielbericht erfolgreich gespeichert und Tabelle aktualisiert!');
-
-        populateMatchDropdown();
-
-      } catch (err) {
-
-        console.error("Save match error:", err);
-
-        alert('Fehler beim Speichern des Spielberichts.');
-
-        submitBtn.disabled = false;
-
-        submitBtn.textContent = 'Spielbericht offiziell speichern';
-
       }
 
+      // Build unified scorers array with minutes
+      const scorers = [];
+      refReportScorersHome.forEach(s => {
+        const cleanName = sanitizeMojibake(s.player || s.name || s);
+        const cleanMinute = sanitizeMojibake(s.minute || s.min || '');
+        scorers.push({ name: cleanName, player: cleanName, team: match.home, type: 'goal', count: 1, minute: cleanMinute });
+      });
+      refReportScorersAway.forEach(s => {
+        const cleanName = sanitizeMojibake(s.player || s.name || s);
+        const cleanMinute = sanitizeMojibake(s.minute || s.min || '');
+        scorers.push({ name: cleanName, player: cleanName, team: match.away, type: 'goal', count: 1, minute: cleanMinute });
+      });
+
+      // Build unified cards array with minutes
+      const cards = [];
+      refReportCardsHome.forEach(c => {
+        const cleanPlayer = sanitizeMojibake(c.player || c.name || '');
+        const cleanReason = sanitizeMojibake(c.reason || '');
+        const cleanMinute = sanitizeMojibake(c.minute || c.min || '');
+        cards.push({ name: cleanPlayer, player: cleanPlayer, team: match.home, type: c.type, reason: cleanReason, minute: cleanMinute });
+      });
+      refReportCardsAway.forEach(c => {
+        const cleanPlayer = sanitizeMojibake(c.player || c.name || '');
+        const cleanReason = sanitizeMojibake(c.reason || '');
+        const cleanMinute = sanitizeMojibake(c.minute || c.min || '');
+        cards.push({ name: cleanPlayer, player: cleanPlayer, team: match.away, type: c.type, reason: cleanReason, minute: cleanMinute });
+      });
+
+      // Build events timeline
+      const events = [];
+      scorers.forEach(s => events.push({ type: 'goal', player: s.name, name: s.name, team: s.team, minute: s.minute || '' }));
+      cards.forEach(c => events.push({ type: c.type, player: c.name, name: c.name, team: c.team, reason: c.reason || '', minute: c.minute || '' }));
+
+      const updatedMatch = {
+        ...match,
+        score: score,
+        ht: ht,
+        htScore: ht,
+        halfTime: ht,
+        status: status,
+        scorers: scorers,
+        cards: cards,
+        events: events,
+        refereeNotes: refNotes,
+        note: refNotes,
+        lastUpdated: Date.now()
+      };
+
+      try {
+        Store.saveMatch(selectedSeason, deepSanitize(updatedMatch));
+        Store.recalculateSeason(selectedSeason);
+        alert('Spielbericht erfolgreich gespeichert und Tabelle aktualisiert!');
+        populateMatchDropdown();
+      } catch (err) {
+        console.error("Save match error:", err);
+        alert('Fehler beim Speichern des Spielberichts.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Spielbericht offiziell speichern';
+      }
     });
-
   };
-
 
 
   window.addEventListener('matchday-roster-updated', () => {
