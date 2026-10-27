@@ -79,6 +79,9 @@ export function loginWithPin(pin) {
     const authData = { ...roleConfig, pin: cleanPin, isLoggedIn: true };
     sessionStorage.setItem('dsg_auth', JSON.stringify(authData));
     sessionStorage.setItem('dsg_admin', roleConfig.role === 'admin' ? 'true' : 'false');
+    if (roleConfig.role === 'admin') {
+      sessionStorage.setItem('dsg_admin_tab', 'admin-approvals');
+    }
     return { success: true, user: authData };
   }
   return { success: false, error: 'Ungültiger PIN. Bitte prüfe deine Eingabe.' };
@@ -87,4 +90,5 @@ export function loginWithPin(pin) {
 export function logout() {
   sessionStorage.removeItem('dsg_auth');
   sessionStorage.removeItem('dsg_admin');
+  sessionStorage.removeItem('dsg_admin_tab');
 }

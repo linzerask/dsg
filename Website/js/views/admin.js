@@ -58,10 +58,25 @@ export const ensureAllAdminModalsInBody = () => {
 
 
 
-let currentAdminTab = 'admin-games';
+const VALID_ADMIN_TABS = [
+  'admin-approvals',
+  'admin-games',
+  'admin-rounds',
+  'admin-leagues',
+  'admin-teams',
+  'admin-players',
+  'admin-news',
+  'admin-gallery'
+];
+
+let currentAdminTab = 'admin-approvals';
 try {
   const savedTab = sessionStorage.getItem('dsg_admin_tab');
-  if (savedTab) currentAdminTab = savedTab;
+  if (savedTab && VALID_ADMIN_TABS.includes(savedTab)) {
+    currentAdminTab = savedTab;
+  } else {
+    currentAdminTab = 'admin-approvals';
+  }
 } catch(e) {}
 
 const tabLabels = {
@@ -87,14 +102,17 @@ const tabIcons = {
 };
 
 export const viewAdmin = () => {
+  let activeTab = 'admin-approvals';
   try {
     const savedTab = sessionStorage.getItem('dsg_admin_tab');
-    if (savedTab) currentAdminTab = savedTab;
+    if (savedTab && VALID_ADMIN_TABS.includes(savedTab)) {
+      activeTab = savedTab;
+    }
   } catch(e) {}
-  const activeTab = currentAdminTab || 'admin-games';
+  currentAdminTab = activeTab;
   const isTabActive = (tabId) => activeTab === tabId;
-  const currentLabel = tabLabels[activeTab] || 'Spiele';
-  const currentIcon = tabIcons[activeTab] || tabIcons['admin-games'];
+  const currentLabel = tabLabels[activeTab] || 'Freigaben & Anträge';
+  const currentIcon = tabIcons[activeTab] || tabIcons['admin-approvals'];
 
   return `
     <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 0 var(--space-md); padding-top: var(--space-sm);">
@@ -327,7 +345,14 @@ export const viewAdmin = () => {
 export const bindAdmin = () => {
   ensureAllAdminModalsInBody();
 
-  const activeTab = currentAdminTab || 'admin-games';
+  let activeTab = 'admin-approvals';
+  try {
+    const savedTab = sessionStorage.getItem('dsg_admin_tab');
+    if (savedTab && VALID_ADMIN_TABS.includes(savedTab)) {
+      activeTab = savedTab;
+    }
+  } catch(e) {}
+  currentAdminTab = activeTab;
   if (activeTab === 'admin-approvals') initAdminApprovals();
   else if (activeTab === 'admin-games') initAdminGames();
   else if (activeTab === 'admin-rounds') initAdminRounds();
