@@ -160,7 +160,7 @@ export const initAdminApprovals = () => {
                     <div style="color: var(--color-text-secondary); font-size: 0.8rem;">Keine Tore erfasst</div>
                   ` : (report.scorers || []).map(s => `
                     <div style="display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed var(--glass-border);">
-                      <span>⚽ <strong>${s.name || s.player}</strong> (${s.team})</span>
+                      <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path><circle cx="12" cy="12" r="4"></circle></svg><strong>${s.name || s.player}</strong> (${s.team})</span>
                       <span style="color: var(--color-text-secondary); font-weight: 600;">${s.minute ? s.minute + "'" : ''}</span>
                     </div>
                   `).join('')}

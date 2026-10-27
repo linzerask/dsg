@@ -22,7 +22,7 @@ import { getAuth, loginWithPin, logout } from './auth.js?v=1793127696174';
 
 import { viewTeamAdmin, bindTeamAdmin } from './views/teamAdmin.js?v=1793230000000';
 
-import { viewRefereeAdmin, bindRefereeAdmin } from './views/refereeAdmin.js?v=1793235000000';
+import { viewRefereeAdmin, bindRefereeAdmin } from './views/refereeAdmin.js?v=1793238000000';
 
 import { viewArticle, bindArticle } from './views/article.js?v=1791305000000';
 

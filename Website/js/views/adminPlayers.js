@@ -442,7 +442,7 @@ const renderTable = () => {
                 </td>
                 <td>
                     <span style="color: var(--color-text-primary);">${ofbVerein}</span>
-                    ${p.Notiz ? `<div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px; font-style: italic; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${p.Notiz}">📝 ${p.Notiz}</div>` : ''}
+                    ${p.Notiz ? `<div style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 2px; font-style: italic; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${p.Notiz}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 3px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>${p.Notiz}</div>` : ''}
                 </td>
                 <td style="text-align: center;">
                     <button class="btn btn-outline edit-single-player-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">

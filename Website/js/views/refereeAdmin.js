@@ -359,7 +359,7 @@ export const bindRefereeAdmin = async () => {
 
     if (tabSpielbericht) {
       tabSpielbericht.className = `btn ${currentRefereeTab === 'spielbericht' ? 'btn-dsg' : 'btn-outline'}`;
-      tabSpielbericht.innerHTML = `2. Digitaler Spielbericht ${!isCompleted ? '<span style="font-size: 0.8rem; margin-left: 4px;" title="Gesperrt bis Passkontrolle abgeschlossen ist">🔒</span>' : ''}`;
+      tabSpielbericht.innerHTML = `2. Digitaler Spielbericht ${!isCompleted ? '<span style="display: inline-flex; align-items: center; margin-left: 5px; opacity: 0.85;" title="Gesperrt bis Passkontrolle abgeschlossen ist"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>' : ''}`;
     }
   };
 
