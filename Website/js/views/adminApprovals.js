@@ -183,6 +183,26 @@ export const initAdminApprovals = () => {
                     </div>
                   `).join('')}
                 </div>
+
+                <!-- Auswechslungen -->
+                <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 6px; padding: 10px 12px;">
+                  <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--color-accent); margin-bottom: 6px;">
+                    Auswechslungen (${(report.substitutions || []).length})
+                  </div>
+                  ${(report.substitutions || []).length === 0 ? `
+                    <div style="color: var(--color-text-secondary); font-size: 0.8rem;">Keine Wechsel erfasst</div>
+                  ` : (report.substitutions || []).map(s => `
+                    <div style="display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed var(--glass-border); font-size: 0.8rem;">
+                      <span>
+                        <span style="color: #dc2626; font-weight: 700;">&darr; ${s.playerOut || '-'}</span>
+                        <span style="color: var(--color-text-secondary); margin: 0 4px;">&bull;</span>
+                        <span style="color: #16a34a; font-weight: 700;">&uarr; ${s.playerIn || '-'}</span>
+                        <span style="color: var(--color-text-secondary); font-size: 0.75rem; margin-left: 4px;">(${s.team})</span>
+                      </span>
+                      <span style="color: var(--color-text-secondary); font-weight: 600;">${s.minute ? s.minute + "'" : ''}</span>
+                    </div>
+                  `).join('')}
+                </div>
               </div>
 
               <!-- Referee Notes (if any) -->
