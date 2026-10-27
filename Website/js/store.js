@@ -2234,6 +2234,129 @@ export const Store = {
     return true;
   },
 
+  // --- Match Report Approval Workflow ---
+  async submitRefereeReport(seasonKey, matchId, reportData) {
+    if (!seasonKey || !matchId || !reportData) return false;
+    const data = this.getData();
+    if (!data.seasons || !data.seasons[seasonKey] || !data.seasons[seasonKey].matches) return false;
+
+    const matches = data.seasons[seasonKey].matches;
+    const matchIndex = matches.findIndex(m => String(m.id) === String(matchId));
+    if (matchIndex === -1) return false;
+
+    const currentMatch = matches[matchIndex];
+    const submission = {
+      ...reportData,
+      matchId: matchId,
+      seasonKey: seasonKey,
+      submittedAt: Date.now(),
+      status: 'pending_approval'
+    };
+
+    matches[matchIndex] = {
+      ...currentMatch,
+      refereeReport: submission,
+      reportStatus: 'pending_approval',
+      lastReportSubmittedAt: Date.now()
+    };
+
+    this.saveData(data);
+    window.dispatchEvent(new CustomEvent('match-reports-updated'));
+    window.dispatchEvent(new CustomEvent('data-updated'));
+    return true;
+  },
+
+  async approveMatchReport(seasonKey, matchId, adminReviewer = 'Administrator') {
+    if (!seasonKey || !matchId) return false;
+    const data = this.getData();
+    if (!data.seasons || !data.seasons[seasonKey] || !data.seasons[seasonKey].matches) return false;
+
+    const matches = data.seasons[seasonKey].matches;
+    const matchIndex = matches.findIndex(m => String(m.id) === String(matchId));
+    if (matchIndex === -1) return false;
+
+    const match = matches[matchIndex];
+    const rep = match.refereeReport;
+    if (!rep) return false;
+
+    // Apply the submitted referee report as the official result
+    matches[matchIndex] = {
+      ...match,
+      score: rep.score || match.score,
+      ht: rep.ht || match.ht || rep.htScore || '',
+      htScore: rep.ht || match.htScore || '',
+      halfTime: rep.ht || match.halfTime || '',
+      status: rep.status || 'Played',
+      reportStatus: 'approved',
+      scorers: rep.scorers || [],
+      cards: rep.cards || [],
+      events: rep.events || [],
+      substitutions: rep.substitutions || [],
+      refereeNotes: rep.refereeNotes || match.refereeNotes || '',
+      note: rep.refereeNotes || match.note || '',
+      confirmedAt: Date.now(),
+      confirmedBy: adminReviewer,
+      lastUpdated: Date.now()
+    };
+
+    if (matches[matchIndex].refereeReport) {
+      matches[matchIndex].refereeReport.status = 'approved';
+      matches[matchIndex].refereeReport.confirmedAt = Date.now();
+    }
+
+    this.saveData(data);
+    this.recalculateSeason(seasonKey);
+    window.dispatchEvent(new CustomEvent('match-reports-updated'));
+    window.dispatchEvent(new CustomEvent('data-updated'));
+    return true;
+  },
+
+  async rejectMatchReport(seasonKey, matchId, reason = '') {
+    if (!seasonKey || !matchId) return false;
+    const data = this.getData();
+    if (!data.seasons || !data.seasons[seasonKey] || !data.seasons[seasonKey].matches) return false;
+
+    const matches = data.seasons[seasonKey].matches;
+    const matchIndex = matches.findIndex(m => String(m.id) === String(matchId));
+    if (matchIndex === -1) return false;
+
+    matches[matchIndex].reportStatus = 'rejected';
+    matches[matchIndex].reportRejectReason = reason || 'Bitte Angaben überprüfen';
+    if (matches[matchIndex].refereeReport) {
+      matches[matchIndex].refereeReport.status = 'rejected';
+      matches[matchIndex].refereeReport.rejectReason = reason;
+    }
+
+    this.saveData(data);
+    window.dispatchEvent(new CustomEvent('match-reports-updated'));
+    window.dispatchEvent(new CustomEvent('data-updated'));
+    return true;
+  },
+
+  getPendingMatchReports() {
+    const data = this.getData();
+    const results = [];
+    if (!data.seasons) return results;
+
+    Object.keys(data.seasons).forEach(sKey => {
+      const s = data.seasons[sKey];
+      if (s && Array.isArray(s.matches)) {
+        s.matches.forEach(m => {
+          if (m.reportStatus === 'pending_approval' && m.refereeReport) {
+            results.push({
+              seasonKey: sKey,
+              seasonName: s.name || sKey,
+              match: m,
+              report: m.refereeReport
+            });
+          }
+        });
+      }
+    });
+
+    return results;
+  },
+
   async approvePlayerRequest(reqId) {
     const requests = this.getPlayerRequests();
     const req = requests.find(r => r.id === reqId);

@@ -13,7 +13,30 @@ import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/fireba
 
 
 
-let currentTeamTab = 'kader'; // 'kader' | 'nachmelden' | 'antraege'
+let currentTeamTab = 'kader'; // 'kader' | 'spieltagskader' | 'statistiken' | 'nachmelden' | 'antraege'
+
+const teamTabInfo = {
+  'kader': {
+    label: 'Mein Kader',
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`
+  },
+  'spieltagskader': {
+    label: 'Spieltagskader',
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`
+  },
+  'statistiken': {
+    label: 'Statistiken',
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`
+  },
+  'nachmelden': {
+    label: '+ Spieler anmelden',
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>`
+  },
+  'antraege': {
+    label: 'Meine Anträge',
+    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`
+  }
+};
 
 let searchQuery = '';
 
@@ -165,42 +188,60 @@ export const viewTeamAdmin = (auth) => {
 
 
       <!-- Navigation Tabs -->
-
-      <div style="display: flex; gap: var(--space-xs); border-bottom: 1px solid var(--glass-border); margin-bottom: var(--space-lg); overflow-x: auto;">
-
-        <button class="team-tab-btn ${currentTeamTab === 'kader' ? 'active' : ''}" data-tab="kader" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'kader' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'kader' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer;">
-
+      <!-- Desktop Navigation Tabs -->
+      <div class="team-tabs-desktop" style="display: flex; gap: var(--space-xs); border-bottom: 1px solid var(--glass-border); margin-bottom: var(--space-lg); overflow-x: auto;">
+        <button class="team-tab-btn ${currentTeamTab === 'kader' ? 'active' : ''}" data-tab="kader" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'kader' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'kader' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer; white-space: nowrap;">
           Mein Kader
-
         </button>
-
         <button class="team-tab-btn ${currentTeamTab === 'spieltagskader' ? 'active' : ''}" data-tab="spieltagskader" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'spieltagskader' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'spieltagskader' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer; white-space: nowrap;">
-
           Spieltagskader
-
         </button>
-
         <button class="team-tab-btn ${currentTeamTab === 'statistiken' ? 'active' : ''}" data-tab="statistiken" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'statistiken' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'statistiken' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer; white-space: nowrap;">
-
           Statistiken
-
         </button>
-
-        <button class="team-tab-btn ${currentTeamTab === 'nachmelden' ? 'active' : ''}" data-tab="nachmelden" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'nachmelden' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'nachmelden' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer;">
-
+        <button class="team-tab-btn ${currentTeamTab === 'nachmelden' ? 'active' : ''}" data-tab="nachmelden" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'nachmelden' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'nachmelden' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer; white-space: nowrap;">
           + Spieler anmelden
-
         </button>
-
-        <button class="team-tab-btn ${currentTeamTab === 'antraege' ? 'active' : ''}" data-tab="antraege" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'antraege' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'antraege' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center;">
-
+        <button class="team-tab-btn ${currentTeamTab === 'antraege' ? 'active' : ''}" data-tab="antraege" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'antraege' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'antraege' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; white-space: nowrap;">
           Meine Anträge <span id="team-requests-badge" style="display: none; background: var(--color-accent); color: #fff; font-size: 0.72rem; padding: 2px 7px; border-radius: 10px; margin-left: 6px; font-weight: 700;"></span>
-
         </button>
-
       </div>
 
-
+      <!-- Mobile Navigation Pill Button & Accordion Drawer -->
+      <div class="team-tabs-mobile" style="display: none; margin-bottom: var(--space-md);">
+        <button id="team-m-nav-toggle" class="team-m-nav-toggle-btn" aria-label="Menü öffnen">
+          <span id="team-m-nav-current-label" style="display: inline-flex; align-items: center;">
+            ${(teamTabInfo[currentTeamTab] || teamTabInfo['kader']).icon}
+            <span>${(teamTabInfo[currentTeamTab] || teamTabInfo['kader']).label}</span>
+          </span>
+          <svg class="team-m-nav-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.25s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <nav id="team-nav-menu" class="team-nav-accordion-content" style="display: none; flex-direction: column; gap: 6px; margin-top: 8px;">
+          <button class="team-tab-btn ${currentTeamTab === 'kader' ? 'active' : ''}" data-tab="kader" style="display: flex; align-items: center; width: 100%; text-align: left; padding: 10px 14px; border-radius: var(--border-radius-sm); border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text-primary); font-weight: 700; cursor: pointer;">
+            ${teamTabInfo['kader'].icon}
+            <span>Mein Kader</span>
+          </button>
+          <button class="team-tab-btn ${currentTeamTab === 'spieltagskader' ? 'active' : ''}" data-tab="spieltagskader" style="display: flex; align-items: center; width: 100%; text-align: left; padding: 10px 14px; border-radius: var(--border-radius-sm); border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text-primary); font-weight: 700; cursor: pointer;">
+            ${teamTabInfo['spieltagskader'].icon}
+            <span>Spieltagskader</span>
+          </button>
+          <button class="team-tab-btn ${currentTeamTab === 'statistiken' ? 'active' : ''}" data-tab="statistiken" style="display: flex; align-items: center; width: 100%; text-align: left; padding: 10px 14px; border-radius: var(--border-radius-sm); border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text-primary); font-weight: 700; cursor: pointer;">
+            ${teamTabInfo['statistiken'].icon}
+            <span>Statistiken</span>
+          </button>
+          <button class="team-tab-btn ${currentTeamTab === 'nachmelden' ? 'active' : ''}" data-tab="nachmelden" style="display: flex; align-items: center; width: 100%; text-align: left; padding: 10px 14px; border-radius: var(--border-radius-sm); border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text-primary); font-weight: 700; cursor: pointer;">
+            ${teamTabInfo['nachmelden'].icon}
+            <span>+ Spieler anmelden</span>
+          </button>
+          <button class="team-tab-btn ${currentTeamTab === 'antraege' ? 'active' : ''}" data-tab="antraege" style="display: flex; align-items: center; justify-content: space-between; width: 100%; text-align: left; padding: 10px 14px; border-radius: var(--border-radius-sm); border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text-primary); font-weight: 700; cursor: pointer;">
+            <span style="display: inline-flex; align-items: center;">
+              ${teamTabInfo['antraege'].icon}
+              <span>Meine Anträge</span>
+            </span>
+            <span id="team-requests-badge-mobile" style="display: none; background: var(--color-accent); color: #fff; font-size: 0.72rem; padding: 2px 7px; border-radius: 10px; font-weight: 700;"></span>
+          </button>
+        </nav>
+      </div>
 
       <!-- Tab Content Area -->
 
@@ -355,45 +396,66 @@ export const bindTeamAdmin = async (auth) => {
 
     const teamRequests = allRequests.filter(r => (r.teamName || '').toLowerCase() === teamName.toLowerCase() && r.status === 'pending');
 
+        const mobileBadge = document.getElementById('team-requests-badge-mobile');
     if (teamRequests.length > 0) {
-
       badge.textContent = String(teamRequests.length);
-
       badge.style.display = 'inline-block';
-
+      if (mobileBadge) {
+        mobileBadge.textContent = String(teamRequests.length);
+        mobileBadge.style.display = 'inline-block';
+      }
     } else {
-
       badge.style.display = 'none';
-
+      if (mobileBadge) mobileBadge.style.display = 'none';
     }
 
   };
 
 
 
-  const tabButtons = document.querySelectorAll('.team-tab-btn');
-
+    const tabButtons = document.querySelectorAll('.team-tab-btn');
   tabButtons.forEach(btn => {
-
     btn.addEventListener('click', () => {
-
       currentTeamTab = btn.getAttribute('data-tab');
-
       tabButtons.forEach(b => {
-
         const isActive = b.getAttribute('data-tab') === currentTeamTab;
-
-        b.style.borderBottomColor = isActive ? 'var(--color-accent)' : 'transparent';
-
-        b.style.color = isActive ? 'var(--color-accent)' : 'var(--color-text-secondary)';
-
+        b.classList.toggle('active', isActive);
+        if (b.closest('.team-tabs-desktop')) {
+          b.style.borderBottomColor = isActive ? 'var(--color-accent)' : 'transparent';
+          b.style.color = isActive ? 'var(--color-accent)' : 'var(--color-text-secondary)';
+        }
       });
+      
+      const currentLabelEl = document.getElementById('team-m-nav-current-label');
+      if (currentLabelEl && teamTabInfo[currentTeamTab]) {
+        currentLabelEl.innerHTML = `${teamTabInfo[currentTeamTab].icon}<span>${teamTabInfo[currentTeamTab].label}</span>`;
+      }
+      
+      const mobileNav = document.getElementById('team-nav-menu');
+      const mobileChevron = document.querySelector('.team-m-nav-chevron');
+      if (mobileNav && mobileNav.style.display !== 'none') {
+        mobileNav.style.display = 'none';
+        if (mobileChevron) mobileChevron.style.transform = 'rotate(0deg)';
+      }
 
       renderTab();
-
     });
-
   });
+
+  const teamNavToggle = document.getElementById('team-m-nav-toggle');
+  if (teamNavToggle) {
+    teamNavToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const mobileNav = document.getElementById('team-nav-menu');
+      const mobileChevron = document.querySelector('.team-m-nav-chevron');
+      if (!mobileNav) return;
+      const isOpen = mobileNav.style.display === 'flex';
+      mobileNav.style.display = isOpen ? 'none' : 'flex';
+      if (mobileChevron) {
+        mobileChevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+      }
+    });
+  }
 
 
 
@@ -1534,12 +1596,12 @@ export const bindTeamAdmin = async (auth) => {
             const pPass = p.passNumber && p.passNumber !== '-' ? p.passNumber : (p['#'] || '-');
 
             return `
-              <div class="glass-card stats-accordion-card" data-player-id="${p.id}" style="border-radius: 8px; border: 1px solid var(--glass-border); overflow: hidden;">
+                            <div class="glass-card stats-accordion-card" data-player-id="${p.id}" style="border-radius: 8px; border: 1px solid var(--color-border, #e2e8f0); background: #ffffff; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
                 <!-- Main Header: Summary Row (Always Visible) -->
-                <div class="stats-accordion-header" style="padding: 12px 14px; cursor: pointer; user-select: none; display: flex; flex-direction: column; gap: 8px;">
+                <div class="stats-accordion-header" style="padding: 12px 14px; cursor: pointer; user-select: none; display: flex; flex-direction: column; gap: 8px; background: #ffffff;">
                   <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                     <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
-                      <img src="${p.avatar}" alt="${p.name}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); flex-shrink: 0;">
+                      <img src="${p.avatar}" alt="${p.name}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; background: #f8fafc; border: 1px solid var(--color-border, #e2e8f0); flex-shrink: 0;">
                       <div style="min-width: 0; flex: 1;">
                         <div style="font-weight: 800; font-size: 0.96rem; color: var(--color-text-primary); line-height: 1.2;">
                           <span class="player-name-link" data-player-id="${p.id}" style="cursor: pointer; text-decoration: underline dotted var(--color-accent);" title="Klicken für Spielerstatistiken">${p.name}</span>
@@ -1555,7 +1617,7 @@ export const bindTeamAdmin = async (auth) => {
                   </div>
 
                   <!-- Quick Stats Bar (Spiele, Minuten, Tore) -->
-                  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 6px 8px; background: rgba(255, 255, 255, 0.03); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05); text-align: center;">
+                  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 6px 8px; background: #f8fafc; border-radius: 6px; border: 1px solid var(--color-border, #e2e8f0); text-align: center;">
                     <div>
                       <div style="font-size: 0.65rem; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700;">Spiele</div>
                       <div style="font-size: 0.88rem; font-weight: 800; color: var(--color-text-primary);">${p.played} <span style="font-size: 0.7rem; color: var(--color-text-secondary);">/ ${teamStats.playedMatchesCount}</span></div>
@@ -1572,9 +1634,9 @@ export const bindTeamAdmin = async (auth) => {
                 </div>
 
                 <!-- Accordion Drawer: Detailed breakdown (Hidden by default) -->
-                <div class="stats-accordion-drawer" style="display: none; padding: 12px 14px; border-top: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.15);">
+                <div class="stats-accordion-drawer" style="display: none; padding: 12px 14px; border-top: 1px solid var(--color-border, #e2e8f0); background: #ffffff;">
                   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; font-size: 0.8rem;">
-                    <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="background: #ffffff; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--color-border, #e2e8f0); box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
                       <div style="font-size: 0.68rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Startelf-Quote</div>
                       <div style="font-weight: 800; font-size: 1.0rem; color: ${startPct >= 70 ? 'var(--color-accent)' : 'inherit'}; margin-top: 2px;">${startPct}%</div>
                       <div style="font-size: 0.7rem; color: var(--color-text-secondary); margin-top: 1px;">
@@ -1582,7 +1644,7 @@ export const bindTeamAdmin = async (auth) => {
                       </div>
                     </div>
 
-                    <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="background: #ffffff; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--color-border, #e2e8f0); box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
                       <div style="font-size: 0.68rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Tor-Effizienz</div>
                       <div style="font-weight: 800; font-size: 1.0rem; color: ${minPerGoal !== null ? '#16a34a' : 'inherit'}; margin-top: 2px;">
                         ${minPerGoal !== null ? minPerGoal + ' Min.' : '&mdash;'}
@@ -1594,7 +1656,7 @@ export const bindTeamAdmin = async (auth) => {
                   </div>
 
                   <!-- Cards & Fairplay Row -->
-                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; margin-bottom: 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: #ffffff; border-radius: 6px; border: 1px solid var(--color-border, #e2e8f0); box-shadow: 0 1px 2px rgba(0,0,0,0.03); font-size: 0.8rem; margin-bottom: 10px;">
                     <span style="font-size: 0.72rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Kartenkonto:</span>
                     <div style="display: flex; align-items: center; gap: 6px;">
                       <span style="background: #eab308; color: #000; font-weight: 800; font-size: 0.72rem; padding: 1px 6px; border-radius: 2px;">${p.yellowCards} Gelb</span>
@@ -1604,7 +1666,7 @@ export const bindTeamAdmin = async (auth) => {
                   </div>
 
                   <!-- Direct Player Modal Trigger Button -->
-                  <button type="button" class="btn btn-outline btn-open-player-modal" data-player-id="${p.id}" style="width: 100%; color: var(--color-text-primary); font-size: 0.82rem; font-weight: 700; padding: 9px 12px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: rgba(255, 255, 255, 0.04);">
+                  <button type="button" class="btn btn-outline btn-open-player-modal" data-player-id="${p.id}" style="width: 100%; color: var(--color-text-primary); font-size: 0.82rem; font-weight: 700; padding: 9px 12px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #ffffff; border: 1px solid var(--color-border, #cbd5e1);">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     Vollständiges Profil &amp; Trainer-KPIs
                   </button>
@@ -1774,21 +1836,55 @@ export const bindTeamAdmin = async (auth) => {
                 <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Position</label>
 
                 <select id="req-position" class="admin-input" style="width: 100%;">
-
-                  <option value="Feldspieler">Feldspieler</option>
-
-                  <option value="Torwart">Torwart</option>
-
-                  <option value="Verteidiger">Verteidiger</option>
-
-                  <option value="Mittelfeld">Mittelfeld</option>
-
-                  <option value="Stürmer">Stürmer</option>
-
+                  <option value="Feldspieler">Feldspieler (Allround)</option>
+                  <optgroup label="Torwart">
+                    <option value="Torwart">Torwart (TW)</option>
+                    <option value="Mitspielender Torwart">Mitspielender Torwart</option>
+                  </optgroup>
+                  <optgroup label="Abwehr / Verteidigung">
+                    <option value="Innenverteidiger">Innenverteidiger (IV)</option>
+                    <option value="Linksverteidiger">Linksverteidiger (LV)</option>
+                    <option value="Rechtsverteidiger">Rechtsverteidiger (RV)</option>
+                    <option value="Linker Schienenspieler">Linker Schienenspieler (LWB)</option>
+                    <option value="Rechter Schienenspieler">Rechter Schienenspieler (RWB)</option>
+                    <option value="Libero">Libero (LIB)</option>
+                    <option value="Abwehr">Abwehr (Allround)</option>
+                  </optgroup>
+                  <optgroup label="Mittelfeld">
+                    <option value="Defensives Mittelfeld">Defensives Mittelfeld (DM / 6er)</option>
+                    <option value="Zentrales Mittelfeld">Zentrales Mittelfeld (ZM / 8er)</option>
+                    <option value="Offensives Mittelfeld">Offensives Mittelfeld (OM / 10er)</option>
+                    <option value="Linkes Mittelfeld">Linkes Mittelfeld (LM)</option>
+                    <option value="Rechtes Mittelfeld">Rechtes Mittelfeld (RM)</option>
+                    <option value="Flügelspieler">Flügelspieler (Winger)</option>
+                    <option value="Mittelfeld">Mittelfeld (Allround)</option>
+                  </optgroup>
+                  <optgroup label="Angriff / Sturm">
+                    <option value="Mittelstürmer">Mittelstürmer (MS / 9er)</option>
+                    <option value="Linksaußen">Linksaußen (LA / LW)</option>
+                    <option value="Rechtsaußen">Rechtsaußen (RA / RW)</option>
+                    <option value="Hängende Spitze">Hängende Spitze (HS / CF)</option>
+                    <option value="Zweiter Stürmer">Zweiter Stürmer (SS)</option>
+                    <option value="Sturm">Sturm (Allround)</option>
+                  </optgroup>
                 </select>
 
               </div>
 
+            </div>
+
+            <div>
+              <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Spielfuß / Seite (optional)</label>
+              <select id="req-position-side" class="admin-input" style="width: 100%;">
+                <option value="">-- Nicht angegeben --</option>
+                <option value="Rechtsfuß">Rechtsfuß (R)</option>
+                <option value="Linksfuß">Linksfuß (L)</option>
+                <option value="Beidfüßig">Beidfüßig (B)</option>
+                <option value="Zentral">Zentral</option>
+                <option value="Links">Links</option>
+                <option value="Rechts">Rechts</option>
+                <option value="Flexibel">Flexibel / Universal</option>
+              </select>
             </div>
 
 
@@ -1882,6 +1978,7 @@ export const bindTeamAdmin = async (auth) => {
           birthDate: document.getElementById('req-geburtsdatum').value,
 
           position: document.getElementById('req-position').value,
+          positionSide: document.getElementById('req-position-side')?.value || '',
 
           photoUrl: photoUrl || '',
 

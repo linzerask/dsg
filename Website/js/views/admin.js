@@ -1,12 +1,12 @@
-import { Store } from '../store.js?v=1791230000000';
+import { Store } from '../store.js?v=1793230000000';
 import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1792914000000';
 import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1791230000000';
 import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1792915000000';
 import { renderAdminRounds, initAdminRounds } from './adminRounds.js?v=1792915000000';
-import { renderAdminGames, initAdminGames } from './adminGames.js?v=1792924000000';
+import { renderAdminGames, initAdminGames } from './adminGames.js?v=1793230000000';
 import { renderAdminNews, initAdminNews } from './adminNews.js?v=1791230000000';
 import { renderAdminGallery, initAdminGallery } from './adminGallery.js?v=1791230000000';
-import { renderAdminApprovals, initAdminApprovals } from './adminApprovals.js?v=1793086000000';
+import { renderAdminApprovals, initAdminApprovals } from './adminApprovals.js?v=1793230000000';
 import { logout } from '../auth.js?v=1793086000000';
 
 export const showToast = (message, isError = false) => {
@@ -65,7 +65,7 @@ try {
 } catch(e) {}
 
 const tabLabels = {
-  'admin-approvals': 'Passanträge',
+  'admin-approvals': 'Freigaben & Anträge',
   'admin-games': 'Spiele',
   'admin-rounds': 'Spielrunden',
   'admin-leagues': 'Ligen verwalten',
@@ -113,7 +113,7 @@ export const viewAdmin = () => {
         <nav id="admin-nav-menu" class="admin-nav-accordion-content">
           <button class="admin-nav-btn ${isTabActive('admin-approvals') ? 'active' : ''}" data-target="admin-approvals">
             ${tabIcons['admin-approvals']}
-            <span>Passanträge</span>
+            <span>Freigaben & Anträge</span>
           </button>
           <button class="admin-nav-btn ${isTabActive('admin-games') ? 'active' : ''}" data-target="admin-games">
             ${tabIcons['admin-games']}

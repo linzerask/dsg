@@ -1439,6 +1439,40 @@ export const bindRefereeAdmin = async () => {
     contentContainer.innerHTML = `
       <form id="referee-report-form" style="display: flex; flex-direction: column; gap: var(--space-md);">
         
+        ${match.reportStatus === 'pending_approval' ? `
+          <div style="background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.45); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.3rem;">⏳</span>
+              <div>
+                <div style="font-weight: 800; color: #d97706; font-size: 0.95rem;">Spielbericht eingereicht (Wartet auf Admin-Freigabe)</div>
+                <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">Der Bericht liegt der Ligaleitung zur Prüfung &amp; offiziellen Bestätigung vor.</div>
+              </div>
+            </div>
+            <span style="font-size: 0.76rem; font-weight: 800; color: #d97706; background: rgba(234, 179, 8, 0.2); padding: 4px 10px; border-radius: 999px; text-transform: uppercase;">Ausstehend</span>
+          </div>
+        ` : match.reportStatus === 'approved' ? `
+          <div style="background: rgba(22, 163, 74, 0.15); border: 1px solid rgba(22, 163, 74, 0.45); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.3rem; color: #16a34a;">✓</span>
+              <div>
+                <div style="font-weight: 800; color: #16a34a; font-size: 0.95rem;">Spielbericht offiziell von Ligaleitung bestätigt</div>
+                <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">Das Spielergebnis und alle Ereignisse sind offiziell in der Tabelle gewertet.</div>
+              </div>
+            </div>
+            <span style="font-size: 0.76rem; font-weight: 800; color: #16a34a; background: rgba(22, 163, 74, 0.2); padding: 4px 10px; border-radius: 999px; text-transform: uppercase;">Bestätigt</span>
+          </div>
+        ` : match.reportStatus === 'rejected' ? `
+          <div style="background: rgba(220, 38, 38, 0.15); border: 1px solid rgba(220, 38, 38, 0.45); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.3rem; color: #dc2626;">⚠</span>
+              <div>
+                <div style="font-weight: 800; color: #dc2626; font-size: 0.95rem;">Spielbericht von Ligaleitung abgelehnt</div>
+                <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">Hinweis: ${match.reportRejectReason || 'Bitte Angaben überprüfen und erneut einreichen.'}</div>
+              </div>
+            </div>
+            <span style="font-size: 0.76rem; font-weight: 800; color: #dc2626; background: rgba(220, 38, 38, 0.2); padding: 4px 10px; border-radius: 999px; text-transform: uppercase;">Überarbeitung nötig</span>
+          </div>
+        ` : ''}
         <!-- Match Header Information Card (Admin Style) -->
         <div class="glass-card" style="padding: var(--space-md); background: rgba(0,150,64,0.08); border-left: 4px solid var(--color-accent);">
           <div style="font-size: 1.15rem; font-weight: 700; color: var(--color-text-primary);" id="ref-report-match-title">${match.home} gegen ${match.away}</div>
@@ -1665,7 +1699,7 @@ export const bindRefereeAdmin = async () => {
 
         <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-md); display: flex; justify-content: flex-end; gap: 12px;">
           <button type="submit" id="btn-save-ref-report" class="btn-dsg" style="font-weight: 700; font-size: 1rem; padding: 10px 24px; border-radius: 6px; background: var(--color-accent); color: #fff; cursor: pointer;">
-            Spielbericht offiziell speichern
+            ${match.reportStatus === 'pending_approval' ? 'Aktualisierten Bericht an Ligaleitung einreichen' : 'Spielbericht an Ligaleitung einreichen'}
           </button>
         </div>
 
@@ -1978,7 +2012,7 @@ export const bindRefereeAdmin = async () => {
 
     // Form submit
     const reportForm = document.getElementById('referee-report-form');
-    reportForm?.addEventListener('submit', (e) => {
+    reportForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const submitBtn = document.getElementById('btn-save-ref-report');
@@ -2070,15 +2104,14 @@ export const bindRefereeAdmin = async () => {
       };
 
       try {
-        Store.saveMatch(selectedSeason, deepSanitize(updatedMatch));
-        Store.recalculateSeason(selectedSeason);
-        alert('Spielbericht erfolgreich gespeichert und Tabelle aktualisiert!');
+        await Store.submitRefereeReport(selectedSeason, match.id, deepSanitize(updatedMatch));
+        alert('Spielbericht erfolgreich an die Ligaleitung übermittelt! Der Bericht wird nun vom Administrator geprüft und bestätigt.');
         populateMatchDropdown();
       } catch (err) {
         console.error("Save match error:", err);
-        alert('Fehler beim Speichern des Spielberichts.');
+        alert('Fehler beim Übermitteln des Spielberichts.');
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Spielbericht offiziell speichern';
+        submitBtn.textContent = 'Spielbericht an Ligaleitung einreichen';
       }
     });
   };

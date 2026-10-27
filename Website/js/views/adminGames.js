@@ -635,17 +635,19 @@ const renderGamesTable = () => {
         const dateDisplay = formatDisplayDate(m.date, m.time);
 
         let noteBadge = m.note || '';
-        if (m.status === 'Abgesagt 3:0') noteBadge = '<span class="badge badge-danger" style="font-size: 0.75rem;">Abgesagt 3:0</span>';
+        if (m.reportStatus === 'pending_approval') noteBadge = '<span style="background: rgba(234, 179, 8, 0.2); color: #d97706; border: 1px solid rgba(234, 179, 8, 0.5); padding: 2px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 800; display: inline-flex; align-items: center; gap: 3px;">⏳ Freigabe ausstehend</span>';
+        else if (m.status === 'Abgesagt 3:0') noteBadge = '<span class="badge badge-danger" style="font-size: 0.75rem;">Abgesagt 3:0</span>';
         else if (m.status === 'Abgesagt 0:3') noteBadge = '<span class="badge badge-danger" style="font-size: 0.75rem;">Abgesagt 0:3</span>';
         else if (m.status === 'Postponed') noteBadge = '<span class="badge badge-secondary" style="font-size: 0.75rem;">Verschoben</span>';
         else if (m.status === 'Canceled') noteBadge = '<span class="badge badge-danger" style="font-size: 0.75rem;">Abgesagt</span>';
 
         const roundDisplay = m.round ? m.round.replace(/\s+\d{2}\.\d{2}\..*$/, '') : '-';
 
+        const isPendingReport = m.reportStatus === 'pending_approval';
         const reportBtnHtml = `
-            <button class="btn-report-game" data-idx="${rawIndex}" title="Spielbericht ${isActive ? 'erfassen' : 'ansehen'}" style="background: var(--color-accent); color: #fff; border: none; border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;">
+            <button class="btn-report-game" data-idx="${rawIndex}" title="${isPendingReport ? 'Schiedsrichterbericht prüfen & freigeben' : 'Spielbericht ' + (isActive ? 'erfassen' : 'ansehen')}" style="background: ${isPendingReport ? '#eab308' : 'var(--color-accent)'}; color: ${isPendingReport ? '#000' : '#fff'}; border: none; border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                Bericht
+                ${isPendingReport ? 'Prüfen' : 'Bericht'}
             </button>
         `;
 
