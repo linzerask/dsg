@@ -326,6 +326,8 @@ export const bindTeamAdmin = async (auth) => {
   const teamName = auth.teamName || 'Mein Team';
 
   let stagedPhotoUrl = null;
+  let statsStatusFilter = 'Aktiv';
+  let statsSearchQuery = '';
 
 
 
@@ -1263,6 +1265,21 @@ export const bindTeamAdmin = async (auth) => {
       const totalYellowRed = teamStats.players.reduce((acc, p) => acc + p.yellowRedCards, 0);
       const totalRed = teamStats.players.reduce((acc, p) => acc + p.redCards, 0);
 
+      const allTeamStatsPlayers = teamStats.players || [];
+      const activeCount = allTeamStatsPlayers.filter(p => (p.raw?.Status || p.raw?.status || p.status || 'Aktiv').toLowerCase() === 'aktiv').length;
+      const inactiveCount = allTeamStatsPlayers.length - activeCount;
+
+      const filteredStatsPlayers = allTeamStatsPlayers.filter(p => {
+        const pStatus = (p.raw?.Status || p.raw?.status || p.status || 'Aktiv').toLowerCase();
+        if (statsStatusFilter !== 'all') {
+          if (statsStatusFilter.toLowerCase() === 'aktiv' && pStatus !== 'aktiv') return false;
+          if (statsStatusFilter.toLowerCase() === 'inaktiv' && pStatus === 'aktiv') return false;
+        }
+        if (!statsSearchQuery) return true;
+        const q = statsSearchQuery.toLowerCase();
+        return (p.name || '').toLowerCase().includes(q) || String(p.jerseyNumber || '').includes(q);
+      });
+
       container.innerHTML = `
         <!-- Season Selector & Header -->
         <div class="glass-card" style="padding: var(--space-md); margin-bottom: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
@@ -1314,11 +1331,21 @@ export const bindTeamAdmin = async (auth) => {
         <!-- Squad Performance Table -->
         <div class="glass-card" style="padding: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: 10px;">
-            <div style="font-weight: 800; font-size: 1.1rem; color: var(--color-text-primary);">
-              Kaderübersicht (${teamStats.players.length} Spieler)
-            </div>
             <div>
-              <input type="text" id="stats-player-search" class="admin-input" placeholder="Spieler suchen..." style="padding: 6px 12px; font-size: 0.85rem; width: 200px;">
+              <div id="stats-player-count" style="font-weight: 800; font-size: 1.1rem; color: var(--color-text-primary);">
+                Kaderübersicht (${filteredStatsPlayers.length} von ${allTeamStatsPlayers.length} Spielern)
+              </div>
+              <div style="font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 2px;">
+                ${activeCount} Aktiv &bull; ${inactiveCount} Inaktiv / Archiviert
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <select id="stats-status-filter" class="admin-input" style="width: 140px; font-size: 0.85rem; font-weight: 600; padding: 6px 10px;">
+                <option value="Aktiv" ${statsStatusFilter === 'Aktiv' ? 'selected' : ''}>Nur Aktive</option>
+                <option value="all" ${statsStatusFilter === 'all' ? 'selected' : ''}>Alle Spieler</option>
+                <option value="Inaktiv" ${statsStatusFilter === 'Inaktiv' ? 'selected' : ''}>Nur Inaktive</option>
+              </select>
+              <input type="text" id="stats-player-search" class="admin-input" placeholder="Spieler suchen..." value="${statsSearchQuery}" style="padding: 6px 12px; font-size: 0.85rem; width: 170px;">
             </div>
           </div>
 
@@ -1328,16 +1355,27 @@ export const bindTeamAdmin = async (auth) => {
                 <tr style="border-bottom: 2px solid var(--glass-border); color: var(--color-text-secondary); font-size: 0.75rem; text-transform: uppercase;">
                   <th style="padding: 10px 10px; width: 45px; text-align: center;">Nr.</th>
                   <th style="padding: 10px 10px;">Spieler</th>
-                  <th style="padding: 10px 10px;">Einsätze</th>
-                  <th style="padding: 10px 10px; min-width: 140px;">Einsatzzeit (Min.)</th>
+                  <th style="padding: 10px 10px;">Einsätze &amp; Startelf</th>
+                  <th style="padding: 10px 10px; min-width: 130px;">Einsatzzeit (Min.)</th>
                   <th style="padding: 10px 10px; text-align: center;">Tore</th>
+                  <th style="padding: 10px 10px; text-align: center;">Min. / Tor</th>
                   <th style="padding: 10px 10px; text-align: center;">Karten</th>
                   <th style="padding: 10px 10px; text-align: right;">Status</th>
                 </tr>
               </thead>
               <tbody id="team-stats-tbody">
-                ${teamStats.players.map((p) => {
+                ${filteredStatsPlayers.length === 0 ? `
+                  <tr>
+                    <td colspan="8" style="text-align: center; padding: 30px 15px; color: var(--color-text-secondary);">
+                      Keine Spieler gefunden. Passe den Status-Filter oder Suchbegriff an.
+                    </td>
+                  </tr>
+                ` : filteredStatsPlayers.map((p) => {
                   const pct = teamStats.maxMinutes > 0 ? Math.round((p.minutes / teamStats.maxMinutes) * 100) : 0;
+                  const startPct = p.played > 0 ? Math.round((p.started / p.played) * 100) : 0;
+                  const minPerGoal = p.goals > 0 ? (p.minutes > 0 ? Math.round(p.minutes / p.goals) : '<90') : null;
+                  const goalsPerGame = p.played > 0 ? (p.goals / p.played).toFixed(2) : '0.00';
+
                   return `
                     <tr class="stats-row" data-player-id="${p.id}" style="border-bottom: 1px solid var(--glass-border); transition: background 0.15s ease;">
                       <td style="padding: 10px 10px; text-align: center; font-weight: 800; color: var(--color-text-secondary);">
@@ -1355,10 +1393,10 @@ export const bindTeamAdmin = async (auth) => {
                       <td style="padding: 10px 10px;">
                         <div style="font-weight: 800; font-size: 0.95rem;">${p.played} <span style="font-size: 0.75rem; color: var(--color-text-secondary);">/ ${teamStats.playedMatchesCount}</span></div>
                         <div style="font-size: 0.7rem; color: var(--color-text-secondary); margin-top: 1px;">
-                          ${p.started} Start &bull; ${p.subbedIn} Ein
+                          <span style="color: ${startPct >= 70 ? 'var(--color-accent)' : 'inherit'}; font-weight: ${startPct >= 70 ? '700' : 'normal'};">${p.started} Start (${startPct}%)</span> &bull; ${p.subbedIn} Ein
                         </div>
                       </td>
-                      <td style="padding: 10px 10px; min-width: 140px;">
+                      <td style="padding: 10px 10px; min-width: 130px;">
                         <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 0.85rem; margin-bottom: 3px;">
                           <span>${p.minutes} Min.</span>
                           <span style="color: var(--color-text-secondary); font-size: 0.75rem;">${pct}%</span>
@@ -1371,6 +1409,18 @@ export const bindTeamAdmin = async (auth) => {
                         <span style="font-weight: 900; font-size: 1rem; color: ${p.goals > 0 ? '#22c55e' : 'var(--color-text-secondary)'};">
                           ${p.goals}
                         </span>
+                      </td>
+                      <td style="padding: 10px 10px; text-align: center;">
+                        ${minPerGoal !== null ? `
+                          <div style="font-weight: 800; font-size: 0.9rem; color: #22c55e;">
+                            ${minPerGoal} <span style="font-size: 0.7rem; font-weight: 600;">Min.</span>
+                          </div>
+                          <div style="font-size: 0.68rem; color: var(--color-text-secondary); margin-top: 1px;">
+                            ${goalsPerGame} T/Sp.
+                          </div>
+                        ` : `
+                          <span style="color: var(--color-text-secondary);">-</span>
+                        `}
                       </td>
                       <td style="padding: 10px 10px; text-align: center;">
                         <div style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 0.75rem;">
@@ -1404,26 +1454,40 @@ export const bindTeamAdmin = async (auth) => {
         renderTab();
       });
 
+      // Wire status filter
+      document.getElementById('stats-status-filter')?.addEventListener('change', (e) => {
+        statsStatusFilter = e.target.value;
+        renderTab();
+      });
+
       // Wire player modal clicks on stats table rows
       container.querySelectorAll('#team-stats-tbody .stats-row').forEach(row => {
         row.style.cursor = 'pointer';
         row.setAttribute('title', 'Klicken für Spielerstatistiken & Details');
         row.addEventListener('click', () => {
           const pId = row.getAttribute('data-player-id');
-          const pStat = teamStats.players.find(x => String(x.id) === String(pId));
+          const pStat = allTeamStatsPlayers.find(x => String(x.id) === String(pId));
           if (pStat) {
             openPlayerStatsModal(pStat.raw || pStat, { teamName, seasonKey: selectedStatsSeasonKey });
           }
         });
       });
 
-      // Wire player search filter
+      // Wire player search filter (instant live search)
       document.getElementById('stats-player-search')?.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        document.querySelectorAll('#team-stats-tbody .stats-row').forEach(row => {
+        statsSearchQuery = e.target.value.toLowerCase().trim();
+        const rows = container.querySelectorAll('#team-stats-tbody .stats-row');
+        let visibleCount = 0;
+        rows.forEach(row => {
           const text = row.textContent.toLowerCase();
-          row.style.display = text.includes(query) ? '' : 'none';
+          const matches = text.includes(statsSearchQuery);
+          row.style.display = matches ? '' : 'none';
+          if (matches) visibleCount++;
         });
+        const countEl = document.getElementById('stats-player-count');
+        if (countEl) {
+          countEl.textContent = `Kaderübersicht (${visibleCount} von ${allTeamStatsPlayers.length} Spielern)`;
+        }
       });
 
 

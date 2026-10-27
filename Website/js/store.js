@@ -151,7 +151,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1793040000000';
+const DATA_VERSION_STRING = '?v=1793200000000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -460,12 +460,12 @@ export const Store = {
     // Clear all obsolete cache versions
     try {
       for (let i = 1; i <= 100; i++) {
-        if (i !== 94) localStorage.removeItem(`dsg_data_v${i}`);
+        if (i !== 95) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 40) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 27) localStorage.removeItem(`dsg_gallery_v${i}`);
         if (i !== 13) localStorage.removeItem(`dsg_admin_players_v${i}`);
         if (i !== 13) localStorage.removeItem(`dsg_admin_teams_v${i}`);
-        if (i !== 44) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
+        if (i !== 45) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
         if (i !== 44) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
         if (i !== 1) localStorage.removeItem(`dsg_player_requests_v${i}`);
         if (i !== 1) localStorage.removeItem(`dsg_matchday_rosters_v${i}`);
@@ -473,7 +473,7 @@ export const Store = {
     } catch(e) {}
 
     // Eagerly load synchronous local memory into shared singleton
-    state.memoryData = loadLocal('dsg_data', 94);
+    state.memoryData = loadLocal('dsg_data', 95);
     state.memoryNews = loadLocal('dsg_articles', 40) || sortArticles([...(INITIAL_DATA.news || [])]);
     state.memoryGallery = loadLocal('dsg_gallery', 27) || INITIAL_DATA.gallery || [];
 
@@ -483,7 +483,7 @@ export const Store = {
       state.memoryData.seasons['2026/2027'] && (state.memoryData.seasons['2026/2027'].matches?.length > 0 || state.memoryData.seasons['2026/2027'].teams?.length > 0);
     
     const localLeagues = loadLocal('dsg_admin_leagues', 44);
-    const localRounds = loadLocal('dsg_admin_rounds', 44);
+    const localRounds = loadLocal('dsg_admin_rounds', 45);
     const localNews = loadLocal('dsg_articles', 40);
 
     try {
@@ -527,7 +527,7 @@ export const Store = {
           }
         });
         if (!state.memoryData.currentSeason) state.memoryData.currentSeason = "2026/2027";
-        trySetLocal('dsg_data_v94', JSON.stringify(state.memoryData));
+        trySetLocal('dsg_data_v95', JSON.stringify(state.memoryData));
       }
 
       if (fileLeagues && (!localLeagues || localLeagues.length === 0)) {
@@ -686,7 +686,7 @@ export const Store = {
         const targetLigaStr = JSON.stringify(targetData?.seasons || {});
         if (currentLigaStr !== targetLigaStr) {
           state.memoryData = targetData;
-          trySetLocal('dsg_data_v94', JSON.stringify(targetData));
+          trySetLocal('dsg_data_v95', JSON.stringify(targetData));
           hasLigaUpdates = true;
         }
 
@@ -823,7 +823,7 @@ export const Store = {
         let fbRounds = roundsSnap.data().data;
         const fbTime = roundsSnap.data().lastUpdated || 0;
         const localTime = parseInt(localStorage.getItem('dsg_rounds_last_updated')) || 0;
-        const localRounds = loadLocal('dsg_admin_rounds', 44);
+        const localRounds = loadLocal('dsg_admin_rounds', 45);
 
         let roundsWereMissing = false;
         try {
@@ -969,7 +969,7 @@ export const Store = {
         await setDoc(dataRef, { data: state.memoryData, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (data):", e));
       }
         
-      trySetLocal('dsg_data_v94', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_data_v95', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v40', JSON.stringify(state.memoryNews));
       trySetLocal('dsg_gallery_v27', JSON.stringify(state.memoryGallery));
 
@@ -1007,7 +1007,7 @@ export const Store = {
     }
     const cleanData = deepSanitize(data);
     state.memoryData = cleanData;
-    trySetLocal('dsg_data_v94', JSON.stringify(cleanData));
+    trySetLocal('dsg_data_v95', JSON.stringify(cleanData));
     setDoc(doc(db, 'system', 'liga_data'), { data: cleanData, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
     window.dispatchEvent(new CustomEvent('data-updated'));
   },
@@ -2076,7 +2076,7 @@ export const Store = {
   },
 
   getAdminRoundsSync(seasonName = null) {
-    const local = loadLocal('dsg_admin_rounds', 44);
+    const local = loadLocal('dsg_admin_rounds', 45);
     if (local && Array.isArray(local) && local.length > 0) {
       if (!seasonName) return local;
       return local.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2026/2027'));
@@ -2091,7 +2091,7 @@ export const Store = {
       if (res.ok) fileRounds = await res.json();
     } catch(e) {}
 
-    const local = loadLocal('dsg_admin_rounds', 44);
+    const local = loadLocal('dsg_admin_rounds', 45);
     if (local && Array.isArray(local) && local.length >= (fileRounds?.length || 80)) {
       if (!seasonName) return local;
       return local.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2026/2027'));
@@ -2367,7 +2367,28 @@ export const Store = {
       const rTeam = (r.teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
       return rTeam.includes(normTeam) || normTeam.includes(rTeam);
     });
-    return foundKey ? rosters[foundKey] : null;
+    if (foundKey) return rosters[foundKey];
+
+    // Fallback: Check match object for embedded matchday roster (e.g. from seed/database)
+    try {
+      const seasonObj = this.getData()?.seasons?.[season];
+      const match = (seasonObj?.matches || []).find(m => String(m.id) === String(matchId));
+      if (match) {
+        const hNorm = (match.home || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+        const aNorm = (match.away || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+        if ((hNorm.includes(normTeam) || normTeam.includes(hNorm)) && match.homeRoster) {
+          return match.homeRoster;
+        }
+        if ((aNorm.includes(normTeam) || normTeam.includes(aNorm)) && match.awayRoster) {
+          return match.awayRoster;
+        }
+        if (match.rosters && match.rosters[teamName]) {
+          return match.rosters[teamName];
+        }
+      }
+    } catch (e) {}
+
+    return null;
   },
 
   async saveMatchdayRoster(season, matchId, teamName, players, metadata = {}) {

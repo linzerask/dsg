@@ -417,7 +417,19 @@ export function calculateMatchMinutes(match, teamName, roster) {
   const normTeam = (teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
   
   // Roster players
-  const rosterPlayers = (roster && Array.isArray(roster.players)) ? roster.players : [];
+  // Roster players (support passed roster or embedded match rosters)
+  let rosterPlayers = (roster && Array.isArray(roster.players)) ? roster.players : [];
+  if (rosterPlayers.length === 0 && match) {
+    const hNorm = (match.home || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+    const aNorm = (match.away || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+    if ((hNorm.includes(normTeam) || normTeam.includes(hNorm)) && match.homeRoster?.players) {
+      rosterPlayers = match.homeRoster.players;
+    } else if ((aNorm.includes(normTeam) || normTeam.includes(aNorm)) && match.awayRoster?.players) {
+      rosterPlayers = match.awayRoster.players;
+    } else if (match.rosters && match.rosters[teamName]?.players) {
+      rosterPlayers = match.rosters[teamName].players;
+    }
+  }
   
   // Identify starters (isStarter !== false && role !== 'sub', max 11)
   const starters = new Set();
@@ -426,7 +438,7 @@ export function calculateMatchMinutes(match, teamName, roster) {
   if (rosterPlayers.length > 0) {
     let starterCount = 0;
     rosterPlayers.forEach((rp) => {
-      const pName = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
+      const pName = `${rp.firstName || ''} ${rp.lastName || ''}`.trim() || rp.pName || rp.name || '';
       if (!pName) return;
       allTeamPlayers.add(pName);
       const isStart = (rp.isStarter !== false && rp.role !== 'sub');
@@ -438,7 +450,7 @@ export function calculateMatchMinutes(match, teamName, roster) {
     // Fallback if no explicit starter flag: first 11 players are starters
     if (starterCount === 0) {
       rosterPlayers.slice(0, 11).forEach(rp => {
-        const pName = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
+        const pName = `${rp.firstName || ''} ${rp.lastName || ''}`.trim() || rp.pName || rp.name || '';
         if (pName) starters.add(pName);
       });
     }
@@ -600,13 +612,24 @@ export function calculateTeamPlayerStats(seasonKey, teamName, allPlayersList = [
 
   // Aggregate across all played matches in this season
   playedMatches.forEach(m => {
-    const roster = Store.getMatchdayRoster(seasonKey, m.id, teamName);
+    let roster = Store.getMatchdayRoster(seasonKey, m.id, teamName);
+    if (!roster && m) {
+      const hNorm = (m.home || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+      const aNorm = (m.away || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+      if ((hNorm.includes(normTeam) || normTeam.includes(hNorm)) && m.homeRoster) {
+        roster = m.homeRoster;
+      } else if ((aNorm.includes(normTeam) || normTeam.includes(aNorm)) && m.awayRoster) {
+        roster = m.awayRoster;
+      } else if (m.rosters && m.rosters[teamName]) {
+        roster = m.rosters[teamName];
+      }
+    }
     const { playerMinutes } = calculateMatchMinutes(m, teamName, roster);
 
     const nominatedInMatch = new Set();
     if (roster && Array.isArray(roster.players)) {
       roster.players.forEach(rp => {
-        const full = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
+        const full = `${rp.firstName || ''} ${rp.lastName || ''}`.trim() || rp.pName || rp.name || '';
         const key = normalizePlayerKey(full);
         if (key) {
           nominatedInMatch.add(key);
@@ -690,6 +713,12 @@ export function calculateTeamPlayerStats(seasonKey, teamName, allPlayersList = [
   });
 
   const statsList = Array.from(playerStatsMap.values());
+  statsList.forEach(p => {
+    p.minutesPerGoal = p.goals > 0 ? (p.minutes > 0 ? Math.round(p.minutes / p.goals) : '<90') : null;
+    p.goalsPerMatch = p.played > 0 ? (p.goals / p.played).toFixed(2) : '0.00';
+    p.startRate = p.played > 0 ? Math.round((p.started / p.played) * 100) : 0;
+    p.squadRate = playedMatches.length > 0 ? Math.round((p.nominated / playedMatches.length) * 100) : 0;
+  });
   statsList.sort((a, b) => {
     if (b.minutes !== a.minutes) return b.minutes - a.minutes;
     if (b.goals !== a.goals) return b.goals - a.goals;
@@ -774,6 +803,12 @@ export async function openPlayerStatsModal(playerData, options = {}) {
 
   // Suspension information
   const susp = getPlayerSuspensionInfo(fullName, teamName, seasonKey);
+
+  // Coach decision metrics
+  const minPerGoal = pStat.goals > 0 ? (pStat.minutes > 0 ? Math.round(pStat.minutes / pStat.goals) : '<90') : null;
+  const goalsPerMatch = pStat.played > 0 ? (pStat.goals / pStat.played).toFixed(2) : '0.00';
+  const startPct = pStat.played > 0 ? Math.round((pStat.started / pStat.played) * 100) : 0;
+  const squadPct = teamStats.playedMatchesCount > 0 ? Math.round((pStat.nominated / teamStats.playedMatchesCount) * 100) : 0;
 
   // Personal Info
   const passNum = officialPlayer.passNumber || officialPlayer['#'] || officialPlayer.id || pId || '-';
@@ -933,6 +968,42 @@ export async function openPlayerStatsModal(playerData, options = {}) {
               </div>
               <div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 2px;">
                 ${pStat.benchUnused}x Bank ohne Einsatz &bull; ${pStat.subbedOut}x Ausgewechselt
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trainer-Entscheidungshilfe & Effizienz-KPIs -->
+        <div style="width: 100%; text-align: left; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--glass-border); border-radius: 10px; padding: 12px 14px;">
+          <div style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; color: var(--color-text-secondary); letter-spacing: 0.5px; margin-bottom: 8px;">
+            Trainer-Entscheidungshilfe &amp; Effizienz
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+            <div style="background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="font-size: 0.7rem; color: var(--color-text-secondary);">Minuten / Tor</div>
+              <div style="font-weight: 900; font-size: 1.1rem; color: ${minPerGoal !== null ? '#22c55e' : 'var(--color-text-secondary)'}; margin-top: 2px;">
+                ${minPerGoal !== null ? minPerGoal + ' <span style="font-size: 0.7rem; font-weight: 600;">Min.</span>' : '-'}
+              </div>
+              <div style="font-size: 0.68rem; color: var(--color-text-secondary); margin-top: 2px;">
+                ${goalsPerMatch} Tore/Spiel
+              </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="font-size: 0.7rem; color: var(--color-text-secondary);">Startelf-Quote</div>
+              <div style="font-weight: 900; font-size: 1.1rem; color: ${startPct >= 70 ? 'var(--color-accent)' : startPct >= 40 ? '#3b82f6' : 'var(--color-text-secondary)'}; margin-top: 2px;">
+                ${startPct}%
+              </div>
+              <div style="font-size: 0.68rem; color: var(--color-text-secondary); margin-top: 2px;">
+                ${pStat.started} von ${pStat.played} Starts
+              </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px; text-align: center; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="font-size: 0.7rem; color: var(--color-text-secondary);">Kader-Quote</div>
+              <div style="font-weight: 900; font-size: 1.1rem; color: ${squadPct >= 80 ? '#22c55e' : squadPct >= 50 ? '#eab308' : 'var(--color-text-secondary)'}; margin-top: 2px;">
+                ${squadPct}%
+              </div>
+              <div style="font-size: 0.68rem; color: var(--color-text-secondary); margin-top: 2px;">
+                ${pStat.nominated}/${teamStats.playedMatchesCount} im Kader
               </div>
             </div>
           </div>

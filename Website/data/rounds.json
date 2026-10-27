@@ -994,5 +994,59 @@
     "datumVon": "24.11.2026",
     "datumBis": "29.11.2026",
     "status": "Aktiv"
+  },
+  {
+    "id": 168,
+    "runde": 4,
+    "seasonKey": "Testliga 2026/2027",
+    "liga": "Testliga",
+    "datumVon": "01.12.2026",
+    "datumBis": "06.12.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 169,
+    "runde": 5,
+    "seasonKey": "Testliga 2026/2027",
+    "liga": "Testliga",
+    "datumVon": "08.12.2026",
+    "datumBis": "13.12.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 170,
+    "runde": 6,
+    "seasonKey": "Testliga 2026/2027",
+    "liga": "Testliga",
+    "datumVon": "15.12.2026",
+    "datumBis": "20.12.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 171,
+    "runde": 7,
+    "seasonKey": "Testliga 2026/2027",
+    "liga": "Testliga",
+    "datumVon": "22.12.2026",
+    "datumBis": "27.12.2026",
+    "status": "Aktiv"
+  },
+  {
+    "id": 172,
+    "runde": 8,
+    "seasonKey": "Testliga 2026/2027",
+    "liga": "Testliga",
+    "datumVon": "29.12.2026",
+    "datumBis": "03.01.2027",
+    "status": "Aktiv"
+  },
+  {
+    "id": 173,
+    "runde": 9,
+    "seasonKey": "Testliga 2026/2027",
+    "liga": "Testliga",
+    "datumVon": "05.01.2027",
+    "datumBis": "10.01.2027",
+    "status": "Aktiv"
   }
 ]
