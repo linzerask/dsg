@@ -1,4 +1,4 @@
-﻿import { Store } from '../store.js?v=1791182000000';
+﻿import { Store } from '../store.js?v=1793260000000';
 import { renderNewsFallbackHeader } from '../logos.js?v=1791182000000';
 
 const renderCard = (n) => {

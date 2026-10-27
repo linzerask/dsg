@@ -645,7 +645,7 @@ export const Store = {
           needsMigration = true;
         }
 
-        // Ensure canonical memory seasons exist in targetData and merge played matches
+        // Ensure canonical memory seasons exist in targetData only if completely missing in Firestore
         if (state.memoryData && state.memoryData.seasons) {
           Object.keys(state.memoryData.seasons).forEach(sKey => {
             const memSeason = state.memoryData.seasons[sKey];
@@ -653,13 +653,6 @@ export const Store = {
             if (!targetSeason || (!targetSeason.matches?.length && memSeason?.matches?.length) || (!targetSeason.teams?.length && memSeason?.teams?.length)) {
               targetData.seasons[sKey] = memSeason;
               needsMigration = true;
-            } else if (memSeason?.matches?.length && targetSeason?.matches?.length) {
-              // Lossless match merge: ensure played matches from either source are preserved
-              const mergedMatches = deduplicateMatches([...targetSeason.matches, ...memSeason.matches]);
-              if (JSON.stringify(mergedMatches) !== JSON.stringify(targetSeason.matches)) {
-                targetSeason.matches = mergedMatches;
-                needsMigration = true;
-              }
             }
           });
         }
@@ -2676,6 +2669,27 @@ export const Store = {
     if (this._realtimeSyncActive) return;
     this._realtimeSyncActive = true;
     try {
+      // Real-time synchronization for primary league data (authoritative across domains)
+      onSnapshot(doc(db, 'system', 'liga_data'), (snap) => {
+        if (snap.exists() && snap.data()?.data) {
+          const fbData = snap.data().data;
+          const fbTime = snap.data().lastUpdated || fbData.lastUpdated || 0;
+          const localData = loadLocal('dsg_data', 95);
+          const localTime = localData?.lastUpdated || 0;
+          if (fbTime >= localTime || !localData) {
+            const currentStr = JSON.stringify(state.memoryData?.seasons || {});
+            const fbStr = JSON.stringify(fbData?.seasons || {});
+            if (currentStr !== fbStr) {
+              state.memoryData = fbData;
+              trySetLocal('dsg_data_v95', JSON.stringify(fbData));
+              window.dispatchEvent(new CustomEvent('data-updated', { detail: fbData }));
+            }
+          }
+        }
+      }, (err) => {
+        console.warn("Realtime listener (liga_data) skipped or offline:", err);
+      });
+
       onSnapshot(doc(db, 'system', 'matchday_rosters_data'), (snap) => {
         if (snap.exists() && snap.data()?.data) {
           const fbRosters = snap.data().data;

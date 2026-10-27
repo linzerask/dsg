@@ -1,5 +1,5 @@
 {
-  "lastUpdated": 1792910979051,
+  "lastUpdated": 1793255000000,
   "seasons": {
     "2024/2025_unteres": {
       "teams": [
@@ -16743,15 +16743,6 @@
             "rank": 10
           },
           {
-            "player": "Cosmin Christian Vaduva",
-            "name": "Cosmin Christian Vaduva",
-            "team": "DSG Union Traun",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 11
-          },
-          {
             "player": "Thomas Wagner",
             "name": "Thomas Wagner",
             "team": "Union Heiligenberg",
@@ -17152,13 +17143,6 @@
               "type": "yellow"
             },
             {
-              "name": "Cosmin Christian Vaduva",
-              "player": "Cosmin Christian Vaduva",
-              "team": "DSG Union Traun",
-              "type": "yellow",
-              "reason": "test"
-            },
-            {
               "name": "Thomas Wagner",
               "player": "Thomas Wagner",
               "team": "Union Heiligenberg",
@@ -17245,14 +17229,6 @@
               "name": "Thomas Wagner",
               "count": 1,
               "team": "Union Heiligenberg"
-            },
-            {
-              "type": "yellow",
-              "player": "Cosmin Christian Vaduva",
-              "name": "Cosmin Christian Vaduva",
-              "count": 1,
-              "team": "DSG Union Traun",
-              "reason": "test"
             }
           ],
           "note": "",

@@ -1,4 +1,4 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793040000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793260000000';
 
 import { logout } from '../auth.js?v=1793040000000';
 
