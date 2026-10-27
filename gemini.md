@@ -503,3 +503,102 @@ League table wallpapers feature official standings, goal records, and points acr
 
 
 
+
+
+---
+
+## 16. Matchday Meme Suite & Viral Social Media Standards
+- **Weekly Schedule Integration:**
+  - Wednesday is the official **"Round Memes & Viral Highlights"** post day in the 7-day social media cycle.
+- **Dual-Format Production Mandate:**
+  - **Square Format (1:1 — 1080 × 1080 px):** Optimized for high-engagement Instagram feed swipe carousels.
+  - **Vertical Story Format (9:16 — 1080 × 1920 px):** Full-bleed story format for Instagram Stories, WhatsApp Status, and TikTok.
+- **Branded Canvas Architecture:**
+  - **Atmospheric Background:** Branded stadium night atmosphere (`Wallpapers/Backgrounds/stadium_green_01.png`) with smooth top and bottom vignettes fading into deep stadium shadow (`#010e07`).
+  - **Header Block:** `DSG LIGA MEMES` in white Impact display font (`54px` square, `62px` vertical), flanked by vibrant DSG Green (`#00f05f`) accent lines, with subtitle `SAISON 26/27 • RUNDE X` in DSG green.
+  - **Meme Card Container:** White or light-tinted meme card with rounded corners (`radius = 10-12px`), dark drop shadow (`alpha = 220`, blur `10px`), and subtle green keyline border (`RGBA(0, 240, 95, 150)`, width `2px`).
+  - **Bottom Brand Anchor:** Official white DSG Liga logo (`Wallpapers/Logos/standard/DSGLiga_white.png`) centered horizontally at the bottom (`y = 928px` square, `y = 1690px` vertical).
+- **Typography Standards (Authentic Meme Styling):**
+  - **STRICT ANTI-PATTERN:** NEVER put dark UI pills, dark rectangles, or green borders around meme labels/captions on top of photos!
+  - **Meme Text Rule:** Use authentic classic meme typography — bold pure white Impact text (`#FFFFFF`) with a heavy black outline (`stroke_width = 4`, `stroke_fill = (0, 0, 0)`) and subtle drop shadow for maximum contrast and legibility over complex photographic backgrounds.
+  - **Brevity & Punchiness:** Keep captions short, punchy, and instantly readable on mobile devices.
+- **Badge & Crest Placement Standards:**
+  - **Official Standard Logos:** Always use official full-color crests from `Logos/Ready/standard/`.
+  - **Character Face Protection:** NEVER obscure or cover the characters' faces, eyes, or smiles with club crests (e.g. Disaster Girl: badge sits on her hair/head, leaving her facial expression and smirk 100% visible).
+  - **Multi-Panel Composition Rule:** In multi-panel memes (e.g. Sad Pablo Escobar Waiting), do NOT scatter duplicate crests across every panel. Use **ONE single prominent crest** positioned in the **exact geometric center** (`x = 50%`, `y = 50%`) where all panels converge.
+  - **Drop Shadow:** Always paste crests with a soft Gaussian drop shadow (`alpha = 220`, blur `4-5px`).
+- **Comprehensive League Coverage:**
+  - Every round meme drop should cover all clubs and major round storylines: high-scoring thrillers, comebacks, collapses, postponed matches (*"Hast du abgesagt?"*), and bye teams (*Spielfrei*).
+- **Standard File Structure & Delivery:**
+  - Square Memes: `Wallpapers/Ready/Runde {X}/Memes/runde{X}_meme_{idx}_{slug}.png`
+  - Vertical Memes: `Wallpapers/Ready/Runde {X}/Memes/runde{X}_meme_{idx}_{slug}_9_16.png`
+  - Caption File: `Wallpapers/Ready/Runde {X}/Memes/runde{X}_memes_caption.txt`
+
+
+---
+
+## 17. Instagram Profile Grid Uniformity & Story Exclusivity Strategy
+- **3x3 Triad Grid Uniformity Mandate:**
+  - The main Instagram profile feed grid MUST remain 100% aesthetically uniform and brand-aligned at all times.
+  - Every single feed post must feature the approved V4 Symmetrical Triad cover (`SAISON 26/27` + `RUNDE X` + Subtitle Tag) as Slide 1. This includes:
+    - Round Preview / Overview posts (`rundeX_cover.png`)
+    - Result drops (`rundeX_cover_spielergebnisse.png`)
+    - League Table drops (`rundeX_cover_tabelle.png`)
+    - In Zahlen Stats drops (`rundeX_cover_in_zahlen.png`)
+    - Postponed Match announcements (`rundeX_cover_nachtragsspiel.png` / `runde8_cover_spielverschiebung.png`)
+    - Matchday Meme carousels (`rundeX_cover_memes.png`)
+  - When viewing the 3x3 profile grid, all tiles present an unbroken tapestry of deep stadium shadows, emerald green glow, and sharp white Impact typography.
+- **Story Exclusivity for Matchday Countdown / Kickoff Posts (Friday & Saturday):**
+  - Single Matchday graphics (Style D Split Ribbon: `rundeX_spielY_...`) are **STRICTLY EXCLUSIVE TO STORIES** (Instagram Stories, Facebook Stories, WhatsApp Status) in the **9:16 Vertical format** (`rundeX_spielY_..._9_16.png`).
+  - They are **NEVER posted as standalone feed posts** to the main profile page, as standalone matchday cards disrupt the 3x3 Triad Cover rhythm and look disparate on the grid.
+  - **Publishing Schedule & Routing:**
+    - **Friday Kickoff:** Post `rundeX_spiel1_..._9_16.png` exclusively to Stories (afternoon/pre-match).
+    - **Saturday Kickoffs:** Post `rundeX_spiel2_..._9_16.png` and `rundeX_spiel3_..._9_16.png` exclusively to Stories (morning/midday before the first game).
+    - **Multi-Game Overview (Thursday):** Can be posted to Feed as a carousel (Slide 1: `rundeX_cover.png`, Slide 2: `rundeX_games_overview.png`) alongside the Story broadcast (`rundeX_games_overview_9_16.png`).
+- **Staggered Matchday Publishing Rhythm (Anti-Cannibalization Mandate):**
+  - **STRICT ANTI-PATTERN:** NEVER bundle or post *Spielergebnisse* and *Tabelle* on the same day! Instagram throttles reach on consecutive posts, and players/fans need distinct focus moments.
+  - **The 7-Day Matchday & Content Distribution Calendar:**
+    - **Thursday (~17:00–18:30):** **Round Preview ("Vorschau")**
+      - Feed Carousel: Slide 1 `rundeX_cover.png`, Slide 2 `rundeX_games_overview.png`.
+      - Story: `rundeX_games_overview_9_16.png` with Interactive Poll Sticker ("Welches Match schaust du dir an?").
+    - **Friday (Afternoon / ~16:00):** **Friday Matchday Countdown**
+      - Story Exclusive (9:16): `rundeX_spiel1_..._9_16.png` with Prediction / Slider Sticker ("Flutlicht-Hit! Dein Tipp?").
+    - **Saturday (Morning / ~11:00):** **Saturday Matchday Countdowns**
+      - Story Exclusive (9:16): `rundeX_spiel2_..._9_16.png` & `rundeX_spiel3_..._9_16.png` with Matchday Quiz / Tipp stickers.
+    - **Saturday Evening (~18:00–19:30, Immediately Post-Match):** **Round Results ("Spielergebnisse")**
+      - Feed Carousel: Slide 1 `rundeX_cover_spielergebnisse.png` + dynamic result scorecards.
+      - Stories: Individual 9:16 vertical result cards.
+      - Strategic Goal: Captures players, coaches, and spectators immediately after the final whistles while post-game discussions are peaking.
+    - **Sunday (~12:00–17:00):** **Die Tabelle (League Standings)**
+      - Feed Post: Slide 1 `rundeX_cover_tabelle.png` + updated official league table.
+      - Story: 9:16 vertical table overview.
+      - Strategic Goal: Provides a clean, dedicated spotlight for league table debates, championship races, and relegation battles without competing against the Results post.
+    - **Tuesday (~17:00–19:00):** **In Zahlen (Matchday Records & Statistics)**
+      - Feed Carousel: Slide 1 `rundeX_cover_in_zahlen.png` + Slides 2 & 3 (6 curated league facts).
+      - Story: `rundeX_in_zahlen_9_16.png`.
+      - Strategic Goal: Mid-week analytical engagement celebrating top scorers, defensive clean sheets, and statistical milestones.
+    - **Wednesday (~17:00–19:00):** **Matchday Memes & Viral Highlights**
+      - Feed Carousel: Slide 1 `rundeX_cover_memes.png` + approved meme suite covering all clubs.
+      - Stories: Individual 9:16 meme slides.
+      - Strategic Goal: Maximum viral reach, humor, club banter, and non-follower explore traffic.
+
+---
+
+## 18. Organic Growth Engine & Proactive Generation Reminders
+- **Core Insights from Professional Dashboard Analysis:**
+  - Non-follower discovery accounts for >52% of impressions; Reels & Memes drive external viral traffic, Stories drive local player retention (~35% of views), and Feed Carousels drive >42% of all interactions.
+  - The primary bottleneck is **profile-visit to follower conversion** (13.8% visit rate, but only ~6% follow conversion).
+- **Collab Tagging Standard (`Beitragenden einladen`):**
+  - Whenever publishing *Spielergebnisse*, *Tabelle*, or *Matchday Preview*, the user should invite the featured clubs as **Instagram Co-Authors / Collaborators**.
+  - Cross-posts the graphic directly onto the clubs' official feeds, instantly unlocking hundreds of local players and supporters with zero ad spend.
+- **Player & Scorer Tagging Standard:**
+  - Captions for *Spielergebnisse* and *In Zahlen* MUST include taggable handles for clubs and top scorers. Players actively repost tagged content to their personal stories.
+- **Interactive Story Stickers Standard:**
+  - Every 9:16 matchday and overview story should incorporate native Instagram engagement stickers (Polls, Tippspiel Sliders, Quizzes, Question boxes) to maximize sticker tap rates and boost story tray priority to the first position.
+- **MANDATORY PROACTIVE REMINDER DIRECTIVE:**
+  - Whenever generating match previews, results captions, table posts, stats drops, or story assets, the assistant MUST proactively include a dedicated **"📲 Social Growth & Posting Reminders"** box containing:
+    1. **Recommended Publishing Window** (exact day & optimal hour).
+    2. **Collab Partners to Invite** (e.g. `@club1`, `@club2`).
+    3. **Key Player / Scorer Tagging List** for caption and story.
+    4. **Interactive Story Sticker Suggestion** (e.g. specific poll question or slider text).
+

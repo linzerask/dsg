@@ -1,5 +1,6 @@
 // Player Utilities & Automated Statistics Aggregator
 import { Store, sanitizeMojibake } from './store.js?v=1791182000000';
+import { calculateSeasonSuspensions } from './suspensionUtils.js?v=1793040000000';
 
 export function normalizePlayerKey(name) {
   if (!name) return '';
@@ -404,3 +405,303 @@ export function getTeamScorers(teamName, seasonFilter = 'all') {
 
 
 
+
+
+/**
+ * Calculates exact playing minutes and substitution intervals for each player in a match.
+ * Enforces the DSG Liga Max 5 Substitutions & Rückwechsel (re-substitution) rules.
+ */
+export function calculateMatchMinutes(match, teamName, roster) {
+  const normTeam = (teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+  
+  // Roster players
+  const rosterPlayers = (roster && Array.isArray(roster.players)) ? roster.players : [];
+  
+  // Identify starters (isStarter !== false && role !== 'sub', max 11)
+  const starters = new Set();
+  const allTeamPlayers = new Set();
+  
+  if (rosterPlayers.length > 0) {
+    let starterCount = 0;
+    rosterPlayers.forEach((rp) => {
+      const pName = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
+      if (!pName) return;
+      allTeamPlayers.add(pName);
+      const isStart = (rp.isStarter !== false && rp.role !== 'sub');
+      if (isStart && starterCount < 11) {
+        starters.add(pName);
+        starterCount++;
+      }
+    });
+    // Fallback if no explicit starter flag: first 11 players are starters
+    if (starterCount === 0) {
+      rosterPlayers.slice(0, 11).forEach(rp => {
+        const pName = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
+        if (pName) starters.add(pName);
+      });
+    }
+  }
+
+  // Get match substitutions for this team
+  const rawSubs = (match.substitutions && match.substitutions.length > 0)
+    ? match.substitutions 
+    : (match.events || []).filter(e => e.type === 'substitution');
+
+  const teamSubs = rawSubs.filter(s => {
+    const sTeam = (s.team || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+    return !sTeam || sTeam.includes(normTeam) || normTeam.includes(sTeam);
+  });
+
+  // Track intervals per player: player -> array of [startMinute, endMinute]
+  const intervals = {};
+  starters.forEach(pName => {
+    intervals[pName] = [[0, null]];
+  });
+
+  // Sort substitutions chronologically by minute
+  teamSubs.sort((a, b) => (parseInt(a.minute, 10) || 0) - (parseInt(b.minute, 10) || 0));
+
+  teamSubs.forEach(sub => {
+    const min = Math.min(90, Math.max(0, parseInt(sub.minute, 10) || 45));
+    const pOut = (sub.playerOut || '').trim();
+    const pIn = (sub.playerIn || '').trim();
+
+    // Close open interval for playerOut
+    if (pOut) {
+      if (!intervals[pOut]) intervals[pOut] = [];
+      const openIdx = intervals[pOut].findIndex(iv => iv[1] === null);
+      if (openIdx !== -1) {
+        intervals[pOut][openIdx][1] = min;
+      }
+      allTeamPlayers.add(pOut);
+    }
+
+    // Open new interval for playerIn (supports Rückwechsel: player subbed back in gets an additional interval)
+    if (pIn) {
+      if (!intervals[pIn]) intervals[pIn] = [];
+      intervals[pIn].push([min, null]);
+      allTeamPlayers.add(pIn);
+    }
+  });
+
+  // Handle Red Cards: if a player received red or yellow-red, close their open interval at that minute
+  const teamCards = (match.cards || match.events || []).filter(c => {
+    const cTeam = (c.team || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+    const isRed = c.type === 'red' || c.type === 'yellowRed' || c.type === 'yellow-red';
+    return isRed && (!cTeam || cTeam.includes(normTeam) || normTeam.includes(cTeam));
+  });
+
+  teamCards.forEach(c => {
+    const cName = (c.player || c.name || '').trim();
+    const cMin = Math.min(90, Math.max(0, parseInt(c.minute, 10) || 90));
+    if (cName && intervals[cName]) {
+      const openIdx = intervals[cName].findIndex(iv => iv[1] === null);
+      if (openIdx !== -1) {
+        intervals[cName][openIdx][1] = cMin;
+      }
+    }
+  });
+
+  // Close any open intervals at full time (90 minutes)
+  const result = {};
+  Object.keys(intervals).forEach(pName => {
+    let totalMinutes = 0;
+    intervals[pName].forEach(iv => {
+      const start = iv[0];
+      const end = iv[1] !== null ? iv[1] : 90;
+      if (end >= start) {
+        totalMinutes += (end - start);
+      }
+    });
+    result[pName] = {
+      minutes: totalMinutes,
+      started: starters.has(pName),
+      subbedIn: intervals[pName].some(iv => iv[0] > 0),
+      subbedOut: intervals[pName].some(iv => iv[1] !== null && iv[1] < 90),
+      intervals: intervals[pName]
+    };
+  });
+
+  return { playerMinutes: result, allPlayers: Array.from(allTeamPlayers), starters: Array.from(starters) };
+}
+
+/**
+ * Aggregates complete squad statistics for a specific team and season.
+ * Generates match minutes, startelf counts, substitutions, goals, and cards.
+ */
+export function calculateTeamPlayerStats(seasonKey, teamName, allPlayersList = []) {
+  const normTeam = (teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+  const data = Store.getData();
+  const seasonObj = data.seasons?.[seasonKey] || {};
+  const seasonMatches = Array.isArray(seasonObj.matches) ? seasonObj.matches : [];
+
+  const teamMatches = seasonMatches.filter(m => {
+    const h = (m.home || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+    const a = (m.away || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+    return h.includes(normTeam) || normTeam.includes(h) || a.includes(normTeam) || normTeam.includes(a);
+  });
+
+  const playedMatches = teamMatches.filter(m => 
+    m.status === 'Gespielt' || m.status === 'Played' || m.status === 'Beendet' ||
+    (m.score && m.score !== '-:-' && m.score !== '- : -')
+  );
+
+  const clubPlayers = allPlayersList.filter(p => {
+    const t = (p.Team || p.Mannschaft || p.team || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+    return t.includes(normTeam) || normTeam.includes(t);
+  });
+
+  const { playerMap } = calculateSeasonSuspensions(seasonKey);
+
+  const getSuspData = (pName) => {
+    const pNorm = normalizePlayerKey(pName);
+    for (const [k, v] of playerMap.entries()) {
+      if (k.startsWith(pNorm + '___') || normalizePlayerKey(k.split('___')[0]) === pNorm) {
+        return v;
+      }
+    }
+    return { yellowCount: 0, redCount: 0, yellowRedCount: 0, isSuspended: false, isWarning: false, warningThreshold: 3 };
+  };
+
+  const playerStatsMap = new Map();
+
+  // Initialize with official club players
+  clubPlayers.forEach(p => {
+    const fullName = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
+    const key = normalizePlayerKey(fullName);
+    if (!key) return;
+    const susp = getSuspData(fullName);
+    playerStatsMap.set(key, {
+      id: p['#'] || p.id || fullName,
+      name: fullName,
+      raw: p,
+      position: p.Position || p.position || 'Feldspieler',
+      avatar: getPlayerAvatar(p),
+      jerseyNumber: p['#'] && p['#'] !== '-' ? p['#'] : '',
+      nominated: 0,
+      played: 0,
+      started: 0,
+      subbedIn: 0,
+      subbedOut: 0,
+      benchUnused: 0,
+      minutes: 0,
+      goals: 0,
+      yellowCards: 0,
+      yellowRedCards: 0,
+      redCards: 0,
+      suspensionStatus: susp.status || 'clear',
+      isSuspended: susp.isSuspended || (susp.status === 'suspended'),
+      isWarning: susp.isWarning || (susp.status === 'warning'),
+      yellowTotal: susp.yellowCount || 0
+    });
+  });
+
+  // Aggregate across all played matches in this season
+  playedMatches.forEach(m => {
+    const roster = Store.getMatchdayRoster(seasonKey, m.id, teamName);
+    const { playerMinutes } = calculateMatchMinutes(m, teamName, roster);
+
+    const nominatedInMatch = new Set();
+    if (roster && Array.isArray(roster.players)) {
+      roster.players.forEach(rp => {
+        const full = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
+        const key = normalizePlayerKey(full);
+        if (key) {
+          nominatedInMatch.add(key);
+          if (!playerStatsMap.has(key)) {
+            playerStatsMap.set(key, {
+              id: rp.id || full,
+              name: full,
+              raw: rp,
+              position: rp.position || 'Feldspieler',
+              avatar: rp.avatar || getPlayerAvatar(rp),
+              jerseyNumber: rp.jerseyNumber || '',
+              nominated: 0, played: 0, started: 0, subbedIn: 0, subbedOut: 0, benchUnused: 0, minutes: 0, goals: 0, yellowCards: 0, yellowRedCards: 0, redCards: 0, isSuspended: false, isWarning: false, yellowTotal: 0
+            });
+          }
+          const pStat = playerStatsMap.get(key);
+          pStat.nominated++;
+          if (rp.jerseyNumber && !pStat.jerseyNumber) pStat.jerseyNumber = rp.jerseyNumber;
+        }
+      });
+    }
+
+    // Minutes and match roles
+    Object.keys(playerMinutes).forEach(pName => {
+      const key = normalizePlayerKey(pName);
+      if (!key) return;
+      if (!playerStatsMap.has(key)) {
+        playerStatsMap.set(key, {
+          id: pName,
+          name: pName,
+          raw: { Vorname: pName.split(' ')[0] || '', Nachname: pName.split(' ').slice(1).join(' ') || '' },
+          position: 'Feldspieler',
+          avatar: getPlayerAvatar({ Vorname: pName }),
+          jerseyNumber: '',
+          nominated: 0, played: 0, started: 0, subbedIn: 0, subbedOut: 0, benchUnused: 0, minutes: 0, goals: 0, yellowCards: 0, yellowRedCards: 0, redCards: 0, isSuspended: false, isWarning: false, yellowTotal: 0
+        });
+      }
+      const pStat = playerStatsMap.get(key);
+      const minData = playerMinutes[pName];
+      pStat.minutes += minData.minutes;
+      if (minData.minutes > 0) {
+        pStat.played++;
+        if (minData.started) pStat.started++;
+        if (minData.subbedIn) pStat.subbedIn++;
+        if (minData.subbedOut) pStat.subbedOut++;
+      } else if (nominatedInMatch.has(key)) {
+        pStat.benchUnused++;
+      }
+    });
+
+    // Goals in this match
+    const matchScorers = (m.scorers || m.events || []).filter(e => e.type === 'goal');
+    matchScorers.forEach(s => {
+      const sTeam = (s.team || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+      const belongs = !sTeam || sTeam.includes(normTeam) || normTeam.includes(sTeam);
+      if (belongs) {
+        const sName = (s.player || s.name || '').trim();
+        const key = normalizePlayerKey(sName);
+        if (key && playerStatsMap.has(key)) {
+          const count = parseInt(s.count || s.goals, 10) || 1;
+          playerStatsMap.get(key).goals += count;
+        }
+      }
+    });
+
+    // Cards in this match
+    const matchCards = (m.cards || m.events || []).filter(c => c.type === 'yellow' || c.type === 'yellowRed' || c.type === 'yellow-red' || c.type === 'red');
+    matchCards.forEach(c => {
+      const cTeam = (c.team || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+      const belongs = !cTeam || cTeam.includes(normTeam) || normTeam.includes(cTeam);
+      if (belongs) {
+        const cName = (c.player || c.name || '').trim();
+        const key = normalizePlayerKey(cName);
+        if (key && playerStatsMap.has(key)) {
+          const pStat = playerStatsMap.get(key);
+          if (c.type === 'yellow') pStat.yellowCards++;
+          else if (c.type === 'yellowRed' || c.type === 'yellow-red') pStat.yellowRedCards++;
+          else if (c.type === 'red') pStat.redCards++;
+        }
+      }
+    });
+  });
+
+  const statsList = Array.from(playerStatsMap.values());
+  statsList.sort((a, b) => {
+    if (b.minutes !== a.minutes) return b.minutes - a.minutes;
+    if (b.goals !== a.goals) return b.goals - a.goals;
+    if (b.played !== a.played) return b.played - a.played;
+    return a.name.localeCompare(b.name, 'de');
+  });
+
+  const maxPossibleMinutes = playedMatches.length * 90;
+
+  return {
+    seasonKey,
+    teamName,
+    playedMatchesCount: playedMatches.length,
+    maxMinutes: maxPossibleMinutes,
+    players: statsList
+  };
+}

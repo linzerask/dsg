@@ -1147,6 +1147,10 @@ export const Store = {
 
     let teams = Array.isArray(s.teams) ? s.teams : [];
 
+    if (this._isRecalculating) {
+      return teams;
+    }
+
     const hasPlayedMatches = Array.isArray(s.matches) && s.matches.some(m => (m.status === 'Gespielt' || m.status === 'Played' || m.status?.startsWith('Abgesagt') || (m.score && m.score !== '-:-' && m.score !== '- : -')));
     const allGoalsZero = teams.length > 0 && teams.some(t => (t.played || 0) > 0) && teams.every(t => (Number(t.goalsFor || t.gf || 0) === 0) && (Number(t.goalsAgainst || t.ga || 0) === 0));
 
@@ -1332,7 +1336,8 @@ export const Store = {
       }
     }
 
-    const teams = this.getLiga(season);
+    const sObj = this.getData()?.seasons?.[season];
+    const teams = (sObj && Array.isArray(sObj.teams)) ? sObj.teams : this.getLiga(season);
     const homeTeam = teams.find(t => t.name === match.home);
     const awayTeam = teams.find(t => t.name === match.away);
 
@@ -1441,7 +1446,8 @@ export const Store = {
       }
     }
 
-    const teams = this.getLiga(season);
+    const sObj = this.getData()?.seasons?.[season];
+    const teams = (sObj && Array.isArray(sObj.teams)) ? sObj.teams : this.getLiga(season);
     const homeTeam = teams.find(t => t.name === match.home);
     const awayTeam = teams.find(t => t.name === match.away);
 
@@ -1813,32 +1819,38 @@ export const Store = {
   },
 
   recalculateSeason(season) {
-    const data = this.getData();
-    if (!data.seasons || !data.seasons[season]) return;
-    const s = data.seasons[season];
-    
-    // Reset teams
-    (s.teams || []).forEach(t => {
-      t.played = 0; t.won = 0; t.drawn = 0; t.lost = 0;
-      t.goalsFor = 0; t.goalsAgainst = 0; t.goalDiff = 0;
-      t.points = 0;
-    });
+    if (this._isRecalculating) return;
+    this._isRecalculating = true;
+    try {
+      const data = this.getData();
+      if (!data.seasons || !data.seasons[season]) return;
+      const s = data.seasons[season];
+      
+      // Reset teams
+      (s.teams || []).forEach(t => {
+        t.played = 0; t.won = 0; t.drawn = 0; t.lost = 0;
+        t.goalsFor = 0; t.goalsAgainst = 0; t.goalDiff = 0;
+        t.points = 0;
+      });
 
-    // Reset stats
-    s.stats = { topScorers: [], cards: [] };
+      // Reset stats
+      s.stats = { topScorers: [], cards: [] };
 
-    // Replay all played/cancelled matches
-    (s.matches || []).forEach(m => {
-      this._applyMatchStats(season, m);
-    });
+      // Replay all played/cancelled matches
+      (s.matches || []).forEach(m => {
+        this._applyMatchStats(season, m);
+      });
 
-    // Sort teams using official DSG Liga Tiebreaker Rules
-    if (Array.isArray(s.teams)) {
-      s.teams = this.sortLeagueTeams(s.teams, s.matches);
-      s.teams.forEach((t, idx) => { t.rank = idx + 1; });
+      // Sort teams using official DSG Liga Tiebreaker Rules
+      if (Array.isArray(s.teams)) {
+        s.teams = this.sortLeagueTeams(s.teams, s.matches);
+        s.teams.forEach((t, idx) => { t.rank = idx + 1; });
+      }
+
+      this.saveData(data);
+    } finally {
+      this._isRecalculating = false;
     }
-
-    this.saveData(data);
   },
 
   getVisibleSeasonItems() {

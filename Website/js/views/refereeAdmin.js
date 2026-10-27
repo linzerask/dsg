@@ -834,6 +834,8 @@ export const bindRefereeAdmin = async () => {
   let refReportScorersAway = [];
   let refReportCardsHome = [];
   let refReportCardsAway = [];
+  let refReportSubsHome = [];
+  let refReportSubsAway = [];
 
   const populateRefPlayerCombobox = (id, players, includeOwnGoal = false) => {
     if (!refPlayerComboboxState[id]) {
@@ -1104,7 +1106,7 @@ export const bindRefereeAdmin = async () => {
         `;
       }).join('');
 
-      homeGoalsDiv.querySelectorAll('.btn-del-ref-goal-h').forEach(btn => {
+            homeGoalsDiv.querySelectorAll('.btn-del-ref-goal-h').forEach(btn => {
         btn.onclick = (e) => {
           const idx = parseInt(e.currentTarget.getAttribute('data-idx'), 10);
           refReportScorersHome.splice(idx, 1);
@@ -1112,6 +1114,8 @@ export const bindRefereeAdmin = async () => {
         };
       });
     }
+
+
 
     // Render Away Scorers
     const awayGoalsDiv = document.getElementById('ref-report-goals-list-away');
@@ -1327,6 +1331,92 @@ export const bindRefereeAdmin = async () => {
       return options;
     };
 
+    
+    // Helper to compute dynamic pitch and bench lists with Rückwechsel support
+    const computePitchAndBench = (teamName, roster, subs) => {
+      const norm = (teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+      const tPlayers = allPlayers.filter(p => {
+        const pTeam = (p.Team || p.Mannschaft || p.team || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+        return pTeam.includes(norm) || norm.includes(pTeam);
+      });
+
+      let initialPitch = [];
+      let initialBench = [];
+
+      if (roster && Array.isArray(roster.players) && roster.players.length > 0) {
+        let starterCount = 0;
+        roster.players.forEach(rp => {
+          const name = `${rp.firstName || ''} ${rp.lastName || ''}`.trim();
+          if (!name) return;
+          const isStart = (rp.isStarter !== false && rp.role !== 'sub');
+          const pObj = { name, label: `#${rp.jerseyNumber || '?'} ${name}`, jersey: rp.jerseyNumber || '' };
+          if (isStart && starterCount < 11) {
+            initialPitch.push(pObj);
+            starterCount++;
+          } else {
+            initialBench.push(pObj);
+          }
+        });
+        if (starterCount === 0) {
+          initialPitch = roster.players.slice(0, 11).map(rp => ({
+            name: `${rp.firstName || ''} ${rp.lastName || ''}`.trim(),
+            label: `#${rp.jerseyNumber || '?'} ${rp.firstName || ''} ${rp.lastName || ''}`.trim(),
+            jersey: rp.jerseyNumber || ''
+          }));
+          initialBench = roster.players.slice(11).map(rp => ({
+            name: `${rp.firstName || ''} ${rp.lastName || ''}`.trim(),
+            label: `#${rp.jerseyNumber || '?'} ${rp.firstName || ''} ${rp.lastName || ''}`.trim(),
+            jersey: rp.jerseyNumber || ''
+          }));
+        }
+      } else {
+        initialPitch = tPlayers.slice(0, 11).map(p => {
+          const name = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
+          const num = p['#'] && p['#'] !== '-' ? '#' + p['#'] + ' ' : '';
+          return { name, label: `${num}${name}`, jersey: p['#'] || '' };
+        });
+        initialBench = tPlayers.slice(11).map(p => {
+          const name = `${p.Vorname || p.firstName || ''} ${p.Nachname || p.lastName || ''}`.trim();
+          const num = p['#'] && p['#'] !== '-' ? '#' + p['#'] + ' ' : '';
+          return { name, label: `${num}${name}`, jersey: p['#'] || '' };
+        });
+      }
+
+      // Replay substitutions sequentially to update current pitch and bench
+      const currentPitch = [...initialPitch];
+      const currentBench = [...initialBench];
+
+      subs.forEach(s => {
+        const outName = (s.playerOut || '').trim();
+        const inName = (s.playerIn || '').trim();
+        
+        // Find playerOut on pitch
+        const outIdx = currentPitch.findIndex(p => p.name.toLowerCase() === outName.toLowerCase());
+        const outObj = outIdx !== -1 ? currentPitch.splice(outIdx, 1)[0] : { name: outName, label: outName };
+        
+        // Find playerIn on bench
+        const inIdx = currentBench.findIndex(p => p.name.toLowerCase() === inName.toLowerCase());
+        const inObj = inIdx !== -1 ? currentBench.splice(inIdx, 1)[0] : { name: inName, label: inName };
+
+        // Player subbed off goes back to bench (supports Rückwechsel!)
+        currentBench.push(outObj);
+        // Player subbed on goes to pitch
+        currentPitch.push(inObj);
+      });
+
+      // Deduplicate bench by name
+      const uniqueBench = [];
+      const benchNames = new Set();
+      currentBench.forEach(p => {
+        if (!benchNames.has(p.name.toLowerCase())) {
+          benchNames.add(p.name.toLowerCase());
+          uniqueBench.push(p);
+        }
+      });
+
+      return { pitch: currentPitch, bench: uniqueBench };
+    };
+
     const homeOptions = getTeamPlayerOptions(match.home, homeRoster);
     const awayOptions = getTeamPlayerOptions(match.away, awayRoster);
 
@@ -1474,6 +1564,81 @@ export const bindRefereeAdmin = async () => {
           </div>
         </div>
 
+                <!-- Auswechslungen (Substitutions: Max 5 pro Team, Rückwechsel erlaubt) -->
+        <div style="background: var(--color-surface); padding: var(--space-md); border-radius: 6px; border: 1px solid var(--color-border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+            <label style="display: block; font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary);">
+              Auswechslungen (DSG-Regel: max. 5 Wechsel pro Team, Rückwechsel erlaubt)
+            </label>
+            <div style="font-size: 0.75rem; color: var(--color-text-secondary);">
+              Ausgewechselte Spieler dürfen später erneut eingewechselt werden
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);" class="report-events-grid">
+            <!-- Home Subs -->
+            <div class="glass-card report-team-card" style="padding: var(--space-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h5 style="margin: 0; color: var(--color-text-primary);">Auswechslungen ${match.home}</h5>
+                <span id="ref-sub-counter-home" style="font-size: 0.75rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; background: rgba(0, 179, 65, 0.15); color: var(--color-accent); border: 1px solid rgba(0, 240, 95, 0.3);">
+                  0 / 5 Wechsel
+                </span>
+              </div>
+              <div id="ref-sub-form-home" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px;">
+                <div style="display: flex; gap: 6px; align-items: center;">
+                  <div style="flex: 1;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 2px;">Aus (Feldspieler)</label>
+                    <select id="ref-sub-out-home" class="admin-input" style="width: 100%; font-size: 0.8rem; height: 34px;"></select>
+                  </div>
+                  <div style="flex: 1;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 2px;">Ein (Ersatzspieler)</label>
+                    <select id="ref-sub-in-home" class="admin-input" style="width: 100%; font-size: 0.8rem; height: 34px;"></select>
+                  </div>
+                  <div style="width: 55px;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 2px;">Min.</label>
+                    <input type="number" id="ref-sub-min-home" class="admin-input" min="1" max="90" placeholder="Min" style="width: 100%; font-size: 0.8rem; height: 34px; text-align: center;">
+                  </div>
+                </div>
+                <button type="button" id="btn-add-ref-sub-home" class="btn-dsg" style="padding: 6px 12px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; width: 100%;">
+                  + Wechsel eintragen
+                </button>
+              </div>
+              <div id="ref-report-subs-list-home" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
+            </div>
+
+            <!-- Away Subs -->
+            <div class="glass-card report-team-card" style="padding: var(--space-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <h5 style="margin: 0; color: var(--color-text-primary);">Auswechslungen ${match.away}</h5>
+                <span id="ref-sub-counter-away" style="font-size: 0.75rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; background: rgba(0, 179, 65, 0.15); color: var(--color-accent); border: 1px solid rgba(0, 240, 95, 0.3);">
+                  0 / 5 Wechsel
+                </span>
+              </div>
+              <div id="ref-sub-form-away" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px;">
+                <div style="display: flex; gap: 6px; align-items: center;">
+                  <div style="flex: 1;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 2px;">Aus (Feldspieler)</label>
+                    <select id="ref-sub-out-away" class="admin-input" style="width: 100%; font-size: 0.8rem; height: 34px;"></select>
+                  </div>
+                  <div style="flex: 1;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 2px;">Ein (Ersatzspieler)</label>
+                    <select id="ref-sub-in-away" class="admin-input" style="width: 100%; font-size: 0.8rem; height: 34px;"></select>
+                  </div>
+                  <div style="width: 55px;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 2px;">Min.</label>
+                    <input type="number" id="ref-sub-min-away" class="admin-input" min="1" max="90" placeholder="Min" style="width: 100%; font-size: 0.8rem; height: 34px; text-align: center;">
+                  </div>
+                </div>
+                <button type="button" id="btn-add-ref-sub-away" class="btn-dsg" style="padding: 6px 12px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; width: 100%;">
+                  + Wechsel eintragen
+                </button>
+              </div>
+              <div id="ref-report-subs-list-away" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
+            </div>
+          </div>
+        </div>
+
+
         <!-- Schiedsrichter-Vorkommnisse (Incident Notes) -->
         <div style="background: var(--color-surface); padding: var(--space-md); border-radius: 6px; border: 1px solid var(--color-border);">
           <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; color: var(--color-text-primary);">
@@ -1502,6 +1667,168 @@ export const bindRefereeAdmin = async () => {
 
     // Render initial goals & cards
     renderRefReportLists();
+
+    // Substitutions UI & Dropdown Manager (with Rückwechsel & 5-sub cap)
+    const updateSubsUI = () => {
+      const homeState = computePitchAndBench(match.home, homeRoster, refReportSubsHome);
+      const awayState = computePitchAndBench(match.away, awayRoster, refReportSubsAway);
+
+      // Home Subs UI
+      const homeCounter = document.getElementById('ref-sub-counter-home');
+      const homeForm = document.getElementById('ref-sub-form-home');
+      const homeListDiv = document.getElementById('ref-report-subs-list-home');
+      const homeOutSelect = document.getElementById('ref-sub-out-home');
+      const homeInSelect = document.getElementById('ref-sub-in-home');
+
+      if (homeCounter) {
+        const count = refReportSubsHome.length;
+        homeCounter.textContent = `${count} / 5 Wechsel`;
+        if (count >= 5) {
+          homeCounter.style.background = 'rgba(234, 179, 8, 0.2)';
+          homeCounter.style.color = '#d97706';
+          homeCounter.style.borderColor = 'rgba(234, 179, 8, 0.4)';
+        } else {
+          homeCounter.style.background = 'rgba(0, 179, 65, 0.15)';
+          homeCounter.style.color = 'var(--color-accent)';
+          homeCounter.style.borderColor = 'rgba(0, 240, 95, 0.3)';
+        }
+      }
+
+      if (homeForm) {
+        if (refReportSubsHome.length >= 5) {
+          homeForm.style.opacity = '0.5';
+          homeForm.querySelectorAll('input, select, button').forEach(el => el.disabled = true);
+        } else {
+          homeForm.style.opacity = '1';
+          homeForm.querySelectorAll('input, select, button').forEach(el => el.disabled = false);
+        }
+      }
+
+      if (homeOutSelect) {
+        homeOutSelect.innerHTML = homeState.pitch.map(p => `<option value="${p.name}">${p.label || p.name}</option>`).join('');
+      }
+      if (homeInSelect) {
+        homeInSelect.innerHTML = homeState.bench.map(p => `<option value="${p.name}">${p.label || p.name}</option>`).join('');
+      }
+
+      if (homeListDiv) {
+        homeListDiv.innerHTML = refReportSubsHome.map((s, i) => `
+          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 5px 8px; border-radius: 4px; font-size: 0.85rem; border-left: 2px solid var(--color-accent);">
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+              ${s.minute ? `<span style="background: rgba(0, 179, 65, 0.12); color: var(--color-accent); font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${s.minute}'</span>` : ''}
+              <span style="color: #dc2626; font-weight: 700; font-size: 0.75rem;">Aus:</span> <strong>${s.playerOut}</strong>
+              <span style="color: var(--color-text-secondary);">&bull;</span>
+              <span style="color: #16a34a; font-weight: 700; font-size: 0.75rem;">Ein:</span> <strong>${s.playerIn}</strong>
+            </div>
+            <button type="button" class="btn-del-ref-sub-h" data-idx="${i}" title="Wechsel entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
+          </div>
+        `).join('');
+
+        homeListDiv.querySelectorAll('.btn-del-ref-sub-h').forEach(btn => {
+          btn.onclick = (e) => {
+            const idx = parseInt(e.currentTarget.getAttribute('data-idx'), 10);
+            refReportSubsHome.splice(idx, 1);
+            updateSubsUI();
+          };
+        });
+      }
+
+      // Away Subs UI
+      const awayCounter = document.getElementById('ref-sub-counter-away');
+      const awayForm = document.getElementById('ref-sub-form-away');
+      const awayListDiv = document.getElementById('ref-report-subs-list-away');
+      const awayOutSelect = document.getElementById('ref-sub-out-away');
+      const awayInSelect = document.getElementById('ref-sub-in-away');
+
+      if (awayCounter) {
+        const count = refReportSubsAway.length;
+        awayCounter.textContent = `${count} / 5 Wechsel`;
+        if (count >= 5) {
+          awayCounter.style.background = 'rgba(234, 179, 8, 0.2)';
+          awayCounter.style.color = '#d97706';
+          awayCounter.style.borderColor = 'rgba(234, 179, 8, 0.4)';
+        } else {
+          awayCounter.style.background = 'rgba(0, 179, 65, 0.15)';
+          awayCounter.style.color = 'var(--color-accent)';
+          awayCounter.style.borderColor = 'rgba(0, 240, 95, 0.3)';
+        }
+      }
+
+      if (awayForm) {
+        if (refReportSubsAway.length >= 5) {
+          awayForm.style.opacity = '0.5';
+          awayForm.querySelectorAll('input, select, button').forEach(el => el.disabled = true);
+        } else {
+          awayForm.style.opacity = '1';
+          awayForm.querySelectorAll('input, select, button').forEach(el => el.disabled = false);
+        }
+      }
+
+      if (awayOutSelect) {
+        awayOutSelect.innerHTML = awayState.pitch.map(p => `<option value="${p.name}">${p.label || p.name}</option>`).join('');
+      }
+      if (awayInSelect) {
+        awayInSelect.innerHTML = awayState.bench.map(p => `<option value="${p.name}">${p.label || p.name}</option>`).join('');
+      }
+
+      if (awayListDiv) {
+        awayListDiv.innerHTML = refReportSubsAway.map((s, i) => `
+          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.03); padding: 5px 8px; border-radius: 4px; font-size: 0.85rem; border-left: 2px solid var(--color-accent);">
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+              ${s.minute ? `<span style="background: rgba(0, 179, 65, 0.12); color: var(--color-accent); font-weight: 700; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem;">${s.minute}'</span>` : ''}
+              <span style="color: #dc2626; font-weight: 700; font-size: 0.75rem;">Aus:</span> <strong>${s.playerOut}</strong>
+              <span style="color: var(--color-text-secondary);">&bull;</span>
+              <span style="color: #16a34a; font-weight: 700; font-size: 0.75rem;">Ein:</span> <strong>${s.playerIn}</strong>
+            </div>
+            <button type="button" class="btn-del-ref-sub-a" data-idx="${i}" title="Wechsel entfernen" style="background: #dc3545; color: #fff; border: none; border-radius: 3px; padding: 2px 6px; font-size: 0.75rem; cursor: pointer;">✕</button>
+          </div>
+        `).join('');
+
+        awayListDiv.querySelectorAll('.btn-del-ref-sub-a').forEach(btn => {
+          btn.onclick = (e) => {
+            const idx = parseInt(e.currentTarget.getAttribute('data-idx'), 10);
+            refReportSubsAway.splice(idx, 1);
+            updateSubsUI();
+          };
+        });
+      }
+    };
+
+    // Wire Substitution Add Buttons
+    const addSubH = document.getElementById('btn-add-ref-sub-home');
+    if (addSubH) {
+      addSubH.onclick = () => {
+        if (refReportSubsHome.length >= 5) return;
+        const outPlayer = document.getElementById('ref-sub-out-home')?.value;
+        const inPlayer = document.getElementById('ref-sub-in-home')?.value;
+        const minVal = (document.getElementById('ref-sub-min-home')?.value || '').replace(/['"]/g, '').trim();
+        if (outPlayer && inPlayer) {
+          refReportSubsHome.push({ playerOut: outPlayer, playerIn: inPlayer, minute: minVal });
+          updateSubsUI();
+          const minInput = document.getElementById('ref-sub-min-home');
+          if (minInput) minInput.value = '';
+        }
+      };
+    }
+
+    const addSubA = document.getElementById('btn-add-ref-sub-away');
+    if (addSubA) {
+      addSubA.onclick = () => {
+        if (refReportSubsAway.length >= 5) return;
+        const outPlayer = document.getElementById('ref-sub-out-away')?.value;
+        const inPlayer = document.getElementById('ref-sub-in-away')?.value;
+        const minVal = (document.getElementById('ref-sub-min-away')?.value || '').replace(/['"]/g, '').trim();
+        if (outPlayer && inPlayer) {
+          refReportSubsAway.push({ playerOut: outPlayer, playerIn: inPlayer, minute: minVal });
+          updateSubsUI();
+          const minInput = document.getElementById('ref-sub-min-away');
+          if (minInput) minInput.value = '';
+        }
+      };
+    }
+
+    // Initial render of substitutions UI
+    updateSubsUI();
 
     // Goal buttons
     const addGoalH = document.getElementById('btn-add-ref-goal-home');
@@ -1688,10 +2015,27 @@ export const bindRefereeAdmin = async () => {
         cards.push({ name: cleanPlayer, player: cleanPlayer, team: match.away, type: c.type, reason: cleanReason, minute: cleanMinute });
       });
 
+      // Build unified substitutions array
+      const substitutions = [];
+      refReportSubsHome.forEach(s => {
+        const cleanOut = sanitizeMojibake(s.playerOut || '');
+        const cleanIn = sanitizeMojibake(s.playerIn || '');
+        const cleanMinute = sanitizeMojibake(s.minute || '');
+        substitutions.push({ team: match.home, playerOut: cleanOut, playerIn: cleanIn, minute: cleanMinute, type: 'substitution' });
+      });
+      refReportSubsAway.forEach(s => {
+        const cleanOut = sanitizeMojibake(s.playerOut || '');
+        const cleanIn = sanitizeMojibake(s.playerIn || '');
+        const cleanMinute = sanitizeMojibake(s.minute || '');
+        substitutions.push({ team: match.away, playerOut: cleanOut, playerIn: cleanIn, minute: cleanMinute, type: 'substitution' });
+      });
+
+
       // Build events timeline
       const events = [];
       scorers.forEach(s => events.push({ type: 'goal', player: s.name, name: s.name, team: s.team, minute: s.minute || '' }));
       cards.forEach(c => events.push({ type: c.type, player: c.name, name: c.name, team: c.team, reason: c.reason || '', minute: c.minute || '' }));
+      substitutions.forEach(s => events.push({ type: 'substitution', team: s.team, minute: s.minute || '', playerOut: s.playerOut, playerIn: s.playerIn }));
 
       const updatedMatch = {
         ...match,
@@ -1703,6 +2047,7 @@ export const bindRefereeAdmin = async () => {
         scorers: scorers,
         cards: cards,
         events: events,
+        substitutions: substitutions,
         refereeNotes: refNotes,
         note: refNotes,
         lastUpdated: Date.now()

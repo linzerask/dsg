@@ -40517,278 +40517,2472 @@
       ]
     },
     "Testliga 2026/2027": {
-      "teams": [
-        {
-          "name": "Union Heiligenberg",
-          "played": 0,
-          "won": 0,
-          "drawn": 0,
-          "lost": 0,
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "goalDiff": 0,
-          "points": 0,
-          "rank": 1
-        },
-        {
-          "name": "SV Croatia Linz",
-          "played": 0,
-          "won": 0,
-          "drawn": 0,
-          "lost": 0,
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "goalDiff": 0,
-          "points": 0,
-          "rank": 2
-        },
-        {
-          "name": "Etehad Linz",
-          "played": 0,
-          "won": 0,
-          "drawn": 0,
-          "lost": 0,
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "goalDiff": 0,
-          "points": 0,
-          "rank": 3
-        },
-        {
-          "name": "DSG St. Josef/Oed FC",
-          "played": 0,
-          "won": 0,
-          "drawn": 0,
-          "lost": 0,
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "goalDiff": 0,
-          "points": 0,
-          "rank": 4
-        },
-        {
-          "name": "DSG Union Traun",
-          "played": 0,
-          "won": 0,
-          "drawn": 0,
-          "lost": 0,
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "goalDiff": 0,
-          "points": 0,
-          "rank": 5
-        },
-        {
-          "name": "Walker FC",
-          "played": 0,
-          "won": 0,
-          "drawn": 0,
-          "lost": 0,
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "goalDiff": 0,
-          "points": 0,
-          "rank": 6
-        },
-        {
-          "name": "FC Gornjak",
-          "played": 0,
-          "won": 0,
-          "drawn": 0,
-          "lost": 0,
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "goalDiff": 0,
-          "points": 0,
-          "rank": 7
-        }
-      ],
+      "name": "Testliga 2026/2027",
+      "seasonKey": "Testliga 2026/2027",
       "matches": [
         {
           "id": 1,
           "round": "1. Runde",
-          "home": "Union Heiligenberg",
-          "away": "DSG St. Josef/Oed FC",
           "date": "10.11.2026",
           "time": "19:00",
-          "weekday": "Di",
+          "weekday": "Fr",
+          "home": "Union Heiligenberg",
+          "away": "DSG St. Josef/Oed FC",
+          "location": "Sportplatz Heiligenberg",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "2:0",
+          "halfTime": "1:0",
+          "ht": "1:0",
+          "htScore": "1:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Nicolaus Holzer",
+              "name": "Nicolaus Holzer",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "David Enzlmüller",
+              "name": "David Enzlmüller",
+              "team": "Union Heiligenberg"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Vincent Weinzettel",
+              "name": "Vincent Weinzettel",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "yellow",
+              "player": "Alex Steiner",
+              "name": "Alex Steiner",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "yellow",
+              "player": "Simon Dornetshumer",
+              "name": "Simon Dornetshumer",
+              "team": "Union Heiligenberg"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Nicolaus Holzer",
+              "name": "Nicolaus Holzer",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "David Enzlmüller",
+              "name": "David Enzlmüller",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Vincent Weinzettel",
+              "name": "Vincent Weinzettel",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Alex Steiner",
+              "name": "Alex Steiner",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Simon Dornetshumer",
+              "name": "Simon Dornetshumer",
+              "team": "Union Heiligenberg",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 2,
+          "round": "1. Runde",
+          "date": "11.11.2026",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "SV Croatia Linz",
+          "away": "FC Gornjak",
+          "location": "DSG-Platz",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "2:0",
+          "halfTime": "0:0",
+          "ht": "0:0",
+          "htScore": "0:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Leonardo Glavas",
+              "name": "Leonardo Glavas",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Josip Mejdandzic",
+              "name": "Josip Mejdandzic",
+              "team": "SV Croatia Linz"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Emin Agovic",
+              "name": "Emin Agovic",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Valentin Vejic",
+              "name": "Valentin Vejic",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "yellow",
+              "player": "Tobias Loizenbauer",
+              "name": "Tobias Loizenbauer",
+              "team": "FC Gornjak"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Leonardo Glavas",
+              "name": "Leonardo Glavas",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Josip Mejdandzic",
+              "name": "Josip Mejdandzic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Emin Agovic",
+              "name": "Emin Agovic",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Valentin Vejic",
+              "name": "Valentin Vejic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Tobias Loizenbauer",
+              "name": "Tobias Loizenbauer",
+              "team": "FC Gornjak",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 3,
+          "round": "1. Runde",
+          "date": "12.11.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "Etehad Linz",
+          "away": "DSG Union Traun",
+          "location": "Sportplatz Traun",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "3:0",
+          "halfTime": "1:0",
+          "ht": "1:0",
+          "htScore": "1:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Farhad Karmand",
+              "name": "Farhad Karmand",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Farhad Karmand",
+              "name": "Farhad Karmand",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Ahmad Parviz",
+              "name": "Ahmad Parviz",
+              "team": "Etehad Linz"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Rohullah Sharifi",
+              "name": "Rohullah Sharifi",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "yellow-red",
+              "player": "Hossein Kazemi",
+              "name": "Hossein Kazemi",
+              "team": "Etehad Linz"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Farhad Karmand",
+              "name": "Farhad Karmand",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Farhad Karmand",
+              "name": "Farhad Karmand",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Ahmad Parviz",
+              "name": "Ahmad Parviz",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Rohullah Sharifi",
+              "name": "Rohullah Sharifi",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow-red",
+              "player": "Hossein Kazemi",
+              "name": "Hossein Kazemi",
+              "team": "Etehad Linz",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 4,
+          "round": "2. Runde",
+          "date": "17.11.2026",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "Walker FC",
+          "away": "Union Heiligenberg",
+          "location": "Sportplatz Heiligenberg",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "1:2",
+          "halfTime": "1:2",
+          "ht": "1:2",
+          "htScore": "1:2",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Thomas Gillmayer",
+              "name": "Thomas Gillmayer",
+              "team": "Walker FC"
+            },
+            {
+              "type": "goal",
+              "player": "Christoph Wiesinger",
+              "name": "Christoph Wiesinger",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Franz Christoph Dornetshumer",
+              "name": "Franz Christoph Dornetshumer",
+              "team": "Union Heiligenberg"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Matteo Zerenko",
+              "name": "Matteo Zerenko",
+              "team": "Walker FC"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Thomas Gillmayer",
+              "name": "Thomas Gillmayer",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Christoph Wiesinger",
+              "name": "Christoph Wiesinger",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Franz Christoph Dornetshumer",
+              "name": "Franz Christoph Dornetshumer",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Matteo Zerenko",
+              "name": "Matteo Zerenko",
+              "team": "Walker FC",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 5,
+          "round": "2. Runde",
+          "date": "18.11.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "DSG St. Josef/Oed FC",
+          "away": "SV Croatia Linz",
+          "location": "DSG-Platz",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "0:1",
+          "halfTime": "0:1",
+          "ht": "0:1",
+          "htScore": "0:1",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Toni Jurcevic",
+              "name": "Toni Jurcevic",
+              "team": "SV Croatia Linz"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Tin Calic",
+              "name": "Tin Calic",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "yellow",
+              "player": "David Velickovic",
+              "name": "David Velickovic",
+              "team": "DSG St. Josef/Oed FC"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Toni Jurcevic",
+              "name": "Toni Jurcevic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Tin Calic",
+              "name": "Tin Calic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "David Velickovic",
+              "name": "David Velickovic",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 6,
+          "round": "2. Runde",
+          "date": "19.11.2026",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "FC Gornjak",
+          "away": "Etehad Linz",
+          "location": "DSG-Platz",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "4:2",
+          "halfTime": "2:2",
+          "ht": "2:2",
+          "htScore": "2:2",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Djordje Malesevic",
+              "name": "Djordje Malesevic",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "goal",
+              "player": "Nikola Zivojinovic",
+              "name": "Nikola Zivojinovic",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "goal",
+              "player": "Stepan Nazarenko",
+              "name": "Stepan Nazarenko",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "goal",
+              "player": "Djordje Malesevic",
+              "name": "Djordje Malesevic",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "goal",
+              "player": "Askraf Laeli",
+              "name": "Askraf Laeli",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Hossein Kazemi",
+              "name": "Hossein Kazemi",
+              "team": "Etehad Linz"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Fabian Pfeiffer",
+              "name": "Fabian Pfeiffer",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Sanel Memic",
+              "name": "Sanel Memic",
+              "team": "FC Gornjak"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Djordje Malesevic",
+              "name": "Djordje Malesevic",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Nikola Zivojinovic",
+              "name": "Nikola Zivojinovic",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Stepan Nazarenko",
+              "name": "Stepan Nazarenko",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Djordje Malesevic",
+              "name": "Djordje Malesevic",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Askraf Laeli",
+              "name": "Askraf Laeli",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Hossein Kazemi",
+              "name": "Hossein Kazemi",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Fabian Pfeiffer",
+              "name": "Fabian Pfeiffer",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Sanel Memic",
+              "name": "Sanel Memic",
+              "team": "FC Gornjak",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 7,
+          "round": "3. Runde",
+          "date": "24.11.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "DSG Union Traun",
+          "away": "Walker FC",
+          "location": "Sportplatz Traun",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "3:1",
+          "halfTime": "0:0",
+          "ht": "0:0",
+          "htScore": "0:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Fabian Walter",
+              "name": "Fabian Walter",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Gerhard Luger",
+              "name": "Gerhard Luger",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Gunnar Heftberger",
+              "name": "Gunnar Heftberger",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Marco Schmidt",
+              "name": "Marco Schmidt",
+              "team": "Walker FC"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Marco Schmidt",
+              "name": "Marco Schmidt",
+              "team": "Walker FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Florian Eisner",
+              "name": "Florian Eisner",
+              "team": "Walker FC"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Fabian Walter",
+              "name": "Fabian Walter",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Gerhard Luger",
+              "name": "Gerhard Luger",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Gunnar Heftberger",
+              "name": "Gunnar Heftberger",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Marco Schmidt",
+              "name": "Marco Schmidt",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Marco Schmidt",
+              "name": "Marco Schmidt",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Florian Eisner",
+              "name": "Florian Eisner",
+              "team": "Walker FC",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 8,
+          "round": "3. Runde",
+          "date": "25.11.2026",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "Union Heiligenberg",
+          "away": "FC Gornjak",
+          "location": "Sportplatz Heiligenberg",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "2:1",
+          "halfTime": "2:1",
+          "ht": "2:1",
+          "htScore": "2:1",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Alex Steiner",
+              "name": "Alex Steiner",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Wolfgang Lehner",
+              "name": "Wolfgang Lehner",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Milan Rakic",
+              "name": "Milan Rakic",
+              "team": "FC Gornjak"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Felix Reitinger",
+              "name": "Felix Reitinger",
+              "team": "Union Heiligenberg"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Alex Steiner",
+              "name": "Alex Steiner",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Wolfgang Lehner",
+              "name": "Wolfgang Lehner",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Milan Rakic",
+              "name": "Milan Rakic",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Felix Reitinger",
+              "name": "Felix Reitinger",
+              "team": "Union Heiligenberg",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 9,
+          "round": "3. Runde",
+          "date": "26.11.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "SV Croatia Linz",
+          "away": "Etehad Linz",
+          "location": "DSG-Platz",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "3:3",
+          "halfTime": "0:2",
+          "ht": "0:2",
+          "htScore": "0:2",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Tin Calic",
+              "name": "Tin Calic",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Domagoj Turkovic",
+              "name": "Domagoj Turkovic",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Robert Matisic",
+              "name": "Robert Matisic",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Ahmad Parviz",
+              "name": "Ahmad Parviz",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Raschid Asghari",
+              "name": "Raschid Asghari",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Hossein Kazemi",
+              "name": "Hossein Kazemi",
+              "team": "Etehad Linz"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Qasem Nabawi",
+              "name": "Qasem Nabawi",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "yellow",
+              "player": "Domagoj Turkovic",
+              "name": "Domagoj Turkovic",
+              "team": "SV Croatia Linz"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Tin Calic",
+              "name": "Tin Calic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Domagoj Turkovic",
+              "name": "Domagoj Turkovic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Robert Matisic",
+              "name": "Robert Matisic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Ahmad Parviz",
+              "name": "Ahmad Parviz",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Raschid Asghari",
+              "name": "Raschid Asghari",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Hossein Kazemi",
+              "name": "Hossein Kazemi",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Qasem Nabawi",
+              "name": "Qasem Nabawi",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Domagoj Turkovic",
+              "name": "Domagoj Turkovic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 10,
+          "round": "4. Runde",
+          "date": "01.12.2026",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "DSG Union Traun",
+          "away": "FC Gornjak",
+          "location": "Sportplatz Traun",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "2:2",
+          "halfTime": "1:2",
+          "ht": "1:2",
+          "htScore": "1:2",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Ninoslav Matanovic",
+              "name": "Ninoslav Matanovic",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Stefan Donoata",
+              "name": "Stefan Donoata",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Filip Nikolov",
+              "name": "Filip Nikolov",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "goal",
+              "player": "Sani Stancic",
+              "name": "Sani Stancic",
+              "team": "FC Gornjak"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Emin Agovic",
+              "name": "Emin Agovic",
+              "team": "FC Gornjak"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Ninoslav Matanovic",
+              "name": "Ninoslav Matanovic",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Stefan Donoata",
+              "name": "Stefan Donoata",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Filip Nikolov",
+              "name": "Filip Nikolov",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Sani Stancic",
+              "name": "Sani Stancic",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Emin Agovic",
+              "name": "Emin Agovic",
+              "team": "FC Gornjak",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 11,
+          "round": "4. Runde",
+          "date": "02.12.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "Walker FC",
+          "away": "SV Croatia Linz",
+          "location": "DSG-Platz",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "3:1",
+          "halfTime": "2:0",
+          "ht": "2:0",
+          "htScore": "2:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Simon Pohl",
+              "name": "Simon Pohl",
+              "team": "Walker FC"
+            },
+            {
+              "type": "goal",
+              "player": "Lukas Dichlberger",
+              "name": "Lukas Dichlberger",
+              "team": "Walker FC"
+            },
+            {
+              "type": "goal",
+              "player": "Emily Sauerbeck",
+              "name": "Emily Sauerbeck",
+              "team": "Walker FC"
+            },
+            {
+              "type": "goal",
+              "player": "Dejan Jurleta",
+              "name": "Dejan Jurleta",
+              "team": "SV Croatia Linz"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Rainer Fasoli",
+              "name": "Rainer Fasoli",
+              "team": "Walker FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Stefan Pühringer",
+              "name": "Stefan Pühringer",
+              "team": "Walker FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Stefan Rummerstorfer",
+              "name": "Stefan Rummerstorfer",
+              "team": "Walker FC"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Simon Pohl",
+              "name": "Simon Pohl",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Lukas Dichlberger",
+              "name": "Lukas Dichlberger",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Emily Sauerbeck",
+              "name": "Emily Sauerbeck",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Dejan Jurleta",
+              "name": "Dejan Jurleta",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Rainer Fasoli",
+              "name": "Rainer Fasoli",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Stefan Pühringer",
+              "name": "Stefan Pühringer",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Stefan Rummerstorfer",
+              "name": "Stefan Rummerstorfer",
+              "team": "Walker FC",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 12,
+          "round": "4. Runde",
+          "date": "03.12.2026",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "DSG St. Josef/Oed FC",
+          "away": "Etehad Linz",
+          "location": "DSG-Platz",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "0:4",
+          "halfTime": "0:0",
+          "ht": "0:0",
+          "htScore": "0:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Mehr Ali Amiri",
+              "name": "Mehr Ali Amiri",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Hamid Fouladi",
+              "name": "Hamid Fouladi",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Ali Noori",
+              "name": "Ali Noori",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Raschid Asghari",
+              "name": "Raschid Asghari",
+              "team": "Etehad Linz"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow-red",
+              "player": "Jahan Yaqoubi",
+              "name": "Jahan Yaqoubi",
+              "team": "Etehad Linz"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Mehr Ali Amiri",
+              "name": "Mehr Ali Amiri",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Hamid Fouladi",
+              "name": "Hamid Fouladi",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Ali Noori",
+              "name": "Ali Noori",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Raschid Asghari",
+              "name": "Raschid Asghari",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow-red",
+              "player": "Jahan Yaqoubi",
+              "name": "Jahan Yaqoubi",
+              "team": "Etehad Linz",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 13,
+          "round": "5. Runde",
+          "date": "08.12.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "Etehad Linz",
+          "away": "Walker FC",
+          "location": "Sportplatz Traun",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "3:3",
+          "halfTime": "0:2",
+          "ht": "0:2",
+          "htScore": "0:2",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Habib Mohseni",
+              "name": "Habib Mohseni",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Manuel Niedermayr",
+              "name": "Manuel Niedermayr",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Sina Bahrami",
+              "name": "Sina Bahrami",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Felix Halder",
+              "name": "Felix Halder",
+              "team": "Walker FC"
+            },
+            {
+              "type": "goal",
+              "player": "Shankar Poudel",
+              "name": "Shankar Poudel",
+              "team": "Walker FC"
+            },
+            {
+              "type": "goal",
+              "player": "Stefan Rummerstorfer",
+              "name": "Stefan Rummerstorfer",
+              "team": "Walker FC"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Manuel Niedermayr",
+              "name": "Manuel Niedermayr",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "yellow",
+              "player": "Mohammad Sharifi",
+              "name": "Mohammad Sharifi",
+              "team": "Etehad Linz"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Habib Mohseni",
+              "name": "Habib Mohseni",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Manuel Niedermayr",
+              "name": "Manuel Niedermayr",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Sina Bahrami",
+              "name": "Sina Bahrami",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Felix Halder",
+              "name": "Felix Halder",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Shankar Poudel",
+              "name": "Shankar Poudel",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Stefan Rummerstorfer",
+              "name": "Stefan Rummerstorfer",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Manuel Niedermayr",
+              "name": "Manuel Niedermayr",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Mohammad Sharifi",
+              "name": "Mohammad Sharifi",
+              "team": "Etehad Linz",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 14,
+          "round": "5. Runde",
+          "date": "09.12.2026",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "DSG Union Traun",
+          "away": "SV Croatia Linz",
+          "location": "Sportplatz Traun",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "4:2",
+          "halfTime": "1:2",
+          "ht": "1:2",
+          "htScore": "1:2",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Dominik Prilmüller",
+              "name": "Dominik Prilmüller",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Andreas Eisschill",
+              "name": "Andreas Eisschill",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Bernhard Hofer",
+              "name": "Bernhard Hofer",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Marcus Hintermüller",
+              "name": "Marcus Hintermüller",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Ivan Bikic",
+              "name": "Ivan Bikic",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Mario Kovacevic",
+              "name": "Mario Kovacevic",
+              "team": "SV Croatia Linz"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Johannes Weger",
+              "name": "Johannes Weger",
+              "team": "DSG Union Traun"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Dominik Prilmüller",
+              "name": "Dominik Prilmüller",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Andreas Eisschill",
+              "name": "Andreas Eisschill",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Bernhard Hofer",
+              "name": "Bernhard Hofer",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Marcus Hintermüller",
+              "name": "Marcus Hintermüller",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Ivan Bikic",
+              "name": "Ivan Bikic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Mario Kovacevic",
+              "name": "Mario Kovacevic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Johannes Weger",
+              "name": "Johannes Weger",
+              "team": "DSG Union Traun",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 15,
+          "round": "5. Runde",
+          "date": "10.12.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "FC Gornjak",
+          "away": "Union Heiligenberg",
+          "location": "Sportplatz Heiligenberg",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "0:2",
+          "halfTime": "0:0",
+          "ht": "0:0",
+          "htScore": "0:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Jonas Dieplinger",
+              "name": "Jonas Dieplinger",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Moritz Kaiserseder",
+              "name": "Moritz Kaiserseder",
+              "team": "Union Heiligenberg"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Mladen Nikolic",
+              "name": "Mladen Nikolic",
+              "team": "FC Gornjak"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Jonas Dieplinger",
+              "name": "Jonas Dieplinger",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Moritz Kaiserseder",
+              "name": "Moritz Kaiserseder",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Mladen Nikolic",
+              "name": "Mladen Nikolic",
+              "team": "FC Gornjak",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 16,
+          "round": "6. Runde",
+          "date": "15.12.2026",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "DSG Union Traun",
+          "away": "DSG St. Josef/Oed FC",
+          "location": "Sportplatz Traun",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "1:0",
+          "halfTime": "1:0",
+          "ht": "1:0",
+          "htScore": "1:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Rynor Ramadani",
+              "name": "Rynor Ramadani",
+              "team": "DSG Union Traun"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow-red",
+              "player": "Kousha Darwish",
+              "name": "Kousha Darwish",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "yellow",
+              "player": "Manuel Märzinger",
+              "name": "Manuel Märzinger",
+              "team": "DSG St. Josef/Oed FC"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Rynor Ramadani",
+              "name": "Rynor Ramadani",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "yellow-red",
+              "player": "Kousha Darwish",
+              "name": "Kousha Darwish",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Manuel Märzinger",
+              "name": "Manuel Märzinger",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 17,
+          "round": "6. Runde",
+          "date": "16.12.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "Walker FC",
+          "away": "FC Gornjak",
+          "location": "DSG-Platz",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "2:2",
+          "halfTime": "2:2",
+          "ht": "2:2",
+          "htScore": "2:2",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Marco Schmidt",
+              "name": "Marco Schmidt",
+              "team": "Walker FC"
+            },
+            {
+              "type": "goal",
+              "player": "Lukas Dichlberger",
+              "name": "Lukas Dichlberger",
+              "team": "Walker FC"
+            },
+            {
+              "type": "goal",
+              "player": "Milos Jovanovic",
+              "name": "Milos Jovanovic",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "goal",
+              "player": "Vekislav Stamenov",
+              "name": "Vekislav Stamenov",
+              "team": "FC Gornjak"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Markus Kalakovic",
+              "name": "Markus Kalakovic",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Stefan Pühringer",
+              "name": "Stefan Pühringer",
+              "team": "Walker FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Darko Maletic",
+              "name": "Darko Maletic",
+              "team": "FC Gornjak"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Marco Schmidt",
+              "name": "Marco Schmidt",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Lukas Dichlberger",
+              "name": "Lukas Dichlberger",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Milos Jovanovic",
+              "name": "Milos Jovanovic",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Vekislav Stamenov",
+              "name": "Vekislav Stamenov",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Markus Kalakovic",
+              "name": "Markus Kalakovic",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Stefan Pühringer",
+              "name": "Stefan Pühringer",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Darko Maletic",
+              "name": "Darko Maletic",
+              "team": "FC Gornjak",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 18,
+          "round": "6. Runde",
+          "date": "17.12.2026",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "Union Heiligenberg",
+          "away": "SV Croatia Linz",
+          "location": "Sportplatz Heiligenberg",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "1:4",
+          "halfTime": "1:2",
+          "ht": "1:2",
+          "htScore": "1:2",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Martin Dornetshumer",
+              "name": "Martin Dornetshumer",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Miroslav Batinic",
+              "name": "Miroslav Batinic",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Josip Strbac",
+              "name": "Josip Strbac",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Domagoj Pilic",
+              "name": "Domagoj Pilic",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Boris Bagaric",
+              "name": "Boris Bagaric",
+              "team": "SV Croatia Linz"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Sebastian Grabner",
+              "name": "Sebastian Grabner",
+              "team": "Union Heiligenberg"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Martin Dornetshumer",
+              "name": "Martin Dornetshumer",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Miroslav Batinic",
+              "name": "Miroslav Batinic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Josip Strbac",
+              "name": "Josip Strbac",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Domagoj Pilic",
+              "name": "Domagoj Pilic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Boris Bagaric",
+              "name": "Boris Bagaric",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Sebastian Grabner",
+              "name": "Sebastian Grabner",
+              "team": "Union Heiligenberg",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 19,
+          "round": "7. Runde",
+          "date": "22.12.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "Union Heiligenberg",
+          "away": "DSG Union Traun",
+          "location": "Sportplatz Heiligenberg",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "2:3",
+          "halfTime": "0:0",
+          "ht": "0:0",
+          "htScore": "0:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Florian Lehner",
+              "name": "Florian Lehner",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Sebastian Boubenicek",
+              "name": "Sebastian Boubenicek",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "player": "Michael Miesenberger",
+              "name": "Michael Miesenberger",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Christian Huber",
+              "name": "Christian Huber",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "goal",
+              "player": "Sven Radler",
+              "name": "Sven Radler",
+              "team": "DSG Union Traun"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Lukas Wahl",
+              "name": "Lukas Wahl",
+              "team": "DSG Union Traun"
+            },
+            {
+              "type": "yellow",
+              "player": "Helmut Fuchs",
+              "name": "Helmut Fuchs",
+              "team": "DSG Union Traun"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Florian Lehner",
+              "name": "Florian Lehner",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Sebastian Boubenicek",
+              "name": "Sebastian Boubenicek",
+              "team": "Union Heiligenberg",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Michael Miesenberger",
+              "name": "Michael Miesenberger",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Christian Huber",
+              "name": "Christian Huber",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Sven Radler",
+              "name": "Sven Radler",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Lukas Wahl",
+              "name": "Lukas Wahl",
+              "team": "DSG Union Traun",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Helmut Fuchs",
+              "name": "Helmut Fuchs",
+              "team": "DSG Union Traun",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 20,
+          "round": "7. Runde",
+          "date": "23.12.2026",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "SV Croatia Linz",
+          "away": "Walker FC",
+          "location": "DSG-Platz",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "1:0",
+          "halfTime": "0:0",
+          "ht": "0:0",
+          "htScore": "0:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Miroslav Batinic",
+              "name": "Miroslav Batinic",
+              "team": "SV Croatia Linz"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Simon Pohl",
+              "name": "Simon Pohl",
+              "team": "Walker FC"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Miroslav Batinic",
+              "name": "Miroslav Batinic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Simon Pohl",
+              "name": "Simon Pohl",
+              "team": "Walker FC",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 21,
+          "round": "7. Runde",
+          "date": "24.12.2026",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "DSG St. Josef/Oed FC",
+          "away": "FC Gornjak",
+          "location": "DSG-Platz",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "2:0",
+          "halfTime": "2:0",
+          "ht": "2:0",
+          "htScore": "2:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Felix Franzmeier",
+              "name": "Felix Franzmeier",
+              "team": "DSG St. Josef/Oed FC"
+            },
+            {
+              "type": "goal",
+              "player": "Jonas Binder",
+              "name": "Jonas Binder",
+              "team": "DSG St. Josef/Oed FC"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Daniel Wöckinger",
+              "name": "Daniel Wöckinger",
+              "team": "DSG St. Josef/Oed FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Stanislav Korovljevic",
+              "name": "Stanislav Korovljevic",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Daniel Stollnberger",
+              "name": "Daniel Stollnberger",
+              "team": "DSG St. Josef/Oed FC"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Felix Franzmeier",
+              "name": "Felix Franzmeier",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Jonas Binder",
+              "name": "Jonas Binder",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Daniel Wöckinger",
+              "name": "Daniel Wöckinger",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Stanislav Korovljevic",
+              "name": "Stanislav Korovljevic",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Daniel Stollnberger",
+              "name": "Daniel Stollnberger",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 22,
+          "round": "8. Runde",
+          "date": "05.01.2027",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "SV Croatia Linz",
+          "away": "DSG St. Josef/Oed FC",
+          "location": "DSG-Platz",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "2:1",
+          "halfTime": "2:1",
+          "ht": "2:1",
+          "htScore": "2:1",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Kristijan Jozic",
+              "name": "Kristijan Jozic",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Josip Foro",
+              "name": "Josip Foro",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "player": "David Velickovic",
+              "name": "David Velickovic",
+              "team": "DSG St. Josef/Oed FC"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Andreas Gillhofer",
+              "name": "Andreas Gillhofer",
+              "team": "DSG St. Josef/Oed FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Stipo Subasic",
+              "name": "Stipo Subasic",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "yellow",
+              "player": "Michael Ksen",
+              "name": "Michael Ksen",
+              "team": "DSG St. Josef/Oed FC"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Kristijan Jozic",
+              "name": "Kristijan Jozic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Josip Foro",
+              "name": "Josip Foro",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "David Velickovic",
+              "name": "David Velickovic",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Andreas Gillhofer",
+              "name": "Andreas Gillhofer",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Stipo Subasic",
+              "name": "Stipo Subasic",
+              "team": "SV Croatia Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Michael Ksen",
+              "name": "Michael Ksen",
+              "team": "DSG St. Josef/Oed FC",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 23,
+          "round": "8. Runde",
+          "date": "06.01.2027",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "Etehad Linz",
+          "away": "Union Heiligenberg",
+          "location": "Sportplatz Heiligenberg",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "4:0",
+          "halfTime": "2:0",
+          "ht": "2:0",
+          "htScore": "2:0",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Raschid Asghari",
+              "name": "Raschid Asghari",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Manuel Niedermayr",
+              "name": "Manuel Niedermayr",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Najib Fouladi",
+              "name": "Najib Fouladi",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "goal",
+              "player": "Qasem Nabawi",
+              "name": "Qasem Nabawi",
+              "team": "Etehad Linz"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Farhad Karmand",
+              "name": "Farhad Karmand",
+              "team": "Etehad Linz"
+            },
+            {
+              "type": "yellow",
+              "player": "Farhad Karmand",
+              "name": "Farhad Karmand",
+              "team": "Etehad Linz"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Raschid Asghari",
+              "name": "Raschid Asghari",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Manuel Niedermayr",
+              "name": "Manuel Niedermayr",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Najib Fouladi",
+              "name": "Najib Fouladi",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Qasem Nabawi",
+              "name": "Qasem Nabawi",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Farhad Karmand",
+              "name": "Farhad Karmand",
+              "team": "Etehad Linz",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Farhad Karmand",
+              "name": "Farhad Karmand",
+              "team": "Etehad Linz",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 24,
+          "round": "8. Runde",
+          "date": "07.01.2027",
+          "time": "19:00",
+          "weekday": "Sa",
+          "home": "FC Gornjak",
+          "away": "Walker FC",
+          "location": "DSG-Platz",
+          "league": "Testliga",
+          "seasonKey": "Testliga 2026/2027",
+          "status": "Gespielt",
+          "score": "1:2",
+          "halfTime": "1:2",
+          "ht": "1:2",
+          "htScore": "1:2",
+          "referee": "Offizieller DSG Schiedsrichter",
+          "scorers": [
+            {
+              "type": "goal",
+              "player": "Vjekoslav Tomasic",
+              "name": "Vjekoslav Tomasic",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "goal",
+              "player": "Maxwell Agbemor",
+              "name": "Maxwell Agbemor",
+              "team": "Walker FC"
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Schneider",
+              "name": "Alexander Schneider",
+              "team": "Walker FC"
+            }
+          ],
+          "cards": [
+            {
+              "type": "yellow",
+              "player": "Alexander Schneider",
+              "name": "Alexander Schneider",
+              "team": "Walker FC"
+            },
+            {
+              "type": "yellow",
+              "player": "Sasa Nedic",
+              "name": "Sasa Nedic",
+              "team": "FC Gornjak"
+            },
+            {
+              "type": "yellow",
+              "player": "Dragan Zutic",
+              "name": "Dragan Zutic",
+              "team": "FC Gornjak"
+            }
+          ],
+          "events": [
+            {
+              "type": "goal",
+              "player": "Vjekoslav Tomasic",
+              "name": "Vjekoslav Tomasic",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Maxwell Agbemor",
+              "name": "Maxwell Agbemor",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "goal",
+              "player": "Alexander Schneider",
+              "name": "Alexander Schneider",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Alexander Schneider",
+              "name": "Alexander Schneider",
+              "team": "Walker FC",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Sasa Nedic",
+              "name": "Sasa Nedic",
+              "team": "FC Gornjak",
+              "count": 1
+            },
+            {
+              "type": "yellow",
+              "player": "Dragan Zutic",
+              "name": "Dragan Zutic",
+              "team": "FC Gornjak",
+              "count": 1
+            }
+          ],
+          "note": ""
+        },
+        {
+          "id": 25,
+          "round": "9. Runde",
+          "date": "12.01.2027",
+          "time": "19:00",
+          "weekday": "Fr",
+          "home": "Union Heiligenberg",
+          "away": "DSG St. Josef/Oed FC",
           "location": "Sportplatz Heiligenberg",
           "league": "Testliga",
           "seasonKey": "Testliga 2026/2027",
           "status": "Ausstehend",
           "score": "-:-",
+          "halfTime": "",
           "ht": "",
-          "events": [],
+          "htScore": "",
+          "referee": "Offizieller DSG Schiedsrichter",
           "scorers": [],
           "cards": [],
-          "referee": "",
-          "refereeNotes": ""
-        },
-        {
-          "id": 2,
-          "round": "1. Runde",
-          "home": "SV Croatia Linz",
-          "away": "FC Gornjak",
-          "date": "11.11.2026",
-          "time": "19:30",
-          "weekday": "Mi",
-          "location": "Sportplatz Lissfeld",
-          "league": "Testliga",
-          "seasonKey": "Testliga 2026/2027",
-          "status": "Ausstehend",
-          "score": "-:-",
-          "ht": "",
           "events": [],
-          "scorers": [],
-          "cards": [],
-          "referee": "",
-          "refereeNotes": ""
+          "note": ""
         },
         {
-          "id": 3,
-          "round": "1. Runde",
-          "home": "Etehad Linz",
-          "away": "DSG Union Traun",
-          "date": "12.11.2026",
-          "time": "19:00",
-          "weekday": "Do",
-          "location": "DSG-Platz",
-          "league": "Testliga",
-          "seasonKey": "Testliga 2026/2027",
-          "status": "Ausstehend",
-          "score": "-:-",
-          "ht": "",
-          "events": [],
-          "scorers": [],
-          "cards": [],
-          "referee": "",
-          "refereeNotes": ""
-        },
-        {
-          "id": 4,
-          "round": "2. Runde",
-          "home": "Walker FC",
-          "away": "Union Heiligenberg",
-          "date": "17.11.2026",
-          "time": "19:00",
-          "weekday": "Di",
-          "location": "Sportplatz Lissfeld",
-          "league": "Testliga",
-          "seasonKey": "Testliga 2026/2027",
-          "status": "Ausstehend",
-          "score": "-:-",
-          "ht": "",
-          "events": [],
-          "scorers": [],
-          "cards": [],
-          "referee": "",
-          "refereeNotes": ""
-        },
-        {
-          "id": 5,
-          "round": "2. Runde",
-          "home": "DSG St. Josef/Oed FC",
-          "away": "SV Croatia Linz",
-          "date": "18.11.2026",
-          "time": "19:30",
-          "weekday": "Mi",
-          "location": "DSG-Platz",
-          "league": "Testliga",
-          "seasonKey": "Testliga 2026/2027",
-          "status": "Ausstehend",
-          "score": "-:-",
-          "ht": "",
-          "events": [],
-          "scorers": [],
-          "cards": [],
-          "referee": "",
-          "refereeNotes": ""
-        },
-        {
-          "id": 6,
-          "round": "2. Runde",
+          "id": 26,
+          "round": "9. Runde",
+          "date": "13.01.2027",
+          "time": "14:00",
+          "weekday": "Sa",
           "home": "FC Gornjak",
           "away": "Etehad Linz",
-          "date": "19.11.2026",
-          "time": "19:00",
-          "weekday": "Do",
-          "location": "Sportplatz Lissfeld",
+          "location": "DSG-Platz",
           "league": "Testliga",
           "seasonKey": "Testliga 2026/2027",
           "status": "Ausstehend",
           "score": "-:-",
+          "halfTime": "",
           "ht": "",
-          "events": [],
+          "htScore": "",
+          "referee": "Offizieller DSG Schiedsrichter",
           "scorers": [],
           "cards": [],
-          "referee": "",
-          "refereeNotes": ""
+          "events": [],
+          "note": ""
         },
         {
-          "id": 7,
-          "round": "3. Runde",
-          "home": "DSG Union Traun",
-          "away": "Walker FC",
-          "date": "24.11.2026",
-          "time": "19:00",
-          "weekday": "Di",
+          "id": 27,
+          "round": "9. Runde",
+          "date": "13.01.2027",
+          "time": "16:00",
+          "weekday": "Fr",
+          "home": "Walker FC",
+          "away": "DSG Union Traun",
           "location": "Sportplatz Traun",
           "league": "Testliga",
           "seasonKey": "Testliga 2026/2027",
           "status": "Ausstehend",
           "score": "-:-",
+          "halfTime": "",
           "ht": "",
-          "events": [],
+          "htScore": "",
+          "referee": "Offizieller DSG Schiedsrichter",
           "scorers": [],
           "cards": [],
-          "referee": "",
-          "refereeNotes": ""
-        },
-        {
-          "id": 8,
-          "round": "3. Runde",
-          "home": "Union Heiligenberg",
-          "away": "FC Gornjak",
-          "date": "25.11.2026",
-          "time": "19:30",
-          "weekday": "Mi",
-          "location": "Sportplatz Heiligenberg",
-          "league": "Testliga",
-          "seasonKey": "Testliga 2026/2027",
-          "status": "Ausstehend",
-          "score": "-:-",
-          "ht": "",
           "events": [],
-          "scorers": [],
-          "cards": [],
-          "referee": "",
-          "refereeNotes": ""
-        },
-        {
-          "id": 9,
-          "round": "3. Runde",
-          "home": "SV Croatia Linz",
-          "away": "Etehad Linz",
-          "date": "26.11.2026",
-          "time": "19:00",
-          "weekday": "Do",
-          "location": "Sportplatz Lissfeld",
-          "league": "Testliga",
-          "seasonKey": "Testliga 2026/2027",
-          "status": "Ausstehend",
-          "score": "-:-",
-          "ht": "",
-          "events": [],
-          "scorers": [],
-          "cards": [],
-          "referee": "",
-          "refereeNotes": ""
+          "note": ""
         }
       ],
-      "stats": {
-        "topScorers": [],
-        "cards": []
-      }
+      "table": [
+        {
+          "team": "SV Croatia Linz",
+          "name": "SV Croatia Linz",
+          "played": 8,
+          "won": 5,
+          "drawn": 1,
+          "lost": 2,
+          "goalsFor": 16,
+          "goalsAgainst": 12,
+          "goalDiff": 4,
+          "points": 16,
+          "rank": 1
+        },
+        {
+          "team": "DSG Union Traun",
+          "name": "DSG Union Traun",
+          "played": 6,
+          "won": 4,
+          "drawn": 1,
+          "lost": 1,
+          "goalsFor": 13,
+          "goalsAgainst": 10,
+          "goalDiff": 3,
+          "points": 13,
+          "rank": 2
+        },
+        {
+          "team": "Union Heiligenberg",
+          "name": "Union Heiligenberg",
+          "played": 7,
+          "won": 4,
+          "drawn": 0,
+          "lost": 3,
+          "goalsFor": 11,
+          "goalsAgainst": 13,
+          "goalDiff": -2,
+          "points": 12,
+          "rank": 3
+        },
+        {
+          "team": "Etehad Linz",
+          "name": "Etehad Linz",
+          "played": 6,
+          "won": 3,
+          "drawn": 2,
+          "lost": 1,
+          "goalsFor": 19,
+          "goalsAgainst": 10,
+          "goalDiff": 9,
+          "points": 11,
+          "rank": 4
+        },
+        {
+          "team": "Walker FC",
+          "name": "Walker FC",
+          "played": 7,
+          "won": 2,
+          "drawn": 2,
+          "lost": 3,
+          "goalsFor": 12,
+          "goalsAgainst": 13,
+          "goalDiff": -1,
+          "points": 8,
+          "rank": 5
+        },
+        {
+          "team": "FC Gornjak",
+          "name": "FC Gornjak",
+          "played": 8,
+          "won": 1,
+          "drawn": 2,
+          "lost": 5,
+          "goalsFor": 10,
+          "goalsAgainst": 16,
+          "goalDiff": -6,
+          "points": 5,
+          "rank": 6
+        },
+        {
+          "team": "DSG St. Josef/Oed FC",
+          "name": "DSG St. Josef/Oed FC",
+          "played": 6,
+          "won": 1,
+          "drawn": 0,
+          "lost": 5,
+          "goalsFor": 3,
+          "goalsAgainst": 10,
+          "goalDiff": -7,
+          "points": 3,
+          "rank": 7
+        }
+      ]
     }
   },
   "currentSeason": "2026/2027"

@@ -4,7 +4,7 @@ import { logout } from '../auth.js';
 
 import { Router } from '../router.js';
 
-import { getPlayerAvatar } from '../playerUtils.js?v=1791182000000';
+import { getPlayerAvatar, calculateTeamPlayerStats } from '../playerUtils.js?v=1793100000000';
 import { calculateSeasonSuspensions, normalizePlayerName, normalizeKey } from '../suspensionUtils.js?v=1793040000000';
 
 import { storage } from '../firebase.js';
@@ -22,6 +22,7 @@ let statusFilter = 'Aktiv'; // 'all' | 'Aktiv' | 'Inaktiv'
 let activeUploadPlayer = null;
 let selectedKaderSeasonKey = null;
 let selectedKaderMatchId = null;
+let selectedStatsSeasonKey = null;
 
 
 
@@ -176,6 +177,12 @@ export const viewTeamAdmin = (auth) => {
         <button class="team-tab-btn ${currentTeamTab === 'spieltagskader' ? 'active' : ''}" data-tab="spieltagskader" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'spieltagskader' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'spieltagskader' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer; white-space: nowrap;">
 
           Spieltagskader
+
+        </button>
+
+        <button class="team-tab-btn ${currentTeamTab === 'statistiken' ? 'active' : ''}" data-tab="statistiken" style="padding: 10px 18px; background: none; border: none; border-bottom: 2px solid ${currentTeamTab === 'statistiken' ? 'var(--color-accent)' : 'transparent'}; color: ${currentTeamTab === 'statistiken' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; font-weight: 700; cursor: pointer; white-space: nowrap;">
+
+          Statistiken
 
         </button>
 
@@ -810,6 +817,12 @@ export const bindTeamAdmin = async (auth) => {
         // STRICT REQUIREMENT: No auto-selection unless already saved in existing roster and not suspended
         const isChecked = existingRoster && !isSuspended ? !!inRosterPlayer : false;
         
+        // Starting 11 vs Ersatzbank role
+        let isStarter = true;
+        if (existingRoster && Array.isArray(existingRoster.players) && inRosterPlayer) {
+          isStarter = inRosterPlayer.isStarter !== false && inRosterPlayer.role !== 'sub';
+        }
+        
         // STRICT REQUIREMENT: No pre-filled jersey number unless already saved in existing roster
         let currentJersey = '';
         if (existingRoster && inRosterPlayer && inRosterPlayer.jerseyNumber && !isSuspended) {
@@ -829,6 +842,7 @@ export const bindTeamAdmin = async (auth) => {
           yellowRedCount: suspData.yellowRedCount,
           warningThreshold: suspData.warningThreshold,
           isChecked,
+          isStarter,
           jerseyNumber: currentJersey,
           avatar: getPlayerAvatar(p)
         };
@@ -985,9 +999,14 @@ export const bindTeamAdmin = async (auth) => {
                   </div>
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                  <label style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary);">Nr.</label>
-                  <input type="number" class="admin-input kader-jersey-input" data-player-id="${p.id}" min="1" max="99" placeholder="--" value="${p.jerseyNumber}" ${p.isSuspended || isRosterLocked ? 'disabled' : ''} style="width: 54px; text-align: center; font-weight: 800; font-size: 0.95rem; padding: 5px 4px; ${p.isSuspended || isRosterLocked ? 'cursor: not-allowed; opacity: 0.7;' : ''}">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0;">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <label style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary);">Nr.</label>
+                    <input type="number" class="admin-input kader-jersey-input" data-player-id="${p.id}" min="1" max="99" placeholder="--" value="${p.jerseyNumber}" ${p.isSuspended || isRosterLocked ? 'disabled' : ''} style="width: 50px; text-align: center; font-weight: 800; font-size: 0.95rem; padding: 4px; ${p.isSuspended || isRosterLocked ? 'cursor: not-allowed; opacity: 0.7;' : ''}">
+                  </div>
+                  <button type="button" class="btn kader-role-btn ${p.isStarter ? 'btn-dsg' : 'btn-outline'}" data-player-id="${p.id}" data-role="${p.isStarter ? 'starter' : 'sub'}" ${p.isSuspended || isRosterLocked ? 'disabled' : ''} style="font-size: 0.72rem; padding: 3px 8px; font-weight: 800; border-radius: 4px; line-height: 1.1; ${!p.isChecked ? 'display: none;' : ''}; white-space: nowrap;" title="Klicken um zwischen Startelf und Bank zu wechseln">
+                    ${p.isStarter ? 'Startelf' : 'Bank'}
+                  </button>
                 </div>
               </div>
             `;
@@ -1017,24 +1036,76 @@ export const bindTeamAdmin = async (auth) => {
         renderTab();
       });
 
-      // Update counter helper
+      // Update counter helper with Startelf & Bank counts
       const updateKaderCounter = () => {
-        const checkedBoxes = document.querySelectorAll('.kader-player-check:checked');
-        const count = checkedBoxes.length;
+        const checkedBoxes = Array.from(document.querySelectorAll('.kader-player-check:checked'));
+        const totalCount = checkedBoxes.length;
+        let starterCount = 0;
+        let subCount = 0;
+        checkedBoxes.forEach(cb => {
+          const pId = cb.getAttribute('data-player-id');
+          const roleBtn = document.querySelector(`.kader-role-btn[data-player-id="${pId}"]`);
+          const isStart = roleBtn?.getAttribute('data-role') !== 'sub';
+          if (isStart) starterCount++;
+          else subCount++;
+        });
+
         const badge = document.getElementById('kader-counter-badge');
         if (badge) {
-          badge.textContent = `${count} Spieler nominiert`;
+          badge.innerHTML = `<strong>${starterCount}</strong> Startelf &bull; <strong>${subCount}</strong> Bank (${totalCount} Nominiert)`;
+          if (starterCount === 11) {
+            badge.style.color = '#16a34a';
+            badge.style.borderColor = 'rgba(0, 240, 95, 0.4)';
+          } else {
+            badge.style.color = '#d97706';
+            badge.style.borderColor = 'rgba(234, 179, 8, 0.4)';
+          }
         }
       };
 
-      // Checkbox changes
+      // Checkbox changes & Role button wiring
       if (!isRosterLocked) {
         document.querySelectorAll('.kader-player-check').forEach(cb => {
           cb.addEventListener('change', (e) => {
+            const pId = e.target.getAttribute('data-player-id');
             const card = e.target.closest('.kader-player-card');
+            const roleBtn = document.querySelector(`.kader-role-btn[data-player-id="${pId}"]`);
             if (card) {
               card.style.borderColor = e.target.checked ? 'var(--color-accent)' : 'var(--glass-border)';
             }
+            if (roleBtn) {
+              if (e.target.checked) {
+                roleBtn.style.display = 'inline-block';
+                // Auto-assignment: if < 11 starters currently, assign Startelf, otherwise Bank
+                const currentStarters = Array.from(document.querySelectorAll('.kader-player-check:checked'))
+                  .filter(c => c !== e.target && document.querySelector(`.kader-role-btn[data-player-id="${c.getAttribute('data-player-id')}"]`)?.getAttribute('data-role') !== 'sub').length;
+                if (currentStarters < 11) {
+                  roleBtn.setAttribute('data-role', 'starter');
+                  roleBtn.className = 'btn btn-dsg kader-role-btn';
+                  roleBtn.textContent = 'Startelf';
+                } else {
+                  roleBtn.setAttribute('data-role', 'sub');
+                  roleBtn.className = 'btn btn-outline kader-role-btn';
+                  roleBtn.textContent = 'Bank';
+                }
+              } else {
+                roleBtn.style.display = 'none';
+              }
+            }
+            updateKaderCounter();
+          });
+        });
+
+        // Wire role toggle buttons
+        document.querySelectorAll('.kader-role-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const currentRole = btn.getAttribute('data-role');
+            const newRole = currentRole === 'sub' ? 'starter' : 'sub';
+            btn.setAttribute('data-role', newRole);
+            btn.className = `btn ${newRole === 'starter' ? 'btn-dsg' : 'btn-outline'} kader-role-btn`;
+            btn.textContent = newRole === 'starter' ? 'Startelf' : 'Bank';
             updateKaderCounter();
           });
         });
@@ -1092,12 +1163,16 @@ export const bindTeamAdmin = async (auth) => {
               usedNumbers.add(jerseyNum);
             }
 
+            const roleBtn = document.querySelector(`.kader-role-btn[data-player-id="${pId}"]`);
+            const isStarter = roleBtn ? roleBtn.getAttribute('data-role') !== 'sub' : true;
             selectedList.push({
               id: String(pId),
               firstName: pObj.raw.Vorname || pObj.raw.firstName || '',
               lastName: pObj.raw.Nachname || pObj.raw.lastName || '',
               jerseyNumber: jerseyNum,
               position: pObj.position,
+              isStarter: isStarter,
+              role: isStarter ? 'starter' : 'sub',
               photo: pObj.raw.photo || pObj.raw.photoUrl || pObj.raw.passPhoto || '',
               avatar: pObj.avatar
             });
@@ -1127,6 +1202,191 @@ export const bindTeamAdmin = async (auth) => {
           renderTab();
         });
       }
+
+        } else if (currentTeamTab === 'statistiken') {
+      const allPlayers = await Store.getAdminPlayers();
+      const allSeasons = Store.getData().seasons || {};
+      const allLeagues = (Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : []) || [];
+      const normTeam = (teamName || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+
+      // Collect available seasons for this team
+      const availableSeasons = [];
+      Object.keys(allSeasons).forEach(sKey => {
+        const s = allSeasons[sKey];
+        if (s && Array.isArray(s.matches)) {
+          const hasMatch = s.matches.some(m => {
+            const h = (m.home || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+            const a = (m.away || '').toLowerCase().replace(/fc|dsg|sv|u\.|union|\./g, '').trim();
+            return h.includes(normTeam) || normTeam.includes(h) || a.includes(normTeam) || normTeam.includes(a);
+          });
+          if (hasMatch) {
+            const leagueObj = allLeagues.find(l => l.seasonKey === sKey || l.name === sKey);
+            let label = leagueObj ? `${leagueObj.name} ${leagueObj.year || ''}`.trim() : (s.name ? `${s.name} ${s.year || ''}`.trim() : sKey);
+            availableSeasons.push({ seasonKey: sKey, label });
+          }
+        }
+      });
+
+      if (!selectedStatsSeasonKey || !availableSeasons.some(s => s.seasonKey === selectedStatsSeasonKey)) {
+        selectedStatsSeasonKey = selectedKaderSeasonKey || (availableSeasons[0] ? availableSeasons[0].seasonKey : '2026/2027');
+      }
+
+      const teamStats = calculateTeamPlayerStats(selectedStatsSeasonKey, teamName, allPlayers);
+      const totalGoals = teamStats.players.reduce((acc, p) => acc + p.goals, 0);
+      const totalYellow = teamStats.players.reduce((acc, p) => acc + p.yellowCards, 0);
+      const totalYellowRed = teamStats.players.reduce((acc, p) => acc + p.yellowRedCards, 0);
+      const totalRed = teamStats.players.reduce((acc, p) => acc + p.redCards, 0);
+
+      container.innerHTML = `
+        <!-- Season Selector & Header -->
+        <div class="glass-card" style="padding: var(--space-md); margin-bottom: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
+          <div>
+            <h3 style="margin: 0; font-size: 1.3rem;">Team-Statistiken &amp; Einsatzzeiten</h3>
+            <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin: 3px 0 0 0;">
+              Einsatzminuten, Startelf-Quoten, Torschützen und Fairplay-Status deines Kaders
+            </p>
+          </div>
+          <div style="min-width: 200px;">
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--color-accent); margin-bottom: 4px; text-transform: uppercase;">Saison wählen</label>
+            <select id="team-stats-season-select" class="admin-input" style="width: 100%; font-size: 0.95rem; font-weight: 700; padding: 8px 12px;">
+              ${availableSeasons.map(s => `
+                <option value="${s.seasonKey}" ${s.seasonKey === selectedStatsSeasonKey ? 'selected' : ''}>${s.label}</option>
+              `).join('')}
+            </select>
+          </div>
+        </div>
+
+        <!-- Metric KPI Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: var(--space-lg);">
+          <div class="glass-card" style="padding: 14px; border-radius: 8px; text-align: center; border-left: 3px solid var(--color-accent);">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Spiele absolviert</div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: var(--color-text-primary); margin-top: 4px;">${teamStats.playedMatchesCount}</div>
+            <div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 2px;">In dieser Saison</div>
+          </div>
+          <div class="glass-card" style="padding: 14px; border-radius: 8px; text-align: center; border-left: 3px solid #3b82f6;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Max. Spielzeit</div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: #3b82f6; margin-top: 4px;">${teamStats.maxMinutes} <span style="font-size: 0.85rem; font-weight: 600;">Min.</span></div>
+            <div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 2px;">90 Min. pro Spiel</div>
+          </div>
+          <div class="glass-card" style="padding: 14px; border-radius: 8px; text-align: center; border-left: 3px solid #22c55e;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Erzielte Tore</div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: #22c55e; margin-top: 4px;">${totalGoals}</div>
+            <div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 2px;">Gesamter Kader</div>
+          </div>
+          <div class="glass-card" style="padding: 14px; border-radius: 8px; text-align: center; border-left: 3px solid #eab308;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Gelbe Karten</div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: #eab308; margin-top: 4px;">${totalYellow}</div>
+            <div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 2px;">Fairplay-Konto</div>
+          </div>
+          <div class="glass-card" style="padding: 14px; border-radius: 8px; text-align: center; border-left: 3px solid #dc2626;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Platzverweise</div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: #dc2626; margin-top: 4px;">${totalYellowRed + totalRed}</div>
+            <div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 2px;">${totalYellowRed} GR &bull; ${totalRed} R</div>
+          </div>
+        </div>
+
+        <!-- Squad Performance Table -->
+        <div class="glass-card" style="padding: var(--space-md); border-radius: 8px; border: 1px solid var(--glass-border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: 10px;">
+            <div style="font-weight: 800; font-size: 1.1rem; color: var(--color-text-primary);">
+              Kaderübersicht (${teamStats.players.length} Spieler)
+            </div>
+            <div>
+              <input type="text" id="stats-player-search" class="admin-input" placeholder="Spieler suchen..." style="padding: 6px 12px; font-size: 0.85rem; width: 200px;">
+            </div>
+          </div>
+
+          <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+              <thead>
+                <tr style="border-bottom: 2px solid var(--glass-border); color: var(--color-text-secondary); font-size: 0.75rem; text-transform: uppercase;">
+                  <th style="padding: 10px 10px; width: 45px; text-align: center;">Nr.</th>
+                  <th style="padding: 10px 10px;">Spieler</th>
+                  <th style="padding: 10px 10px;">Einsätze</th>
+                  <th style="padding: 10px 10px; min-width: 140px;">Einsatzzeit (Min.)</th>
+                  <th style="padding: 10px 10px; text-align: center;">Tore</th>
+                  <th style="padding: 10px 10px; text-align: center;">Karten</th>
+                  <th style="padding: 10px 10px; text-align: right;">Status</th>
+                </tr>
+              </thead>
+              <tbody id="team-stats-tbody">
+                ${teamStats.players.map((p) => {
+                  const pct = teamStats.maxMinutes > 0 ? Math.round((p.minutes / teamStats.maxMinutes) * 100) : 0;
+                  return `
+                    <tr class="stats-row" style="border-bottom: 1px solid var(--glass-border); transition: background 0.15s ease;">
+                      <td style="padding: 10px 10px; text-align: center; font-weight: 800; color: var(--color-text-secondary);">
+                        ${p.jerseyNumber ? '#' + p.jerseyNumber : '-'}
+                      </td>
+                      <td style="padding: 10px 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                          <img src="${p.avatar}" alt="${p.name}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); flex-shrink: 0;">
+                          <div>
+                            <div style="font-weight: 800; color: var(--color-text-primary);">${p.name}</div>
+                            <div style="font-size: 0.72rem; color: var(--color-text-secondary);">${p.position || 'Feldspieler'}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td style="padding: 10px 10px;">
+                        <div style="font-weight: 800; font-size: 0.95rem;">${p.played} <span style="font-size: 0.75rem; color: var(--color-text-secondary);">/ ${teamStats.playedMatchesCount}</span></div>
+                        <div style="font-size: 0.7rem; color: var(--color-text-secondary); margin-top: 1px;">
+                          ${p.started} Start &bull; ${p.subbedIn} Ein
+                        </div>
+                      </td>
+                      <td style="padding: 10px 10px; min-width: 140px;">
+                        <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 0.85rem; margin-bottom: 3px;">
+                          <span>${p.minutes} Min.</span>
+                          <span style="color: var(--color-text-secondary); font-size: 0.75rem;">${pct}%</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.08); height: 6px; border-radius: 3px; overflow: hidden;">
+                          <div style="background: var(--color-accent); height: 100%; width: ${pct}%; border-radius: 3px;"></div>
+                        </div>
+                      </td>
+                      <td style="padding: 10px 10px; text-align: center;">
+                        <span style="font-weight: 900; font-size: 1rem; color: ${p.goals > 0 ? '#22c55e' : 'var(--color-text-secondary)'};">
+                          ${p.goals}
+                        </span>
+                      </td>
+                      <td style="padding: 10px 10px; text-align: center;">
+                        <div style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 0.75rem;">
+                          ${p.yellowCards > 0 ? `<span style="background: #eab308; color: #000; padding: 1px 5px; border-radius: 2px;">${p.yellowCards}G</span>` : ''}
+                          ${p.yellowRedCards > 0 ? `<span style="background: #f97316; color: #fff; padding: 1px 5px; border-radius: 2px;">${p.yellowRedCards}GR</span>` : ''}
+                          ${p.redCards > 0 ? `<span style="background: #dc2626; color: #fff; padding: 1px 5px; border-radius: 2px;">${p.redCards}R</span>` : ''}
+                          ${p.yellowCards === 0 && p.yellowRedCards === 0 && p.redCards === 0 ? '<span style="color: var(--color-text-secondary);">-</span>' : ''}
+                        </div>
+                      </td>
+                      <td style="padding: 10px 10px; text-align: right;">
+                        ${p.isSuspended ? `
+                          <span style="background: rgba(220, 38, 38, 0.15); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.35); padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 0.72rem;">Gesperrt</span>
+                        ` : p.isWarning ? `
+                          <span style="background: rgba(234, 179, 8, 0.18); color: #d97706; border: 1px solid rgba(234, 179, 8, 0.45); padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 0.72rem;">Sperre droht</span>
+                        ` : `
+                          <span style="background: rgba(34, 197, 94, 0.12); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 0.72rem;">Berechtigt</span>
+                        `}
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      // Wire season change
+      document.getElementById('team-stats-season-select')?.addEventListener('change', (e) => {
+        selectedStatsSeasonKey = e.target.value;
+        renderTab();
+      });
+
+      // Wire player search filter
+      document.getElementById('stats-player-search')?.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        document.querySelectorAll('#team-stats-tbody .stats-row').forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(query) ? '' : 'none';
+        });
+      });
+
 
     } else if (currentTeamTab === 'nachmelden') {
 
