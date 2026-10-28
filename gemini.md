@@ -633,3 +633,17 @@ League table wallpapers feature official standings, goal records, and points acr
     3. **Key Player / Scorer Tagging List** for caption and story.
     4. **Interactive Story Sticker Suggestion** (e.g. specific poll question or slider text).
 
+
+
+---
+
+## 19. Web UI & Responsive Table Design Standards (Zero Draggable Tables Rule)
+- **STRICT MANDATE: Zero Draggable / Horizontally Scrolling Tables on Mobile:**
+  - Never use `overflow-x: auto` with fixed `min-width` on mobile/tablet viewports where users are forced to swipe or drag tables horizontally.
+  - Horizontally scrollable tables conflict with native mobile swipe gestures, feel clunky, and hide essential stats off-screen.
+- **The Mobile Accordion Pattern Standard (Viewport <= 768px):**
+  - All tabular data (squad rosters, player database, league standings, match statistics) must adapt into responsive **Accordion Cards / Rows** on screens <= 768px.
+  - **Visible Row (At-a-Glance Summary):** Player Avatar (36-38px), Player Name, Position Badge, Primary Metric (e.g. Goals count), and an expand indicator / chevron (`v`).
+  - **Tap-to-Expand Accordion Drawer:** Smoothly expands downwards with animated transition to display secondary details (Age, Birth Date, Member Since, detailed discipline cards breakdown, and direct action buttons such as "Vollstaendiges Profil und Statistik ->").
+- **Desktop Viewport (> 768px):**
+  - Standard clean, high-density full-width tables (`table-layout: auto; width: 100%`) without horizontal scrollbars, styled with subtle glassmorphic borders and hover highlights.

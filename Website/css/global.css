@@ -4883,16 +4883,19 @@ main {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
-/* Table Wrapper */
+/* ==========================================================================
+   DSG Responsive Table & Mobile Accordion Standard (Zero Draggable Tables)
+   ========================================================================== */
+
+/* Desktop Table View (> 768px) */
 .dsg-players-table-wrap {
     width: 100%;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius-md);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
     margin-top: var(--space-sm);
+    overflow: hidden;
 }
 
 .dsg-players-table {
@@ -4900,7 +4903,105 @@ main {
     border-collapse: collapse;
     text-align: left;
     font-size: 0.88rem;
-    min-width: 680px;
+    table-layout: auto;
+}
+
+/* Mobile Accordion Container (Hidden on desktop) */
+.dsg-players-accordion-list {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: var(--space-sm);
+    width: 100%;
+}
+
+/* Mobile Breakpoint (<= 768px): Hide table, show accordion */
+@media (max-width: 768px) {
+    .dsg-players-table-wrap {
+        display: none !important;
+    }
+    .dsg-players-accordion-list {
+        display: flex !important;
+    }
+}
+
+/* Mobile Accordion Card */
+.dsg-player-acc-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.dsg-player-acc-card:hover {
+    border-color: rgba(0, 179, 65, 0.4);
+}
+
+.dsg-player-acc-card.open {
+    border-color: var(--color-accent);
+    box-shadow: 0 4px 14px rgba(0, 179, 65, 0.12);
+}
+
+.dsg-player-acc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    cursor: pointer;
+    user-select: none;
+    gap: 10px;
+    background: var(--color-surface);
+    transition: background 0.15s ease;
+}
+
+.dsg-player-acc-header:hover {
+    background: rgba(0, 179, 65, 0.04);
+}
+
+[data-theme="dark"] .dsg-player-acc-header:hover {
+    background: rgba(0, 179, 65, 0.08);
+}
+
+.dsg-player-acc-chevron {
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+}
+
+.dsg-player-acc-card.open .dsg-player-acc-chevron {
+    transform: rotate(180deg);
+    color: var(--color-accent);
+}
+
+/* Mobile Accordion Drawer (Hidden by default) */
+.dsg-player-acc-drawer {
+    display: none;
+    padding: 12px 14px;
+    border-top: 1px dashed var(--color-border);
+    background: rgba(0, 0, 0, 0.02);
+    animation: accFadeIn 0.2s ease forwards;
+}
+
+[data-theme="dark"] .dsg-player-acc-drawer {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.dsg-player-acc-card.open .dsg-player-acc-drawer {
+    display: block;
+}
+
+@keyframes accFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .dsg-players-table th {

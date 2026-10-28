@@ -599,6 +599,77 @@ export const bindTeams = async () => {
               </tbody>
             </table>
           </div>
+
+          <!-- Mobile Accordion View (Zero Draggable Tables) -->
+          <div class="dsg-players-accordion-list">
+            ${squad.map((p, idx) => {
+              const avatar = getPlayerAvatar(p.raw);
+              const ageText = p.age ? `${p.age} J.` : '-';
+              const sinceText = formatMemberSince(p.memberSince) || '-';
+              const posBadge = getPosBadgeHtml(p);
+              const inactBadge = !p.isActive ? `<span style="font-size: 0.65rem; padding: 1px 6px; border-radius: 999px; background: rgba(100, 116, 139, 0.2); color: #94a3b8; font-weight: 800; text-transform: uppercase;">Inaktiv</span>` : '';
+
+              return `
+                <div class="dsg-player-acc-card" data-player-id="${p.id}">
+                  <div class="dsg-player-acc-header">
+                    <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+                      <img src="${avatar}" alt="${p.fullName}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: contain; background: #ffffff; border: 1.5px solid var(--color-border); flex-shrink: 0; ${!p.isActive ? 'filter: grayscale(40%); opacity: 0.8;' : ''}">
+                      <div style="min-width: 0; flex: 1;">
+                        <div style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                          <span>${p.fullName}</span>
+                          ${inactBadge}
+                        </div>
+                        <div style="margin-top: 3px;">
+                          ${posBadge}
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+                      <span style="font-size: 0.85rem; font-weight: 800; color: ${p.goals > 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; background: ${p.goals > 0 ? 'rgba(0, 179, 65, 0.12)' : 'rgba(0,0,0,0.04)'}; border: 1px solid ${p.goals > 0 ? 'rgba(0, 179, 65, 0.25)' : 'var(--color-border)'}; border-radius: 6px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px;">
+                        ${renderIcon('ball', { size: 12, color: p.goals > 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)' })} ${p.goals}
+                      </span>
+                      <span class="dsg-player-acc-chevron">&#9660;</span>
+                    </div>
+                  </div>
+
+                  <div class="dsg-player-acc-drawer">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; font-size: 0.82rem;">
+                      <div style="background: var(--color-surface); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--color-border);">
+                        <div style="font-size: 0.68rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Alter</div>
+                        <div style="font-weight: 800; font-size: 0.95rem; color: var(--color-text-primary); margin-top: 2px;">${ageText}</div>
+                        ${p.birthDate ? `<div style="font-size: 0.72rem; color: var(--color-text-secondary); margin-top: 1px;">${p.birthDate}</div>` : ''}
+                      </div>
+                      <div style="background: var(--color-surface); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--color-border);">
+                        <div style="font-size: 0.68rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Mitglied seit</div>
+                        <div style="font-weight: 800; font-size: 0.95rem; color: var(--color-text-primary); margin-top: 2px;">${sinceText}</div>
+                      </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: var(--color-surface); border-radius: 6px; border: 1px solid var(--color-border); font-size: 0.8rem; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
+                      <span style="font-size: 0.72rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase;">Kartenkonto:</span>
+                      <div style="display: flex; gap: 12px; align-items: center;">
+                        <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: ${p.yellow > 0 ? '#eab308' : 'var(--color-text-secondary)'};">
+                          <span style="display:inline-block;width:8px;height:11px;background:#eab308;border-radius:1px;"></span> ${p.yellow} Gelb
+                        </span>
+                        <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: ${p.yellowRed > 0 ? '#f1c40f' : 'var(--color-text-secondary)'};">
+                          <span style="display:inline-block;width:8px;height:11px;background:linear-gradient(135deg,#f1c40f 50%,#e74c3c 50%);border-radius:1px;"></span> ${p.yellowRed} G-Rot
+                        </span>
+                        <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: ${p.red > 0 ? '#ef4444' : 'var(--color-text-secondary)'};">
+                          <span style="display:inline-block;width:8px;height:11px;background:#ef4444;border-radius:1px;"></span> ${p.red} Rot
+                        </span>
+                      </div>
+                    </div>
+
+                    <div style="text-align: right;">
+                      <button type="button" class="btn-dsg-sm btn-acc-open-modal" data-player-id="${p.id}" style="width: 100%; justify-content: center; padding: 8px 12px; font-size: 0.84rem;">
+                        Vollständiges Profil & Statistik &rarr;
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
         ` : `
           <div class="team-kader-grid">
             ${squad.map(p => {
@@ -808,6 +879,28 @@ export const bindTeams = async () => {
       btn.addEventListener('click', (e) => {
         squadStatusFilter = btn.getAttribute('data-status') || 'Aktiv';
         renderTeamDetails(teamName);
+      });
+    });
+
+    // Bind mobile accordion toggles
+    teamContainer.querySelectorAll('.dsg-player-acc-header').forEach(header => {
+      header.addEventListener('click', (e) => {
+        if (e.target.closest('button, a')) return;
+        const card = header.closest('.dsg-player-acc-card');
+        if (!card) return;
+        card.classList.toggle('open');
+      });
+    });
+
+    // Bind modal openers inside mobile accordion
+    teamContainer.querySelectorAll('.btn-acc-open-modal').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const pId = btn.getAttribute('data-player-id');
+        const playerObj = squad.find(p => String(p.id) === String(pId)) || allPlayers.find(p => String(p['#'] || p.id || p.ID) === String(pId));
+        if (playerObj) {
+          openPlayerStatsModal(playerObj.raw || playerObj, { teamName, seasonKey: currentSeasonKey });
+        }
       });
     });
 
