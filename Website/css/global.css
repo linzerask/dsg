@@ -545,13 +545,27 @@ main {
 /* Stats Grid & Tables */
 .stats-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--space-lg);
+}
+
+.stats-grid > * {
+  min-width: 0;
+}
+
+.table-container {
+  width: 100%;
+  min-width: 0;
 }
 
 @media (max-width: 768px) {
   .stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-md);
+  }
+
+  .glass-card {
+    padding: var(--space-md);
   }
 }
 
