@@ -14,7 +14,7 @@ This document serves as the persistent memory and operational guideline for all 
   - NEVER use flat linear tint overlays or raw semi-transparent blocks over photos.
   - NEVER use muddy or washed-out green shades.
   - NEVER stretch or distort images when fitting to square aspect ratios. Always crop proportionally with visual centering.
-  - NEVER add match minutes (e.g., `24.`, `61.`, `(74.)`) for goals, cards, or social media captions — match minutes are never tracked or recorded in the DSG Liga!
+  - Match minutes: Referees officially record match minutes starting from Round 8 onwards; minutes are displayed in match cards, event timelines, and match reports. For social graphics and wallpapers, goals remain aggregated by player name and tally (`Player Name (2x)`) unless a timeline layout is specified.
 
 ---
 
@@ -481,7 +481,7 @@ League table wallpapers feature official standings, goal records, and points acr
   - **Natural Austrian Sports Vocabulary:** Use authentic phrasing (*Kabinengang*, *Eckball*, *Nadelstiche*, *Ersatzbank*, *Arbeitssieg*, *Schlagzahl*, *Offensivdrang*, *Pausenführung*).
   - **Anti-AI Writing Mandate:** Strictly ban hollow AI marketing clichés (*"Torfeuerwerk"*, *"Packende Duelle"*, *"Hochspannung pur"*, *"Ein torreiches Wochenende liegt hinter uns"*, *"Testament to"*, *"Delve into"*, *"Fostering"*).
 - **Match Minutes & Context Rules:**
-  - Standard league database does not record match minutes. Social graphics, wallpapers, and scoreboard plates NEVER include minute markers (e.g., `(24.)`, `61.'`).
+  - Starting from Round 8 onwards, referees officially record match minutes in match reports. Minutes are displayed across digital match reports, match card accordion timelines, and administrative views. In summary goal blocks or wallpapers, goals may remain cleanly aggregated by player name and tally (Player Name (2x)) or include minute notation where applicable.
   - In website articles: When specific user context or match witness accounts are provided (e.g., injury after 10 minutes, corner header goal in the 35th minute), integrate them organically into the match narrative (*"bereits nach knapp zehn Minuten"*, *"nach etwas mehr als einer halben Stunde"* or *"in Minute 35"*). Keep summary goal blocks cleanly aggregated by player name and tally.
 - **Milestone & League Facts Integration:**
   - Every round recap article MUST incorporate genuine database facts and statistical milestones from `dsg-fussball.com` / Firestore:
