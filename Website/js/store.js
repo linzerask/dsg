@@ -561,12 +561,15 @@ export const Store = {
         });
         const cleanLeagues = sortLeaguesByPriority(merged);
         trySetLocal('dsg_admin_leagues_v44', JSON.stringify(cleanLeagues));
+        if (!localStorage.getItem('dsg_leagues_last_updated')) localStorage.setItem('dsg_leagues_last_updated', String(Date.now()));
       } else if (!localLeagues || localLeagues.length === 0) {
         trySetLocal('dsg_admin_leagues_v44', JSON.stringify(INITIAL_LEAGUES));
+        if (!localStorage.getItem('dsg_leagues_last_updated')) localStorage.setItem('dsg_leagues_last_updated', String(Date.now()));
       }
 
       if (fileRounds && Array.isArray(fileRounds) && fileRounds.length > 0 && (!localRounds || localRounds.length === 0)) {
-        trySetLocal('dsg_admin_rounds_v44', JSON.stringify(fileRounds));
+        trySetLocal('dsg_admin_rounds_v45', JSON.stringify(fileRounds));
+        if (!localStorage.getItem('dsg_rounds_last_updated')) localStorage.setItem('dsg_rounds_last_updated', String(Date.now()));
       }
 
       if (fileArticles && Array.isArray(fileArticles) && fileArticles.length > 0 && (!localNews || localNews.length === 0)) {
@@ -705,9 +708,24 @@ export const Store = {
         }
 
         // Compare targetData with currently active memoryData
-        const currentLigaStr = JSON.stringify(state.memoryData?.seasons || {});
-        const targetLigaStr = JSON.stringify(targetData?.seasons || {});
-        if (currentLigaStr !== targetLigaStr) {
+        const areSeasonsStructurallyEqual = (s1, s2) => {
+          if (!s1 || !s2) return s1 === s2;
+          const k1 = Object.keys(s1).sort();
+          const k2 = Object.keys(s2).sort();
+          if (k1.length !== k2.length) return false;
+          for (let i = 0; i < k1.length; i++) {
+            if (k1[i] !== k2[i]) return false;
+            const sea1 = s1[k1[i]];
+            const sea2 = s2[k2[i]];
+            if ((sea1?.matches?.length || 0) !== (sea2?.matches?.length || 0)) return false;
+            if ((sea1?.teams?.length || 0) !== (sea2?.teams?.length || 0)) return false;
+            if (JSON.stringify(sea1?.matches || []) !== JSON.stringify(sea2?.matches || [])) return false;
+            if (JSON.stringify(sea1?.teams || []) !== JSON.stringify(sea2?.teams || [])) return false;
+          }
+          return true;
+        };
+
+        if (!areSeasonsStructurallyEqual(state.memoryData?.seasons, targetData?.seasons)) {
           state.memoryData = targetData;
           trySetLocal('dsg_data_v95', JSON.stringify(targetData));
           hasLigaUpdates = true;
@@ -833,13 +851,20 @@ export const Store = {
           }
         });
 
-        const currentLeaguesStr = JSON.stringify(localLeagues || []);
-        const targetLeaguesStr = JSON.stringify(cleanLeagues || []);
+        const areLeaguesEqual = (l1, l2) => {
+          if (!Array.isArray(l1) || !Array.isArray(l2)) return false;
+          if (l1.length !== l2.length) return false;
+          const norm = list => list.map(x => ({ id: x.id, name: x.name, seasonKey: x.seasonKey, year: x.year, showOnWebsite: x.showOnWebsite, priority: x.priority })).sort((a,b) => String(a.seasonKey || a.name).localeCompare(String(b.seasonKey || b.name)));
+          return JSON.stringify(norm(l1)) === JSON.stringify(norm(l2));
+        };
+        const leaguesChanged = !areLeaguesEqual(localLeagues, cleanLeagues);
 
-        if ((fbTime > localTime || !localLeagues || localLeagues.length === 0 || leaguesWereMissing) && currentLeaguesStr !== targetLeaguesStr) {
+        if ((fbTime > localTime || !localLeagues || localLeagues.length === 0 || leaguesWereMissing) && leaguesChanged) {
           trySetLocal('dsg_admin_leagues_v44', JSON.stringify(cleanLeagues));
           localStorage.setItem('dsg_leagues_last_updated', String(Date.now()));
           hasLeaguesUpdates = true;
+        } else if (!leaguesChanged && !localStorage.getItem('dsg_leagues_last_updated')) {
+          localStorage.setItem('dsg_leagues_last_updated', String(fbTime || Date.now()));
         }
         if (leaguesWereMissing || (localTime > fbTime && localLeagues && localLeagues.length > 0)) {
           await setDoc(leagueRef, { data: cleanLeagues, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (leagues):", e));
@@ -873,13 +898,20 @@ export const Store = {
           }
         } catch(e) {}
 
-        const currentRoundsStr = JSON.stringify(localRounds || []);
-        const targetRoundsStr = JSON.stringify(fbRounds || []);
+        const areRoundsEqual = (r1, r2) => {
+          if (!Array.isArray(r1) || !Array.isArray(r2)) return false;
+          if (r1.length !== r2.length) return false;
+          const norm = list => list.map(x => ({ seasonKey: x.seasonKey, runde: String(x.runde), date: x.date, title: x.title })).sort((a,b) => `${a.seasonKey}-${a.runde}`.localeCompare(`${b.seasonKey}-${b.runde}`));
+          return JSON.stringify(norm(r1)) === JSON.stringify(norm(r2));
+        };
+        const roundsChanged = !areRoundsEqual(localRounds, fbRounds);
 
-        if ((fbTime > localTime || !localRounds || localRounds.length === 0 || roundsWereMissing) && currentRoundsStr !== targetRoundsStr) {
-          trySetLocal('dsg_admin_rounds_v44', JSON.stringify(fbRounds));
+        if ((fbTime > localTime || !localRounds || localRounds.length === 0 || roundsWereMissing) && roundsChanged) {
+          trySetLocal('dsg_admin_rounds_v45', JSON.stringify(fbRounds));
           localStorage.setItem('dsg_rounds_last_updated', String(Date.now()));
           hasRoundsUpdates = true;
+        } else if (!roundsChanged && !localStorage.getItem('dsg_rounds_last_updated')) {
+          localStorage.setItem('dsg_rounds_last_updated', String(fbTime || Date.now()));
         }
         if (roundsWereMissing || (localTime > fbTime && localRounds && localRounds.length > 0)) {
           await setDoc(roundsRef, { data: fbRounds, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (rounds):", e));
@@ -890,7 +922,7 @@ export const Store = {
           if (res.ok) {
             const fileRounds = await res.json();
             if (Array.isArray(fileRounds) && fileRounds.length > 0) {
-              trySetLocal('dsg_admin_rounds_v44', JSON.stringify(fileRounds));
+              trySetLocal('dsg_admin_rounds_v45', JSON.stringify(fileRounds));
               await setDoc(roundsRef, { data: fileRounds, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (rounds initial):", e));
             }
           }
@@ -2331,7 +2363,7 @@ export const Store = {
               }
             });
           }
-          trySetLocal('dsg_admin_rounds_v44', JSON.stringify(fbRounds));
+          trySetLocal('dsg_admin_rounds_v45', JSON.stringify(fbRounds));
           localStorage.setItem('dsg_rounds_last_updated', String(roundsSnap.data().lastUpdated || Date.now()));
           if (!seasonName) return fbRounds;
           return fbRounds.filter(r => r.seasonKey === seasonName || (!r.seasonKey && seasonName === '2026/2027'));
@@ -2343,7 +2375,7 @@ export const Store = {
 
     if (fileRounds && Array.isArray(fileRounds)) {
       const now = Date.now();
-      trySetLocal('dsg_admin_rounds_v44', JSON.stringify(fileRounds));
+      trySetLocal('dsg_admin_rounds_v45', JSON.stringify(fileRounds));
       localStorage.setItem('dsg_rounds_last_updated', String(now));
       setDoc(doc(db, 'system', 'rounds_data'), { data: fileRounds, lastUpdated: now })
         .catch(e => console.error("Firebase save error (rounds initial):", e));
@@ -2358,7 +2390,7 @@ export const Store = {
     const cleanRounds = Array.isArray(rounds) ? rounds : [];
     const now = Date.now();
     localStorage.setItem('dsg_rounds_last_updated', String(now));
-    trySetLocal('dsg_admin_rounds_v44', JSON.stringify(cleanRounds));
+    trySetLocal('dsg_admin_rounds_v45', JSON.stringify(cleanRounds));
     setDoc(doc(db, 'system', 'rounds_data'), { data: cleanRounds, lastUpdated: now })
       .catch(e => console.error("Firebase save error (rounds):", e));
     window.dispatchEvent(new CustomEvent('rounds-updated'));

@@ -1311,13 +1311,18 @@ export const bindStatistiken = () => {
   const counters = document.querySelectorAll('.stat-number.count-up');
   counters.forEach(counter => {
     const targetVal = parseFloat(counter.getAttribute('data-target')) || 0;
+    const currentVal = parseFloat(counter.textContent) || 0;
+    if (currentVal === targetVal) {
+      counter.textContent = targetVal;
+      return;
+    }
     if (typeof anime !== 'undefined') {
       anime({
         targets: counter,
-        innerHTML: [0, targetVal],
+        innerHTML: [currentVal, targetVal],
         round: 1,
         easing: 'easeOutExpo',
-        duration: 1800
+        duration: currentVal === 0 ? 1800 : 600
       });
     } else {
       counter.textContent = targetVal;

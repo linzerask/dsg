@@ -1,4 +1,4 @@
-import { viewHome, bindHome } from './views/home.js?v=1792924000000';
+import { viewHome, bindHome } from './views/home.js?v=1793370000000';
 
 import { viewNews, bindNews } from './views/news.js?v=1791305000000';
 
@@ -14,7 +14,7 @@ import { viewOrganisation, bindOrganisation } from './views/organisation.js?v=17
 
 import { viewGalerie, bindGalerie } from './views/galerie.js?v=1791305000000';
 
-import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1792924000000';
+import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1793370000000';
 
 import { viewAdmin, bindAdmin } from './views/admin.js?v=1793250000000';
 
@@ -270,9 +270,17 @@ export const Router = {
 
 
 
-    window.addEventListener('data-updated', () => this.handleRoute(true));
+    let refreshTimer = null;
+    const debouncedRefresh = () => {
+      clearTimeout(refreshTimer);
+      refreshTimer = setTimeout(() => {
+        this.handleRoute(true);
+      }, 60);
+    };
 
-    window.addEventListener('leagues-updated', () => this.handleRoute(true));
+    window.addEventListener('data-updated', debouncedRefresh);
+    window.addEventListener('leagues-updated', debouncedRefresh);
+    window.addEventListener('rounds-updated', debouncedRefresh);
 
     this.handleRoute(false);
 
@@ -408,7 +416,12 @@ export const Router = {
 
       try {
 
-        app.innerHTML = route.render();
+        const newHtml = route.render();
+        if (isDataRefresh && app.innerHTML === newHtml) {
+          this.isNavigating = false;
+          return;
+        }
+        app.innerHTML = newHtml;
 
         if(route.bind) route.bind();
 
@@ -454,27 +467,31 @@ export const Router = {
 
         ? this.scrollPositions.get(rawPath) 
 
-        : 0;
+        : (isDataRefresh ? window.scrollY : 0);
 
       this.isPopState = false;
 
 
 
-      window.scrollTo({ top: targetScrollY, left: 0, behavior: 'instant' });
-
-      requestAnimationFrame(() => {
-
+      if (!isDataRefresh) {
         window.scrollTo({ top: targetScrollY, left: 0, behavior: 'instant' });
 
-        setTimeout(() => {
+        requestAnimationFrame(() => {
 
           window.scrollTo({ top: targetScrollY, left: 0, behavior: 'instant' });
 
-          this.isNavigating = false;
+          setTimeout(() => {
 
-        }, 50);
+            window.scrollTo({ top: targetScrollY, left: 0, behavior: 'instant' });
 
-      });
+            this.isNavigating = false;
+
+          }, 50);
+
+        });
+      } else {
+        this.isNavigating = false;
+      }
 
 
 
