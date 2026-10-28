@@ -265,7 +265,7 @@
   },
   {
     "#": "2819",
-    "Vorname": "Emin",
+    "Vorname": "Ermin",
     "Nachname": "Agovic",
     "Geburtsdatum": "1986-03-12",
     "Team": "FC Gornjak",
@@ -273,7 +273,8 @@
     "seit": "2014-08-01",
     "Status": "Aktiv",
     "ÖFB-Verein": "03/26 Torcida",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Offensives Mittelfeld"
   },
   {
     "#": "2821",
@@ -811,9 +812,10 @@
     "Team": "FC Gornjak",
     "Mitglied": "Ja",
     "seit": "2022-10-10",
-    "Status": "Inaktiv",
+    "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Offensives Mittelfeld"
   },
   {
     "#": "1934",
@@ -8013,7 +8015,8 @@
     "seit": "2025-08-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Torwart"
   },
   {
     "#": "343",
@@ -19665,7 +19668,8 @@
     "seit": "2020-08-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Innenverteidiger"
   },
   {
     "#": "3248",
@@ -20349,7 +20353,8 @@
     "seit": "2020-08-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Stürmer"
   },
   {
     "#": "4373",
@@ -20361,7 +20366,8 @@
     "seit": "2025-03-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Rechtsverteidiger"
   },
   {
     "#": "2852",
@@ -20373,7 +20379,8 @@
     "seit": "2015-03-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "wechsel 8/20 v. Audorf",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Stürmer"
   },
   {
     "#": "872",
@@ -20997,7 +21004,8 @@
     "seit": "2022-09-09",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Stürmer"
   },
   {
     "#": "3382",
@@ -23877,7 +23885,8 @@
     "seit": "2023-10-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Innenverteidiger"
   },
   {
     "#": "3742",
@@ -23937,7 +23946,8 @@
     "seit": "2024-10-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Innenverteidiger"
   },
   {
     "#": "3476",
@@ -26805,7 +26815,8 @@
     "seit": "2026-05-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Linksverteidiger"
   },
   {
     "#": "2142",
@@ -27729,7 +27740,8 @@
     "seit": "2023-04-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Torwart"
   },
   {
     "#": "3577",
@@ -27747,13 +27759,14 @@
     "#": "4431",
     "Vorname": "Darko",
     "Nachname": "Maletic",
-    "Geburtsdatum": "1996-01-30",
+    "Geburtsdatum": "1986-01-30",
     "Team": "FC Gornjak",
     "Mitglied": "Ja",
     "seit": "2026-03-01",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Offensives Mittelfeld"
   },
   {
     "#": "2618",
@@ -28449,7 +28462,8 @@
     "seit": "2024-05-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Rechtsverteidiger"
   },
   {
     "#": "1500",
@@ -28641,7 +28655,8 @@
     "seit": "2024-03-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Linksverteidiger"
   },
   {
     "#": "3258",
@@ -29419,9 +29434,10 @@
     "Team": "FC Gornjak",
     "Mitglied": "Ja",
     "seit": "2026-05-10",
-    "Status": "Inaktiv",
+    "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Rechtes Mittelfeld"
   },
   {
     "#": "3428",
@@ -29623,9 +29639,10 @@
     "Team": "FC Gornjak",
     "Mitglied": "Ja",
     "seit": "2024-08-15",
-    "Status": "Inaktiv",
+    "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Defensives Mittelfeld"
   },
   {
     "#": "4297",
@@ -29637,7 +29654,8 @@
     "seit": "2024-08-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Stürmer"
   },
   {
     "#": "929",
@@ -31797,7 +31815,8 @@
     "seit": "2025-09-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Linksverteidiger"
   },
   {
     "#": "2276",
@@ -31821,7 +31840,8 @@
     "seit": "2024-05-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Innenverteidiger"
   },
   {
     "#": "1798",
@@ -32445,7 +32465,8 @@
     "seit": "2024-03-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Innenverteidiger"
   },
   {
     "#": "988",
@@ -32481,7 +32502,8 @@
     "seit": "2022-04-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Zentrales Mittelfeld"
   },
   {
     "#": "4293",
@@ -34965,7 +34987,8 @@
     "seit": "2018-09-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "wechsel 8/20 v. SW Linz",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Stürmer"
   },
   {
     "#": "3120",
@@ -35133,7 +35156,8 @@
     "seit": "2026-05-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Defensives Mittelfeld"
   },
   {
     "#": "371",
@@ -37365,7 +37389,8 @@
     "seit": "2020-08-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Linksverteidiger / Rechtsverteidiger"
   },
   {
     "#": "2579",
@@ -37573,15 +37598,16 @@
   },
   {
     "#": "2593",
-    "Vorname": "Marco",
-    "Nachname": "Rajcic",
+    "Vorname": "Marko",
+    "Nachname": "Raicic",
     "Geburtsdatum": "1990-07-28",
     "Team": "FC Gornjak",
     "Mitglied": "Ja",
     "seit": "2013-08-01",
     "Status": "Aktiv",
     "ÖFB-Verein": "Chemie Linz/ SPG Linz-Urfahr 05/24",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Zentrales Mittelfeld / Offensives Mittelfeld"
   },
   {
     "#": "1458",
@@ -37653,7 +37679,8 @@
     "seit": "2023-08-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Torwart"
   },
   {
     "#": "3358",
@@ -43605,7 +43632,8 @@
     "seit": "2026-09-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Defensives Mittelfeld"
   },
   {
     "#": "698",
@@ -44685,7 +44713,8 @@
     "seit": "2020-10-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Linksaußen"
   },
   {
     "#": "3989",
@@ -44697,7 +44726,8 @@
     "seit": "2021-09-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Rechtsaußen"
   },
   {
     "#": "4294",
@@ -44709,7 +44739,8 @@
     "seit": "2024-08-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Zentrales Mittelfeld"
   },
   {
     "#": "3933",
@@ -45345,7 +45376,8 @@
     "seit": "2025-09-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Linksaußen / Linkes zentrales Mittelfeld"
   },
   {
     "#": "3648",
@@ -45681,7 +45713,8 @@
     "seit": "2024-08-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Linksaußen"
   },
   {
     "#": "769",
@@ -46425,7 +46458,8 @@
     "seit": "2025-08-10",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Torwart"
   },
   {
     "#": "2396",
@@ -46569,7 +46603,8 @@
     "seit": "2023-08-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Defensives Mittelfeld"
   },
   {
     "#": "3043",
@@ -46689,7 +46724,8 @@
     "seit": "2026-03-01",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Rechtsaußen"
   },
   {
     "#": "362",
@@ -47127,13 +47163,14 @@
     "#": "2082",
     "Vorname": "Vjekoslav",
     "Nachname": "Tomasic",
-    "Geburtsdatum": "1980-06-23",
+    "Geburtsdatum": "1988-03-23",
     "Team": "FC Gornjak",
     "Mitglied": "Ja",
     "seit": "2009-05-11",
     "Status": "Aktiv",
     "ÖFB-Verein": "SV Pasching/ Kickers Alkoven 05/24",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Defensives Mittelfeld"
   },
   {
     "#": "162",
@@ -52581,7 +52618,8 @@
     "seit": "2024-03-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Offensives Mittelfeld"
   },
   {
     "#": "826",
@@ -52629,6 +52667,45 @@
     "seit": "2007-08-01",
     "Status": "Aktiv",
     "ÖFB-Verein": "Weißkirchen",
+    "Aktion": "Editieren Löschen"
+  },
+  {
+    "#": "4492",
+    "Vorname": "Amirkhov",
+    "Nachname": "Maripov",
+    "Geburtsdatum": "2007-06-09",
+    "Team": "FC Gornjak",
+    "Mitglied": "Ja",
+    "seit": "2026-10-06",
+    "Status": "Aktiv",
+    "Position": "Linksverteidiger",
+    "ÖFB-Verein": "-",
+    "Aktion": "Editieren Löschen"
+  },
+  {
+    "#": "4493",
+    "Vorname": "Aleksej",
+    "Nachname": "Romanov",
+    "Geburtsdatum": "2007-10-22",
+    "Team": "FC Gornjak",
+    "Mitglied": "Ja",
+    "seit": "2026-10-06",
+    "Status": "Aktiv",
+    "Position": "Torwart",
+    "ÖFB-Verein": "-",
+    "Aktion": "Editieren Löschen"
+  },
+  {
+    "#": "4494",
+    "Vorname": "Nikola",
+    "Nachname": "Zivoinovic",
+    "Geburtsdatum": "1993-08-27",
+    "Team": "FC Gornjak",
+    "Mitglied": "Ja",
+    "seit": "2026-10-06",
+    "Status": "Aktiv",
+    "Position": "Innenverteidiger / Rechtsverteidiger",
+    "ÖFB-Verein": "-",
     "Aktion": "Editieren Löschen"
   }
 ]

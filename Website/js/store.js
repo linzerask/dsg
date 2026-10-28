@@ -151,7 +151,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1793200000000';
+const DATA_VERSION_STRING = '?v=1793442000000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -463,7 +463,7 @@ export const Store = {
         if (i !== 95) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 40) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 27) localStorage.removeItem(`dsg_gallery_v${i}`);
-        if (i !== 13) localStorage.removeItem(`dsg_admin_players_v${i}`);
+        if (i !== 14) localStorage.removeItem(`dsg_admin_players_v${i}`);
         if (i !== 13) localStorage.removeItem(`dsg_admin_teams_v${i}`);
         if (i !== 45) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
         if (i !== 44) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
@@ -2397,49 +2397,77 @@ export const Store = {
   },
 
   getAdminPlayersSync() {
-    const local = loadLocal('dsg_admin_players', 13);
+    const local = loadLocal('dsg_admin_players', 14);
     if (local && Array.isArray(local) && local.length > 0) return local;
     return [];
   },
 
   async getAdminPlayers() {
-    const local = loadLocal('dsg_admin_players', 13);
-    if (local && local.length > 0) return local;
-
-    try {
-      const playersSnap = await getDoc(doc(db, 'system', 'players_data'));
-      if (playersSnap.exists() && playersSnap.data()?.data) {
-        let fbPlayers = playersSnap.data().data;
-        if (Array.isArray(fbPlayers) && fbPlayers.length > 0) {
-          trySetLocal('dsg_admin_players_v13', JSON.stringify(fbPlayers));
-          return fbPlayers;
-        }
-      }
-    } catch(e) {
-      console.warn("Could not fetch players from Firebase:", e);
-    }
-
-    // Prioritize full original scraped players database (4,386+ entries)
+    const local = loadLocal('dsg_admin_players', 14);
+    let masterFilePlayers = [];
     try {
       const res = await fetch('data/players.json' + DATA_VERSION_STRING);
       if (res.ok) {
-        const filePlayers = await res.json();
-        if (filePlayers && filePlayers.length > 0) {
-          trySetLocal('dsg_admin_players_v13', JSON.stringify(filePlayers));
-          setDoc(doc(db, 'system', 'players_data'), { data: filePlayers, lastUpdated: Date.now() })
-            .catch(e => console.error("Firebase save error (players initial):", e));
-          return filePlayers;
-        }
+        masterFilePlayers = await res.json();
       }
-    } catch(e) {
-      console.warn("Could not fetch data/players.json:", e);
+    } catch(e) {}
+
+    let sourcePlayers = local;
+    let needsCloudSync = false;
+
+    if (!sourcePlayers || sourcePlayers.length === 0) {
+      try {
+        const playersSnap = await getDoc(doc(db, 'system', 'players_data'));
+        if (playersSnap.exists() && playersSnap.data()?.data) {
+          sourcePlayers = playersSnap.data().data;
+        }
+      } catch(e) {
+        console.warn("Could not fetch players from Firebase:", e);
+      }
     }
 
-    return [];
+    if (!sourcePlayers || sourcePlayers.length === 0) {
+      sourcePlayers = masterFilePlayers;
+      needsCloudSync = true;
+    }
+
+    // Merge any updated positions, status, or new players from data/players.json into sourcePlayers
+    if (Array.isArray(masterFilePlayers) && masterFilePlayers.length > 0) {
+      const sourceMap = new Map();
+      sourcePlayers.forEach(p => sourceMap.set(String(p['#'] || p.id), p));
+      
+      masterFilePlayers.forEach(mp => {
+        const mId = String(mp['#'] || mp.id);
+        const existing = sourceMap.get(mId);
+        if (!existing) {
+          sourcePlayers.push(mp);
+          sourceMap.set(mId, mp);
+          needsCloudSync = true;
+        } else {
+          if (mp.Position && existing.Position !== mp.Position) {
+            existing.Position = mp.Position;
+            if (mp.positionSide) existing.positionSide = mp.positionSide;
+            if (mp.Status) existing.Status = mp.Status;
+            if (mp.Vorname) existing.Vorname = mp.Vorname;
+            if (mp.Nachname) existing.Nachname = mp.Nachname;
+            if (mp.Geburtsdatum) existing.Geburtsdatum = mp.Geburtsdatum;
+            needsCloudSync = true;
+          }
+        }
+      });
+    }
+
+    trySetLocal('dsg_admin_players_v14', JSON.stringify(sourcePlayers));
+    if (needsCloudSync) {
+      setDoc(doc(db, 'system', 'players_data'), { data: sourcePlayers, lastUpdated: Date.now() })
+        .catch(e => console.error("Firebase update players:", e));
+    }
+
+    return sourcePlayers;
   },
 
   saveAdminPlayers(players) {
-    trySetLocal('dsg_admin_players_v13', JSON.stringify(players));
+    trySetLocal('dsg_admin_players_v14', JSON.stringify(players));
     setDoc(doc(db, 'system', 'players_data'), { data: players, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (players):", e));
     window.dispatchEvent(new CustomEvent('players-updated'));

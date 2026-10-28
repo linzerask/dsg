@@ -2,7 +2,7 @@
 import { Store, sanitizeMojibake } from '../store.js?v=1793370000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getPlayerPositionLabel, getPlayerPositionCategory, openPlayerStatsModal } from '../playerUtils.js?v=1793370000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getPlayerPositionLabel, getPlayerPositionCategory, openPlayerStatsModal } from '../playerUtils.js?v=1793442000000';
 import { getPlayerSuspensionInfo } from '../suspensionUtils.js?v=1792837000000';
 
 let allActivePlayers = [];

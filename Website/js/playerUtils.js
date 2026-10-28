@@ -73,9 +73,9 @@ export function getPlayerPositionCategory(position) {
   if (!position) return '';
   const p = position.toLowerCase();
   if (p.includes('torwart') || p.includes('tw') || p.includes('keeper')) return 'Torwart';
-  if (p.includes('innenverteidiger') || p.includes('verteidiger') || p.includes('abwehr') || p.includes('schienen') || p.includes('libero') || p.includes('iv') || p.includes('lv') || p.includes('rv') || p.includes('lwb') || p.includes('rwb')) return 'Abwehr';
-  if (p.includes('mittelfeld') || p.includes('sechser') || p.includes('achter') || p.includes('zehner') || p.includes('flügel') || p.includes('dm') || p.includes('zm') || p.includes('om') || p.includes('lm') || p.includes('rm')) return 'Mittelfeld';
-  if (p.includes('stürmer') || p.includes('sturm') || p.includes('spitze') || p.includes('angriff') || p.includes('linksaußen') || p.includes('rechtsaußen') || p.includes('ms') || p.includes('la') || p.includes('ra') || p.includes('hs') || p.includes('cf')) return 'Sturm';
+  if (p.includes('mittelfeld') || p.includes('sechser') || p.includes('achter') || p.includes('zehner') || p.includes('flügel') || p.includes('fluegel') || p.includes('winger') || /\b(dm|zm|om|lm|rm)\b/.test(p)) return 'Mittelfeld';
+  if (p.includes('stürmer') || p.includes('stuermer') || p.includes('sturmer') || p.includes('sturm') || p.includes('spitze') || p.includes('angriff') || p.includes('linksaußen') || p.includes('linksaussen') || p.includes('rechtsaußen') || p.includes('rechtsaussen') || /\b(ms|la|ra|hs|cf|ss)\b/.test(p)) return 'Sturm';
+  if (p.includes('innenverteidiger') || p.includes('verteidiger') || p.includes('abwehr') || p.includes('schienen') || p.includes('libero') || /\b(iv|lv|rv|lwb|rwb)\b/.test(p)) return 'Abwehr';
   return 'Mittelfeld';
 }
 
