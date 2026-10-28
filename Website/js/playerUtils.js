@@ -757,6 +757,10 @@ export async function openPlayerStatsModal(playerData, options = {}) {
   const currentSeason = data.currentSeason || '2026/2027';
   const seasonKey = options.seasonKey || currentSeason;
 
+  if (Store.ensureSeasonLoaded) {
+    await Store.ensureSeasonLoaded(seasonKey);
+  }
+
   let allPlayers = options.allPlayers || (Store.getAdminPlayersSync ? Store.getAdminPlayersSync() : []);
   if (!allPlayers || allPlayers.length === 0) {
     allPlayers = await Store.getAdminPlayers();
@@ -777,7 +781,86 @@ export async function openPlayerStatsModal(playerData, options = {}) {
   const firstName = officialPlayer.Vorname || officialPlayer.firstName || raw.Vorname || raw.firstName || '';
   const lastName = officialPlayer.Nachname || officialPlayer.lastName || raw.Nachname || raw.lastName || '';
   const fullName = `${firstName} ${lastName}`.trim() || officialPlayer.name || raw.name || raw.pName || 'Unbekannter Spieler';
-  const teamName = options.teamName || officialPlayer.Team || raw.Team || raw.team || '';
+  
+  // Base registered team and auto-detection of team for selected season
+  const baseTeamName = options.baseTeamName || options.teamName || officialPlayer.Team || raw.Team || raw.team || '';
+  let effectiveTeamName = baseTeamName;
+
+  const currentSeasonObj = Store.getData()?.seasons?.[seasonKey];
+  if (currentSeasonObj && Array.isArray(currentSeasonObj.matches)) {
+    const normPlayer = normalizePlayerKey(fullName);
+    const matchWithPlayer = currentSeasonObj.matches.find(m => {
+      const hRoster = m.homeRoster?.players || (m.rosters && m.rosters[m.home]?.players) || [];
+      const aRoster = m.awayRoster?.players || (m.rosters && m.rosters[m.away]?.players) || [];
+      if (hRoster.some(p => normalizePlayerKey(`${p.firstName || ''} ${p.lastName || ''}`.trim() || p.name || '') === normPlayer)) return true;
+      if (aRoster.some(p => normalizePlayerKey(`${p.firstName || ''} ${p.lastName || ''}`.trim() || p.name || '') === normPlayer)) return true;
+      const events = [...(m.events || []), ...(m.scorers || []), ...(m.cards || [])];
+      return events.some(e => normalizePlayerKey(e.player || e.name || '') === normPlayer);
+    });
+
+    if (matchWithPlayer) {
+      const hRoster = matchWithPlayer.homeRoster?.players || (matchWithPlayer.rosters && matchWithPlayer.rosters[matchWithPlayer.home]?.players) || [];
+      const aRoster = matchWithPlayer.awayRoster?.players || (matchWithPlayer.rosters && matchWithPlayer.rosters[matchWithPlayer.away]?.players) || [];
+      if (hRoster.some(p => normalizePlayerKey(`${p.firstName || ''} ${p.lastName || ''}`.trim() || p.name || '') === normPlayer)) {
+        effectiveTeamName = matchWithPlayer.home;
+      } else if (aRoster.some(p => normalizePlayerKey(`${p.firstName || ''} ${p.lastName || ''}`.trim() || p.name || '') === normPlayer)) {
+        effectiveTeamName = matchWithPlayer.away;
+      } else {
+        const ev = [...(matchWithPlayer.events || []), ...(matchWithPlayer.scorers || []), ...(matchWithPlayer.cards || [])].find(e => normalizePlayerKey(e.player || e.name || '') === normPlayer);
+        if (ev && ev.team) {
+          effectiveTeamName = ev.team;
+        }
+      }
+    }
+  }
+
+  // Build list of available leagues / seasons
+  const allLeagues = (Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : []) || [];
+  const seasonOptions = [];
+  const seenKeys = new Set();
+
+  allLeagues.forEach(l => {
+    const key = l.seasonKey || l.name;
+    if (!key || seenKeys.has(key)) return;
+    seenKeys.add(key);
+
+    let name = (l.name || key).trim();
+    let year = l.year ? String(l.year).trim() : '';
+    if (!year && key) {
+      const match = key.match(/\d{4}(\/\d{4})?/);
+      if (match) year = match[0];
+    }
+    if (/^\d{4}$/.test(year)) {
+      const yr = parseInt(year, 10);
+      year = `${yr}/${yr + 1}`;
+    }
+    if (year && !name.includes(year)) {
+      name = `${name} ${year}`;
+    } else if (!year && /^\d{4}\/\d{4}$/.test(name)) {
+      name = `Saison ${name}`;
+    }
+    seasonOptions.push({ key, label: name });
+  });
+
+  if (data.seasons) {
+    Object.keys(data.seasons).forEach(sKey => {
+      if (!seenKeys.has(sKey)) {
+        seenKeys.add(sKey);
+        seasonOptions.push({
+          key: sKey,
+          label: sKey.startsWith('DSG') || sKey.startsWith('1.') || sKey.startsWith('Saison') || sKey.startsWith('Liga') ? sKey : `Saison ${sKey}`
+        });
+      }
+    });
+  }
+
+  if (!seenKeys.has(seasonKey)) {
+    seasonOptions.unshift({
+      key: seasonKey,
+      label: seasonKey.startsWith('Saison') || seasonKey.startsWith('Liga') ? seasonKey : `Saison ${seasonKey}`
+    });
+  }
+
   const avatarUrl = getPlayerAvatar(officialPlayer);
   const positionLabel = getPlayerPositionLabel(officialPlayer) || officialPlayer.Position || raw.position || 'Feldspieler';
   
@@ -786,8 +869,8 @@ export async function openPlayerStatsModal(playerData, options = {}) {
   const rawShirt = raw.jerseyNumber || officialPlayer.jerseyNumber || officialPlayer.shirtNumber || '';
   const trueShirtNum = (rawShirt && String(rawShirt) !== String(passNum) && parseInt(rawShirt, 10) > 0 && parseInt(rawShirt, 10) < 100) ? rawShirt : '';
 
-  // Calculate team stats
-  const teamStats = calculateTeamPlayerStats(seasonKey, teamName, allPlayers);
+  // Calculate team stats for effective team
+  const teamStats = calculateTeamPlayerStats(seasonKey, effectiveTeamName, allPlayers);
   const normKey = normalizePlayerKey(fullName);
   const pStat = (teamStats.players || []).find(p => {
     return normalizePlayerKey(p.name) === normKey || (p.id && pId && String(p.id) === String(pId));
@@ -809,7 +892,7 @@ export async function openPlayerStatsModal(playerData, options = {}) {
   const minPct = maxMins > 0 ? Math.min(100, Math.round((pStat.minutes / maxMins) * 100)) : 0;
 
   // Suspension information
-  const susp = getPlayerSuspensionInfo(fullName, teamName, seasonKey);
+  const susp = getPlayerSuspensionInfo(fullName, effectiveTeamName || baseTeamName, seasonKey);
 
   // Coach decision metrics
   const minPerGoal = pStat.goals > 0 ? (pStat.minutes > 0 ? Math.round(pStat.minutes / pStat.goals) : '<90') : null;
@@ -929,6 +1012,23 @@ export async function openPlayerStatsModal(playerData, options = {}) {
         background: rgba(255, 255, 255, 0.03) !important;
         border-color: rgba(255, 255, 255, 0.08) !important;
       }
+      #dsg-player-modal-season-select:hover {
+        border-color: var(--color-accent) !important;
+        box-shadow: 0 0 0 2px rgba(0, 179, 65, 0.15);
+      }
+      #dsg-player-modal-season-select:focus {
+        border-color: var(--color-accent) !important;
+        box-shadow: 0 0 0 3px rgba(0, 179, 65, 0.2);
+      }
+      [data-theme="dark"] #dsg-player-modal-season-select {
+        background-color: #0f172a !important;
+        color: #22c55e !important;
+        border-color: rgba(34, 197, 94, 0.35) !important;
+      }
+      [data-theme="dark"] #dsg-player-modal-season-select option {
+        background-color: #1e293b !important;
+        color: #f8fafc !important;
+      }
       @media (max-width: 480px) {
         .dsg-player-modal-content {
           padding: 16px;
@@ -939,7 +1039,7 @@ export async function openPlayerStatsModal(playerData, options = {}) {
     document.head.appendChild(styleEl);
   }
 
-  const teamLogoHtml = teamName ? renderTeamLogo(teamName, 'md') : '';
+  const teamLogoHtml = (effectiveTeamName || baseTeamName) ? renderTeamLogo(effectiveTeamName || baseTeamName, 'md') : '';
 
   modal.innerHTML = `
     <div class="dsg-player-modal-backdrop" id="dsg-modal-backdrop"></div>
@@ -962,13 +1062,24 @@ export async function openPlayerStatsModal(playerData, options = {}) {
         <div>
           <h2 style="font-size: 1.55rem; font-weight: 800; margin: 0 0 4px 0; color: var(--color-text-primary); line-height: 1.2;">${fullName}</h2>
           <div style="font-size: 1.0rem; font-weight: 700; color: var(--color-text-secondary); display: inline-flex; align-items: center; gap: 6px;">
-            ${teamName || 'Vereinslos'}
+            ${effectiveTeamName || baseTeamName || 'Vereinslos'}
           </div>
           <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
             ${positionLabel ? `<span style="background: rgba(0, 179, 65, 0.12); border: 1px solid rgba(0, 179, 65, 0.25); color: #16a34a; font-weight: 800; font-size: 0.76rem; padding: 3px 10px; border-radius: 999px; text-transform: uppercase;">${positionLabel}</span>` : ''}
             ${passNum && passNum !== '-' ? `<span class="dsg-card-white" style="font-weight: 800; font-size: 0.76rem; padding: 3px 10px; border-radius: 999px; color: var(--color-text-primary);">Pass #${passNum}</span>` : ''}
             ${trueShirtNum ? `<span class="dsg-card-white" style="font-weight: 800; font-size: 0.76rem; padding: 3px 10px; border-radius: 999px; color: var(--color-text-primary);">Trikot #${trueShirtNum}</span>` : ''}
-            <span class="dsg-card-white" style="font-size: 0.76rem; padding: 3px 10px; border-radius: 999px; font-weight: 600; color: var(--color-text-secondary);">Saison ${seasonKey}</span>
+            <div class="dsg-modal-season-picker" style="position: relative; display: inline-flex; align-items: center;">
+              <select id="dsg-player-modal-season-select" class="dsg-card-white" aria-label="Liga oder Saison wählen" style="font-size: 0.76rem; font-weight: 700; color: var(--color-accent); padding: 3px 26px 3px 10px; border-radius: 999px; border: 1px solid rgba(0, 179, 65, 0.35); background-color: var(--color-surface, #ffffff); cursor: pointer; outline: none; -webkit-appearance: none; appearance: none; transition: all 0.2s ease;">
+                ${seasonOptions.map(opt => `
+                  <option value="${opt.key}" ${opt.key === seasonKey ? 'selected' : ''} style="color: var(--color-text-primary); background: var(--color-surface, #ffffff);">
+                    ${opt.label}
+                  </option>
+                `).join('')}
+              </select>
+              <svg style="position: absolute; right: 8px; pointer-events: none; color: var(--color-accent);" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
           </div>
         </div>
 
@@ -1150,6 +1261,24 @@ export async function openPlayerStatsModal(playerData, options = {}) {
   document.getElementById('dsg-modal-close-btn')?.addEventListener('click', closeModal);
   document.getElementById('dsg-modal-close-action-btn')?.addEventListener('click', closeModal);
   document.getElementById('dsg-modal-backdrop')?.addEventListener('click', closeModal);
+
+  const seasonSelect = document.getElementById('dsg-player-modal-season-select');
+  if (seasonSelect) {
+    seasonSelect.addEventListener('change', async (e) => {
+      const newSeasonKey = e.target.value;
+      seasonSelect.disabled = true;
+      seasonSelect.style.opacity = '0.5';
+      if (Store.ensureSeasonLoaded) {
+        await Store.ensureSeasonLoaded(newSeasonKey);
+      }
+      openPlayerStatsModal(playerData, {
+        ...options,
+        baseTeamName,
+        seasonKey: newSeasonKey,
+        teamName: baseTeamName
+      });
+    });
+  }
 
   const escHandler = (e) => {
     if (e.key === 'Escape' && modal.style.display === 'flex') {

@@ -3,7 +3,7 @@ import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=17933600000
 import { logout } from '../auth.js?v=1793040000000';
 
 import { calculateSeasonSuspensions, normalizePlayerName, normalizeKey, isMatchFinished } from '../suspensionUtils.js?v=1793040000000';
-import { getPlayerAvatar, openPlayerStatsModal } from '../playerUtils.js?v=1793220000000';
+import { getPlayerAvatar, openPlayerStatsModal } from '../playerUtils.js?v=1793370000000';
 
 
 

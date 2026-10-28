@@ -1,8 +1,8 @@
 // Players Page View & Interactive Roster
-import { Store, sanitizeMojibake } from '../store.js?v=1793360000000';
+import { Store, sanitizeMojibake } from '../store.js?v=1793370000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getPlayerPositionLabel, getPlayerPositionCategory } from '../playerUtils.js?v=1792924000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getPlayerPositionLabel, getPlayerPositionCategory, openPlayerStatsModal } from '../playerUtils.js?v=1793370000000';
 import { getPlayerSuspensionInfo } from '../suspensionUtils.js?v=1792837000000';
 
 let allActivePlayers = [];
@@ -579,6 +579,10 @@ export const bindSpieler = async () => {
   const openPlayerProfile = (playerId) => {
     const player = allActivePlayers.find(p => p.id === String(playerId));
     if (!player) return;
+    openPlayerStatsModal(player.raw || player, {
+      teamName: player.team
+    });
+    return;
 
     const avatarUrl = getPlayerAvatar(player.raw);
     const teamLogo = renderTeamLogo(player.team, 'md');
