@@ -1,4 +1,4 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793340000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793345000000';
 
 import { showToast } from './admin.js?v=1791198000000';
 
@@ -475,67 +475,45 @@ const getSeasonKey = (league) => {
         if (sk) return sk;
     }
 
-    if (yrStr.includes('2026') || nameStr.includes('26/27') || yrStr.includes('26/27')) {
-
-        if (!nameStr.toLowerCase().includes('sommer') && !nameStr.toLowerCase().includes('cup')) {
-
-            return '2026/2027';
-
+    // 2. Canonical year extraction (e.g. "2027/2028" or "2027" -> "2027/2028")
+    let year = yrStr;
+    const yearMatch = (yrStr || nameStr).match(/\d{4}(\/\d{4})?/);
+    if (yearMatch) {
+        year = yearMatch[0];
+        if (/^\d{4}$/.test(year)) {
+            const yNum = parseInt(year, 10);
+            year = yNum + '/' + (yNum + 1);
         }
+    }
+    if (!year) year = '2026/2027';
 
+    const lowerName = nameStr.toLowerCase();
+
+    // 3. Playoff & League tiers: append suffix to canonical year
+    if (lowerName.includes('oberes')) {
+        return year + '_oberes';
+    }
+    if (lowerName.includes('unteres')) {
+        return year + '_unteres';
+    }
+    if (lowerName.includes('1. klasse') || lowerName.includes('1klasse') || lowerName.includes('erste klasse')) {
+        return year + '_1klasse';
     }
 
-    if (yrStr.includes('2025') || nameStr.includes('25/26') || yrStr.includes('25/26')) {
-
-        return '2025/2026';
-
+    // 4. Cups / Tournaments / Specials: keep distinct title + year
+    if (lowerName.includes('cup') || lowerName.includes('pokal') || lowerName.includes('turnier') || lowerName.includes('sommer')) {
+        return nameStr.includes(year) ? nameStr : (nameStr + ' ' + year);
     }
 
-    if (yrStr.includes('2024') || nameStr.includes('24/25') || yrStr.includes('24/25')) {
-
-        if (nameStr.toLowerCase().includes('oberes')) return '2024/2025_oberes';
-
-        if (nameStr.toLowerCase().includes('unteres')) return '2024/2025_unteres';
-
-        return '2024/2025';
-
+    // 5. Primary Championship League (e.g. "DSG Liga", "Liga", or default championship):
+    // Standard key is the year itself (e.g. "2026/2027", "2027/2028", "2028/2029")
+    if (lowerName.includes('dsg') || lowerName === 'liga' || lowerName.includes('meisterschaft') || !lowerName) {
+        return year;
     }
 
-    if (yrStr.includes('2023') || nameStr.includes('23/24') || yrStr.includes('23/24')) {
-
-        return '2023/2024';
-
-    }
-
-    if (yrStr.includes('2022') || nameStr.includes('22/23') || yrStr.includes('22/23')) {
-
-        if (nameStr.toLowerCase().includes('1. klasse') || nameStr.toLowerCase().includes('1klasse')) return '2022/2023_1klasse';
-
-        return '2022/2023';
-
-    }
-
-    if (yrStr.includes('2021') || nameStr.includes('21/22') || yrStr.includes('21/22')) {
-
-        if (nameStr.toLowerCase().includes('1. klasse') || nameStr.toLowerCase().includes('1klasse')) return '2021/2022_1klasse';
-
-        return '2021/2022';
-
-    }
-
-    
-
-    if (nameStr && yrStr && !nameStr.includes(yrStr)) {
-
-        return `${nameStr} ${yrStr}`;
-
-    }
-
-    return nameStr || yrStr || '2022/2023';
-
+    // 6. General fallback: Unique combination of name and year
+    return nameStr && !nameStr.includes(year) ? (nameStr + ' ' + year) : (nameStr || year);
 };
-
-
 
 const renderTable = () => {
 
