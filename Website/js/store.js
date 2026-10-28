@@ -2864,6 +2864,7 @@ export const Store = {
       // Real-time synchronization for primary league data (authoritative across domains)
       onSnapshot(doc(db, 'system', 'liga_data'), (snap) => {
         if (snap.exists() && snap.data()?.data) {
+          const state = getState();
           const fbData = snap.data().data;
           const fbTime = snap.data().lastUpdated || fbData.lastUpdated || 0;
           const localData = loadLocal('dsg_data', 95);
