@@ -2238,6 +2238,8 @@ main {
   width: auto;
   min-width: 180px;
   z-index: 9999;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 .season-select-trigger {
   background: var(--color-surface) !important;

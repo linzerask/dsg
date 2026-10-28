@@ -1,4 +1,4 @@
-import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1793350000000';
+import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1793355000000';
 import { computeAllTimeStats } from './statistiken.js?v=1791182000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo, renderNewsFallbackHeader } from '../logos.js?v=1791182000000';
@@ -154,7 +154,7 @@ export const viewHome = () => {
     const diffStr = diff > 0 ? '+' + diff : diff;
     const cancCount = cancMap[String(t.name || '').trim()] || 0;
     const starBadge = cancCount > 0 
-      ? `<span class="cancellation-star" style="position: absolute; left: 100%; top: 0; margin-left: 2px; color: var(--color-accent); font-weight: 900; font-size: 1.05rem; line-height: 1; cursor: help; pointer-events: auto; white-space: nowrap;" title="${cancCount} ${cancCount === 1 ? 'Spielabsage' : 'Spielabsagen'}">${'*'.repeat(cancCount)}</span>` 
+      ? `<span class="cancellation-star" style="position: absolute; left: 100%; top: 0; margin-left: 2px; color: var(--color-accent); font-weight: 900; font-size: 1.05rem; line-height: 1; cursor: help; pointer-events: auto; white-space: nowrap;" title="${cancCount} ${cancCount === 1 ? 'Spielabsage' : 'Spielabsagen'}">*</span>` 
       : '';
     return `
     <div class="table-row has-home-accordion" style="display: flex; flex-direction: column; cursor: pointer; transition: background 0.2s; padding: 10px 12px; border-radius: 6px; margin-bottom: 4px; border: 1px solid transparent;">

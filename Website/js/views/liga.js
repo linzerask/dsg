@@ -1,4 +1,4 @@
-import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1793350000000';
+import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1793355000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
 import { getPlayerLink } from '../playerUtils.js?v=1791182000000';
@@ -133,7 +133,7 @@ export function viewLiga() {
     const diffStr = diff > 0 ? '+' + diff : diff;
     const cancCount = cancMap[String(t.name || '').trim()] || 0;
     const starBadge = cancCount > 0 
-      ? `<span class="cancellation-star" style="position: absolute; left: 100%; top: -1px; margin-left: 2px; color: var(--color-accent); font-weight: 900; font-size: 1.15rem; line-height: 1; cursor: help; pointer-events: auto; white-space: nowrap;" title="${cancCount} ${cancCount === 1 ? 'Spielabsage' : 'Spielabsagen'}">${'*'.repeat(cancCount)}</span>` 
+      ? `<span class="cancellation-star" style="position: absolute; left: 100%; top: -1px; margin-left: 2px; color: var(--color-accent); font-weight: 900; font-size: 1.15rem; line-height: 1; cursor: help; pointer-events: auto; white-space: nowrap;" title="${cancCount} ${cancCount === 1 ? 'Spielabsage' : 'Spielabsagen'}">*</span>` 
       : '';
     return `
       <div class="liga-row glass-card stagger-item ${i < 3 ? 'top-3-row' : ''} has-table-accordion" style="display: grid; grid-template-columns: 40px 1fr 100px 40px 35px 35px 35px 70px 50px 60px; align-items: center; margin-bottom: var(--space-sm); padding: var(--space-sm) var(--space-md); cursor: pointer; transition: background 0.3s;">
@@ -1122,9 +1122,9 @@ export function viewLiga() {
   return `
     <div class="container">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; position: relative; z-index: 50;" class="stagger-item">
-        <h1 style="margin: 0;"><span class="accent-text" id="liga-season-label">${(currentItem.label || currentSeason).toUpperCase()}</span></h1>
+        <h1 style="margin: 0; font-size: clamp(1.8rem, 2.8vw, 2.6rem); line-height: 1.15; flex: 1; min-width: 260px;"><span class="accent-text" id="liga-season-label">${(currentItem.label || currentSeason).toUpperCase()}</span></h1>
         
-        <div class="season-select-wrapper">
+        <div class="season-select-wrapper" style="margin-left: auto; flex-shrink: 0;">
           <div class="season-select-trigger" id="season-custom-trigger">
             <span>${currentItem.label || currentSeason}</span>
             <svg style="margin-left: 10px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
