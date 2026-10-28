@@ -1,4 +1,4 @@
-import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1793260000000';
+import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1793300000000';
 import { computeAllTimeStats } from './statistiken.js?v=1791182000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo, renderNewsFallbackHeader } from '../logos.js?v=1791182000000';

@@ -1,0 +1,101 @@
+name: Daily Database Backup
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # Every night at 03:00 UTC
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  backup:
+    name: Run Daily Backup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch and archive Firestore database
+        run: |
+          node -e '
+          const fs = require("fs");
+          const path = require("path");
+
+          async function backup() {
+            const today = new Date().toISOString().slice(0, 10);
+            const backupDir = path.join(process.cwd(), "Website", "data", "backups");
+            if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
+
+            const backupFile = path.join(backupDir, `liga_backup_${today}.json`);
+            
+            // Fetch live primary document from Firestore REST API
+            const projectId = "dsg-liga";
+            const docUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/system/liga_data`;
+            
+            let data = null;
+            try {
+              const res = await fetch(docUrl);
+              if (res.ok) {
+                const json = await res.json();
+                if (json.fields) {
+                  // Firestore REST payload format
+                  data = json;
+                }
+              }
+            } catch (err) {
+              console.warn("Firestore REST fetch error, falling back to local dataset:", err);
+            }
+
+            // Fallback to local liga.json if REST API returns unauthenticated
+            if (!data) {
+              const localPath = path.join(process.cwd(), "Website", "data", "liga.json");
+              if (fs.existsSync(localPath)) {
+                data = JSON.parse(fs.readFileSync(localPath, "utf8"));
+              }
+            }
+
+            if (data) {
+              const fullBackup = {
+                date: today,
+                timestamp: Date.now(),
+                exportedAt: new Date().toISOString(),
+                database: data
+              };
+              fs.writeFileSync(backupFile, JSON.stringify(fullBackup, null, 2), "utf8");
+              console.log("Successfully created daily backup:", backupFile);
+
+              // Maintain rolling 30-day retention
+              const allBackups = fs.readdirSync(backupDir).filter(f => f.startsWith("liga_backup_") && f.endsWith(".json"));
+              if (allBackups.length > 30) {
+                allBackups.sort();
+                const toDelete = allBackups.slice(0, allBackups.length - 30);
+                toDelete.forEach(oldFile => {
+                  fs.unlinkSync(path.join(backupDir, oldFile));
+                  console.log("Pruned old backup file:", oldFile);
+                });
+              }
+            }
+          }
+
+          backup().catch(console.error);
+          '
+
+      - name: Commit and push daily backup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Website/data/backups/
+          if git diff --staged --quiet; then
+            echo "No new backup changes to commit."
+          else
+            git commit -m "Automated daily database backup [$(date +'%Y-%m-%d')]"
+            git push origin main
+          fi

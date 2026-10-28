@@ -1,4 +1,4 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793260000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793300000000';
 
 import { logout } from '../auth.js?v=1793040000000';
 
@@ -1165,7 +1165,42 @@ export const bindRefereeAdmin = async () => {
   const getRefComboboxValue = (id) => {
     const hiddenInput = document.getElementById(id);
     const searchInput = document.getElementById('input-search-' + id);
-    return (hiddenInput?.value || searchInput?.value || '').trim();
+    const rawVal = (hiddenInput?.value || searchInput?.value || '').trim();
+    if (!rawVal) return '';
+
+    const state = refPlayerComboboxState[id];
+    if (!state || !state.players || state.players.length === 0) return rawVal;
+
+    const clean = rawVal.toLowerCase();
+    if (state.includeOwnGoal && clean === 'eigentor') return 'Eigentor';
+
+    // 1. Exact match in squad
+    const found = state.players.find(p => {
+      const pName = typeof p === 'object' ? p.name : p;
+      return pName.toLowerCase() === clean;
+    });
+    if (found) {
+      return typeof found === 'object' ? found.name : found;
+    }
+
+    // 2. If exactly one filtered option matches what was typed
+    if (state.filtered && state.filtered.length === 1) {
+      const single = state.filtered[0];
+      const singleName = typeof single === 'object' ? single.name : single;
+      selectRefComboboxOption(id, singleName);
+      return singleName;
+    }
+
+    // 3. Reject unlisted names to prevent typos and phantom players
+    if (searchInput) {
+      searchInput.style.borderColor = '#ef4444';
+      searchInput.classList.add('shake');
+      setTimeout(() => {
+        searchInput.style.borderColor = '';
+        searchInput.classList.remove('shake');
+      }, 1500);
+    }
+    return '';
   };
 
   const setupRefSearchableComboboxes = () => {

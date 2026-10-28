@@ -1,4 +1,4 @@
-import { Store } from '../store.js?v=1793260000000';
+import { Store } from '../store.js?v=1793300000000';
 import { renderAdminPlayers, initAdminPlayers } from './adminPlayers.js?v=1793238000000';
 import { renderAdminTeams, initAdminTeams } from './adminTeams.js?v=1793245000000';
 import { renderAdminLeagues, initAdminLeagues } from './adminLeagues.js?v=1793250000000';
@@ -161,7 +161,11 @@ export const viewAdmin = () => {
             ${tabIcons['admin-gallery']}
             <span>Galerie verwalten</span>
           </button>
-          <button id="admin-logout-btn" class="admin-nav-btn" style="margin-top: 16px; border-top: 1px solid var(--glass-border); padding-top: 14px; color: #ef4444 !important;">
+          <button id="admin-backup-btn" class="admin-nav-btn" style="margin-top: 16px; border-top: 1px solid var(--glass-border); padding-top: 14px; color: var(--color-accent) !important; font-weight: 700;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Backup herunterladen</span>
+          </button>
+          <button id="admin-logout-btn" class="admin-nav-btn" style="color: #ef4444 !important;">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
             <span>Abmelden</span>
           </button>
@@ -378,6 +382,23 @@ export const bindAdmin = () => {
       }
     });
   }
+
+  // Admin Backup Button
+  document.getElementById('admin-backup-btn')?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('admin-backup-btn');
+    if (btn) btn.innerHTML = '<span>Backup wird erstellt...</span>';
+    try {
+      await Store.downloadBackup();
+    } finally {
+      if (btn) {
+        btn.innerHTML = `
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Backup herunterladen</span>
+        `;
+      }
+    }
+  });
 
   // Admin Logout Button
   document.getElementById('admin-logout-btn')?.addEventListener('click', () => {

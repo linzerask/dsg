@@ -492,7 +492,7 @@ export const Store = {
       const fetches = [];
       const hasTestLiga = state.memoryData?.seasons?.['Testliga 2026/2027']?.matches?.length > 0;
       if (!hasPopulatedData || !hasTestLiga) {
-        fetches.push(fetch('data/liga.json' + DATA_VERSION_STRING).then(r => r.ok ? r.json() : null).catch(() => null));
+        fetches.push(fetch('data/liga_active.json' + DATA_VERSION_STRING).then(r => r.ok ? r.json() : null).catch(() => null));
       } else {
         fetches.push(Promise.resolve(null));
       }
@@ -1005,7 +1005,79 @@ export const Store = {
     return state.memoryData || { seasons: {} };
   },
   
-  saveData(data, broadcast = true) {
+  async ensureSeasonLoaded(seasonKey) {
+    if (!seasonKey) return;
+    const state = getState();
+    if (state.memoryData?.seasons?.[seasonKey]?.matches?.length || state.memoryData?.seasons?.[seasonKey]?.teams?.length) {
+      return state.memoryData.seasons[seasonKey];
+    }
+
+    if (this._archiveLoadingPromise) {
+      await this._archiveLoadingPromise;
+      return state.memoryData?.seasons?.[seasonKey];
+    }
+
+    this._archiveLoadingPromise = (async () => {
+      try {
+        let archiveData = null;
+        try {
+          const snap = await getDoc(doc(db, 'system', 'liga_archive'));
+          archiveData = snap.exists() ? (snap.data().data || snap.data()) : null;
+        } catch (e) {}
+
+        const hasValidSeasons = archiveData?.seasons && Object.values(archiveData.seasons).some(s => s?.matches?.length > 0);
+        if (!hasValidSeasons) {
+          const res = await fetch('data/liga_archive.json' + DATA_VERSION_STRING);
+          if (res.ok) archiveData = await res.json();
+        }
+
+        if (archiveData && archiveData.seasons) {
+          if (!state.memoryData) state.memoryData = { currentSeason: "2026/2027", seasons: {} };
+          if (!state.memoryData.seasons) state.memoryData.seasons = {};
+          Object.keys(archiveData.seasons).forEach(k => {
+            if (!state.memoryData.seasons[k] || !state.memoryData.seasons[k].matches?.length) {
+              state.memoryData.seasons[k] = archiveData.seasons[k];
+            }
+          });
+          trySetLocal('dsg_data_v95', JSON.stringify(state.memoryData));
+        }
+      } catch (err) {
+        console.warn("Could not load archive season:", err);
+      } finally {
+        this._archiveLoadingPromise = null;
+      }
+    })();
+
+    await this._archiveLoadingPromise;
+    return state.memoryData?.seasons?.[seasonKey];
+  },
+
+  async downloadBackup() {
+    await this.ensureSeasonLoaded('2022/2023');
+    const state = getState();
+    const today = new Date().toISOString().slice(0, 10);
+    const fullBackup = {
+      appName: 'DSG Liga',
+      exportedAt: new Date().toISOString(),
+      timestamp: Date.now(),
+      liga: state.memoryData,
+      news: state.memoryNews,
+      gallery: state.memoryGallery,
+      leagues: this.getLeagues(),
+      rounds: this.getRounds()
+    };
+    const blob = new Blob([JSON.stringify(fullBackup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `dsg_liga_backup_${today}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
+
+  saveData(data, broadcast = true, saveArchive = false) {
     const state = getState();
     const now = Date.now();
     data.lastUpdated = now;
@@ -1019,7 +1091,52 @@ export const Store = {
     const cleanData = deepSanitize(data);
     state.memoryData = cleanData;
     trySetLocal('dsg_data_v95', JSON.stringify(cleanData));
-    setDoc(doc(db, 'system', 'liga_data'), { data: cleanData, lastUpdated: now }).catch(e => console.error("Firebase save error:", e));
+
+    // Split active vs archive seasons for lightweight saves (< 260 KB)
+    const activeKeys = ['2026/2027', 'Testliga 2026/2027'];
+    const activeData = {
+      currentSeason: cleanData.currentSeason || "2026/2027",
+      lastUpdated: now,
+      seasons: {}
+    };
+    const archiveData = {
+      lastUpdated: now,
+      seasons: {}
+    };
+
+    let hasArchiveSeasons = false;
+    Object.keys(cleanData.seasons || {}).forEach(k => {
+      if (activeKeys.includes(k)) {
+        activeData.seasons[k] = cleanData.seasons[k];
+      } else if (cleanData.seasons[k]?.matches?.length || cleanData.seasons[k]?.teams?.length) {
+        archiveData.seasons[k] = cleanData.seasons[k];
+        hasArchiveSeasons = true;
+      }
+    });
+
+    // 1. Save active seasons to primary liga_data
+    setDoc(doc(db, 'system', 'liga_data'), { data: activeData, lastUpdated: now }).catch(e => console.error("Firebase save error (active):", e));
+
+    // 2. Save archive seasons ONLY when explicitly requested and contains real matches
+    if (saveArchive && hasArchiveSeasons) {
+      setDoc(doc(db, 'system', 'liga_archive'), { data: archiveData, lastUpdated: now }).catch(e => console.error("Firebase save error (archive):", e));
+    }
+
+    // 3. Automated in-app rolling daily backup (every 24h)
+    try {
+      const lastBackup = parseInt(localStorage.getItem('dsg_last_inapp_backup') || '0', 10);
+      if (now - lastBackup > 24 * 3600 * 1000) {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        setDoc(doc(db, 'system_backups', 'backup_' + todayStr), {
+          data: cleanData,
+          date: todayStr,
+          timestamp: now
+        }).then(() => {
+          localStorage.setItem('dsg_last_inapp_backup', String(now));
+        }).catch(err => console.warn('In-app daily backup error:', err));
+      }
+    } catch(e) {}
+
     if (broadcast !== false) {
       window.dispatchEvent(new CustomEvent('data-updated'));
     }
@@ -1155,8 +1272,12 @@ export const Store = {
   getLiga(season = (this.getData()?.currentSeason || "2026/2027")) {
     const data = this.getData();
     if (!data.seasons) return [];
-    const s = data.seasons[season];
-    if (!s) return [];
+    let s = data.seasons[season];
+    if (!s) {
+      this.ensureSeasonLoaded(season);
+      s = this.getData()?.seasons?.[season];
+      if (!s) return [];
+    }
 
     let teams = Array.isArray(s.teams) && s.teams.length > 0 ? s.teams : (Array.isArray(s.table) ? s.table : []);
     if (!Array.isArray(s.teams) && Array.isArray(s.table)) {
@@ -1184,14 +1305,19 @@ export const Store = {
     if (data.seasons[season] && data.seasons[season].matches) {
       return data.seasons[season].matches;
     }
-    return [];
+    this.ensureSeasonLoaded(season);
+    return this.getData()?.seasons?.[season]?.matches || [];
   },
 
   getStats(season = (this.getData()?.currentSeason || "2026/2027")) {
     const data = this.getData();
     if (!data.seasons) return { topScorers: [], cards: [] };
-    const s = data.seasons[season];
-    if (!s) return { topScorers: [], cards: [] };
+    let s = data.seasons[season];
+    if (!s) {
+      this.ensureSeasonLoaded(season);
+      s = this.getData()?.seasons?.[season];
+      if (!s) return { topScorers: [], cards: [] };
+    }
 
     let stats = s.stats;
     let topScorers = Array.isArray(stats?.topScorers) ? [...stats.topScorers] : [];
@@ -2680,9 +2806,15 @@ export const Store = {
             const currentStr = JSON.stringify(state.memoryData?.seasons || {});
             const fbStr = JSON.stringify(fbData?.seasons || {});
             if (currentStr !== fbStr) {
-              state.memoryData = fbData;
-              trySetLocal('dsg_data_v95', JSON.stringify(fbData));
-              window.dispatchEvent(new CustomEvent('data-updated', { detail: fbData }));
+              if (!state.memoryData) state.memoryData = { currentSeason: "2026/2027", seasons: {} };
+              if (!state.memoryData.seasons) state.memoryData.seasons = {};
+              Object.keys(fbData.seasons || {}).forEach(k => {
+                state.memoryData.seasons[k] = fbData.seasons[k];
+              });
+              state.memoryData.currentSeason = fbData.currentSeason || state.memoryData.currentSeason || "2026/2027";
+              state.memoryData.lastUpdated = fbTime;
+              trySetLocal('dsg_data_v95', JSON.stringify(state.memoryData));
+              window.dispatchEvent(new CustomEvent('data-updated', { detail: state.memoryData }));
             }
           }
         }

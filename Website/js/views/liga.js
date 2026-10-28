@@ -1,4 +1,4 @@
-import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1793260000000';
+import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1793300000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
 import { getPlayerLink } from '../playerUtils.js?v=1791182000000';
@@ -1287,10 +1287,12 @@ export function bindLigaTabs() {
           if (window.Router?.showLoader) {
             window.Router.showLoader('Saison wird geladen', selectedLabel || 'DSG Liga');
           }
-          requestAnimationFrame(() => {
-            setTimeout(() => {
-              window.dispatchEvent(new CustomEvent('data-updated'));
-            }, 60);
+          Store.ensureSeasonLoaded(selectedValue).then(() => {
+            if (window.Router?.hideLoader) window.Router.hideLoader();
+            window.dispatchEvent(new CustomEvent('data-updated'));
+          }).catch(() => {
+            if (window.Router?.hideLoader) window.Router.hideLoader();
+            window.dispatchEvent(new CustomEvent('data-updated'));
           });
         }
       });

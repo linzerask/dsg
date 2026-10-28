@@ -1,5 +1,5 @@
 import { Router } from './router.js?v=1793250000000';
-import { Store } from './store.js?v=1793260000000';
+import { Store } from './store.js?v=1793300000000';
 import { initConsentBanner } from './consent.js?v=1791930000000';
 
 window.Store = Store;
