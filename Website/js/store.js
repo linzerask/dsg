@@ -491,8 +491,17 @@ export const Store = {
     try {
       const fetches = [];
       const hasTestLiga = state.memoryData?.seasons?.['Testliga 2026/2027']?.matches?.length > 0;
+      const hasArchive = state.memoryData?.seasons && 
+        Object.keys(state.memoryData.seasons).some(k => k === '2024/2025' || k === '2022/2023');
+
       if (!hasPopulatedData || !hasTestLiga) {
         fetches.push(fetch('data/liga_active.json' + DATA_VERSION_STRING).then(r => r.ok ? r.json() : null).catch(() => null));
+      } else {
+        fetches.push(Promise.resolve(null));
+      }
+
+      if (!hasArchive) {
+        fetches.push(fetch('data/liga_archive.json' + DATA_VERSION_STRING).then(r => r.ok ? r.json() : null).catch(() => null));
       } else {
         fetches.push(Promise.resolve(null));
       }
@@ -515,11 +524,12 @@ export const Store = {
         fetches.push(Promise.resolve(null));
       }
 
-      const [fileLiga, fileLeagues, fileRounds, fileArticles] = await Promise.all(fetches);
+      const [fileLiga, fileArchive, fileLeagues, fileRounds, fileArticles] = await Promise.all(fetches);
+
+      if (!state.memoryData) state.memoryData = { currentSeason: "2026/2027", seasons: {} };
+      if (!state.memoryData.seasons) state.memoryData.seasons = {};
 
       if (fileLiga && fileLiga.seasons) {
-        if (!state.memoryData) state.memoryData = { currentSeason: "2026/2027", seasons: {} };
-        if (!state.memoryData.seasons) state.memoryData.seasons = {};
         Object.keys(fileLiga.seasons).forEach(sKey => {
           if (fileLiga.seasons[sKey]?.matches) {
             fileLiga.seasons[sKey].matches = deduplicateMatches(fileLiga.seasons[sKey].matches);
@@ -528,9 +538,21 @@ export const Store = {
             state.memoryData.seasons[sKey] = fileLiga.seasons[sKey];
           }
         });
-        if (!state.memoryData.currentSeason) state.memoryData.currentSeason = "2026/2027";
-        trySetLocal('dsg_data_v95', JSON.stringify(state.memoryData));
       }
+
+      if (fileArchive && fileArchive.seasons) {
+        Object.keys(fileArchive.seasons).forEach(sKey => {
+          if (fileArchive.seasons[sKey]?.matches) {
+            fileArchive.seasons[sKey].matches = deduplicateMatches(fileArchive.seasons[sKey].matches);
+          }
+          if (!state.memoryData.seasons[sKey] || !state.memoryData.seasons[sKey].matches?.length) {
+            state.memoryData.seasons[sKey] = fileArchive.seasons[sKey];
+          }
+        });
+      }
+
+      if (!state.memoryData.currentSeason) state.memoryData.currentSeason = "2026/2027";
+      trySetLocal('dsg_data_v95', JSON.stringify(state.memoryData));
 
       if (fileLeagues && (!localLeagues || localLeagues.length === 0)) {
         let merged = Array.isArray(fileLeagues) ? [...fileLeagues] : [];
@@ -687,7 +709,16 @@ export const Store = {
         }
 
         if (needsMigration || localTime > fbTime) {
-          await setDoc(dataRef, { data: targetData, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (liga):", e));
+          const activeKeys = ['2026/2027', 'Testliga 2026/2027'];
+          const activeOnlyData = {
+            currentSeason: targetData.currentSeason || "2026/2027",
+            lastUpdated: Date.now(),
+            seasons: {}
+          };
+          Object.keys(targetData.seasons || {}).forEach(k => {
+            if (activeKeys.includes(k)) activeOnlyData.seasons[k] = targetData.seasons[k];
+          });
+          await setDoc(dataRef, { data: activeOnlyData, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (liga):", e));
         }
       } else {
         console.warn("Firestore liga_data not available or offline; preserving local memory without overwrite.");
