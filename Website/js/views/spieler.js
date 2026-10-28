@@ -51,11 +51,19 @@ export const viewSpieler = () => {
           <div style="min-width: 180px;">
             <select id="spieler-sort-select" class="admin-input" style="width: 100%; height: 42px; border-radius: 8px; font-size: 0.9rem;">
               <option value="goals-desc" selected>Meiste Tore</option>
+              <option value="goals-asc">Wenigste Tore</option>
               <option value="name-asc">Name (A &rarr; Z)</option>
+              <option value="name-desc">Name (Z &rarr; A)</option>
               <option value="team-asc">Team (A &rarr; Z)</option>
-              <option value="age-asc">Alter (jüngste zuerst)</option>
+              <option value="team-desc">Team (Z &rarr; A)</option>
+              <option value="position-asc">Position (TW &rarr; ST)</option>
+              <option value="position-desc">Position (ST &rarr; TW)</option>
               <option value="age-desc">Alter (älteste zuerst)</option>
+              <option value="age-asc">Alter (jüngste zuerst)</option>
+              <option value="since-desc">Mitglied seit (neueste)</option>
               <option value="since-asc">Mitglied seit (längste)</option>
+              <option value="yellow-desc">Meiste Gelbe Karten</option>
+              <option value="red-desc">Meiste Rote Karten</option>
             </select>
           </div>
         </div>
@@ -483,33 +491,53 @@ export const bindSpieler = async () => {
     });
 
     // Sort
+    const [sortField, sortDir] = activeSort.split('-');
     filtered.sort((a, b) => {
-      if (activeSort === 'goals-desc') {
-        if (b.goals !== a.goals) return b.goals - a.goals;
-        return a.fullName.localeCompare(b.fullName, 'de');
+      let cmp = 0;
+      if (sortField === 'rank' || sortField === 'default') {
+        cmp = (a.origIndex || 0) - (b.origIndex || 0);
+      } else if (sortField === 'name') {
+        cmp = a.nachname.localeCompare(b.nachname, 'de') || a.vorname.localeCompare(b.vorname, 'de');
+      } else if (sortField === 'team') {
+        cmp = (a.team || '').localeCompare(b.team || '', 'de') || a.nachname.localeCompare(b.nachname, 'de');
+      } else if (sortField === 'position') {
+        const getPosWeight = (item) => {
+          const cat = getPlayerPositionCategory(item.position);
+          if (cat === 'Torwart') return 1;
+          if (cat === 'Abwehr') return 2;
+          if (cat === 'Mittelfeld') return 3;
+          if (cat === 'Sturm') return 4;
+          return 5;
+        };
+        cmp = getPosWeight(a) - getPosWeight(b);
+        if (cmp === 0) cmp = a.nachname.localeCompare(b.nachname, 'de');
+      } else if (sortField === 'age') {
+        if (a.age !== null && b.age !== null) cmp = a.age - b.age;
+        else if (a.age !== null) cmp = -1;
+        else if (b.age !== null) cmp = 1;
+        else cmp = 0;
+      } else if (sortField === 'since') {
+        const parseYear = (s) => {
+          const m = String(s || '').match(/\b(19\d\d|20\d\d)\b/);
+          return m ? parseInt(m[1], 10) : 0;
+        };
+        cmp = parseYear(a.memberSince) - parseYear(b.memberSince);
+        if (cmp === 0) cmp = a.nachname.localeCompare(b.nachname, 'de');
+      } else if (sortField === 'goals') {
+        cmp = a.goals - b.goals;
+        if (cmp === 0) cmp = a.nachname.localeCompare(b.nachname, 'de');
+      } else if (sortField === 'yellow') {
+        cmp = a.yellow - b.yellow;
+        if (cmp === 0) cmp = a.nachname.localeCompare(b.nachname, 'de');
+      } else if (sortField === 'yellowRed') {
+        cmp = (a.yellowRed || 0) - (b.yellowRed || 0);
+        if (cmp === 0) cmp = a.nachname.localeCompare(b.nachname, 'de');
+      } else if (sortField === 'red') {
+        cmp = a.red - b.red;
+        if (cmp === 0) cmp = a.nachname.localeCompare(b.nachname, 'de');
       }
-      if (activeSort === 'name-asc') {
-        return a.nachname.localeCompare(b.nachname, 'de') || a.vorname.localeCompare(b.vorname, 'de');
-      }
-      if (activeSort === 'team-asc') {
-        return (a.team || '').localeCompare(b.team || '', 'de') || a.nachname.localeCompare(b.nachname, 'de');
-      }
-      if (activeSort === 'age-asc') {
-        if (a.age !== null && b.age !== null) return a.age - b.age;
-        if (a.age !== null) return -1;
-        if (b.age !== null) return 1;
-        return 0;
-      }
-      if (activeSort === 'age-desc') {
-        if (a.age !== null && b.age !== null) return b.age - a.age;
-        if (a.age !== null) return 1;
-        if (b.age !== null) return -1;
-        return 0;
-      }
-      if (activeSort === 'since-asc') {
-        return (a.memberSince || '9999').localeCompare(b.memberSince || '9999');
-      }
-      return 0;
+
+      return sortDir === 'asc' ? cmp : -cmp;
     });
 
     const totalResults = filtered.length;
@@ -543,6 +571,16 @@ export const bindSpieler = async () => {
       return;
     }
 
+    const getSortIcon = (field) => {
+      const [currField, currDir] = activeSort.split('-');
+      if (currField !== field) {
+        return '<span class="sort-icon" style="opacity: 0.3; margin-left: 5px; display: inline-flex; vertical-align: middle;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg></span>';
+      }
+      const isAsc = currDir === 'asc';
+      const arrowPath = isAsc ? 'M18 15l-6-6-6 6' : 'M6 9l6 6 6-6';
+      return '<span class="sort-icon" style="color: var(--color-accent); margin-left: 5px; display: inline-flex; vertical-align: middle;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="' + arrowPath + '"/></svg></span>';
+    };
+
     if (activeViewMode === 'table') {
       grid.className = 'spieler-table-view-container stagger-item';
       grid.innerHTML = `
@@ -550,16 +588,16 @@ export const bindSpieler = async () => {
           <table class="dsg-players-table">
             <thead>
               <tr>
-                <th style="width: 44px; text-align: center;">#</th>
-                <th>Spieler</th>
-                <th>Verein</th>
-                <th>Position</th>
-                <th style="text-align: center;">Alter</th>
-                <th style="text-align: center;">Seit</th>
-                <th style="text-align: center;" title="Tore">Tore ⚽</th>
-                <th style="text-align: center;" title="Gelbe Karten">Gelb 🟨</th>
-                <th style="text-align: center;" title="Gelb-Rote Karten">G-Rot</th>
-                <th style="text-align: center;" title="Rote Karten">Rot 🟥</th>
+                <th class="sortable-th ${activeSort.startsWith('rank-') ? 'active-sort' : ''}" data-sort="rank" style="width: 48px; text-align: center; cursor: pointer; user-select: none;" title="Nach Rang sortieren">#${getSortIcon('rank')}</th>
+                <th class="sortable-th ${activeSort.startsWith('name-') ? 'active-sort' : ''}" data-sort="name" style="cursor: pointer; user-select: none;" title="Nach Namen sortieren">Spieler${getSortIcon('name')}</th>
+                <th class="sortable-th ${activeSort.startsWith('team-') ? 'active-sort' : ''}" data-sort="team" style="cursor: pointer; user-select: none;" title="Nach Verein sortieren">Verein${getSortIcon('team')}</th>
+                <th class="sortable-th ${activeSort.startsWith('position-') ? 'active-sort' : ''}" data-sort="position" style="cursor: pointer; user-select: none;" title="Nach Position sortieren">Position${getSortIcon('position')}</th>
+                <th class="sortable-th ${activeSort.startsWith('age-') ? 'active-sort' : ''}" data-sort="age" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Alter sortieren">Alter${getSortIcon('age')}</th>
+                <th class="sortable-th ${activeSort.startsWith('since-') ? 'active-sort' : ''}" data-sort="since" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Vereinszugehörigkeit sortieren">Seit${getSortIcon('since')}</th>
+                <th class="sortable-th ${activeSort.startsWith('goals-') ? 'active-sort' : ''}" data-sort="goals" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Toren sortieren">Tore${getSortIcon('goals')}</th>
+                <th class="sortable-th ${activeSort.startsWith('yellow-') ? 'active-sort' : ''}" data-sort="yellow" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Gelben Karten sortieren">Gelb <span style="display:inline-block;width:7px;height:10px;background:#eab308;border-radius:1px;margin-left:2px;vertical-align:middle;"></span>${getSortIcon('yellow')}</th>
+                <th class="sortable-th ${activeSort.startsWith('yellowRed-') ? 'active-sort' : ''}" data-sort="yellowRed" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Gelb-Roten Karten sortieren">G-Rot <span style="display:inline-block;width:7px;height:10px;background:linear-gradient(135deg,#f1c40f 50%,#e74c3c 50%);border-radius:1px;margin-left:2px;vertical-align:middle;"></span>${getSortIcon('yellowRed')}</th>
+                <th class="sortable-th ${activeSort.startsWith('red-') ? 'active-sort' : ''}" data-sort="red" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Roten Karten sortieren">Rot <span style="display:inline-block;width:7px;height:10px;background:#ef4444;border-radius:1px;margin-left:2px;vertical-align:middle;"></span>${getSortIcon('red')}</th>
                 <th style="text-align: right; width: 85px;">Profil</th>
               </tr>
             </thead>
@@ -809,6 +847,31 @@ export const bindSpieler = async () => {
         e.stopPropagation();
         const pId = btn.getAttribute('data-player-id');
         openPlayerProfile(pId);
+      });
+    });
+
+    // Wire sortable table headers
+    document.querySelectorAll('.spieler-table-view-container .dsg-players-table th.sortable-th').forEach(th => {
+      th.addEventListener('click', () => {
+        const field = th.getAttribute('data-sort');
+        if (!field) return;
+
+        const [currField, currDir] = activeSort.split('-');
+        let newDir = 'desc';
+        if (currField === field) {
+          newDir = currDir === 'desc' ? 'asc' : 'desc';
+        } else {
+          newDir = ['name', 'team', 'position', 'rank'].includes(field) ? 'asc' : 'desc';
+        }
+
+        activeSort = `${field}-${newDir}`;
+        if (sortSelect) {
+          if (sortSelect.querySelector(`option[value="${activeSort}"]`)) {
+            sortSelect.value = activeSort;
+          }
+        }
+        currentPage = 1;
+        renderGrid();
       });
     });
   };

@@ -9,6 +9,8 @@ let selectedTeamName = '';
 let scorerSeasonFilter = null;
 let squadStatusFilter = 'Aktiv';
 let squadViewMode = localStorage.getItem('dsg_player_view_mode') || 'cards';
+let squadSortField = 'goals';
+let squadSortDirection = 'desc';
 let showAllScorers = false;
 let scorerCurrentPage = 1;
 const SCORERS_PER_PAGE = 5;
@@ -284,7 +286,7 @@ export const bindTeams = async () => {
       return `<span class="dsg-pos-badge ${badgeClass}" title="${label}">${label}</span>`;
     };
 
-    const squad = filteredPlayers.map(p => {
+    const squad = filteredPlayers.map((p, pIdx) => {
       const fn = sanitizeMojibake((p.Vorname || p.vorname || '').trim());
       const ln = sanitizeMojibake((p.Nachname || p.nachname || '').trim());
       const bDate = (p.Geburtsdatum || p.geburtsdatum || '').trim();
@@ -296,6 +298,7 @@ export const bindTeams = async () => {
 
       return {
         id,
+        origIndex: pIdx + 1,
         fullName: `${fn} ${ln}`.trim(),
         birthDate: bDate,
         age: calculatePlayerAge(bDate),
@@ -310,9 +313,64 @@ export const bindTeams = async () => {
         raw: p
       };
     }).sort((a, b) => {
-      if (b.goals !== a.goals) return b.goals - a.goals;
-      return a.fullName.localeCompare(b.fullName, 'de');
+      let cmp = 0;
+      if (squadSortField === '#') {
+        cmp = a.origIndex - b.origIndex;
+      } else if (squadSortField === 'name') {
+        cmp = a.fullName.localeCompare(b.fullName, 'de');
+      } else if (squadSortField === 'position') {
+        const getPosWeight = (item) => {
+          const cat = getPlayerPositionCategory(item.position);
+          if (cat === 'Torwart') return 1;
+          if (cat === 'Abwehr') return 2;
+          if (cat === 'Mittelfeld') return 3;
+          if (cat === 'Sturm') return 4;
+          return 5;
+        };
+        cmp = getPosWeight(a) - getPosWeight(b);
+        if (cmp === 0) cmp = a.fullName.localeCompare(b.fullName, 'de');
+      } else if (squadSortField === 'age') {
+        const ageA = a.age !== null ? a.age : (squadSortDirection === 'asc' ? 999 : -1);
+        const ageB = b.age !== null ? b.age : (squadSortDirection === 'asc' ? 999 : -1);
+        cmp = ageA - ageB;
+        if (cmp === 0) cmp = a.fullName.localeCompare(b.fullName, 'de');
+      } else if (squadSortField === 'since') {
+        const parseYear = (s) => {
+          const m = String(s || '').match(/\b(19\d\d|20\d\d)\b/);
+          return m ? parseInt(m[1], 10) : 0;
+        };
+        cmp = parseYear(a.memberSince) - parseYear(b.memberSince);
+        if (cmp === 0) cmp = a.fullName.localeCompare(b.fullName, 'de');
+      } else if (squadSortField === 'goals') {
+        cmp = a.goals - b.goals;
+        if (cmp === 0) cmp = a.fullName.localeCompare(b.fullName, 'de');
+      } else if (squadSortField === 'yellow') {
+        cmp = a.yellow - b.yellow;
+        if (cmp === 0) cmp = a.fullName.localeCompare(b.fullName, 'de');
+      } else if (squadSortField === 'yellowRed') {
+        cmp = a.yellowRed - b.yellowRed;
+        if (cmp === 0) cmp = a.fullName.localeCompare(b.fullName, 'de');
+      } else if (squadSortField === 'red') {
+        cmp = a.red - b.red;
+        if (cmp === 0) cmp = a.fullName.localeCompare(b.fullName, 'de');
+      }
+
+      return squadSortDirection === 'asc' ? cmp : -cmp;
     });
+
+    const getSortIcon = (field) => {
+      if (squadSortField !== field) {
+        return `<span class="sort-icon" style="opacity: 0.3; margin-left: 5px; display: inline-flex; vertical-align: middle;">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg>
+        </span>`;
+      }
+      const isAsc = squadSortDirection === 'asc';
+      return `<span class="sort-icon" style="color: var(--color-accent); margin-left: 5px; display: inline-flex; vertical-align: middle;">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <path d="${isAsc ? 'M18 15l-6-6-6 6' : 'M6 9l6 6 6-6'}"/>
+        </svg>
+      </span>`;
+    };
 
     const logoLarge = renderTeamLogo(teamName, 'xl');
     const teamBadgeSm = renderTeamLogo(teamName, 'xs');
@@ -539,15 +597,15 @@ export const bindTeams = async () => {
             <table class="dsg-players-table">
               <thead>
                 <tr>
-                  <th style="width: 44px; text-align: center;">#</th>
-                  <th>Spieler</th>
-                  <th>Position</th>
-                  <th style="text-align: center;">Alter</th>
-                  <th style="text-align: center;">Seit</th>
-                  <th style="text-align: center;" title="Tore">Tore ⚽</th>
-                  <th style="text-align: center;" title="Gelbe Karten">Gelb 🟨</th>
-                  <th style="text-align: center;" title="Gelb-Rote Karten">G-Rot</th>
-                  <th style="text-align: center;" title="Rote Karten">Rot 🟥</th>
+                  <th class="sortable-th ${squadSortField === '#' ? 'active-sort' : ''}" data-sort="#" style="width: 48px; text-align: center; cursor: pointer; user-select: none;" title="Nach Nummer / Rang sortieren">#${getSortIcon('#')}</th>
+                  <th class="sortable-th ${squadSortField === 'name' ? 'active-sort' : ''}" data-sort="name" style="cursor: pointer; user-select: none;" title="Nach Namen sortieren">Spieler${getSortIcon('name')}</th>
+                  <th class="sortable-th ${squadSortField === 'position' ? 'active-sort' : ''}" data-sort="position" style="cursor: pointer; user-select: none;" title="Nach Position sortieren">Position${getSortIcon('position')}</th>
+                  <th class="sortable-th ${squadSortField === 'age' ? 'active-sort' : ''}" data-sort="age" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Alter sortieren">Alter${getSortIcon('age')}</th>
+                  <th class="sortable-th ${squadSortField === 'since' ? 'active-sort' : ''}" data-sort="since" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Vereinszugehörigkeit sortieren">Seit${getSortIcon('since')}</th>
+                  <th class="sortable-th ${squadSortField === 'goals' ? 'active-sort' : ''}" data-sort="goals" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Toren sortieren">Tore${getSortIcon('goals')}</th>
+                  <th class="sortable-th ${squadSortField === 'yellow' ? 'active-sort' : ''}" data-sort="yellow" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Gelben Karten sortieren">Gelb <span style="display:inline-block;width:7px;height:10px;background:#eab308;border-radius:1px;margin-left:2px;vertical-align:middle;"></span>${getSortIcon('yellow')}</th>
+                  <th class="sortable-th ${squadSortField === 'yellowRed' ? 'active-sort' : ''}" data-sort="yellowRed" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Gelb-Roten Karten sortieren">G-Rot <span style="display:inline-block;width:7px;height:10px;background:linear-gradient(135deg,#f1c40f 50%,#e74c3c 50%);border-radius:1px;margin-left:2px;vertical-align:middle;"></span>${getSortIcon('yellowRed')}</th>
+                  <th class="sortable-th ${squadSortField === 'red' ? 'active-sort' : ''}" data-sort="red" style="text-align: center; cursor: pointer; user-select: none;" title="Nach Roten Karten sortieren">Rot <span style="display:inline-block;width:7px;height:10px;background:#ef4444;border-radius:1px;margin-left:2px;vertical-align:middle;"></span>${getSortIcon('red')}</th>
                   <th style="text-align: right; width: 85px;">Profil</th>
                 </tr>
               </thead>
@@ -901,6 +959,25 @@ export const bindTeams = async () => {
         if (playerObj) {
           openPlayerStatsModal(playerObj.raw || playerObj, { teamName, seasonKey: currentSeasonKey });
         }
+      });
+    });
+
+    // Bind table column sorting
+    teamContainer.querySelectorAll('.dsg-players-table th.sortable-th').forEach(th => {
+      th.addEventListener('click', () => {
+        const sortKey = th.getAttribute('data-sort');
+        if (!sortKey) return;
+        if (squadSortField === sortKey) {
+          squadSortDirection = squadSortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+          squadSortField = sortKey;
+          if (['name', 'position', '#'].includes(sortKey)) {
+            squadSortDirection = 'asc';
+          } else {
+            squadSortDirection = 'desc';
+          }
+        }
+        renderTeamDetails(teamName);
       });
     });
 

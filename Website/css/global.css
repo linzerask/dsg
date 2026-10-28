@@ -5027,6 +5027,23 @@ main {
     background: rgba(0, 179, 65, 0.08);
 }
 
+.dsg-players-table th.sortable-th.active-sort {
+    color: var(--color-accent) !important;
+    background: rgba(0, 179, 65, 0.08);
+    border-bottom: 2px solid var(--color-accent) !important;
+}
+
+[data-theme="dark"] .dsg-players-table th.sortable-th.active-sort {
+    background: rgba(0, 179, 65, 0.16);
+}
+
+.dsg-players-table th.sortable-th .sort-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
 [data-theme="dark"] .dsg-players-table th {
     background: rgba(255, 255, 255, 0.03);
 }
