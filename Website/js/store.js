@@ -2067,11 +2067,24 @@ export const Store = {
     const local = loadLocal('dsg_admin_leagues', 44);
     if (local && Array.isArray(local) && local.length >= 2) {
       let clean = local.map(l => {
-        if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
-          const yr = parseInt(String(l.year).trim());
-          return { ...l, year: `${yr}/${yr + 1}` };
+        let updated = { ...l };
+        if (updated.year && /^\d{4}$/.test(String(updated.year).trim())) {
+          const yr = parseInt(String(updated.year).trim());
+          updated.year = yr + '/' + (yr + 1);
         }
-        return l;
+        if ((updated.name || '').toLowerCase().includes('test')) {
+          const yr = (updated.year && String(updated.year).includes('2026')) ? '2026/2027' : (updated.year || '2026/2027');
+          updated.seasonKey = 'Testliga ' + yr;
+        }
+        return updated;
+      });
+      // Deduplicate by seasonKey
+      const seen = new Set();
+      clean = clean.filter(l => {
+        const key = l.seasonKey || l.name;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
       });
       // Guarantee canonical leagues like 2026/2027 are never omitted
       INITIAL_LEAGUES.forEach(cl => {
@@ -2093,11 +2106,23 @@ export const Store = {
     const local = loadLocal('dsg_admin_leagues', 44);
     if (local && Array.isArray(local) && local.length >= (fileLeagues?.length || 8)) {
       let clean = local.map(l => {
-        if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
-          const yr = parseInt(String(l.year).trim());
-          return { ...l, year: `${yr}/${yr + 1}` };
+        let updated = { ...l };
+        if (updated.year && /^\d{4}$/.test(String(updated.year).trim())) {
+          const yr = parseInt(String(updated.year).trim());
+          updated.year = yr + '/' + (yr + 1);
         }
-        return l;
+        if ((updated.name || '').toLowerCase().includes('test')) {
+          const yr = (updated.year && String(updated.year).includes('2026')) ? '2026/2027' : (updated.year || '2026/2027');
+          updated.seasonKey = 'Testliga ' + yr;
+        }
+        return updated;
+      });
+      const seen = new Set();
+      clean = clean.filter(l => {
+        const key = l.seasonKey || l.name;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
       });
       INITIAL_LEAGUES.forEach(cl => {
         if (!clean.some(l => l.seasonKey === cl.seasonKey)) clean.push(cl);
@@ -2112,13 +2137,24 @@ export const Store = {
         let fbLeagues = leaguesSnap.data().data;
         if (Array.isArray(fbLeagues) && fbLeagues.length >= 2) {
           fbLeagues = fbLeagues.map(l => {
-            if (l.year && /^\d{4}$/.test(String(l.year).trim())) {
-              const yr = parseInt(String(l.year).trim());
-              return { ...l, year: `${yr}/${yr + 1}` };
+            let updated = { ...l };
+            if (updated.year && /^\d{4}$/.test(String(updated.year).trim())) {
+              const yr = parseInt(String(updated.year).trim());
+              updated.year = yr + '/' + (yr + 1);
             }
-            return l;
+            if ((updated.name || '').toLowerCase().includes('test')) {
+              const yr = (updated.year && String(updated.year).includes('2026')) ? '2026/2027' : (updated.year || '2026/2027');
+              updated.seasonKey = 'Testliga ' + yr;
+            }
+            return updated;
           });
-
+          const seenFb = new Set();
+          fbLeagues = fbLeagues.filter(l => {
+            const key = l.seasonKey || l.name;
+            if (seenFb.has(key)) return false;
+            seenFb.add(key);
+            return true;
+          });
           // Merge canonical INITIAL_LEAGUES and fileLeagues if missing in Firestore
           INITIAL_LEAGUES.forEach(cl => {
             if (!fbLeagues.some(l => l.seasonKey === cl.seasonKey)) fbLeagues.push(cl);

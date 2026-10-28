@@ -1,4 +1,4 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793330000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793340000000';
 
 import { showToast } from './admin.js?v=1791198000000';
 
@@ -455,28 +455,25 @@ export const initAdminLeagues = async () => {
 
 
 const getSeasonKey = (league) => {
-
     if (!league) return '2022/2023';
 
-    if (league.seasonKey && typeof league.seasonKey === 'string' && league.seasonKey !== 'undefined') {
-
-        const sk = league.seasonKey.trim();
-
-        if (sk === '2026/2027' || sk === '2025/2026' || sk === '2024/2025' || sk === '2024/2025_oberes' || sk === '2024/2025_unteres' || sk === '2023/2024' || sk === '2022/2023' || sk === '2022/2023_1klasse' || sk === '2021/2022' || sk === '2021/2022_1klasse') {
-
-            return sk;
-
-        }
-
-    }
-
-    
-
+    const nameStr = String(league.name || '').trim();
     const yrStr = String(league.year || '').trim();
 
-    const nameStr = String(league.name || '').trim();
+    if (nameStr.toLowerCase().includes('test')) {
+        let yr = yrStr;
+        if (!yr && league.seasonKey) {
+            const m = league.seasonKey.match(/\d{4}(\/\d{4})?/);
+            if (m) yr = m[0];
+        }
+        if (!yr || yr.includes('2026') || yr.includes('26/27')) yr = '2026/2027';
+        return 'Testliga ' + yr;
+    }
 
-    
+    if (league.seasonKey && typeof league.seasonKey === 'string' && league.seasonKey !== 'undefined' && league.seasonKey !== 'null') {
+        const sk = league.seasonKey.trim();
+        if (sk) return sk;
+    }
 
     if (yrStr.includes('2026') || nameStr.includes('26/27') || yrStr.includes('26/27')) {
 
