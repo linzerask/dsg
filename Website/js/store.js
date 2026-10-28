@@ -2958,50 +2958,97 @@ export const Store = {
     return await this.addPlayerRequest(req);
   },
 
+  _sanitizeTeamsList(teams) {
+    if (!Array.isArray(teams)) return [];
+    return teams.filter(t => {
+      if (!t) return false;
+      const name = (t.Name || t.name || '').trim();
+      // Filter out accidental duplicate season roster entries (have seasonKey but no official uppercase ID, or empty name)
+      if (!name || (!t.ID && t.seasonKey)) return false;
+      return true;
+    }).map(t => ({
+      ...t,
+      ID: t.ID || String(t.id || ''),
+      Name: (t.Name || t.name || '').trim(),
+      Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv',
+      "Aktive Spieler": t["Aktive Spieler"] || t.activePlayers || '0',
+      "Aktiv seit": t["Aktiv seit"] || t.activeSince || '',
+      "Inaktiv seit": t["Inaktiv seit"] || t.inactiveSince || ''
+    }));
+  },
+
   getAdminTeamsSync() {
-    const local = loadLocal('dsg_admin_teams', 13);
-    if (local && Array.isArray(local) && local.length > 0) return local;
+    const local = loadLocal('dsg_admin_teams', 14);
+    if (local && Array.isArray(local) && local.length > 0) return this._sanitizeTeamsList(local);
     return [];
   },
 
   async getAdminTeams() {
-    const local = loadLocal('dsg_admin_teams', 13);
-    if (local && local.length > 0) return local;
-
-    try {
-      const teamsSnap = await getDoc(doc(db, 'system', 'teams_data'));
-      if (teamsSnap.exists() && teamsSnap.data()?.data) {
-        let fbTeams = teamsSnap.data().data;
-        if (Array.isArray(fbTeams) && fbTeams.length > 0) {
-          trySetLocal('dsg_admin_teams_v13', JSON.stringify(fbTeams));
-          return fbTeams;
-        }
-      }
-    } catch(e) {
-      console.warn("Could not fetch teams from Firebase:", e);
-    }
-
+    const local = loadLocal('dsg_admin_teams', 14);
+    let masterFileTeams = [];
     try {
       const res = await fetch('data/teams.json' + DATA_VERSION_STRING);
       if (res.ok) {
-        const fileTeams = await res.json();
-        if (fileTeams && fileTeams.length > 0) {
-          trySetLocal('dsg_admin_teams_v13', JSON.stringify(fileTeams));
-          setDoc(doc(db, 'system', 'teams_data'), { data: fileTeams, lastUpdated: Date.now() })
-            .catch(e => console.error("Firebase save error (teams initial):", e));
-          return fileTeams;
-        }
+        masterFileTeams = await res.json();
       }
-    } catch(e) {
-      console.warn("Could not fetch data/teams.json:", e);
+    } catch(e) {}
+
+    let sourceTeams = local;
+    let needsCloudSync = false;
+
+    if (!sourceTeams || sourceTeams.length === 0) {
+      try {
+        const teamsSnap = await getDoc(doc(db, 'system', 'teams_data'));
+        if (teamsSnap.exists() && teamsSnap.data()?.data) {
+          sourceTeams = teamsSnap.data().data;
+          needsCloudSync = true;
+        }
+      } catch(e) {
+        console.warn("Could not fetch teams from Firebase:", e);
+      }
     }
 
-    return [];
+    if (!sourceTeams || sourceTeams.length === 0) {
+      sourceTeams = masterFileTeams;
+      needsCloudSync = true;
+    }
+
+    // Sanitize source teams to strip accidental duplicates and malformed entries
+    const sanitized = this._sanitizeTeamsList(sourceTeams);
+    const existingIds = new Set(sanitized.map(t => String(t.ID || t.id)));
+    const existingNames = new Set(sanitized.map(t => (t.Name || t.name || '').trim().toLowerCase()));
+
+    // Merge in any valid master teams from teams.json (e.g. #55 FC Linzer Adler) missing from DB
+    if (Array.isArray(masterFileTeams) && masterFileTeams.length > 0) {
+      this._sanitizeTeamsList(masterFileTeams).forEach(mt => {
+        const mtId = String(mt.ID || mt.id || '');
+        const mtName = (mt.Name || mt.name || '').trim().toLowerCase();
+        if (mtId && mtName && !existingIds.has(mtId) && !existingNames.has(mtName)) {
+          sanitized.push(mt);
+          existingIds.add(mtId);
+          existingNames.add(mtName);
+          needsCloudSync = true;
+        }
+      });
+    }
+
+    if (sourceTeams && sanitized.length !== sourceTeams.length) {
+      needsCloudSync = true;
+    }
+
+    trySetLocal('dsg_admin_teams_v14', JSON.stringify(sanitized));
+    if (needsCloudSync) {
+      setDoc(doc(db, 'system', 'teams_data'), { data: sanitized, lastUpdated: Date.now() })
+        .catch(e => console.error("Firebase update cleaned teams:", e));
+    }
+
+    return sanitized;
   },
 
   saveAdminTeams(teams) {
-    trySetLocal('dsg_admin_teams_v13', JSON.stringify(teams));
-    setDoc(doc(db, 'system', 'teams_data'), { data: teams, lastUpdated: Date.now() })
+    const sanitized = this._sanitizeTeamsList(teams);
+    trySetLocal('dsg_admin_teams_v14', JSON.stringify(sanitized));
+    setDoc(doc(db, 'system', 'teams_data'), { data: sanitized, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (teams):", e));
     window.dispatchEvent(new CustomEvent('teams-updated'));
   },

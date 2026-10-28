@@ -1,4 +1,4 @@
-import { Store, sanitizeMojibake } from '../store.js?v=1793345000000';
+import { Store, sanitizeMojibake } from '../store.js?v=1793350000000';
 import { renderIcon } from '../icons.js?v=1791270000000';
 import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791270000000';
 import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink, getPlayerPositionLabel } from '../playerUtils.js?v=1791270000000';

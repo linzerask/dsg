@@ -1,4 +1,4 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793345000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793350000000';
 import { showToast } from './admin.js?v=1791182000000';
 import { renderTeamLogo, getTeamLogoUrl, getDefaultBadge, getTeamLogoData } from '../logos.js?v=1791182000000';
 
@@ -245,12 +245,19 @@ export const initAdminTeams = async () => {
 
     if (teamsData.length === 0) {
         const teams = await Store.getAdminTeams();
-        teamsData = teams.map(t => ({
-            ...t,
-            Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv',
-            logoUrl: t.logoUrl || t.logo || t.Logo || '',
-            monochromeLogoUrl: t.monochromeLogoUrl || t.monochromeLogo || t.MonochromeLogo || t.monoLogoUrl || ''
-        }));
+        teamsData = (teams || [])
+            .filter(t => (t.Name || t.name) && !('seasonKey' in t && !t.ID))
+            .map(t => ({
+                ...t,
+                ID: t.ID || String(t.id || ''),
+                Name: (t.Name || t.name || '').trim(),
+                Status: (t.Status === 'Nein' || !t.Status || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv',
+                "Aktive Spieler": t["Aktive Spieler"] || t.activePlayers || '0',
+                "Aktiv seit": t["Aktiv seit"] || t.activeSince || '',
+                "Inaktiv seit": t["Inaktiv seit"] || t.inactiveSince || '',
+                logoUrl: t.logoUrl || t.logo || t.Logo || '',
+                monochromeLogoUrl: t.monochromeLogoUrl || t.monochromeLogo || t.MonochromeLogo || t.monoLogoUrl || ''
+            }));
     }
     
     filteredData = [...teamsData];
@@ -295,16 +302,16 @@ const renderTable = () => {
 
         return `
             <tr>
-                <td style="color: var(--color-text-secondary);">#${t.ID || '-'}</td>
+                <td style="color: var(--color-text-secondary);">#${t.ID || t.id || '-'}</td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 8px;">
                         ${renderTeamLogo(t, 'sm')}
-                        <strong style="color: var(--color-text-primary);">${t.Name || '-'}</strong>
+                        <strong style="color: var(--color-text-primary);">${t.Name || t.name || '-'}</strong>
                     </div>
                 </td>
-                <td>${t["Aktive Spieler"] || '0'}</td>
-                <td>${t["Aktiv seit"] || '-'}</td>
-                <td>${t["Inaktiv seit"] || '-'}</td>
+                <td>${t["Aktive Spieler"] || t.activePlayers || '0'}</td>
+                <td>${t["Aktiv seit"] || t.activeSince || '-'}</td>
+                <td>${t["Inaktiv seit"] || t.inactiveSince || '-'}</td>
                 <td><span class="badge ${badgeClass}">${status}</span></td>
                 <td style="text-align: center;">
                     <button class="btn btn-outline edit-single-team-btn" data-idx="${rawIndex}" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
@@ -332,14 +339,14 @@ const renderTable = () => {
                         <div class="admin-m-header">
                             <div style="flex: 1; min-width: 0;">
                                 <div class="admin-m-title" style="display: flex; align-items: center; gap: 8px;">
-                                    <span style="color: var(--color-accent); font-weight: 800; margin-right: 2px;">#${t.ID || '-'}</span>
+                                    <span style="color: var(--color-accent); font-weight: 800; margin-right: 2px;">#${t.ID || t.id || '-'}</span>
                                     ${renderTeamLogo(t, 'sm')}
-                                    <strong style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.Name || '-'}</strong>
+                                    <strong style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.Name || t.name || '-'}</strong>
                                 </div>
                                 <div class="admin-m-subtitle">
                                     <span class="badge ${badgeClass}" style="font-size: 0.72rem;">${status}</span>
                                     <span>•</span>
-                                    <span>${t["Aktive Spieler"] || '0'} Spieler</span>
+                                    <span>${t["Aktive Spieler"] || t.activePlayers || '0'} Spieler</span>
                                 </div>
                             </div>
                             <svg class="admin-m-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -348,15 +355,15 @@ const renderTable = () => {
                             <div class="admin-m-grid">
                                 <div class="admin-m-grid-item">
                                     <span class="admin-m-label">Aktiv seit</span>
-                                    <span class="admin-m-value">${t["Aktiv seit"] || '-'}</span>
+                                    <span class="admin-m-value">${t["Aktiv seit"] || t.activeSince || '-'}</span>
                                 </div>
                                 <div class="admin-m-grid-item">
                                     <span class="admin-m-label">Inaktiv seit</span>
-                                    <span class="admin-m-value">${t["Inaktiv seit"] || '-'}</span>
+                                    <span class="admin-m-value">${t["Inaktiv seit"] || t.inactiveSince || '-'}</span>
                                 </div>
                                 <div class="admin-m-grid-item" style="grid-column: 1 / -1;">
                                     <span class="admin-m-label">Kadergröße</span>
-                                    <span class="admin-m-value">${t["Aktive Spieler"] || '0'} aktive registrierte Spieler</span>
+                                    <span class="admin-m-value">${t["Aktive Spieler"] || t.activePlayers || '0'} aktive registrierte Spieler</span>
                                 </div>
                             </div>
                             <div class="admin-m-actions">
@@ -497,8 +504,9 @@ const applyFilters = () => {
     const status = statusSelect ? statusSelect.value : 'all';
 
     filteredData = teamsData.filter(t => {
-        const matchesSearch = (t.Name && t.Name.toLowerCase().includes(query)) ||
-                              (t.ID && t.ID.toLowerCase().includes(query));
+        const tName = (t.Name || t.name || '').toLowerCase();
+        const tId = String(t.ID || t.id || '').toLowerCase();
+        const matchesSearch = tName.includes(query) || tId.includes(query);
         
         const currentStatus = (t.Status === 'Nein' || t.Status === 'Inaktiv') ? 'Inaktiv' : 'Aktiv';
         const matchesStatus = status === 'all' || currentStatus === status;
@@ -518,11 +526,13 @@ const sortData = (column, asc) => {
             const pA = priority[a.Status] || 99;
             const pB = priority[b.Status] || 99;
             if (pA !== pB) return asc ? pA - pB : pB - pA;
-            return (a.Name || '').localeCompare(b.Name || '');
+            const nameA = (a.Name || a.name || '').trim();
+            const nameB = (b.Name || b.name || '').trim();
+            return nameA.localeCompare(nameB);
         }
 
-        const valA = (a[column] || '').toString().toLowerCase();
-        const valB = (b[column] || '').toString().toLowerCase();
+        const valA = (a[column] || a[column.toLowerCase()] || '').toString().toLowerCase();
+        const valB = (b[column] || b[column.toLowerCase()] || '').toString().toLowerCase();
         
         if (column === 'ID' || column === 'Aktive Spieler') {
             const numA = parseInt(valA) || 0;
