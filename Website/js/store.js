@@ -618,6 +618,11 @@ export const Store = {
 
     // Trigger Firebase sync in the background
     this.syncFirebase();
+
+    // Background preload historical archives after primary render so season switching is instantaneous
+    setTimeout(() => {
+      this.ensureSeasonLoaded('2022/2023').catch(() => {});
+    }, 1200);
   },
 
   async syncFirebase() {
@@ -1051,15 +1056,19 @@ export const Store = {
     this._archiveLoadingPromise = (async () => {
       try {
         let archiveData = null;
+        // Priority 1: Fast local static archive JSON (cached by browser, ~20ms)
         try {
-          const snap = await getDoc(doc(db, 'system', 'liga_archive'));
-          archiveData = snap.exists() ? (snap.data().data || snap.data()) : null;
-        } catch (e) {}
-
-        const hasValidSeasons = archiveData?.seasons && Object.values(archiveData.seasons).some(s => s?.matches?.length > 0);
-        if (!hasValidSeasons) {
           const res = await fetch('data/liga_archive.json' + DATA_VERSION_STRING);
           if (res.ok) archiveData = await res.json();
+        } catch (e) {}
+
+        // Priority 2: Fallback to Firestore only if local static file failed
+        const hasValidSeasons = archiveData?.seasons && Object.values(archiveData.seasons).some(s => s?.matches?.length > 0);
+        if (!hasValidSeasons) {
+          try {
+            const snap = await getDoc(doc(db, 'system', 'liga_archive'));
+            archiveData = snap.exists() ? (snap.data().data || snap.data()) : null;
+          } catch (e) {}
         }
 
         if (archiveData && archiveData.seasons) {

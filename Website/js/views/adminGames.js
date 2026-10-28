@@ -1,4 +1,4 @@
-import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793355000000';
+import { Store, sanitizeMojibake, deepSanitize } from '../store.js?v=1793360000000';
 import { showToast } from './admin.js?v=1791200000000';
 import { renderTeamLogo } from '../logos.js?v=1791200000000';
 

@@ -1,4 +1,4 @@
-import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1793355000000';
+import { Store, sortLeaguesByPriority, sanitizeMojibake } from '../store.js?v=1793360000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
 import { getPlayerLink } from '../playerUtils.js?v=1791182000000';
@@ -1287,12 +1287,23 @@ export function bindLigaTabs() {
           if (window.Router?.showLoader) {
             window.Router.showLoader('Saison wird geladen', selectedLabel || 'DSG Liga');
           }
-          Store.ensureSeasonLoaded(selectedValue).then(() => {
-            if (window.Router?.hideLoader) window.Router.hideLoader();
-            window.dispatchEvent(new CustomEvent('data-updated'));
-          }).catch(() => {
-            if (window.Router?.hideLoader) window.Router.hideLoader();
-            window.dispatchEvent(new CustomEvent('data-updated'));
+
+          // Yield to browser to immediately paint the loader overlay with fluid animation
+          requestAnimationFrame(() => {
+            const loadPromise = Store.ensureSeasonLoaded(selectedValue);
+            const minAnimPromise = new Promise(resolve => setTimeout(resolve, 280));
+
+            Promise.all([loadPromise, minAnimPromise]).then(() => {
+              window.dispatchEvent(new CustomEvent('data-updated'));
+              setTimeout(() => {
+                if (window.Router?.hideLoader) window.Router.hideLoader();
+              }, 50);
+            }).catch(() => {
+              window.dispatchEvent(new CustomEvent('data-updated'));
+              setTimeout(() => {
+                if (window.Router?.hideLoader) window.Router.hideLoader();
+              }, 50);
+            });
           });
         }
       });
