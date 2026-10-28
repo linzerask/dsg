@@ -77,7 +77,7 @@
     "year": "2026/2027",
     "seasonKey": "Testliga 2026/2027",
     "status": "Aktiv",
-    "showOnHomepage": true,
+    "showOnHomepage": false,
     "isCurrent": false
   }
 ]

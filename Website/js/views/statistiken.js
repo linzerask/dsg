@@ -1,4 +1,4 @@
-import { Store, sanitizeMojibake } from '../store.js?v=1793320000000';
+import { Store, sanitizeMojibake } from '../store.js?v=1793330000000';
 import { renderIcon } from '../icons.js?v=1791182000000';
 import { renderTeamLogo } from '../logos.js?v=1791182000000';
 import { getPlayerLink } from '../playerUtils.js?v=1791182000000';
@@ -53,11 +53,18 @@ export const computeAllTimeStats = () => {
   const roundGoalsMap = {};
   const drawsMap = {};
 
+  const allLeagues = (Store.getAdminLeaguesSync ? Store.getAdminLeaguesSync() : []) || [];
+  const hiddenKeys = new Set(
+    allLeagues.filter(l => l.showOnHomepage === false || (l.name || '').toLowerCase().includes('test')).map(l => l.seasonKey || l.name)
+  );
+  hiddenKeys.add('Testliga 2026/2027');
+
   // Iterate over all seasons
   const seasonKeys = Object.keys(seasons);
   const mainSeasons = ['2022/2023', '2023/2024', '2024/2025', '2025/2026', '2026/2027'];
 
   seasonKeys.forEach(seasonKey => {
+    if (hiddenKeys.has(seasonKey) || seasonKey.toLowerCase().includes('test')) return;
     const s = seasons[seasonKey];
     if (!s) return;
 
@@ -428,6 +435,7 @@ export const computeAllTimeStats = () => {
   // Best single season goal scorer record
   let bestSingleSeasonScorer = { name: '', goals: 0, season: '', team: '' };
   seasonKeys.forEach(sKey => {
+    if (hiddenKeys.has(sKey) || sKey.toLowerCase().includes('test')) return;
     const s = seasons[sKey];
     if (s && s.stats && s.stats.topScorers) {
       s.stats.topScorers.forEach(sc => {
@@ -512,7 +520,7 @@ export const computeAllTimeStats = () => {
     goalsPerMatch,
     uniquePlayersCount: allTimeScorers.length,
     uniqueClubsCount: totalClubsCount,
-    seasonsCount: seasonKeys.filter(k => seasons[k] && ((seasons[k].teams && seasons[k].teams.length > 0) || (seasons[k].matches && seasons[k].matches.length > 0))).length,
+    seasonsCount: seasonKeys.filter(k => !hiddenKeys.has(k) && !k.toLowerCase().includes('test') && seasons[k] && ((seasons[k].teams && seasons[k].teams.length > 0) || (seasons[k].matches && seasons[k].matches.length > 0))).length,
     allTimeScorers,
     allTimeClubs,
     seasonHonors,

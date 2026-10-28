@@ -357,7 +357,7 @@ export const INITIAL_LEAGUES = [
   { id: 6, name: "Unteres Playoff", year: "2024/2025", seasonKey: "2024/2025_unteres", status: "Aktiv", showOnHomepage: true },
   { id: 7, name: "DSG Liga", year: "2025/2026", seasonKey: "2025/2026", status: "Aktiv", showOnHomepage: true },
   { id: 8, name: "DSG Liga", year: "2026/2027", seasonKey: "2026/2027", status: "Aktiv", showOnHomepage: true, isCurrent: true },
-  { id: 9, name: "Testliga", year: "2026/2027", seasonKey: "Testliga 2026/2027", status: "Aktiv", showOnHomepage: true, isCurrent: false }
+  { id: 9, name: "Testliga", year: "2026/2027", seasonKey: "Testliga 2026/2027", status: "Aktiv", showOnHomepage: false, isCurrent: false }
 ];
 
 export const sortLeaguesByPriority = (leagues) => {
@@ -2077,7 +2077,6 @@ export const Store = {
       INITIAL_LEAGUES.forEach(cl => {
         const found = clean.find(l => l.seasonKey === cl.seasonKey);
         if (!found) clean.push(cl);
-        else if (cl.seasonKey === 'Testliga 2026/2027') found.showOnHomepage = true;
       });
       return sortLeaguesByPriority(clean);
     }
