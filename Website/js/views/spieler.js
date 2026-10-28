@@ -76,17 +76,31 @@ export const viewSpieler = () => {
         <div id="spieler-count-info" style="font-size: 0.9rem; font-weight: 600; color: var(--color-text-secondary);">
           Lade Spielerdatenbank...
         </div>
-        <div id="spieler-status-toggle" style="display: inline-flex; background: rgba(0,0,0,0.06); padding: 3px; border-radius: 8px; gap: 4px; border: 1px solid var(--color-border);">
-          <button type="button" class="spieler-status-btn active" data-status="Aktiv" style="font-size: 0.8rem; padding: 5px 12px; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: var(--color-surface); color: var(--color-accent); box-shadow: 0 2px 4px rgba(0,0,0,0.08);">
-            <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--color-accent); margin-right: 5px;"></span>
-            Aktive Spieler
-          </button>
-          <button type="button" class="spieler-status-btn" data-status="Inaktiv" style="font-size: 0.8rem; padding: 5px 12px; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--color-text-secondary); box-shadow: none;">
-            Inaktive Spieler
-          </button>
-          <button type="button" class="spieler-status-btn" data-status="all" style="font-size: 0.8rem; padding: 5px 12px; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--color-text-secondary); box-shadow: none;">
-            Alle Spieler
-          </button>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <div id="spieler-status-toggle" style="display: inline-flex; background: rgba(0,0,0,0.06); padding: 3px; border-radius: 8px; gap: 4px; border: 1px solid var(--color-border);">
+            <button type="button" class="spieler-status-btn active" data-status="Aktiv" style="font-size: 0.8rem; padding: 5px 12px; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: var(--color-surface); color: var(--color-accent); box-shadow: 0 2px 4px rgba(0,0,0,0.08);">
+              <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--color-accent); margin-right: 5px;"></span>
+              Aktive Spieler
+            </button>
+            <button type="button" class="spieler-status-btn" data-status="Inaktiv" style="font-size: 0.8rem; padding: 5px 12px; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--color-text-secondary); box-shadow: none;">
+              Inaktive Spieler
+            </button>
+            <button type="button" class="spieler-status-btn" data-status="all" style="font-size: 0.8rem; padding: 5px 12px; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--color-text-secondary); box-shadow: none;">
+              Alle Spieler
+            </button>
+          </div>
+
+          <!-- View Mode Switcher -->
+          <div class="dsg-view-switcher" id="spieler-view-toggle">
+            <button type="button" class="dsg-view-btn spieler-view-btn active" data-view="cards" title="Galerie-Ansicht">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              <span>Galerie</span>
+            </button>
+            <button type="button" class="dsg-view-btn spieler-view-btn" data-view="table" title="Tabellen-Ansicht">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>Tabelle</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -319,7 +333,27 @@ export const viewSpieler = () => {
 
 export const bindSpieler = async () => {
   let activeStatusFilter = 'Aktiv';
+  let activeViewMode = localStorage.getItem('dsg_player_view_mode') || 'cards';
   const grid = document.getElementById('spieler-grid');
+  const viewToggleButtons = document.querySelectorAll('.spieler-view-btn');
+
+  const updateViewToggleState = () => {
+    viewToggleButtons.forEach(btn => {
+      const isAct = btn.getAttribute('data-view') === activeViewMode;
+      btn.classList.toggle('active', isAct);
+    });
+  };
+  updateViewToggleState();
+
+  viewToggleButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.getAttribute('data-view') || 'cards';
+      activeViewMode = mode;
+      localStorage.setItem('dsg_player_view_mode', mode);
+      updateViewToggleState();
+      renderGrid();
+    });
+  });
   const countInfo = document.getElementById('spieler-count-info');
   const searchInput = document.getElementById('spieler-search-input');
   const teamFilter = document.getElementById('spieler-team-filter');
@@ -405,6 +439,17 @@ export const bindSpieler = async () => {
       teamFilter.value = matchedTeam;
     }
   }
+
+  const getPosBadgeHtml = (player) => {
+    const label = getPlayerPositionLabel(player.raw || player);
+    if (!label) return `<span class="dsg-pos-badge pos-none">-</span>`;
+    const cat = getPlayerPositionCategory(label);
+    let badgeClass = 'pos-mf';
+    if (cat === 'Torwart') badgeClass = 'pos-tw';
+    else if (cat === 'Abwehr') badgeClass = 'pos-abw';
+    else if (cat === 'Sturm') badgeClass = 'pos-st';
+    return `<span class="dsg-pos-badge ${badgeClass}" title="${label}">${label}</span>`;
+  };
 
   const renderGrid = () => {
     let filtered = allActivePlayers.filter(p => {
@@ -498,77 +543,165 @@ export const bindSpieler = async () => {
       return;
     }
 
-    grid.innerHTML = pagePlayers.map(p => {
-      const avatarUrl = getPlayerAvatar(p.raw);
-      const teamLogo = renderTeamLogo(p.team, 'xs');
-      const ageText = p.age ? `${p.age} Jahre` : '';
-      const sinceText = formatMemberSince(p.memberSince);
-      const posLabelText = getPlayerPositionLabel(p.raw || p);
-      const posLabel = posLabelText ? `<span class="spieler-card-pos-tag">${posLabelText}</span>` : '';
+    if (activeViewMode === 'table') {
+      grid.className = 'spieler-table-view-container stagger-item';
+      grid.innerHTML = `
+        <div class="dsg-players-table-wrap">
+          <table class="dsg-players-table">
+            <thead>
+              <tr>
+                <th style="width: 44px; text-align: center;">#</th>
+                <th>Spieler</th>
+                <th>Verein</th>
+                <th>Position</th>
+                <th style="text-align: center;">Alter</th>
+                <th style="text-align: center;">Seit</th>
+                <th style="text-align: center;" title="Tore">Tore ⚽</th>
+                <th style="text-align: center;" title="Gelbe Karten">Gelb 🟨</th>
+                <th style="text-align: center;" title="Gelb-Rote Karten">G-Rot</th>
+                <th style="text-align: center;" title="Rote Karten">Rot 🟥</th>
+                <th style="text-align: right; width: 85px;">Profil</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pagePlayers.map((p, idx) => {
+                const avatarUrl = getPlayerAvatar(p.raw);
+                const teamLogo = renderTeamLogo(p.team, 'xs');
+                const ageText = p.age ? `${p.age} J.` : '-';
+                const sinceText = formatMemberSince(p.memberSince) || '-';
+                const posBadge = getPosBadgeHtml(p);
+                const inactBadge = !p.isActive ? `<span style="font-size: 0.65rem; padding: 1px 6px; border-radius: 999px; background: rgba(100, 116, 139, 0.2); color: #94a3b8; font-weight: 800; text-transform: uppercase; margin-left: 6px;">Inaktiv</span>` : '';
+                
+                const susp = getPlayerSuspensionInfo(p.fullName, p.team, Store.getData()?.currentSeason || '2026/2027');
+                let suspBadge = '';
+                if (susp.status === 'suspended') {
+                  suspBadge = `<span class="sperre-badge sperre-active" style="margin-left: 6px; padding: 1px 6px; font-size: 0.65rem;">Gesperrt</span>`;
+                } else if (susp.status === 'warning') {
+                  suspBadge = `<span class="sperre-badge sperre-warning" style="margin-left: 6px; padding: 1px 6px; font-size: 0.65rem;">Sperre droht</span>`;
+                }
 
-      const susp = getPlayerSuspensionInfo(p.fullName, p.team, Store.getData()?.currentSeason || '2026/2027');
-      let suspTag = '';
-      if (susp.status === 'suspended') {
-        suspTag = `<span class="sperre-badge sperre-active" style="position: absolute; top: 10px; right: 10px; z-index: 2;">Gesperrt</span>`;
-      } else if (susp.status === 'warning') {
-        suspTag = `<span class="sperre-badge sperre-warning" style="position: absolute; top: 10px; right: 10px; z-index: 2;">Sperre droht</span>`;
-      }
-
-      const inactiveBadge = !p.isActive ? `
-        <span style="position: absolute; top: 10px; left: 10px; z-index: 2; background: rgba(100, 116, 139, 0.25); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.4); font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; text-transform: uppercase;">Inaktiv</span>
-      ` : '';
-
-      return `
-        <div class="spieler-card ${!p.isActive ? 'spieler-card-inactive' : ''}" data-player-id="${p.id}">
-          <div class="spieler-card-header">
-            ${posLabel}
-            ${inactiveBadge}
-            ${suspTag}
-            <img src="${avatarUrl}" alt="${p.fullName}" class="spieler-card-avatar" style="${!p.isActive ? 'filter: grayscale(40%); opacity: 0.85;' : ''}">
-            <div class="spieler-card-team-badge" title="${p.team}">
-              ${teamLogo}
-            </div>
-          </div>
-          <div class="spieler-card-body">
-            <h3 class="spieler-card-name">${p.fullName}</h3>
-            <div class="spieler-card-team-name">${p.team || 'Vereinslos'}</div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--color-text-secondary); margin-bottom: 4px;">
-              <span>${ageText}</span>
-              <span>${sinceText}</span>
-            </div>
-            <div class="spieler-stat-pills">
-              <div class="spieler-stat-pill" title="Tore">
-                <span class="spieler-stat-val" style="color: var(--color-accent); display: inline-flex; align-items: center; gap: 4px;">
-                  ${renderIcon('ball', { size: 13, color: 'var(--color-accent)' })} ${p.goals}
-                </span>
-                <span class="spieler-stat-lbl">Tore</span>
-              </div>
-              <div class="spieler-stat-pill" title="Gelbe Karten">
-                <span class="spieler-stat-val" style="color: #eab308; display: inline-flex; align-items: center; gap: 4px;">
-                  <span style="display:inline-block;width:9px;height:12px;background:#eab308;border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.yellow}
-                </span>
-                <span class="spieler-stat-lbl">Gelb</span>
-              </div>
-              <div class="spieler-stat-pill" title="Gelb-Rote Karten">
-                <span class="spieler-stat-val" style="color: #f1c40f; display: inline-flex; align-items: center; gap: 4px;">
-                  <span style="display:inline-block;width:9px;height:12px;background:linear-gradient(135deg, #f1c40f 50%, #e74c3c 50%);border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.yellowRed}
-                </span>
-                <span class="spieler-stat-lbl">G-Rot</span>
-              </div>
-              <div class="spieler-stat-pill" title="Rote Karten">
-                <span class="spieler-stat-val" style="color: #ef4444; display: inline-flex; align-items: center; gap: 4px;">
-                  <span style="display:inline-block;width:9px;height:12px;background:#ef4444;border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.red}
-                </span>
-                <span class="spieler-stat-lbl">Rot</span>
-              </div>
-            </div>
-          </div>
+                return `
+                  <tr class="spieler-table-row" data-player-id="${p.id}" title="${p.fullName} - Profil & Statistik" style="cursor: pointer;">
+                    <td style="text-align: center; color: var(--color-text-secondary); font-weight: 700; font-size: 0.82rem;">${startIdx + idx + 1}</td>
+                    <td>
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        <img src="${avatarUrl}" alt="${p.fullName}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: contain; background: #ffffff; border: 1.5px solid var(--color-border); flex-shrink: 0; ${!p.isActive ? 'filter: grayscale(40%); opacity: 0.8;' : ''}">
+                        <div>
+                          <div style="font-weight: 700; color: var(--color-text-primary); display: flex; align-items: center;">
+                            ${p.fullName}
+                            ${inactBadge}
+                            ${suspBadge}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div style="display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.85rem;">
+                        <span style="display: inline-flex; width: 18px; height: 18px; align-items: center; justify-content: center; flex-shrink: 0;">${teamLogo}</span>
+                        <span>${p.team || 'Vereinslos'}</span>
+                      </div>
+                    </td>
+                    <td>${posBadge}</td>
+                    <td style="text-align: center; color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 600;">${ageText}</td>
+                    <td style="text-align: center; color: var(--color-text-secondary); font-size: 0.82rem;">${sinceText}</td>
+                    <td style="text-align: center; font-weight: 800; font-size: 0.95rem; color: ${p.goals > 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">
+                      ${p.goals > 0 ? `${renderIcon('ball', { size: 12, color: 'var(--color-accent)' })} ${p.goals}` : '0'}
+                    </td>
+                    <td style="text-align: center; font-weight: 700; font-size: 0.88rem; color: ${p.yellow > 0 ? '#eab308' : 'var(--color-text-secondary)'};">
+                      ${p.yellow > 0 ? `<span style="display:inline-block;width:8px;height:11px;background:#eab308;border-radius:1px;margin-right:3px;vertical-align:middle;"></span>${p.yellow}` : '0'}
+                    </td>
+                    <td style="text-align: center; font-weight: 700; font-size: 0.88rem; color: ${p.yellowRed > 0 ? '#f1c40f' : 'var(--color-text-secondary)'};">
+                      ${p.yellowRed > 0 ? `<span style="display:inline-block;width:8px;height:11px;background:linear-gradient(135deg,#f1c40f 50%,#e74c3c 50%);border-radius:1px;margin-right:3px;vertical-align:middle;"></span>${p.yellowRed}` : '0'}
+                    </td>
+                    <td style="text-align: center; font-weight: 700; font-size: 0.88rem; color: ${p.red > 0 ? '#ef4444' : 'var(--color-text-secondary)'};">
+                      ${p.red > 0 ? `<span style="display:inline-block;width:8px;height:11px;background:#ef4444;border-radius:1px;margin-right:3px;vertical-align:middle;"></span>${p.red}` : '0'}
+                    </td>
+                    <td style="text-align: right;">
+                      <button type="button" class="btn-dsg-sm" data-player-id="${p.id}" title="Statistik & Details">
+                        Details &rarr;
+                      </button>
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
         </div>
       `;
-    }).join('');
+    } else {
+      grid.className = 'spieler-cards-grid stagger-item';
+      grid.innerHTML = pagePlayers.map(p => {
+        const avatarUrl = getPlayerAvatar(p.raw);
+        const teamLogo = renderTeamLogo(p.team, 'xs');
+        const ageText = p.age ? `${p.age} Jahre` : '';
+        const sinceText = formatMemberSince(p.memberSince);
+        const posLabelText = getPlayerPositionLabel(p.raw || p);
+        const posLabel = posLabelText ? `<span class="spieler-card-pos-tag">${posLabelText}</span>` : '';
 
-    // Attach click listeners to cards
-    document.querySelectorAll('.spieler-card').forEach(card => {
+        const susp = getPlayerSuspensionInfo(p.fullName, p.team, Store.getData()?.currentSeason || '2026/2027');
+        let suspTag = '';
+        if (susp.status === 'suspended') {
+          suspTag = `<span class="sperre-badge sperre-active" style="position: absolute; top: 10px; right: 10px; z-index: 2;">Gesperrt</span>`;
+        } else if (susp.status === 'warning') {
+          suspTag = `<span class="sperre-badge sperre-warning" style="position: absolute; top: 10px; right: 10px; z-index: 2;">Sperre droht</span>`;
+        }
+
+        const inactiveBadge = !p.isActive ? `
+          <span style="position: absolute; top: 10px; left: 10px; z-index: 2; background: rgba(100, 116, 139, 0.25); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.4); font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; text-transform: uppercase;">Inaktiv</span>
+        ` : '';
+
+        return `
+          <div class="spieler-card ${!p.isActive ? 'spieler-card-inactive' : ''}" data-player-id="${p.id}">
+            <div class="spieler-card-header">
+              ${posLabel}
+              ${inactiveBadge}
+              ${suspTag}
+              <img src="${avatarUrl}" alt="${p.fullName}" class="spieler-card-avatar" style="${!p.isActive ? 'filter: grayscale(40%); opacity: 0.85;' : ''}">
+              <div class="spieler-card-team-badge" title="${p.team}">
+                ${teamLogo}
+              </div>
+            </div>
+            <div class="spieler-card-body">
+              <h3 class="spieler-card-name">${p.fullName}</h3>
+              <div class="spieler-card-team-name">${p.team || 'Vereinslos'}</div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--color-text-secondary); margin-bottom: 4px;">
+                <span>${ageText}</span>
+                <span>${sinceText}</span>
+              </div>
+              <div class="spieler-stat-pills">
+                <div class="spieler-stat-pill" title="Tore">
+                  <span class="spieler-stat-val" style="color: var(--color-accent); display: inline-flex; align-items: center; gap: 4px;">
+                    ${renderIcon('ball', { size: 13, color: 'var(--color-accent)' })} ${p.goals}
+                  </span>
+                  <span class="spieler-stat-lbl">Tore</span>
+                </div>
+                <div class="spieler-stat-pill" title="Gelbe Karten">
+                  <span class="spieler-stat-val" style="color: #eab308; display: inline-flex; align-items: center; gap: 4px;">
+                    <span style="display:inline-block;width:9px;height:12px;background:#eab308;border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.yellow}
+                  </span>
+                  <span class="spieler-stat-lbl">Gelb</span>
+                </div>
+                <div class="spieler-stat-pill" title="Gelb-Rote Karten">
+                  <span class="spieler-stat-val" style="color: #f1c40f; display: inline-flex; align-items: center; gap: 4px;">
+                    <span style="display:inline-block;width:9px;height:12px;background:linear-gradient(135deg, #f1c40f 50%, #e74c3c 50%);border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.yellowRed}
+                  </span>
+                  <span class="spieler-stat-lbl">G-Rot</span>
+                </div>
+                <div class="spieler-stat-pill" title="Rote Karten">
+                  <span class="spieler-stat-val" style="color: #ef4444; display: inline-flex; align-items: center; gap: 4px;">
+                    <span style="display:inline-block;width:9px;height:12px;background:#ef4444;border-radius:1.5px;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span> ${p.red}
+                  </span>
+                  <span class="spieler-stat-lbl">Rot</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Attach click listeners to cards and table rows
+    document.querySelectorAll('.spieler-card, .spieler-table-row').forEach(card => {
       card.addEventListener('click', () => {
         const pId = card.getAttribute('data-player-id');
         openPlayerProfile(pId);

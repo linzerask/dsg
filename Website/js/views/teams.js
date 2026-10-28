@@ -1,13 +1,14 @@
 import { Store, sanitizeMojibake } from '../store.js?v=1793360000000';
 import { renderIcon } from '../icons.js?v=1791270000000';
 import { renderTeamLogo, getTeamLogoUrl } from '../logos.js?v=1791270000000';
-import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink, getPlayerPositionLabel } from '../playerUtils.js?v=1793442000000';
+import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveStats, normalizePlayerKey, getTeamScorers, getPlayerLink, getPlayerPositionLabel, getPlayerPositionCategory, openPlayerStatsModal } from '../playerUtils.js?v=1793442000000';
 
 let allTeams = [];
 let allPlayers = [];
 let selectedTeamName = '';
 let scorerSeasonFilter = null;
 let squadStatusFilter = 'Aktiv';
+let squadViewMode = localStorage.getItem('dsg_player_view_mode') || 'cards';
 let showAllScorers = false;
 let scorerCurrentPage = 1;
 const SCORERS_PER_PAGE = 5;
@@ -272,6 +273,17 @@ export const bindTeams = async () => {
       return true; // 'all'
     });
 
+    const getPosBadgeHtml = (player) => {
+      const label = getPlayerPositionLabel(player.raw || player);
+      if (!label) return `<span class="dsg-pos-badge pos-none">-</span>`;
+      const cat = getPlayerPositionCategory(label);
+      let badgeClass = 'pos-mf';
+      if (cat === 'Torwart') badgeClass = 'pos-tw';
+      else if (cat === 'Abwehr') badgeClass = 'pos-abw';
+      else if (cat === 'Sturm') badgeClass = 'pos-st';
+      return `<span class="dsg-pos-badge ${badgeClass}" title="${label}">${label}</span>`;
+    };
+
     const squad = filteredPlayers.map(p => {
       const fn = sanitizeMojibake((p.Vorname || p.vorname || '').trim());
       const ln = sanitizeMojibake((p.Nachname || p.nachname || '').trim());
@@ -486,27 +498,106 @@ export const bindTeams = async () => {
             </div>
           </div>
 
-          <!-- Segmented Filter Switcher -->
-          <div class="team-squad-filter-group" style="display: inline-flex; background: rgba(0,0,0,0.06); padding: 3px; border-radius: 8px; gap: 4px; border: 1px solid var(--color-border);">
-            <button type="button" class="squad-status-btn ${squadStatusFilter === 'Aktiv' ? 'active' : ''}" data-status="Aktiv" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: ${squadStatusFilter === 'Aktiv' ? 'var(--color-surface)' : 'transparent'}; color: ${squadStatusFilter === 'Aktiv' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; box-shadow: ${squadStatusFilter === 'Aktiv' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none'};">
-              Aktive (${activeSquadPlayers.length})
-            </button>
-            <button type="button" class="squad-status-btn ${squadStatusFilter === 'Inaktiv' ? 'active' : ''}" data-status="Inaktiv" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: ${squadStatusFilter === 'Inaktiv' ? 'var(--color-surface)' : 'transparent'}; color: ${squadStatusFilter === 'Inaktiv' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; box-shadow: ${squadStatusFilter === 'Inaktiv' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none'};">
-              Inaktive (${inactiveSquadPlayers.length})
-            </button>
-            <button type="button" class="squad-status-btn ${squadStatusFilter === 'all' ? 'active' : ''}" data-status="all" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: ${squadStatusFilter === 'all' ? 'var(--color-surface)' : 'transparent'}; color: ${squadStatusFilter === 'all' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; box-shadow: ${squadStatusFilter === 'all' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none'};">
-              Alle (${teamPlayersAll.length})
-            </button>
-          </div>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <!-- Segmented Filter Switcher -->
+            <div class="team-squad-filter-group" style="display: inline-flex; background: rgba(0,0,0,0.06); padding: 3px; border-radius: 8px; gap: 4px; border: 1px solid var(--color-border);">
+              <button type="button" class="squad-status-btn ${squadStatusFilter === 'Aktiv' ? 'active' : ''}" data-status="Aktiv" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: ${squadStatusFilter === 'Aktiv' ? 'var(--color-surface)' : 'transparent'}; color: ${squadStatusFilter === 'Aktiv' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; box-shadow: ${squadStatusFilter === 'Aktiv' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none'};">
+                Aktive (${activeSquadPlayers.length})
+              </button>
+              <button type="button" class="squad-status-btn ${squadStatusFilter === 'Inaktiv' ? 'active' : ''}" data-status="Inaktiv" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: ${squadStatusFilter === 'Inaktiv' ? 'var(--color-surface)' : 'transparent'}; color: ${squadStatusFilter === 'Inaktiv' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; box-shadow: ${squadStatusFilter === 'Inaktiv' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none'};">
+                Inaktive (${inactiveSquadPlayers.length})
+              </button>
+              <button type="button" class="squad-status-btn ${squadStatusFilter === 'all' ? 'active' : ''}" data-status="all" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: ${squadStatusFilter === 'all' ? 'var(--color-surface)' : 'transparent'}; color: ${squadStatusFilter === 'all' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; box-shadow: ${squadStatusFilter === 'all' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none'};">
+                Alle (${teamPlayersAll.length})
+              </button>
+            </div>
 
-          <a href="#/spieler?team=${encodeURIComponent(teamName)}" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85rem;">
-            In Spieler-Datenbank suchen &rarr;
-          </a>
+            <!-- View Mode Switcher (Galerie / Tabelle) -->
+            <div class="dsg-view-switcher">
+              <button type="button" class="dsg-view-btn squad-view-btn ${squadViewMode === 'cards' ? 'active' : ''}" data-view="cards" title="Galerie / Karten-Ansicht">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Galerie</span>
+              </button>
+              <button type="button" class="dsg-view-btn squad-view-btn ${squadViewMode === 'table' ? 'active' : ''}" data-view="table" title="Tabelle / Listen-Ansicht">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                <span>Tabelle</span>
+              </button>
+            </div>
+
+            <a href="#/spieler?team=${encodeURIComponent(teamName)}" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85rem;">
+              In Spieler-Datenbank suchen &rarr;
+            </a>
+          </div>
         </div>
 
         ${squad.length === 0 ? `
           <div class="glass-card" style="text-align: center; padding: 40px 20px; color: var(--color-text-secondary); margin-top: var(--space-md);">
             <p style="margin: 0; font-size: 1rem;">Keine Spieler für diese Auswahl gelistet.</p>
+          </div>
+        ` : (squadViewMode === 'table' ? `
+          <div class="dsg-players-table-wrap">
+            <table class="dsg-players-table">
+              <thead>
+                <tr>
+                  <th style="width: 44px; text-align: center;">#</th>
+                  <th>Spieler</th>
+                  <th>Position</th>
+                  <th style="text-align: center;">Alter</th>
+                  <th style="text-align: center;">Seit</th>
+                  <th style="text-align: center;" title="Tore">Tore ⚽</th>
+                  <th style="text-align: center;" title="Gelbe Karten">Gelb 🟨</th>
+                  <th style="text-align: center;" title="Gelb-Rote Karten">G-Rot</th>
+                  <th style="text-align: center;" title="Rote Karten">Rot 🟥</th>
+                  <th style="text-align: right; width: 85px;">Profil</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${squad.map((p, idx) => {
+                  const avatar = getPlayerAvatar(p.raw);
+                  const ageText = p.age ? `${p.age} J.` : '-';
+                  const sinceText = formatMemberSince(p.memberSince) || '-';
+                  const posBadge = getPosBadgeHtml(p);
+                  const inactBadge = !p.isActive ? `<span style="font-size: 0.65rem; padding: 1px 6px; border-radius: 999px; background: rgba(100, 116, 139, 0.2); color: #94a3b8; font-weight: 800; text-transform: uppercase; margin-left: 6px;">Inaktiv</span>` : '';
+                  
+                  return `
+                    <tr class="team-player-row" data-player-id="${p.id}" title="${p.fullName} - Profil & Statistik" style="cursor: pointer;">
+                      <td style="text-align: center; color: var(--color-text-secondary); font-weight: 700; font-size: 0.82rem;">${idx + 1}</td>
+                      <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                          <img src="${avatar}" alt="${p.fullName}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: contain; background: #ffffff; border: 1.5px solid var(--color-border); flex-shrink: 0; ${!p.isActive ? 'filter: grayscale(40%); opacity: 0.8;' : ''}">
+                          <div>
+                            <div style="font-weight: 700; color: var(--color-text-primary); display: flex; align-items: center;">
+                              ${p.fullName}
+                              ${inactBadge}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>${posBadge}</td>
+                      <td style="text-align: center; color: var(--color-text-secondary); font-size: 0.85rem; font-weight: 600;">${ageText}</td>
+                      <td style="text-align: center; color: var(--color-text-secondary); font-size: 0.82rem;">${sinceText}</td>
+                      <td style="text-align: center; font-weight: 800; font-size: 0.95rem; color: ${p.goals > 0 ? 'var(--color-accent)' : 'var(--color-text-secondary)'};">
+                        ${p.goals > 0 ? `${renderIcon('ball', { size: 12, color: 'var(--color-accent)' })} ${p.goals}` : '0'}
+                      </td>
+                      <td style="text-align: center; font-weight: 700; font-size: 0.88rem; color: ${p.yellow > 0 ? '#eab308' : 'var(--color-text-secondary)'};">
+                        ${p.yellow > 0 ? `<span style="display:inline-block;width:8px;height:11px;background:#eab308;border-radius:1px;margin-right:3px;vertical-align:middle;"></span>${p.yellow}` : '0'}
+                      </td>
+                      <td style="text-align: center; font-weight: 700; font-size: 0.88rem; color: ${p.yellowRed > 0 ? '#f1c40f' : 'var(--color-text-secondary)'};">
+                        ${p.yellowRed > 0 ? `<span style="display:inline-block;width:8px;height:11px;background:linear-gradient(135deg,#f1c40f 50%,#e74c3c 50%);border-radius:1px;margin-right:3px;vertical-align:middle;"></span>${p.yellowRed}` : '0'}
+                      </td>
+                      <td style="text-align: center; font-weight: 700; font-size: 0.88rem; color: ${p.red > 0 ? '#ef4444' : 'var(--color-text-secondary)'};">
+                        ${p.red > 0 ? `<span style="display:inline-block;width:8px;height:11px;background:#ef4444;border-radius:1px;margin-right:3px;vertical-align:middle;"></span>${p.red}` : '0'}
+                      </td>
+                      <td style="text-align: right;">
+                        <button type="button" class="btn-dsg-sm team-player-modal-btn" data-player-id="${p.id}" title="Statistik & Details">
+                          Details &rarr;
+                        </button>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
           </div>
         ` : `
           <div class="team-kader-grid">
@@ -571,7 +662,7 @@ export const bindTeams = async () => {
             `;
           }).join('')}
         </div>
-      `}
+      `)}
       </div>
     `;
 
@@ -717,6 +808,29 @@ export const bindTeams = async () => {
       btn.addEventListener('click', (e) => {
         squadStatusFilter = btn.getAttribute('data-status') || 'Aktiv';
         renderTeamDetails(teamName);
+      });
+    });
+
+    // Bind squad view mode buttons
+    teamContainer.querySelectorAll('.squad-view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-view') || 'cards';
+        squadViewMode = mode;
+        localStorage.setItem('dsg_player_view_mode', mode);
+        renderTeamDetails(teamName);
+      });
+    });
+
+    // Bind squad player clicks to open stats modal in-place
+    teamContainer.querySelectorAll('.team-player-row, .team-kader-grid a').forEach(el => {
+      el.addEventListener('click', (e) => {
+        if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+        e.preventDefault();
+        const pId = el.getAttribute('data-player-id') || el.getAttribute('href')?.replace('#/spieler?id=', '');
+        const playerObj = squad.find(p => String(p.id) === String(pId)) || allPlayers.find(p => String(p['#'] || p.id || p.ID) === String(pId));
+        if (playerObj) {
+          openPlayerStatsModal(playerObj.raw || playerObj, { teamName, seasonKey: currentSeasonKey });
+        }
       });
     });
   };

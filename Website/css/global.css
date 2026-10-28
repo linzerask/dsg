@@ -4828,3 +4828,242 @@ main {
     background: rgba(0, 179, 65, 0.2) !important;
     color: #ffffff !important;
 }
+
+
+/* ==========================================================================
+   DSG Players View Switcher & Datagrid Table (Galerie / Tabelle)
+   ========================================================================== */
+.dsg-view-switcher {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 3px;
+    border-radius: 8px;
+    gap: 3px;
+    border: 1px solid var(--color-border);
+}
+
+[data-theme="dark"] .dsg-view-switcher {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.dsg-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: var(--color-text-secondary);
+    transition: all 0.2s ease;
+}
+
+.dsg-view-btn svg {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.dsg-view-btn:hover {
+    color: var(--color-text-primary);
+}
+
+.dsg-view-btn.active {
+    background: var(--color-surface);
+    color: var(--color-accent);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .dsg-view-btn.active {
+    background: rgba(255, 255, 255, 0.12);
+    color: #4ade80;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* Table Wrapper */
+.dsg-players-table-wrap {
+    width: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    margin-top: var(--space-sm);
+}
+
+.dsg-players-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.88rem;
+    min-width: 680px;
+}
+
+.dsg-players-table th {
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.03);
+    color: var(--color-text-secondary);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+    user-select: none;
+}
+
+.dsg-players-table th.sortable-th {
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.dsg-players-table th.sortable-th:hover {
+    color: var(--color-text-primary);
+    background: rgba(0, 179, 65, 0.08);
+}
+
+[data-theme="dark"] .dsg-players-table th {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="dark"] .dsg-players-table th.sortable-th:hover {
+    background: rgba(0, 179, 65, 0.15);
+}
+
+.dsg-players-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+    color: var(--color-text-primary);
+}
+
+.dsg-players-table tbody tr {
+    transition: background 0.15s ease;
+    cursor: pointer;
+}
+
+.dsg-players-table tbody tr:hover {
+    background: rgba(0, 179, 65, 0.05);
+}
+
+[data-theme="dark"] .dsg-players-table tbody tr:hover {
+    background: rgba(0, 179, 65, 0.12);
+}
+
+.dsg-players-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Position Badges */
+.dsg-pos-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dsg-pos-badge.pos-tw {
+    background: rgba(234, 179, 8, 0.15);
+    color: #b45309;
+    border: 1px solid rgba(234, 179, 8, 0.35);
+}
+
+.dsg-pos-badge.pos-abw {
+    background: rgba(59, 130, 246, 0.15);
+    color: #1d4ed8;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+.dsg-pos-badge.pos-mf {
+    background: rgba(0, 179, 65, 0.15);
+    color: #15803d;
+    border: 1px solid rgba(0, 179, 65, 0.35);
+}
+
+.dsg-pos-badge.pos-st {
+    background: rgba(239, 68, 68, 0.15);
+    color: #b91c1c;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.dsg-pos-badge.pos-none {
+    background: rgba(148, 163, 184, 0.12);
+    color: #64748b;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+[data-theme="dark"] .dsg-pos-badge.pos-tw {
+    background: rgba(234, 179, 8, 0.2);
+    color: #facc15;
+    border-color: rgba(234, 179, 8, 0.4);
+}
+
+[data-theme="dark"] .dsg-pos-badge.pos-abw {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+[data-theme="dark"] .dsg-pos-badge.pos-mf {
+    background: rgba(0, 179, 65, 0.2);
+    color: #4ade80;
+    border-color: rgba(0, 179, 65, 0.4);
+}
+
+[data-theme="dark"] .dsg-pos-badge.pos-st {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+[data-theme="dark"] .dsg-pos-badge.pos-none {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+    border-color: rgba(148, 163, 184, 0.3);
+}
+
+.btn-dsg-sm {
+    background: rgba(0, 179, 65, 0.12);
+    color: var(--color-accent);
+    font-weight: 700;
+    border: 1px solid rgba(0, 179, 65, 0.25);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.76rem;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+}
+
+.btn-dsg-sm:hover {
+    background: var(--color-accent);
+    color: #ffffff;
+    border-color: var(--color-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 179, 65, 0.25);
+}
+
+[data-theme="dark"] .btn-dsg-sm {
+    background: rgba(0, 179, 65, 0.18);
+    color: #4ade80;
+    border-color: rgba(0, 179, 65, 0.35);
+}
+
+[data-theme="dark"] .btn-dsg-sm:hover {
+    background: var(--color-accent);
+    color: #ffffff;
+}
