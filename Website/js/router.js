@@ -2,11 +2,11 @@ import { viewHome, bindHome } from './views/home.js?v=1793370000000';
 
 import { viewNews, bindNews } from './views/news.js?v=1791305000000';
 
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1792924000000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1793455000000';
 
-import { viewSpieler, bindSpieler } from './views/spieler.js?v=1793452000000';
+import { viewSpieler, bindSpieler } from './views/spieler.js?v=1793455000000';
 
-import { viewTeams, bindTeams } from './views/teams.js?v=1793452000000';
+import { viewTeams, bindTeams } from './views/teams.js?v=1793455000000';
 
 import { viewArchiv } from './views/simpleViews.js?v=1791305000000';
 
