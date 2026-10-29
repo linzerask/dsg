@@ -151,7 +151,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1793455000000';
+const DATA_VERSION_STRING = '?v=1793468000000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -463,7 +463,7 @@ export const Store = {
         if (i !== 95) localStorage.removeItem(`dsg_data_v${i}`);
         if (i !== 40) localStorage.removeItem(`dsg_articles_v${i}`);
         if (i !== 27) localStorage.removeItem(`dsg_gallery_v${i}`);
-        if (i !== 14) localStorage.removeItem(`dsg_admin_players_v${i}`);
+        if (i !== 15) localStorage.removeItem(`dsg_admin_players_v${i}`);
         if (i !== 13) localStorage.removeItem(`dsg_admin_teams_v${i}`);
         if (i !== 45) localStorage.removeItem(`dsg_admin_rounds_v${i}`);
         if (i !== 44) localStorage.removeItem(`dsg_admin_leagues_v${i}`);
@@ -2397,13 +2397,13 @@ export const Store = {
   },
 
   getAdminPlayersSync() {
-    const local = loadLocal('dsg_admin_players', 14);
+    const local = loadLocal('dsg_admin_players', 15);
     if (local && Array.isArray(local) && local.length > 0) return local;
     return [];
   },
 
   async getAdminPlayers() {
-    const local = loadLocal('dsg_admin_players', 14);
+    const local = loadLocal('dsg_admin_players', 15);
     let masterFilePlayers = [];
     try {
       const res = await fetch('data/players.json' + DATA_VERSION_STRING);
@@ -2429,6 +2429,15 @@ export const Store = {
     if (!sourcePlayers || sourcePlayers.length === 0) {
       sourcePlayers = masterFilePlayers;
       needsCloudSync = true;
+    }
+
+    // Filter out removed duplicate #4494 if present from older Firebase snapshot
+    if (Array.isArray(sourcePlayers)) {
+      const beforeLen = sourcePlayers.length;
+      sourcePlayers = sourcePlayers.filter(p => String(p['#'] || p.id) !== '4494');
+      if (sourcePlayers.length !== beforeLen) {
+        needsCloudSync = true;
+      }
     }
 
     // Merge any updated positions, status, or new players from data/players.json into sourcePlayers
@@ -2457,7 +2466,7 @@ export const Store = {
       });
     }
 
-    trySetLocal('dsg_admin_players_v14', JSON.stringify(sourcePlayers));
+    trySetLocal('dsg_admin_players_v15', JSON.stringify(sourcePlayers));
     if (needsCloudSync) {
       setDoc(doc(db, 'system', 'players_data'), { data: sourcePlayers, lastUpdated: Date.now() })
         .catch(e => console.error("Firebase update players:", e));
@@ -2467,7 +2476,7 @@ export const Store = {
   },
 
   saveAdminPlayers(players) {
-    trySetLocal('dsg_admin_players_v14', JSON.stringify(players));
+    trySetLocal('dsg_admin_players_v15', JSON.stringify(players));
     setDoc(doc(db, 'system', 'players_data'), { data: players, lastUpdated: Date.now() })
       .catch(e => console.error("Firebase save error (players):", e));
     window.dispatchEvent(new CustomEvent('players-updated'));

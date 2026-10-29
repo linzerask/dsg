@@ -52390,7 +52390,8 @@
     "seit": "2020-08-15",
     "Status": "Aktiv",
     "ÖFB-Verein": "",
-    "Aktion": "Editieren Löschen"
+    "Aktion": "Editieren Löschen",
+    "Position": "Innenverteidiger / Rechtsverteidiger"
   },
   {
     "#": "4018",
@@ -52692,19 +52693,6 @@
     "seit": "2026-10-06",
     "Status": "Aktiv",
     "Position": "Torwart",
-    "ÖFB-Verein": "-",
-    "Aktion": "Editieren Löschen"
-  },
-  {
-    "#": "4494",
-    "Vorname": "Nikola",
-    "Nachname": "Zivoinovic",
-    "Geburtsdatum": "1993-08-27",
-    "Team": "FC Gornjak",
-    "Mitglied": "Ja",
-    "seit": "2026-10-06",
-    "Status": "Aktiv",
-    "Position": "Innenverteidiger / Rechtsverteidiger",
     "ÖFB-Verein": "-",
     "Aktion": "Editieren Löschen"
   }
