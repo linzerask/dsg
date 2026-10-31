@@ -2548,7 +2548,9 @@ export const Store = {
     pendingStore.forEach(p => {
       const s = data.seasons[p.seasonKey];
       if (s && Array.isArray(s.matches)) {
-        const m = s.matches.find(match => String(match.id) === String(p.matchId) || (match.home === p.match?.home && match.away === p.match?.away));
+        // STRICT match by unique matchId ONLY! Never fallback to team names alone,
+        // because teams play each other multiple times per season.
+        const m = s.matches.find(match => String(match.id) === String(p.matchId));
         if (m) {
           if (p.status === 'pending_approval') {
             m.reportStatus = 'pending_approval';
@@ -2635,7 +2637,12 @@ export const Store = {
     if (matchIndex === -1) return false;
 
     const match = matches[matchIndex];
-    const rep = match.refereeReport;
+    let rep = match.refereeReport;
+    if (!rep) {
+      const pendingStore = this.getPendingReportsStore();
+      const pEntry = pendingStore.find(p => String(p.matchId) === String(matchId) && String(p.seasonKey) === String(seasonKey));
+      if (pEntry && pEntry.report) rep = pEntry.report;
+    }
     if (!rep) return false;
 
     // Apply the submitted referee report as the official result
@@ -2734,7 +2741,8 @@ export const Store = {
         if (s && Array.isArray(s.matches)) {
           s.matches.forEach(m => {
             const key = `${sKey}_${m.id}`;
-            if (!seenMatchIds.has(key) && m.reportStatus === 'pending_approval' && m.refereeReport) {
+            const repMatchId = m.refereeReport?.matchId || m.refereeReport?.id;
+            if (!seenMatchIds.has(key) && m.reportStatus === 'pending_approval' && m.refereeReport && String(repMatchId) === String(m.id)) {
               seenMatchIds.add(key);
               results.push({
                 seasonKey: sKey,

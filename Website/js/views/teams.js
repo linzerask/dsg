@@ -6,6 +6,8 @@ import { getPlayerAvatar, calculatePlayerAge, formatMemberSince, getPlayerLiveSt
 let allTeams = [];
 let allPlayers = [];
 let selectedTeamName = '';
+let clubSearchQuery = '';
+let squadSearchQuery = '';
 let scorerSeasonFilter = null;
 let squadStatusFilter = 'Aktiv';
 let squadViewMode = localStorage.getItem('dsg_player_view_mode') || 'cards';
@@ -59,9 +61,17 @@ export const viewTeams = () => {
 
       <!-- Active Teams Quick Selector Grid -->
       <div class="stagger-item" style="margin-bottom: var(--space-xl);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
-          <h3 style="margin: 0; font-size: 1.15rem;" id="teams-active-heading">Aktive Vereine</h3>
-          <span style="font-size: 0.85rem; color: var(--color-text-secondary);">Wähle ein Team für Details</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h3 style="margin: 0; font-size: 1.15rem;" id="teams-active-heading">Aktive Vereine</h3>
+            <span style="font-size: 0.85rem; color: var(--color-text-secondary);">Wähle ein Team für Details</span>
+          </div>
+          <div style="position: relative; width: 100%; max-width: 320px;">
+            <input type="text" id="teams-club-search-input" class="admin-input" placeholder="Verein oder Spieler suchen..." style="width: 100%; padding-left: 36px; height: 38px; border-radius: 8px; font-size: 0.88rem; background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-text-primary);">
+            <div style="position: absolute; left: 11px; top: 50%; transform: translateY(-50%); pointer-events: none; opacity: 0.5;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+          </div>
         </div>
         <div id="teams-selector-grid" class="teams-quick-grid">
           <!-- Rendered dynamically -->
@@ -188,6 +198,15 @@ export const bindTeams = async () => {
     scorerSeasonFilter = activeSeasonInfo.seasonKey;
   }
 
+  const clubSearchInput = document.getElementById('teams-club-search-input');
+  if (clubSearchInput) {
+    clubSearchInput.value = clubSearchQuery;
+    clubSearchInput.oninput = (e) => {
+      clubSearchQuery = e.target.value.trim();
+      renderSelector();
+    };
+  }
+
   // Load data
   try {
     const [rawTeams, rawPlayers] = await Promise.all([
@@ -270,9 +289,20 @@ export const bindTeams = async () => {
 
     const filteredPlayers = teamPlayersAll.filter(p => {
       const isAct = (p.Status || p.status) === 'Aktiv';
-      if (squadStatusFilter === 'Aktiv') return isAct;
-      if (squadStatusFilter === 'Inaktiv') return !isAct;
-      return true; // 'all'
+      if (squadStatusFilter === 'Aktiv' && !isAct) return false;
+      if (squadStatusFilter === 'Inaktiv' && isAct) return false;
+      if (squadSearchQuery) {
+        const q = normalizePlayerKey(squadSearchQuery);
+        const fn = normalizePlayerKey(p.Vorname || p.vorname || '');
+        const ln = normalizePlayerKey(p.Nachname || p.nachname || '');
+        const full = `${fn} ${ln}`;
+        const pId = String(p['#'] || p.id || p.ID || '');
+        const pos = normalizePlayerKey(p.Position || p.position || '');
+        if (!full.includes(q) && !pId.includes(q) && !pos.includes(q)) {
+          return false;
+        }
+      }
+      return true;
     });
 
     const getPosBadgeHtml = (player) => {
@@ -557,6 +587,14 @@ export const bindTeams = async () => {
           </div>
 
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <!-- Squad Player Search -->
+            <div style="position: relative; min-width: 180px; max-width: 240px; flex: 1;">
+              <input type="text" id="squad-player-search-input" class="admin-input" placeholder="Kaderspieler suchen..." value="${squadSearchQuery}" style="width: 100%; padding-left: 30px; height: 34px; border-radius: 6px; font-size: 0.82rem; background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-text-primary);">
+              <div style="position: absolute; left: 9px; top: 50%; transform: translateY(-50%); pointer-events: none; opacity: 0.5;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              </div>
+            </div>
+
             <!-- Segmented Filter Switcher -->
             <div class="team-squad-filter-group" style="display: inline-flex; background: rgba(0,0,0,0.06); padding: 3px; border-radius: 8px; gap: 4px; border: 1px solid var(--color-border);">
               <button type="button" class="squad-status-btn ${squadStatusFilter === 'Aktiv' ? 'active' : ''}" data-status="Aktiv" style="padding: 6px 14px; font-size: 0.82rem; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s; background: ${squadStatusFilter === 'Aktiv' ? 'var(--color-surface)' : 'transparent'}; color: ${squadStatusFilter === 'Aktiv' ? 'var(--color-accent)' : 'var(--color-text-secondary)'}; box-shadow: ${squadStatusFilter === 'Aktiv' ? '0 2px 4px rgba(0,0,0,0.08)' : 'none'};">
@@ -981,6 +1019,20 @@ export const bindTeams = async () => {
       });
     });
 
+    // Wire Squad Search Input
+    const squadSearchInput = document.getElementById('squad-player-search-input');
+    if (squadSearchInput) {
+      squadSearchInput.addEventListener('input', (e) => {
+        squadSearchQuery = e.target.value.trim();
+        renderTeamDetails(selectedTeamName);
+        const refreshedInput = document.getElementById('squad-player-search-input');
+        if (refreshedInput) {
+          refreshedInput.focus();
+          refreshedInput.setSelectionRange(refreshedInput.value.length, refreshedInput.value.length);
+        }
+      });
+    }
+
     // Bind squad view mode buttons
     teamContainer.querySelectorAll('.squad-view-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1007,7 +1059,34 @@ export const bindTeams = async () => {
 
   const renderSelector = () => {
     if (!selectorGrid) return;
-    selectorGrid.innerHTML = activeTeamsList.map(tName => {
+
+    const filteredClubs = activeTeamsList.filter(tName => {
+      if (!clubSearchQuery) return true;
+      const q = normalizePlayerKey(clubSearchQuery);
+      if (normalizePlayerKey(tName).includes(q)) return true;
+      // Also match if any active player in this team matches the search query!
+      const hasMatchingPlayer = allPlayers.some(p => {
+        const isAct = (p.Status || p.status) === 'Aktiv';
+        const tm = sanitizeMojibake((p.Team || p.team || '').trim());
+        if (!isAct || (tm !== tName && normalizePlayerKey(tm) !== normalizePlayerKey(tName))) return false;
+        const fn = normalizePlayerKey(p.Vorname || p.vorname || '');
+        const ln = normalizePlayerKey(p.Nachname || p.nachname || '');
+        const pId = String(p['#'] || p.id || p.ID || '');
+        return `${fn} ${ln}`.includes(q) || pId.includes(q);
+      });
+      return hasMatchingPlayer;
+    });
+
+    if (filteredClubs.length === 0) {
+      selectorGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 24px; text-align: center; color: var(--color-text-secondary); font-size: 0.9rem;">
+          Kein Verein oder Spieler für "${clubSearchQuery}" gefunden.
+        </div>
+      `;
+      return;
+    }
+
+    selectorGrid.innerHTML = filteredClubs.map(tName => {
       const isSelected = tName === selectedTeamName;
       const logoHTML = renderTeamLogo(tName, 'sm');
       const count = allPlayers.filter(p => {
@@ -1032,6 +1111,7 @@ export const bindTeams = async () => {
         selectedTeamName = card.getAttribute('data-team-name');
         showAllScorers = false;
         scorerCurrentPage = 1;
+        squadSearchQuery = '';
         renderSelector();
         renderTeamDetails(selectedTeamName);
       });
@@ -1040,6 +1120,7 @@ export const bindTeams = async () => {
 
   renderSelector();
   renderTeamDetails(selectedTeamName);
+  if (selectorGrid) selectorGrid.setAttribute('data-teams-ready', 'true');
 };
 
 

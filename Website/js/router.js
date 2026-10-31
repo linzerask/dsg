@@ -6,7 +6,7 @@ import { viewLiga, bindLigaTabs } from './views/liga.js?v=1793455000000';
 
 import { viewSpieler, bindSpieler } from './views/spieler.js?v=1793455000000';
 
-import { viewTeams, bindTeams } from './views/teams.js?v=1793455000000';
+import { viewTeams, bindTeams } from './views/teams.js?v=1793488000000';
 
 import { viewArchiv } from './views/simpleViews.js?v=1791305000000';
 
@@ -22,7 +22,7 @@ import { getAuth, loginWithPin, logout } from './auth.js?v=1793127696174';
 
 import { viewTeamAdmin, bindTeamAdmin } from './views/teamAdmin.js?v=1793370000000';
 
-import { viewRefereeAdmin, bindRefereeAdmin } from './views/refereeAdmin.js?v=1793370000000';
+import { viewRefereeAdmin, bindRefereeAdmin } from './views/refereeAdmin.js?v=1793488000000';
 
 import { viewArticle, bindArticle } from './views/article.js?v=1791305000000';
 

@@ -1797,7 +1797,7 @@ export const bindRefereeAdmin = async () => {
                   </div>
                   <div class="searchable-player-dropdown" id="dropdown-ref-report-scorer-player-home" style="display: none;"></div>
                 </div>
-                <input type="text" id="ref-report-goal-min-home" class="admin-input" placeholder="Min." title="Spielminute (optional, z.B. 24)" style="width: 58px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                <input type="text" id="ref-report-goal-min-home" class="admin-input" placeholder="Min." title="Spielminute (z.B. 24 oder bei mehreren Toren z.B. 10, 20)" style="width: 76px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
                 <input type="number" id="ref-report-goal-count-home" min="1" max="20" value="1" class="admin-input" title="Anzahl Tore" placeholder="1" style="width: 44px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
                 <button type="button" id="btn-add-ref-goal-home" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px; white-space: nowrap;">+ Hinzufügen</button>
               </div>
@@ -1818,7 +1818,7 @@ export const bindRefereeAdmin = async () => {
                   </div>
                   <div class="searchable-player-dropdown" id="dropdown-ref-report-scorer-player-away" style="display: none;"></div>
                 </div>
-                <input type="text" id="ref-report-goal-min-away" class="admin-input" placeholder="Min." title="Spielminute (optional, z.B. 24)" style="width: 58px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
+                <input type="text" id="ref-report-goal-min-away" class="admin-input" placeholder="Min." title="Spielminute (z.B. 24 oder bei mehreren Toren z.B. 10, 20)" style="width: 76px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
                 <input type="number" id="ref-report-goal-count-away" min="1" max="20" value="1" class="admin-input" title="Anzahl Tore" placeholder="1" style="width: 44px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
                 <button type="button" id="btn-add-ref-goal-away" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px; white-space: nowrap;">+ Hinzufügen</button>
               </div>
@@ -2170,11 +2170,30 @@ export const bindRefereeAdmin = async () => {
     if (addGoalH) {
       addGoalH.onclick = () => {
         const val = getRefComboboxValue('ref-report-scorer-player-home');
-        const count = Math.max(1, parseInt(countInputH?.value, 10) || 1);
         const minVal = minGoalHInput ? minGoalHInput.value.replace(/['"]/g, '').trim() : '';
+        const minuteTokens = minVal ? minVal.split(/[,;]+/).map(m => m.replace(/['"]/g, '').trim()).filter(Boolean) : [];
+        let count = Math.max(1, parseInt(countInputH?.value, 10) || 1);
+        if (minuteTokens.length > count) {
+          count = minuteTokens.length;
+        }
+
         if (val) {
-          for (let i = 0; i < count; i++) {
-            refReportScorersHome.push({ player: val, minute: minVal });
+          if (minuteTokens.length > 1) {
+            minuteTokens.forEach(mToken => {
+              refReportScorersHome.push({ player: val, minute: mToken });
+            });
+            for (let i = minuteTokens.length; i < count; i++) {
+              refReportScorersHome.push({ player: val, minute: '' });
+            }
+          } else if (minuteTokens.length === 1) {
+            refReportScorersHome.push({ player: val, minute: minuteTokens[0] });
+            for (let i = 1; i < count; i++) {
+              refReportScorersHome.push({ player: val, minute: '' });
+            }
+          } else {
+            for (let i = 0; i < count; i++) {
+              refReportScorersHome.push({ player: val, minute: '' });
+            }
           }
           renderRefReportLists();
           resetRefPlayerCombobox('ref-report-scorer-player-home', true);
@@ -2192,6 +2211,12 @@ export const bindRefereeAdmin = async () => {
       };
     }
     if (minGoalHInput) {
+      minGoalHInput.oninput = () => {
+        const tokens = minGoalHInput.value.split(/[,;]+/).map(m => m.trim()).filter(Boolean);
+        if (tokens.length > 1 && countInputH) {
+          countInputH.value = String(tokens.length);
+        }
+      };
       minGoalHInput.onkeydown = (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -2206,11 +2231,30 @@ export const bindRefereeAdmin = async () => {
     if (addGoalA) {
       addGoalA.onclick = () => {
         const val = getRefComboboxValue('ref-report-scorer-player-away');
-        const count = Math.max(1, parseInt(countInputA?.value, 10) || 1);
         const minVal = minGoalAInput ? minGoalAInput.value.replace(/['"]/g, '').trim() : '';
+        const minuteTokens = minVal ? minVal.split(/[,;]+/).map(m => m.replace(/['"]/g, '').trim()).filter(Boolean) : [];
+        let count = Math.max(1, parseInt(countInputA?.value, 10) || 1);
+        if (minuteTokens.length > count) {
+          count = minuteTokens.length;
+        }
+
         if (val) {
-          for (let i = 0; i < count; i++) {
-            refReportScorersAway.push({ player: val, minute: minVal });
+          if (minuteTokens.length > 1) {
+            minuteTokens.forEach(mToken => {
+              refReportScorersAway.push({ player: val, minute: mToken });
+            });
+            for (let i = minuteTokens.length; i < count; i++) {
+              refReportScorersAway.push({ player: val, minute: '' });
+            }
+          } else if (minuteTokens.length === 1) {
+            refReportScorersAway.push({ player: val, minute: minuteTokens[0] });
+            for (let i = 1; i < count; i++) {
+              refReportScorersAway.push({ player: val, minute: '' });
+            }
+          } else {
+            for (let i = 0; i < count; i++) {
+              refReportScorersAway.push({ player: val, minute: '' });
+            }
           }
           renderRefReportLists();
           resetRefPlayerCombobox('ref-report-scorer-player-away', true);
@@ -2228,6 +2272,12 @@ export const bindRefereeAdmin = async () => {
       };
     }
     if (minGoalAInput) {
+      minGoalAInput.oninput = () => {
+        const tokens = minGoalAInput.value.split(/[,;]+/).map(m => m.trim()).filter(Boolean);
+        if (tokens.length > 1 && countInputA) {
+          countInputA.value = String(tokens.length);
+        }
+      };
       minGoalAInput.onkeydown = (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
