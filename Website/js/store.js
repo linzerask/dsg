@@ -151,7 +151,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1793468000000';
+const DATA_VERSION_STRING = '?v=1793475000000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -474,7 +474,7 @@ export const Store = {
     } catch(e) {}
 
     // Eagerly load synchronous local memory into shared singleton
-    state.memoryData = loadLocal('dsg_data', 95);
+    state.memoryData = loadLocal('dsg_data', 96);
     this.reconcilePendingReports();
     state.memoryNews = loadLocal('dsg_articles', 40) || sortArticles([...(INITIAL_DATA.news || [])]);
     state.memoryGallery = loadLocal('dsg_gallery', 27) || INITIAL_DATA.gallery || [];
@@ -552,7 +552,7 @@ export const Store = {
       }
 
       if (!state.memoryData.currentSeason) state.memoryData.currentSeason = "2026/2027";
-      trySetLocal('dsg_data_v95', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_data_v96', JSON.stringify(state.memoryData));
 
       if (fileLeagues && (!localLeagues || localLeagues.length === 0)) {
         let merged = Array.isArray(fileLeagues) ? [...fileLeagues] : [];
@@ -663,7 +663,7 @@ export const Store = {
       if (dataSnap.exists() && dataSnap.data()?.data) {
         const fbData = dataSnap.data().data;
         const fbTime = dataSnap.data().lastUpdated || fbData.lastUpdated || 0;
-        const localData = loadLocal('dsg_data', 95);
+        const localData = loadLocal('dsg_data', 96);
         const localTime = localData?.lastUpdated || 0;
         
         let targetData = (localTime > fbTime && localData && localData.seasons) ? localData : fbData;
@@ -727,7 +727,7 @@ export const Store = {
 
         if (!areSeasonsStructurallyEqual(state.memoryData?.seasons, targetData?.seasons)) {
           state.memoryData = targetData;
-          trySetLocal('dsg_data_v95', JSON.stringify(targetData));
+          trySetLocal('dsg_data_v96', JSON.stringify(targetData));
           hasLigaUpdates = true;
         }
 
@@ -1033,7 +1033,7 @@ export const Store = {
         await setDoc(dataRef, { data: state.memoryData, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (data):", e));
       }
         
-      trySetLocal('dsg_data_v95', JSON.stringify(state.memoryData));
+      trySetLocal('dsg_data_v96', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v40', JSON.stringify(state.memoryNews));
       trySetLocal('dsg_gallery_v27', JSON.stringify(state.memoryGallery));
 
@@ -1111,7 +1111,7 @@ export const Store = {
               state.memoryData.seasons[k] = archiveData.seasons[k];
             }
           });
-          trySetLocal('dsg_data_v95', JSON.stringify(state.memoryData));
+          trySetLocal('dsg_data_v96', JSON.stringify(state.memoryData));
         }
       } catch (err) {
         console.warn("Could not load archive season:", err);
@@ -1162,7 +1162,7 @@ export const Store = {
     }
     const cleanData = deepSanitize(data);
     state.memoryData = cleanData;
-    trySetLocal('dsg_data_v95', JSON.stringify(cleanData));
+    trySetLocal('dsg_data_v96', JSON.stringify(cleanData));
 
     // Split active vs archive seasons for lightweight saves (< 260 KB)
     const activeKeys = ['2026/2027', 'Testliga 2026/2027'];
@@ -2325,7 +2325,6 @@ export const Store = {
         points: 0
       };
     });
-    this.saveData(data);
     this.recalculateSeason(seasonKey);
   },
 
@@ -2674,7 +2673,6 @@ export const Store = {
       this.savePendingReportsStore(pendingStore);
     }
 
-    this.saveData(data);
     this.recalculateSeason(seasonKey);
     window.dispatchEvent(new CustomEvent('match-reports-updated'));
     window.dispatchEvent(new CustomEvent('data-updated'));
@@ -2945,7 +2943,7 @@ export const Store = {
           const state = getState();
           const fbData = snap.data().data;
           const fbTime = snap.data().lastUpdated || fbData.lastUpdated || 0;
-          const localData = loadLocal('dsg_data', 95);
+          const localData = loadLocal('dsg_data', 96);
           const localTime = localData?.lastUpdated || 0;
           if (fbTime >= localTime || !localData) {
             const currentStr = JSON.stringify(state.memoryData?.seasons || {});
@@ -2958,7 +2956,7 @@ export const Store = {
               });
               state.memoryData.currentSeason = fbData.currentSeason || state.memoryData.currentSeason || "2026/2027";
               state.memoryData.lastUpdated = fbTime;
-              trySetLocal('dsg_data_v95', JSON.stringify(state.memoryData));
+              trySetLocal('dsg_data_v96', JSON.stringify(state.memoryData));
               window.dispatchEvent(new CustomEvent('data-updated', { detail: state.memoryData }));
             }
           }
