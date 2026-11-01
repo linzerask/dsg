@@ -1721,10 +1721,16 @@ const openReportModal = (idxOrMatch) => {
     const modal = document.getElementById('report-modal');
     if (!modal) return;
 
-    const isPending = match.reportStatus === 'pending_approval';
-    const reportData = (isPending && match.refereeReport)
-        ? { ...match, ...match.refereeReport }
-        : match;
+    let refReport = match.refereeReport;
+    if (!refReport && window.Store?.getPendingReportsStore) {
+        const pList = window.Store.getPendingReportsStore() || [];
+        const pEntry = pList.find(p => String(p.matchId) === String(match.id) && String(p.seasonKey || '') === String(match.seasonKey || ''));
+        if (pEntry && pEntry.report) {
+            refReport = pEntry.report;
+        }
+    }
+    const isPending = match.reportStatus === 'pending_approval' || (refReport && refReport.status === 'pending_approval');
+    const reportData = refReport ? { ...match, ...refReport } : match;
 
     const pendingBanner = document.getElementById('report-modal-pending-banner');
     if (pendingBanner) {
@@ -2236,6 +2242,34 @@ const renderReportLists = () => {
 
     // Render Substitutions
     updateAdminSubsUI();
+
+    // Auto-sync full-time score inputs if scorers are modified
+    const ftHInput = document.getElementById('report-ft-home');
+    const ftAInput = document.getElementById('report-ft-away');
+    if (ftHInput && (reportScorersHome.length > 0 || ftHInput.value !== '')) {
+        ftHInput.value = String(reportScorersHome.length);
+    }
+    if (ftAInput && (reportScorersAway.length > 0 || ftAInput.value !== '')) {
+        ftAInput.value = String(reportScorersAway.length);
+    }
+
+    // Auto-sync half-time score inputs if not manually overridden
+    const htHInput = document.getElementById('report-ht-home');
+    const htAInput = document.getElementById('report-ht-away');
+    if (htHInput && (htHInput.value === '' || htHInput.getAttribute('data-auto') === 'true')) {
+        const htHGoals = reportScorersHome.filter(s => s.minute && parseInt(s.minute) <= 45).length;
+        if (htHGoals > 0 || reportScorersHome.length > 0) {
+            htHInput.value = String(htHGoals);
+            htHInput.setAttribute('data-auto', 'true');
+        }
+    }
+    if (htAInput && (htAInput.value === '' || htAInput.getAttribute('data-auto') === 'true')) {
+        const htAGoals = reportScorersAway.filter(s => s.minute && parseInt(s.minute) <= 45).length;
+        if (htAGoals > 0 || reportScorersAway.length > 0) {
+            htAInput.value = String(htAGoals);
+            htAInput.setAttribute('data-auto', 'true');
+        }
+    }
 };
 
 const saveReportForm = (e) => {
@@ -2247,16 +2281,20 @@ const saveReportForm = (e) => {
         return;
     }
 
-    const ftHome = document.getElementById('report-ft-home').value.trim();
-    const ftAway = document.getElementById('report-ft-away').value.trim();
-    const htHome = document.getElementById('report-ht-home').value.trim();
-    const htAway = document.getElementById('report-ht-away').value.trim();
+    let ftHome = document.getElementById('report-ft-home').value.trim();
+    let ftAway = document.getElementById('report-ft-away').value.trim();
+    let htHome = document.getElementById('report-ht-home').value.trim();
+    let htAway = document.getElementById('report-ht-away').value.trim();
     const note = document.getElementById('report-note').value.trim();
     const cancelVal = document.getElementById('report-cancel-select').value;
 
+    // Auto-derive full-time score if scorers list has entries
+    if (ftHome === '' && reportScorersHome.length > 0) ftHome = String(reportScorersHome.length);
+    if (ftAway === '' && reportScorersAway.length > 0) ftAway = String(reportScorersAway.length);
+
     let score = '-:-';
     let ht = '';
-    let status = 'Upcoming';
+    let status = 'Ausstehend';
 
     if (cancelVal !== 'none') {
         status = cancelVal;
@@ -2267,9 +2305,15 @@ const saveReportForm = (e) => {
         }
     } else if (ftHome !== '' && ftAway !== '') {
         score = `${ftHome}:${ftAway}`;
-        status = 'Played';
+        status = 'Gespielt';
         if (htHome !== '' && htAway !== '') {
             ht = `${htHome}:${htAway}`;
+        } else {
+            const htHGoals = reportScorersHome.filter(s => s.minute && parseInt(s.minute) <= 45).length;
+            const htAGoals = reportScorersAway.filter(s => s.minute && parseInt(s.minute) <= 45).length;
+            if (htHGoals > 0 || htAGoals > 0) {
+                ht = `${htHGoals}:${htAGoals}`;
+            }
         }
     }
 

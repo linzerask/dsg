@@ -2325,6 +2325,7 @@ export const Store = {
         points: 0
       };
     });
+    this.saveData(data, true);
     this.recalculateSeason(seasonKey);
   },
 
@@ -2544,6 +2545,7 @@ export const Store = {
     const data = this.getData();
     if (!data.seasons) return;
     const pendingStore = this.getPendingReportsStore();
+    let updatedAnySeason = false;
 
     pendingStore.forEach(p => {
       const s = data.seasons[p.seasonKey];
@@ -2553,18 +2555,50 @@ export const Store = {
         const m = s.matches.find(match => String(match.id) === String(p.matchId));
         if (m) {
           if (p.status === 'pending_approval') {
-            m.reportStatus = 'pending_approval';
-            m.refereeReport = p.report;
-            m.lastReportSubmittedAt = p.submittedAt;
+            if (m.reportStatus !== 'pending_approval') {
+              m.reportStatus = 'pending_approval';
+              m.refereeReport = p.report;
+              m.lastReportSubmittedAt = p.submittedAt;
+              updatedAnySeason = true;
+            }
           } else if (p.status === 'rejected' && m.reportStatus !== 'approved') {
-            m.reportStatus = 'rejected';
-            m.reportRejectReason = p.rejectReason || '';
+            if (m.reportStatus !== 'rejected') {
+              m.reportStatus = 'rejected';
+              m.reportRejectReason = p.rejectReason || '';
+              updatedAnySeason = true;
+            }
           } else if (p.status === 'approved') {
-            m.reportStatus = 'approved';
+            let changed = false;
+            if (m.reportStatus !== 'approved') {
+              m.reportStatus = 'approved';
+              changed = true;
+            }
+            if (p.report && (!m.score || m.score === '-:-' || m.score === ':' || m.status === 'Ausstehend' || m.status === 'Upcoming' || !m.events || m.events.length === 0)) {
+              m.score = p.report.score || m.score;
+              m.ht = p.report.ht || p.report.htScore || m.ht;
+              m.htScore = m.ht;
+              m.halfTime = m.ht;
+              m.status = (p.report.status && p.report.status !== 'pending_approval' && !p.report.status.includes('approval')) ? p.report.status : 'Gespielt';
+              m.scorers = p.report.scorers || m.scorers || [];
+              m.cards = p.report.cards || m.cards || [];
+              m.events = p.report.events || m.events || [];
+              m.substitutions = p.report.substitutions || m.substitutions || [];
+              m.confirmedAt = p.confirmedAt || m.confirmedAt || Date.now();
+              m.confirmedBy = p.confirmedBy || m.confirmedBy || 'Administrator';
+              changed = true;
+            }
+            if (changed) updatedAnySeason = true;
           }
         }
       }
     });
+
+    if (updatedAnySeason) {
+      Object.keys(data.seasons).forEach(sKey => {
+        this.recalculateSeason(sKey, false);
+      });
+      this.saveData(data, false);
+    }
   },
 
   async submitRefereeReport(seasonKey, matchId, reportData) {
@@ -2652,7 +2686,7 @@ export const Store = {
       ht: rep.ht || match.ht || rep.htScore || '',
       htScore: rep.ht || match.htScore || '',
       halfTime: rep.ht || match.halfTime || '',
-      status: rep.status || 'Played',
+      status: (rep.status && rep.status !== 'pending_approval' && !rep.status.includes('approval')) ? rep.status : 'Gespielt',
       reportStatus: 'approved',
       scorers: rep.scorers || [],
       cards: rep.cards || [],
@@ -2680,6 +2714,7 @@ export const Store = {
       this.savePendingReportsStore(pendingStore);
     }
 
+    this.saveData(data, true);
     this.recalculateSeason(seasonKey);
     window.dispatchEvent(new CustomEvent('match-reports-updated'));
     window.dispatchEvent(new CustomEvent('data-updated'));
