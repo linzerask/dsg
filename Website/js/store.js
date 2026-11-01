@@ -668,15 +668,20 @@ export const Store = {
       let hasLeaguesUpdates = false;
       let hasRoundsUpdates = false;
 
-      // Sync Liga Data
+      // Sync Liga Data - Smart Lossless Match Merge & Persistence Protection
       if (dataSnap.exists() && dataSnap.data()?.data) {
         const fbData = dataSnap.data().data;
         const fbTime = dataSnap.data().lastUpdated || fbData.lastUpdated || 0;
         const localData = loadLocal('dsg_data', 97);
         const localTime = localData?.lastUpdated || 0;
-        
-        let targetData = (localTime > fbTime && localData && localData.seasons) ? localData : fbData;
+
+        // Base selection
+        const baseData = (localTime > fbTime && localData && localData.seasons) ? localData : fbData;
+        const otherData = (baseData === localData) ? fbData : localData;
+
+        let targetData = JSON.parse(JSON.stringify(baseData || { currentSeason: "2026/2027", seasons: {} }));
         if (!targetData || !targetData.seasons) targetData = state.memoryData || { currentSeason: "2026/2027", seasons: {} };
+        if (!targetData.seasons) targetData.seasons = {};
 
         // Always ensure targetData has currentSeason set to 2026/2027
         if (targetData.currentSeason !== '2026/2027') {
@@ -684,17 +689,73 @@ export const Store = {
           needsMigration = true;
         }
 
-        // Ensure canonical memory seasons exist in targetData only if completely missing in Firestore
-        if (state.memoryData && state.memoryData.seasons) {
-          Object.keys(state.memoryData.seasons).forEach(sKey => {
-            const memSeason = state.memoryData.seasons[sKey];
-            const targetSeason = targetData.seasons[sKey];
-            if (!targetSeason || (!targetSeason.matches?.length && memSeason?.matches?.length) || (!targetSeason.teams?.length && memSeason?.teams?.length)) {
-              targetData.seasons[sKey] = memSeason;
+        // Match-level lossless merge: candidate sources include otherData and currently active state.memoryData
+        const candidateSources = [otherData, state.memoryData].filter(Boolean);
+        const activeKeys = ['2026/2027', 'Testliga 2026/2027'];
+        let hadMatchUpgrades = false;
+
+        candidateSources.forEach(src => {
+          if (!src || !src.seasons) return;
+          Object.keys(src.seasons).forEach(sKey => {
+            if (!targetData.seasons[sKey]) {
+              targetData.seasons[sKey] = JSON.parse(JSON.stringify(src.seasons[sKey]));
               needsMigration = true;
+              return;
+            }
+            const targetSeason = targetData.seasons[sKey];
+            const srcSeason = src.seasons[sKey];
+            if (!Array.isArray(srcSeason?.matches)) return;
+            if (!Array.isArray(targetSeason.matches)) targetSeason.matches = [];
+
+            srcSeason.matches.forEach(sm => {
+              if (!sm) return;
+              const normHome = (sm.home || '').toLowerCase().replace(/fc|dsg|sv|u.|union|./g, '').replace(/\s+/g, '').trim();
+              const normAway = (sm.away || '').toLowerCase().replace(/fc|dsg|sv|u.|union|./g, '').replace(/\s+/g, '').trim();
+              const normRound = String(sm.round || sm.roundNr || '').replace(/\D/g, '') || String(sm.round || '').trim().toLowerCase();
+
+              let tIdx = targetSeason.matches.findIndex(m => String(m.id) === String(sm.id) || (typeof m.id === 'number' && m.id === parseInt(sm.id)));
+              if (tIdx === -1 && normHome && normAway) {
+                tIdx = targetSeason.matches.findIndex(m => {
+                  const mH = (m.home || '').toLowerCase().replace(/fc|dsg|sv|u.|union|./g, '').replace(/\s+/g, '').trim();
+                  const mA = (m.away || '').toLowerCase().replace(/fc|dsg|sv|u.|union|./g, '').replace(/\s+/g, '').trim();
+                  const mR = String(m.round || m.roundNr || '').replace(/\D/g, '') || String(m.round || '').trim().toLowerCase();
+                  return mH === normHome && mA === normAway && (!normRound || !mR || mR === normRound);
+                });
+              }
+
+              if (tIdx === -1) {
+                targetSeason.matches.push(JSON.parse(JSON.stringify(sm)));
+                needsMigration = true;
+                hadMatchUpgrades = true;
+              } else {
+                const tm = targetSeason.matches[tIdx];
+                const isTmPlayed = (tm.score && tm.score !== '-:-' && tm.score !== ':' && tm.score.trim() !== '') || tm.status === 'Played' || tm.status === 'Gespielt' || (tm.status && tm.status.startsWith('Abgesagt'));
+                const isSmPlayed = (sm.score && sm.score !== '-:-' && sm.score !== ':' && sm.score.trim() !== '') || sm.status === 'Played' || sm.status === 'Gespielt' || (sm.status && sm.status.startsWith('Abgesagt'));
+
+                if (!isTmPlayed && isSmPlayed) {
+                  // CRITICAL: A played match with score/report NEVER gets downgraded to an unplayed -:- placeholder!
+                  targetSeason.matches[tIdx] = { ...tm, ...sm };
+                  needsMigration = true;
+                  hadMatchUpgrades = true;
+                } else if (isTmPlayed && isSmPlayed) {
+                  const tmDetail = (tm.events?.length || 0) + (tm.scorers?.length || 0);
+                  const smDetail = (sm.events?.length || 0) + (sm.scorers?.length || 0);
+                  const smTime = sm.confirmedAt || sm.submittedAt || 0;
+                  const tmTime = tm.confirmedAt || tm.submittedAt || 0;
+                  if (smDetail > tmDetail || smTime > tmTime) {
+                    targetSeason.matches[tIdx] = { ...tm, ...sm };
+                    needsMigration = true;
+                    hadMatchUpgrades = true;
+                  }
+                }
+              }
+            });
+
+            if (hadMatchUpgrades) {
+              this.recalculateSeason(sKey, false);
             }
           });
-        }
+        });
 
         // Run match deduplication & heal zeroed team goals across all seasons in targetData
         if (targetData.seasons) {
@@ -710,7 +771,7 @@ export const Store = {
             const hasPlayedMatches = s?.matches && s.matches.some(m => (m.status === 'Gespielt' || m.status === 'Played' || m.status?.startsWith('Abgesagt') || (m.score && m.score !== '-:-' && m.score !== '- : -')));
             const allGoalsZero = s?.teams && s.teams.length > 0 && s.teams.some(t => (t.played || 0) > 0) && s.teams.every(t => (Number(t.goalsFor || t.gf || 0) === 0) && (Number(t.goalsAgainst || t.ga || 0) === 0));
             if (hasPlayedMatches && allGoalsZero) {
-              this.recalculateSeason(sKey);
+              this.recalculateSeason(sKey, false);
               needsMigration = true;
             }
           });
@@ -740,7 +801,16 @@ export const Store = {
           hasLigaUpdates = true;
         }
 
-        if (needsMigration || localTime > fbTime) {
+        // Only authenticated admins can write migrations or pushes to Firestore to prevent visitor overwrites
+        const isAdmin = (() => {
+          try {
+            if (sessionStorage.getItem('dsg_admin') === 'true') return true;
+            const sess = JSON.parse(sessionStorage.getItem('dsg_auth') || localStorage.getItem('dsg_auth_session') || '{}');
+            return sess && (sess.role === 'admin' || sess.role === 'Hauptadministrator');
+          } catch(e) { return false; }
+        })();
+
+        if (isAdmin && (needsMigration || localTime > fbTime)) {
           const activeKeys = ['2026/2027', 'Testliga 2026/2027'];
           const activeOnlyData = {
             currentSeason: targetData.currentSeason || "2026/2027",
@@ -1195,8 +1265,11 @@ export const Store = {
       }
     });
 
-    // 1. Save active seasons to primary liga_data
-    setDoc(doc(db, 'system', 'liga_data'), { data: activeData, lastUpdated: now }).catch(e => console.error("Firebase save error (active):", e));
+    // 1. Save active seasons to primary liga_data with Promise return
+    const savePromise = setDoc(doc(db, 'system', 'liga_data'), { data: activeData, lastUpdated: now }).catch(e => {
+      console.error("Firebase save error (active):", e);
+      throw e;
+    });
 
     // 2. Save archive seasons ONLY when explicitly requested and contains real matches
     if (saveArchive && hasArchiveSeasons) {

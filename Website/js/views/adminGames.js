@@ -1385,7 +1385,7 @@ const deleteGame = (idx) => {
     }
 };
 
-const saveGameForm = (e) => {
+const saveGameForm = async (e) => {
     e.preventDefault();
 
     const date = document.getElementById('input-game-date').value;
@@ -1456,11 +1456,16 @@ const saveGameForm = (e) => {
     };
 
     const isEditing = (editingMatchId !== null);
-    Store.saveMatch(targetSeasonKey, matchData);
-    Store.recalculateSeason(targetSeasonKey);
-    closeGameModal();
-    loadDataAndRender();
-    showToast(isEditing ? 'Spiel erfolgreich aktualisiert!' : 'Spiel erfolgreich erstellt!');
+    try {
+        await Store.saveMatch(targetSeasonKey, matchData);
+        await Store.recalculateSeason(targetSeasonKey);
+        closeGameModal();
+        await loadDataAndRender();
+        showToast(isEditing ? 'Spiel erfolgreich aktualisiert & in Cloud gesichert!' : 'Spiel erfolgreich erstellt & in Cloud gesichert!');
+    } catch (err) {
+        console.error("Save game cloud error:", err);
+        showToast('Fehler beim Speichern: ' + (err.message || 'Verbindung fehlgeschlagen'), true);
+    }
 };
 
 /* --- Searchable Player Combobox Component & Helpers --- */
@@ -2272,13 +2277,20 @@ const renderReportLists = () => {
     }
 };
 
-const saveReportForm = (e) => {
+const saveReportForm = async (e) => {
     e.preventDefault();
     if (!currentReportMatch) return;
 
     if (!isGameActive(currentReportMatch)) {
         showToast('Diese Liga ist inaktiv und schreibgeschützt. Um Änderungen vorzunehmen, ändern Sie den Status unter "Ligen verwalten" auf "Aktiv".', true);
         return;
+    }
+
+    const saveBtn = document.getElementById('btn-save-report');
+    const origBtnText = saveBtn ? saveBtn.innerText : '';
+    if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerText = 'Speichere in Cloud...';
     }
 
     let ftHome = document.getElementById('report-ft-home').value.trim();
@@ -2407,14 +2419,24 @@ const saveReportForm = (e) => {
         }
     }
 
-    Store.saveMatch(targetSeasonKey, deepSanitize(updatedMatch));
-    Store.recalculateSeason(targetSeasonKey);
-    window.dispatchEvent(new CustomEvent('match-reports-updated'));
-    window.dispatchEvent(new CustomEvent('data-updated'));
+    try {
+        await Store.saveMatch(targetSeasonKey, deepSanitize(updatedMatch));
+        await Store.recalculateSeason(targetSeasonKey);
+        window.dispatchEvent(new CustomEvent('match-reports-updated'));
+        window.dispatchEvent(new CustomEvent('data-updated'));
 
-    closeReportModal();
-    loadDataAndRender();
-    showToast(isPending ? 'Spielbericht erfolgreich freigegeben & Tabelle aktualisiert!' : 'Spielbericht erfolgreich gespeichert!');
+        closeReportModal();
+        await loadDataAndRender();
+        showToast(isPending ? 'Spielbericht erfolgreich freigegeben & Tabelle aktualisiert!' : 'Spielbericht erfolgreich gespeichert und dauerhaft in Cloud gesichert!');
+    } catch (err) {
+        console.error("Save match report cloud error:", err);
+        showToast('Fehler beim Speichern: ' + (err.message || 'Verbindung fehlgeschlagen'), true);
+    } finally {
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.innerText = origBtnText || 'Spielbericht speichern';
+        }
+    }
 };
 
 const setupEventHandlers = () => {
