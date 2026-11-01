@@ -1,8 +1,8 @@
-import { viewHome, bindHome } from './views/home.js?v=1793370000000';
+import { viewHome, bindHome } from './views/home.js?v=1793516600000';
 
 import { viewNews, bindNews } from './views/news.js?v=1791305000000';
 
-import { viewLiga, bindLigaTabs } from './views/liga.js?v=1793455000000';
+import { viewLiga, bindLigaTabs } from './views/liga.js?v=1793516600000';
 
 import { viewSpieler, bindSpieler } from './views/spieler.js?v=1793455000000';
 
@@ -16,7 +16,7 @@ import { viewGalerie, bindGalerie } from './views/galerie.js?v=1791305000000';
 
 import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1793370000000';
 
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1793494000000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1793516600000';
 
 import { getAuth, loginWithPin, logout } from './auth.js?v=1793127696174';
 
