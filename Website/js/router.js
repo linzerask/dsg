@@ -16,7 +16,7 @@ import { viewGalerie, bindGalerie } from './views/galerie.js?v=1791305000000';
 
 import { viewStatistiken, bindStatistiken } from './views/statistiken.js?v=1793370000000';
 
-import { viewAdmin, bindAdmin } from './views/admin.js?v=1793516600000';
+import { viewAdmin, bindAdmin } from './views/admin.js?v=1793520000000';
 
 import { getAuth, loginWithPin, logout } from './auth.js?v=1793127696174';
 
@@ -24,7 +24,7 @@ import { viewTeamAdmin, bindTeamAdmin } from './views/teamAdmin.js?v=17933700000
 
 import { viewRefereeAdmin, bindRefereeAdmin } from './views/refereeAdmin.js?v=1793488000000';
 
-import { viewArticle, bindArticle } from './views/article.js?v=1791305000000';
+import { viewArticle, bindArticle } from './views/article.js?v=1793520000000';
 
 import { viewImpressum } from './views/impressum.js?v=1791305000000';
 

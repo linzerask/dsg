@@ -133,10 +133,17 @@ export const renderAdminNews = () => {
                   <button type="button" class="rte-btn" id="rte-link-btn" title="Link einfügen"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> Link</button>
                   <button type="button" class="rte-btn" data-command="removeFormat" title="Formatierung entfernen"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"></path><path d="M22 21H7"></path><path d="m5 11 9 9"></path></svg></button>
                 </div>
+
+                <div class="rte-btn-group">
+                  <button type="button" class="rte-btn" id="rte-code-btn" title="HTML / Quellcode umschalten" style="font-family: monospace; font-weight: 700; font-size: 0.8rem; padding: 4px 10px;">&lt;/&gt; HTML</button>
+                </div>
               </div>
 
               <!-- Editable Canvas -->
               <div id="rte-editor" class="rte-editor" contenteditable="true" data-placeholder="Schreibe deinen Artikel hier... Nutze die Leiste oben für Formatierungen."></div>
+
+              <!-- HTML Code View Textarea (Toggled with </>) -->
+              <textarea id="rte-code-view" class="admin-input" style="display: none; width: 100%; min-height: 240px; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.88rem; line-height: 1.5; padding: 14px; resize: vertical; border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm); border: none; box-sizing: border-box;" placeholder="HTML-Quellcode hier eingeben oder einfügen..."></textarea>
             </div>
           </div>
 
@@ -366,6 +373,98 @@ export const initAdminNews = () => {
     }
   });
 
+  // --- Smart HTML Paste Handler ---
+  // When user pastes text containing HTML tags (<p>, <h3>, <strong>, etc.), render them as live formatted elements
+  editor?.addEventListener('paste', (e) => {
+    const clipboardData = e.clipboardData || window.clipboardData;
+    if (!clipboardData) return;
+
+    const plainText = clipboardData.getData('text/plain') || '';
+
+    // Check if pasted plainText contains HTML tags
+    const hasHtmlTags = /<\/?(p|h[1-6]|strong|b|em|i|u|ul|ol|li|hr|blockquote|span|div|a|br)\b[^>]*>/i.test(plainText);
+
+    if (hasHtmlTags) {
+      e.preventDefault();
+      // Clean external styles if present
+      const cleanHtml = plainText
+        .replace(/padding-inline:\s*[^;"]+;?/gi, '')
+        .replace(/font-family:\s*futura-lt-w01-light[^;"]*;?/gi, '')
+        .replace(/color:\s*rgb\(65,\s*65,\s*65\);?/gi, '');
+
+      let inserted = false;
+      try {
+        restoreSelection();
+        if (document.queryCommandSupported && document.queryCommandSupported('insertHTML')) {
+          inserted = document.execCommand('insertHTML', false, cleanHtml);
+        }
+      } catch (err) {
+        inserted = false;
+      }
+
+      if (!inserted) {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0 && editor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+          const range = sel.getRangeAt(0);
+          range.deleteContents();
+          const temp = document.createElement('div');
+          temp.innerHTML = cleanHtml;
+          const frag = document.createDocumentFragment();
+          while (temp.firstChild) {
+            frag.appendChild(temp.firstChild);
+          }
+          range.insertNode(frag);
+        } else {
+          if (!editor.innerHTML || editor.innerHTML === '<br>' || editor.textContent.trim() === '') {
+            editor.innerHTML = cleanHtml;
+          } else {
+            editor.innerHTML += cleanHtml;
+          }
+        }
+      }
+      saveSelection();
+      updateToolbarActiveStates();
+    }
+  });
+
+  // --- HTML Code View Toggle Handler ---
+  const codeBtn = document.getElementById('rte-code-btn');
+  const codeView = document.getElementById('rte-code-view');
+
+  codeBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!codeView || !editor) return;
+
+    const isCodeMode = codeView.style.display !== 'none';
+    if (isCodeMode) {
+      // Switch to Visual mode
+      editor.innerHTML = codeView.value;
+      codeView.style.display = 'none';
+      editor.style.display = 'block';
+      codeBtn.classList.remove('active');
+      codeBtn.title = 'HTML-Quellcode anzeigen';
+      toolbar.querySelectorAll('.rte-btn:not(#rte-code-btn), .rte-select').forEach(el => {
+        el.removeAttribute('disabled');
+        el.style.opacity = '1';
+        el.style.pointerEvents = 'auto';
+      });
+      editor.focus();
+    } else {
+      // Switch to Code mode
+      codeView.value = editor.innerHTML;
+      editor.style.display = 'none';
+      codeView.style.display = 'block';
+      codeBtn.classList.add('active');
+      codeBtn.title = 'Visuellen Editor anzeigen';
+      toolbar.querySelectorAll('.rte-btn:not(#rte-code-btn), .rte-select').forEach(el => {
+        el.setAttribute('disabled', 'true');
+        el.style.opacity = '0.35';
+        el.style.pointerEvents = 'none';
+      });
+      codeView.focus();
+    }
+  });
+
   // --- 2. Drag & Drop & Multi-Image Stage ---
   const renderMediaStage = () => {
     if (!stageGrid) return;
@@ -530,7 +629,19 @@ export const initAdminNews = () => {
     const author = document.getElementById('news-author').value.trim() || 'DSG Redaktion';
     const date = document.getElementById('news-date').value || new Date().toISOString().split('T')[0];
     const liveEditor = document.getElementById('rte-editor') || editor;
-    const htmlContent = liveEditor ? liveEditor.innerHTML.trim() : '';
+    const codeViewEl = document.getElementById('rte-code-view');
+    if (codeViewEl && codeViewEl.style.display !== 'none') {
+      if (liveEditor) liveEditor.innerHTML = codeViewEl.value;
+    }
+    let htmlContent = liveEditor ? liveEditor.innerHTML.trim() : '';
+
+    // Auto-decode escaped HTML entities if raw tags were pasted as text
+    if (htmlContent.includes('&lt;p&gt;') || htmlContent.includes('&lt;h3&gt;') || htmlContent.includes('&lt;strong&gt;') || htmlContent.includes('&lt;ul&gt;')) {
+      const decoder = document.createElement('textarea');
+      decoder.innerHTML = htmlContent;
+      htmlContent = decoder.value;
+      if (liveEditor) liveEditor.innerHTML = htmlContent;
+    }
 
     if (!title) {
       showToast('Bitte gib einen Artikeltitel ein!', true);
@@ -603,6 +714,19 @@ export const initAdminNews = () => {
     document.getElementById('news-id').value = '';
     const liveEditor = document.getElementById('rte-editor');
     if (liveEditor) liveEditor.innerHTML = '';
+    const codeBtnEl = document.getElementById('rte-code-btn');
+    const codeViewEl = document.getElementById('rte-code-view');
+    if (codeViewEl && codeViewEl.style.display !== 'none') {
+      codeViewEl.style.display = 'none';
+      if (liveEditor) liveEditor.style.display = 'block';
+      codeBtnEl?.classList.remove('active');
+      toolbar?.querySelectorAll('.rte-btn:not(#rte-code-btn), .rte-select').forEach(el => {
+        el.removeAttribute('disabled');
+        el.style.opacity = '1';
+        el.style.pointerEvents = 'auto';
+      });
+    }
+    if (codeViewEl) codeViewEl.value = '';
     stagedImages = [];
     editingArticleId = null;
     savedRange = null;
@@ -696,6 +820,8 @@ export const initAdminNews = () => {
         if (activeEditor) {
           activeEditor.innerHTML = bodyContent;
         }
+        const codeViewEl = document.getElementById('rte-code-view');
+        if (codeViewEl) codeViewEl.value = bodyContent;
 
         // Load staged images (ignore legacy dsg.avif fallback)
         stagedImages = [];

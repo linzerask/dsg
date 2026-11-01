@@ -3,7 +3,23 @@ import { renderNewsFallbackHeader } from '../logos.js?v=1791182000000';
 
 export const sanitizeArticleContent = (html) => {
   if (!html) return '';
-  return html
+  let content = html;
+  // Automatically decode HTML entities if raw tags like &lt;p&gt; or &lt;h3&gt; were saved as text
+  if (content.includes('&lt;p&gt;') || content.includes('&lt;h3&gt;') || content.includes('&lt;strong&gt;') || content.includes('&lt;ul&gt;')) {
+    if (typeof document !== 'undefined') {
+      const decoder = document.createElement('textarea');
+      decoder.innerHTML = content;
+      content = decoder.value;
+    } else {
+      content = content
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&amp;/g, '&');
+    }
+  }
+  return content
     .replace(/padding-inline:\s*[^;"]+;?/gi, '')
     .replace(/font-family:\s*futura-lt-w01-light[^;"]*;?/gi, '')
     .replace(/color:\s*rgb\(65,\s*65,\s*65\);?/gi, '');
