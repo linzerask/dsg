@@ -881,7 +881,7 @@ export function viewLiga() {
             return minA - minB;
           });
 
-          const timelineRowsHtml = timelineEvents.map(e => {
+          const renderTimelineRow = (e) => {
             const isHome = isHomeEvent(e);
             const displayMin = e.minute ? `${String(e.minute).replace(/['"]/g, '').trim()}'` : '';
             const isOwnGoal = (e.player || '').toLowerCase().includes('eigentor');
@@ -916,7 +916,38 @@ export function viewLiga() {
                 </div>
               </div>
             `;
-          }).join('');
+          };
+
+          const firstHalfEvents = timelineEvents.filter(e => parseMinuteOrder(e.minute) <= 45);
+          const secondHalfEvents = timelineEvents.filter(e => parseMinuteOrder(e.minute) > 45);
+
+          const htBadgeText = m.halftime ? `2. Halbzeit (${m.halftime})` : `2. Halbzeit`;
+
+          const timelineParts = [];
+
+          // 1. Halbzeit section
+          timelineParts.push(`
+            <div class="match-timeline-period">
+              <span class="timeline-period-badge">1. Halbzeit</span>
+            </div>
+          `);
+
+          if (firstHalfEvents.length > 0) {
+            timelineParts.push(firstHalfEvents.map(renderTimelineRow).join(''));
+          }
+
+          // 2. Halbzeit section
+          timelineParts.push(`
+            <div class="match-timeline-period">
+              <span class="timeline-period-badge">${htBadgeText}</span>
+            </div>
+          `);
+
+          if (secondHalfEvents.length > 0) {
+            timelineParts.push(secondHalfEvents.map(renderTimelineRow).join(''));
+          }
+
+          const timelineRowsHtml = timelineParts.join('');
 
           eventsHtml = `
             <div class="events-accordion" style="display: none;">

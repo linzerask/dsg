@@ -1994,7 +1994,7 @@ const renderModalContent = () => {
                                         ${hasEvents ? (combinedEvents.some(e => e.minute && String(e.minute).trim() !== '') ? `
                                             <div class="events-accordion" style="display: none;">
                                                 <div class="match-timeline-container">
-                                                    ${[...combinedEvents].sort((a, b) => {
+                                                    ${(() => {
                                                         const parseMinute = (minStr) => {
                                                             if (!minStr) return 999;
                                                             const clean = String(minStr).replace(/['"]/g, '').trim();
@@ -2004,40 +2004,49 @@ const renderModalContent = () => {
                                                             }
                                                             return parseFloat(clean) || 999;
                                                         };
-                                                        return parseMinute(a.minute) - parseMinute(b.minute);
-                                                    }).map(e => {
-                                                        const isHome = isHomeEvent(e);
-                                                        const displayMin = e.minute ? `${String(e.minute).replace(/['"]/g, '').trim()}'` : '';
-                                                        const isOwnGoal = (e.player || '').toLowerCase().includes('eigentor');
-                                                        const playerHtml = `<span class="match-event-player" style="${isOwnGoal ? 'color: #ef4444; font-weight: 700;' : ''}">${e.player}</span>`;
-                                                        const badgeHtml = renderBadge(e.type, e.count || 1, e.reason, e.player);
-                                                        const reasonHtml = e.reason ? `<span class="match-event-reason">(${e.reason})</span>` : '';
-                                                        return `
-                                                            <div class="match-timeline-row ${isHome ? 'is-home' : 'is-away'}">
-                                                                <div class="timeline-slot-home">
-                                                                    ${isHome ? `
-                                                                        <div class="timeline-event-content">
-                                                                            ${playerHtml}
-                                                                            ${reasonHtml}
-                                                                            <div class="match-event-badges">${badgeHtml}</div>
-                                                                        </div>
-                                                                    ` : ''}
+                                                        const sorted = [...combinedEvents].sort((a, b) => parseMinute(a.minute) - parseMinute(b.minute));
+                                                        const renderRow = (e) => {
+                                                            const isHome = isHomeEvent(e);
+                                                            const displayMin = e.minute ? `${String(e.minute).replace(/['"]/g, '').trim()}'` : '';
+                                                            const isOwnGoal = (e.player || '').toLowerCase().includes('eigentor');
+                                                            const playerHtml = `<span class="match-event-player" style="${isOwnGoal ? 'color: #ef4444; font-weight: 700;' : ''}">${e.player}</span>`;
+                                                            const badgeHtml = renderBadge(e.type, e.count || 1, e.reason, e.player);
+                                                            const reasonHtml = e.reason ? `<span class="match-event-reason">(${e.reason})</span>` : '';
+                                                            return `
+                                                                <div class="match-timeline-row ${isHome ? 'is-home' : 'is-away'}">
+                                                                    <div class="timeline-slot-home">
+                                                                        ${isHome ? `
+                                                                            <div class="timeline-event-content">
+                                                                                ${playerHtml}
+                                                                                ${reasonHtml}
+                                                                                <div class="match-event-badges">${badgeHtml}</div>
+                                                                            </div>
+                                                                        ` : ''}
+                                                                    </div>
+                                                                    <div class="timeline-slot-center">
+                                                                        <span class="timeline-minute-badge">${displayMin || '•'}</span>
+                                                                    </div>
+                                                                    <div class="timeline-slot-away">
+                                                                        ${!isHome ? `
+                                                                            <div class="timeline-event-content">
+                                                                                <div class="match-event-badges">${badgeHtml}</div>
+                                                                                ${playerHtml}
+                                                                                ${reasonHtml}
+                                                                            </div>
+                                                                        ` : ''}
+                                                                    </div>
                                                                 </div>
-                                                                <div class="timeline-slot-center">
-                                                                    <span class="timeline-minute-badge">${displayMin || '•'}</span>
-                                                                </div>
-                                                                <div class="timeline-slot-away">
-                                                                    ${!isHome ? `
-                                                                        <div class="timeline-event-content">
-                                                                            <div class="match-event-badges">${badgeHtml}</div>
-                                                                            ${playerHtml}
-                                                                            ${reasonHtml}
-                                                                        </div>
-                                                                    ` : ''}
-                                                                </div>
-                                                            </div>
-                                                        `;
-                                                    }).join('')}
+                                                            `;
+                                                        };
+                                                        const firstHalf = sorted.filter(e => parseMinute(e.minute) <= 45);
+                                                        const secondHalf = sorted.filter(e => parseMinute(e.minute) > 45);
+                                                        const htBadgeText = m.halftime ? `2. Halbzeit (${m.halftime})` : `2. Halbzeit`;
+                                                        let out = `<div class="match-timeline-period"><span class="timeline-period-badge">1. Halbzeit</span></div>`;
+                                                        if (firstHalf.length > 0) out += firstHalf.map(renderRow).join('');
+                                                        out += `<div class="match-timeline-period"><span class="timeline-period-badge">${htBadgeText}</span></div>`;
+                                                        if (secondHalf.length > 0) out += secondHalf.map(renderRow).join('');
+                                                        return out;
+                                                    })()}
                                                 </div>
                                             </div>
                                         ` : `
