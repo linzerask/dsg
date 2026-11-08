@@ -87,14 +87,21 @@ export const viewHome = () => {
     return new Date(year, month, day, hours, minutes).getTime();
   };
 
-  // Helper: Determine if a match is postponed or canceled without a score
-  const isMatchPostponedOrCanceled = (m) => {
-    if (!m) return false;
-    const s = (m.status || '').toLowerCase();
-    return s === 'postponed' || s.includes('verschoben') || s === 'canceled';
+  // Helper: Extract numeric round number (for ascending round sorting)
+  const getRoundNumber = (m) => {
+    if (!m) return 0;
+    const clean = String(m.round || m.roundNr || '').replace(/\D/g, '');
+    return parseInt(clean, 10) || 0;
   };
 
-  // Helper: Determine if a match is finished with a result
+  // Helper: Determine if a match is postponed/rescheduled
+  const isMatchPostponed = (m) => {
+    if (!m) return false;
+    const s = (m.status || '').toLowerCase();
+    return s === 'postponed' || s.includes('verschoben');
+  };
+
+  // Helper: Determine if a match is finished with a result or awarded walkover
   const isMatchPlayed = (m) => {
     if (!m) return false;
     const s = (m.status || '').toLowerCase();
@@ -105,16 +112,40 @@ export const viewHome = () => {
 
   // Filter Played and Upcoming matches
   const playedMatches = allMatches.filter(m => isMatchPlayed(m));
-  const upcomingMatches = allMatches.filter(m => !isMatchPlayed(m) && !isMatchPostponedOrCanceled(m));
 
-  // Sort upcoming matches ascending by date & time (earliest first)
+  // Upcoming matches: all unplayed matches (including postponed/open fixtures that still need to be played)
+  const upcomingMatches = allMatches.filter(m => {
+    if (!m) return false;
+    if (isMatchPlayed(m)) return false;
+    const s = (m.status || '').toLowerCase();
+    if (s === 'canceled' || s === 'abgesagt') return false;
+    return true;
+  });
+
+  const now = Date.now();
+
+  // Standard Sorting Logic for Upcoming Matches:
+  // 1. Matches with confirmed future dates first (chronological by kickoff)
+  // 2. Matches with open/postponed dates follow, sorted by round number ascending (first round is first!)
   const sortedUpcomingMatches = [...upcomingMatches].sort((a, b) => {
     const timeA = parseMatchDateTime(a.date, a.time);
     const timeB = parseMatchDateTime(b.date, b.time);
-    if (timeA !== timeB) return timeA - timeB;
-    const rA = parseInt(String(a.round || '').replace(/\D/g, '')) || 0;
-    const rB = parseInt(String(b.round || '').replace(/\D/g, '')) || 0;
-    return rA - rB;
+    const aHasFutureDate = !isMatchPostponed(a) && timeA > now;
+    const bHasFutureDate = !isMatchPostponed(b) && timeB > now;
+
+    if (aHasFutureDate && bHasFutureDate) {
+      if (timeA !== timeB) return timeA - timeB;
+      return getRoundNumber(a) - getRoundNumber(b);
+    }
+    if (aHasFutureDate && !bHasFutureDate) return -1;
+    if (!aHasFutureDate && bHasFutureDate) return 1;
+
+    // Both have open/pending schedule: sort by round number ascending (earliest round first)
+    const rA = getRoundNumber(a);
+    const rB = getRoundNumber(b);
+    if (rA !== rB) return rA - rB;
+
+    return (parseInt(a.id, 10) || 0) - (parseInt(b.id, 10) || 0);
   });
 
   // Sort played matches descending by date & time (most recent first)
@@ -122,26 +153,14 @@ export const viewHome = () => {
     const timeA = parseMatchDateTime(a.date, a.time);
     const timeB = parseMatchDateTime(b.date, b.time);
     if (timeA !== timeB) return timeB - timeA;
-    const rA = parseInt(String(a.round || '').replace(/\D/g, '')) || 0;
-    const rB = parseInt(String(b.round || '').replace(/\D/g, '')) || 0;
+    const rA = getRoundNumber(a);
+    const rB = getRoundNumber(b);
     return rB - rA;
   });
 
-  // Time-aware filtering for upcoming matches (Option A: match kickoff time > now)
-  const now = Date.now();
-  const trulyUpcomingMatches = sortedUpcomingMatches.filter(m => {
-    const matchTime = parseMatchDateTime(m.date, m.time);
-    return matchTime > now;
-  });
-
-  // Next Featured Match: earliest upcoming match whose kickoff is in the future.
-  // Fallback: If all unplayed matches in the season are past their kickoff, show earliest unplayed match.
-  const nextMatch = trulyUpcomingMatches[0] || sortedUpcomingMatches[0] || null;
-
-  // Next upcoming fixtures (up to 4): prefer truly upcoming matches, fallback if none in future
-  const nextFixtures = trulyUpcomingMatches.length > 0
-    ? trulyUpcomingMatches.slice(0, 4)
-    : sortedUpcomingMatches.slice(0, 4);
+  // Next Featured Match & Next Upcoming Fixtures (up to 4)
+  const nextMatch = sortedUpcomingMatches[0] || null;
+  const nextFixtures = sortedUpcomingMatches.slice(0, 4);
 
   // Recent results (last 4 played)
   const recentResults = sortedPlayedMatches.slice(0, 4);
@@ -238,14 +257,20 @@ export const viewHome = () => {
   // Render Upcoming Featured Match Banner
   let upcomingMatchHtml = '';
   if (nextMatch) {
-    const formattedDate = formatMatchDate(nextMatch.date);
+    const isPostponed = isMatchPostponed(nextMatch);
+    const matchTime = parseMatchDateTime(nextMatch.date, nextMatch.time);
+    const isOpenSchedule = isPostponed || !nextMatch.date || matchTime <= now;
+
+    const formattedDate = isOpenSchedule ? 'Termin noch offen' : formatMatchDate(nextMatch.date);
+    const timeDisplay = (!isOpenSchedule && nextMatch.time) ? `${renderIcon('clock', { size: 15, color: 'var(--color-text-secondary)' })}${nextMatch.time} Uhr` : '';
     const loc = nextMatch.location || nextMatch.venue || 'DSG-Platz';
     const roundLabel = nextMatch.round || 'Kommendes Spiel';
+    const badgeType = isOpenSchedule ? 'Nachtragsspiel' : 'Topspiel';
     
     upcomingMatchHtml = `
       <div class="upcoming-match banner glass-card stagger-item">
         <div class="topspiel-badge">
-          ${roundLabel} &bull; Topspiel
+          ${roundLabel} &bull; ${badgeType}
         </div>
         <div class="topspiel-teams">
           <div class="topspiel-team home-team">
@@ -265,7 +290,7 @@ export const viewHome = () => {
         <div class="topspiel-meta">
           <div class="topspiel-meta-row topspiel-datetime">
             <span class="meta-item">${renderIcon('calendar', { size: 15, color: 'var(--color-text-secondary)' })}${formattedDate}</span>
-            ${nextMatch.time ? `<span class="meta-item">${renderIcon('clock', { size: 15, color: 'var(--color-text-secondary)' })}${nextMatch.time} Uhr</span>` : ''}
+            ${timeDisplay ? `<span class="meta-item">${timeDisplay}</span>` : ''}
           </div>
           <div class="topspiel-meta-row topspiel-location">
             <span class="meta-item">${renderIcon('pin', { size: 15, color: 'var(--color-text-secondary)' })}${loc}</span>
@@ -280,8 +305,26 @@ export const viewHome = () => {
 
   // Render Match Center Rows
   const renderMatchRow = (m, isResult = false) => {
-    const formattedDate = formatMatchDate(m.date);
     const isCanceled = (m.status || '').toLowerCase().includes('abgesagt');
+    const isPostponed = isMatchPostponed(m);
+    const matchTime = parseMatchDateTime(m.date, m.time);
+    const isOpenSchedule = !isResult && (isPostponed || !m.date || matchTime <= now);
+
+    let formattedDate = formatMatchDate(m.date);
+    if (isOpenSchedule) {
+      formattedDate = m.round ? `${m.round} &bull; Termin noch offen` : 'Termin noch offen';
+    }
+
+    let timeOrScoreText = '-:-';
+    if (isCanceled) {
+      timeOrScoreText = m.status;
+    } else if (isResult) {
+      timeOrScoreText = m.score ? m.score.replace(/\s*\([^)]*\)/g, '').trim() : '-:-';
+    } else if (isOpenSchedule) {
+      timeOrScoreText = 'Offen';
+    } else if (m.time) {
+      timeOrScoreText = `${m.time} Uhr`;
+    }
     
     return `
       <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--color-border); gap: 10px;">
@@ -293,8 +336,8 @@ export const viewHome = () => {
               </a>
               <span style="overflow: hidden; text-overflow: ellipsis;">${m.home}</span>
             </div>
-            <span style="font-weight: 700; font-size: ${isResult ? '1rem' : '0.85rem'}; color: ${isCanceled ? '#e74c3c' : (isResult ? 'var(--color-accent)' : 'var(--color-text-secondary)')}; margin-left: 8px; flex-shrink: 0;">
-              ${isCanceled ? m.status : (isResult ? (m.score ? m.score.replace(/\s*\([^)]*\)/g, '').trim() : '-:-') : (m.time ? `${m.time} Uhr` : '-:-'))}
+            <span style="font-weight: 700; font-size: ${isResult ? '1rem' : '0.85rem'}; color: ${isCanceled ? '#e74c3c' : (isResult || isOpenSchedule ? 'var(--color-accent)' : 'var(--color-text-secondary)')}; margin-left: 8px; flex-shrink: 0;">
+              ${timeOrScoreText}
             </span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
