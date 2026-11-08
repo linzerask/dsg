@@ -14,6 +14,7 @@ This document serves as the persistent memory and operational guideline for all 
   - NEVER use flat linear tint overlays or raw semi-transparent blocks over photos.
   - NEVER use muddy or washed-out green shades.
   - NEVER stretch or distort images when fitting to square aspect ratios. Always crop proportionally with visual centering.
+  - NEVER auto-publish articles directly to `Website/data/articles.json` or `Website/js/store.js`. Always provide news articles strictly as text draft templates (`Website/news/<slug>.txt`) and prepared banner images so the user can review and publish manually via their admin dashboard.
   - Match minutes: Referees officially record match minutes starting from Round 8 onwards; minutes are displayed in match cards, event timelines, and match reports. For social graphics and wallpapers, goals remain aggregated by player name and tally (`Player Name (2x)`) unless a timeline layout is specified.
 
 ---

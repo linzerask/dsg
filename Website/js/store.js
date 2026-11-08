@@ -151,7 +151,7 @@ const INITIAL_DATA = {
   "seasons": {}
 };
 
-const DATA_VERSION_STRING = '?v=1793516500000';
+const DATA_VERSION_STRING = '?v=1794127500000';
 
 import { db } from './firebase.js';
 import { doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
@@ -455,7 +455,9 @@ export const deduplicateMatches = (matches = []) => {
 
 export const Store = {
   _initPromise: null,
+  _isInitializing: true,
   init() {
+    this._isInitializing = true;
     if (this._initPromise) return this._initPromise;
     this._initPromise = (async () => {
     const state = getState();
@@ -627,6 +629,8 @@ export const Store = {
       await this.syncFirebase();
     } catch(err) {
       console.warn("Firebase sync error during init fallback:", err);
+    } finally {
+      this._isInitializing = false;
     }
 
     // Background preload historical archives after primary render so season switching is instantaneous
@@ -639,6 +643,13 @@ export const Store = {
 
   async syncFirebase() {
     const state = getState();
+    const isAdmin = (() => {
+      try {
+        if (sessionStorage.getItem('dsg_admin') === 'true') return true;
+        const sess = JSON.parse(sessionStorage.getItem('dsg_auth') || localStorage.getItem('dsg_auth_session') || '{}');
+        return sess && (sess.role === 'admin' || sess.role === 'Hauptadministrator');
+      } catch(e) { return false; }
+    })();
     const dataRef = doc(db, 'system', 'liga_data');
     const newsRef = doc(db, 'system', 'news_data');
     const galleryRef = doc(db, 'system', 'gallery_data');
@@ -709,15 +720,19 @@ export const Store = {
 
             srcSeason.matches.forEach(sm => {
               if (!sm) return;
-              const normHome = (sm.home || '').toLowerCase().replace(/fc|dsg|sv|u.|union|./g, '').replace(/\s+/g, '').trim();
-              const normAway = (sm.away || '').toLowerCase().replace(/fc|dsg|sv|u.|union|./g, '').replace(/\s+/g, '').trim();
+              const cleanTeamKey = (name) => (name || '').toLowerCase()
+                .replace(/\b(fc|dsg|sv|u\.|union)\b/gi, '')
+                .replace(/[^a-z0-9]/gi, '')
+                .trim();
+              const normHome = cleanTeamKey(sm.home);
+              const normAway = cleanTeamKey(sm.away);
               const normRound = String(sm.round || sm.roundNr || '').replace(/\D/g, '') || String(sm.round || '').trim().toLowerCase();
 
               let tIdx = targetSeason.matches.findIndex(m => String(m.id) === String(sm.id) || (typeof m.id === 'number' && m.id === parseInt(sm.id)));
               if (tIdx === -1 && normHome && normAway) {
                 tIdx = targetSeason.matches.findIndex(m => {
-                  const mH = (m.home || '').toLowerCase().replace(/fc|dsg|sv|u.|union|./g, '').replace(/\s+/g, '').trim();
-                  const mA = (m.away || '').toLowerCase().replace(/fc|dsg|sv|u.|union|./g, '').replace(/\s+/g, '').trim();
+                  const mH = cleanTeamKey(m.home);
+                  const mA = cleanTeamKey(m.away);
                   const mR = String(m.round || m.roundNr || '').replace(/\D/g, '') || String(m.round || '').trim().toLowerCase();
                   return mH === normHome && mA === normAway && (!normRound || !mR || mR === normRound);
                 });
@@ -945,13 +960,13 @@ export const Store = {
         } else if (!leaguesChanged && !localStorage.getItem('dsg_leagues_last_updated')) {
           localStorage.setItem('dsg_leagues_last_updated', String(fbTime || Date.now()));
         }
-        if (leaguesWereMissing || (localTime > fbTime && localLeagues && localLeagues.length > 0)) {
+        if (isAdmin && (leaguesWereMissing || (localTime > fbTime && localLeagues && localLeagues.length > 0))) {
           setDoc(leagueRef, { data: cleanLeagues, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (leagues):", e));
         }
       } else {
         const cleanLeagues = sortLeaguesByPriority([...INITIAL_LEAGUES]);
         trySetLocal('dsg_admin_leagues_v44', JSON.stringify(cleanLeagues));
-        setDoc(leagueRef, { data: cleanLeagues, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (leagues initial):", e));
+        if (isAdmin) setDoc(leagueRef, { data: cleanLeagues, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (leagues initial):", e));
       }
 
       // Sync Rounds - authoritative timestamp comparison with canonical rounds guarantee
@@ -1108,9 +1123,7 @@ export const Store = {
       if (state.memoryData.matches) { delete state.memoryData.matches; needsMigration = true; }
       if (state.memoryData.stats) { delete state.memoryData.stats; needsMigration = true; }
 
-      if (needsMigration) {
-        setDoc(dataRef, { data: state.memoryData, lastUpdated: Date.now() }).catch(e => console.error("Firebase save error (data):", e));
-      }
+      // Cloud push handled strictly via isAdmin gate above to prevent visitor overwrites
         
       trySetLocal('dsg_data_v97', JSON.stringify(state.memoryData));
       trySetLocal('dsg_articles_v40', JSON.stringify(state.memoryNews));
@@ -1228,7 +1241,7 @@ export const Store = {
     URL.revokeObjectURL(url);
   },
 
-  saveData(data, broadcast = true, saveArchive = false) {
+  saveData(data, broadcast = true, saveArchive = false, syncToCloud = true) {
     const state = getState();
     const now = Date.now();
     data.lastUpdated = now;
@@ -1242,6 +1255,31 @@ export const Store = {
     const cleanData = deepSanitize(data);
     state.memoryData = cleanData;
     trySetLocal('dsg_data_v97', JSON.stringify(cleanData));
+
+    // CRITICAL GUARD 1: Never write to Firestore while bootstrapping/initializing store.
+    if (this._isInitializing || syncToCloud === false) {
+      if (broadcast !== false) {
+        window.dispatchEvent(new CustomEvent('data-updated'));
+      }
+      return Promise.resolve();
+    }
+
+    // CRITICAL GUARD 2: Only authenticated administrators or referees can push changes to Firestore.
+    // Unauthenticated public visitors must never overwrite the authoritative cloud database.
+    const canWriteToCloud = (() => {
+      try {
+        if (sessionStorage.getItem('dsg_admin') === 'true') return true;
+        const sess = JSON.parse(sessionStorage.getItem('dsg_auth') || localStorage.getItem('dsg_auth_session') || '{}');
+        return sess && (sess.role === 'admin' || sess.role === 'Hauptadministrator' || sess.role === 'referee');
+      } catch(e) { return false; }
+    })();
+
+    if (!canWriteToCloud) {
+      if (broadcast !== false) {
+        window.dispatchEvent(new CustomEvent('data-updated'));
+      }
+      return Promise.resolve();
+    }
 
     // Split active vs archive seasons for lightweight saves (< 260 KB)
     const activeKeys = ['2026/2027', 'Testliga 2026/2027'];

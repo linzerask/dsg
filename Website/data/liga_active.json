@@ -1,14 +1,14 @@
 {
   "currentSeason": "2026/2027",
-  "lastUpdated": 1793523010211,
+  "lastUpdated": 1794127383590,
   "seasons": {
     "2026/2027": {
       "teams": [
         {
-          "goalsFor": 36,
+          "goalsFor": 37,
           "points": 21,
           "won": 7,
-          "goalsAgainst": 5,
+          "goalsAgainst": 6,
           "rank": 1,
           "drawn": 0,
           "goalDiff": 31,
@@ -29,40 +29,40 @@
           "played": 8
         },
         {
-          "won": 5,
+          "won": 4,
           "rank": 3,
           "name": "SV Croatia Linz",
-          "goalDiff": 15,
+          "goalDiff": 9,
           "drawn": 0,
-          "lost": 0,
+          "lost": 1,
           "played": 5,
-          "goalsAgainst": 6,
-          "goalsFor": 21,
-          "points": 15
+          "goalsAgainst": 10,
+          "goalsFor": 19,
+          "points": 12
         },
         {
           "drawn": 1,
           "goalsFor": 11,
           "points": 7,
-          "lost": 5,
+          "lost": 4,
           "won": 2,
           "rank": 4,
-          "goalDiff": -13,
+          "goalDiff": -10,
           "name": "Walker FC",
-          "played": 8,
-          "goalsAgainst": 24
+          "played": 7,
+          "goalsAgainst": 21
         },
         {
           "points": 6,
           "won": 2,
           "rank": 5,
           "name": "DSG St. Josef/Oed FC",
-          "lost": 5,
+          "lost": 4,
           "goalsFor": 10,
-          "played": 7,
-          "goalsAgainst": 21,
+          "played": 6,
+          "goalsAgainst": 18,
           "drawn": 0,
-          "goalDiff": -11
+          "goalDiff": -8
         },
         {
           "name": "DSG Union Traun",
@@ -2426,7 +2426,7 @@
           ]
         },
         {
-          "score": "-:-",
+          "score": "4:1",
           "away": "SV Croatia Linz",
           "home": "Union Heiligenberg",
           "time": "19:00",
@@ -2434,12 +2434,67 @@
           "id": 18,
           "league": "DSG Liga",
           "location": "Sportplatz Heiligenberg",
-          "events": [],
+          "events": [
+            {
+              "type": "goal",
+              "minute": "14",
+              "player": "Domagoj Pilic",
+              "team": "SV Croatia Linz"
+            },
+            {
+              "type": "goal",
+              "minute": "36",
+              "player": "Andreas Lederer",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "minute": "54",
+              "player": "Dominik Penninger",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "minute": "68",
+              "player": "Gregor Mair",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "goal",
+              "minute": "90",
+              "player": "Thomas Wagner",
+              "team": "Union Heiligenberg"
+            },
+            {
+              "type": "card",
+              "cardType": "yellow",
+              "minute": "30",
+              "player": "Benedict Humer",
+              "team": "Union Heiligenberg",
+              "reason": "Foul"
+            },
+            {
+              "type": "card",
+              "cardType": "yellow",
+              "minute": "42",
+              "player": "Robert Matisic",
+              "team": "SV Croatia Linz",
+              "reason": "Foul"
+            },
+            {
+              "type": "card",
+              "cardType": "yellow_red",
+              "minute": "82",
+              "player": "Luka Dovoda",
+              "team": "SV Croatia Linz",
+              "reason": "Foul & Unsportlichkeit"
+            }
+          ],
           "date": "07.11.2026",
           "round": "6. Runde",
-          "status": "Ausstehend",
-          "referee": "",
-          "ht": "",
+          "status": "Gespielt",
+          "referee": "Christoph Wagner",
+          "ht": "1:1",
           "weekday": "Sa"
         },
         {
