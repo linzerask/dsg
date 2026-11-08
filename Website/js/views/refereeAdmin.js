@@ -1060,15 +1060,26 @@ export const bindRefereeAdmin = async () => {
         return val.toLowerCase().includes(cleanFilter) || lab.toLowerCase().includes(cleanFilter);
       });
     }
-    state.filtered = filtered;
+
+    const hasExactMatch = allOptions.some(opt => {
+      const val = typeof opt === 'object' ? opt.name : opt;
+      return val.toLowerCase() === cleanFilter;
+    });
+    const customOption = (cleanFilter && !hasExactMatch) ? {
+      name: filterText.trim(),
+      label: filterText.trim(),
+      isCustom: true
+    } : null;
+
+    state.filtered = customOption ? [...filtered, customOption] : filtered;
     state.highlightedIndex = -1;
 
-    if (filtered.length === 0) {
+    if (filtered.length === 0 && !customOption) {
       dropdown.innerHTML = '<div class="player-option-empty">Keine passenden Spieler gefunden</div>';
       return;
     }
 
-    dropdown.innerHTML = filtered.map((item, idx) => {
+    let itemsHtml = filtered.map((item, idx) => {
       const optVal = typeof item === 'object' ? item.name : item;
       const optLabel = typeof item === 'object' ? item.label : item;
       const isRoster = typeof item === 'object' && item.isRoster;
@@ -1107,6 +1118,22 @@ export const bindRefereeAdmin = async () => {
         </div>
       `;
     }).join('');
+
+    if (customOption) {
+      const customIdx = filtered.length;
+      const isCustomSelected = document.getElementById(id)?.value === customOption.name;
+      itemsHtml += `
+        <div class="player-option-item player-option-custom ${isCustomSelected ? 'selected' : ''}" data-idx="${customIdx}" data-val="${customOption.name}" style="border-top: 1px dashed var(--color-border); background: rgba(0, 179, 65, 0.06); padding: 8px 10px;">
+          <span style="color: var(--color-accent); font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Als Spieler übernehmen: "${customOption.name}"
+          </span>
+          ${isCustomSelected ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-accent);"><polyline points="20 6 9 17 4 12"></polyline></svg>` : ''}
+        </div>
+      `;
+    }
+
+    dropdown.innerHTML = itemsHtml;
 
     dropdown.querySelectorAll('.player-option-item').forEach(el => {
       const handleSelect = (e) => {
@@ -1191,16 +1218,8 @@ export const bindRefereeAdmin = async () => {
       return singleName;
     }
 
-    // 3. Reject unlisted names to prevent typos and phantom players
-    if (searchInput) {
-      searchInput.style.borderColor = '#ef4444';
-      searchInput.classList.add('shake');
-      setTimeout(() => {
-        searchInput.style.borderColor = '';
-        searchInput.classList.remove('shake');
-      }, 1500);
-    }
-    return '';
+    // 3. Custom / manually typed player name: accept directly
+    return rawVal;
   };
 
   const setupRefSearchableComboboxes = () => {
@@ -1790,7 +1809,7 @@ export const bindRefereeAdmin = async () => {
                 <div class="searchable-player-picker" id="picker-ref-report-scorer-player-home" style="flex: 1; position: relative;">
                   <input type="hidden" id="ref-report-scorer-player-home" value="">
                   <div class="searchable-player-input-wrap">
-                    <input type="text" id="input-search-ref-report-scorer-player-home" class="admin-input searchable-player-search" placeholder="Torschütze suchen / wählen..." autocomplete="off" style="height: 34px;">
+                    <input type="text" id="input-search-ref-report-scorer-player-home" class="admin-input searchable-player-search" placeholder="Spieler suchen oder Name eingeben..." autocomplete="off" style="height: 34px;">
                     <span class="combobox-indicator-icon">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </span>
@@ -1811,7 +1830,7 @@ export const bindRefereeAdmin = async () => {
                 <div class="searchable-player-picker" id="picker-ref-report-scorer-player-away" style="flex: 1; position: relative;">
                   <input type="hidden" id="ref-report-scorer-player-away" value="">
                   <div class="searchable-player-input-wrap">
-                    <input type="text" id="input-search-ref-report-scorer-player-away" class="admin-input searchable-player-search" placeholder="Torschütze suchen / wählen..." autocomplete="off" style="height: 34px;">
+                    <input type="text" id="input-search-ref-report-scorer-player-away" class="admin-input searchable-player-search" placeholder="Spieler suchen oder Name eingeben..." autocomplete="off" style="height: 34px;">
                     <span class="combobox-indicator-icon">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </span>
@@ -1843,7 +1862,7 @@ export const bindRefereeAdmin = async () => {
                 <div class="searchable-player-picker" id="picker-ref-report-card-player-home" style="flex: 1; position: relative;">
                   <input type="hidden" id="ref-report-card-player-home" value="">
                   <div class="searchable-player-input-wrap">
-                    <input type="text" id="input-search-ref-report-card-player-home" class="admin-input searchable-player-search" placeholder="Spieler suchen / wählen..." autocomplete="off" style="height: 34px;">
+                    <input type="text" id="input-search-ref-report-card-player-home" class="admin-input searchable-player-search" placeholder="Spieler suchen oder Name eingeben..." autocomplete="off" style="height: 34px;">
                     <span class="combobox-indicator-icon">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </span>
@@ -1852,9 +1871,21 @@ export const bindRefereeAdmin = async () => {
                 </div>
                 <input type="text" id="ref-report-card-min-home" class="admin-input" placeholder="Min." title="Spielminute (optional)" style="width: 52px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
               </div>
-              <div style="display: flex; gap: 6px;">
-                <input type="text" id="ref-report-card-reason-home" class="admin-input" placeholder="Begründung (optional)..." style="flex: 1; font-size: 0.8rem;">
-                <button type="button" id="btn-add-ref-card-home" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700;">+ Hinzufügen</button>
+              <div style="display: flex; gap: 6px; align-items: stretch; flex-wrap: wrap;">
+                <select id="ref-report-card-reason-select-home" class="admin-input" style="flex: 1; min-width: 140px; font-size: 0.8rem; height: 34px;">
+                  <option value="">Grund wählen (optional)...</option>
+                  <option value="Foul">Foul</option>
+                  <option value="Absichtliches Handspiel">Absichtliches Handspiel</option>
+                  <option value="Kritik">Kritik</option>
+                  <option value="Beleidigung">Beleidigung</option>
+                  <option value="Unsportlichkeit">Unsportlichkeit</option>
+                  <option value="Bedrohung">Bedrohung</option>
+                  <option value="Tätlichkeit">Tätlichkeit</option>
+                  <option value="Torraub">Torraub</option>
+                  <option value="Sonstiges">Sonstiges...</option>
+                </select>
+                <input type="text" id="ref-report-card-reason-custom-home" class="admin-input" placeholder="Eigener Grund..." style="flex: 1; min-width: 120px; font-size: 0.8rem; height: 34px; display: none;">
+                <button type="button" id="btn-add-ref-card-home" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px; white-space: nowrap;">+ Hinzufügen</button>
               </div>
               <div id="ref-report-cards-list-home" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
             </div>
@@ -1871,7 +1902,7 @@ export const bindRefereeAdmin = async () => {
                 <div class="searchable-player-picker" id="picker-ref-report-card-player-away" style="flex: 1; position: relative;">
                   <input type="hidden" id="ref-report-card-player-away" value="">
                   <div class="searchable-player-input-wrap">
-                    <input type="text" id="input-search-ref-report-card-player-away" class="admin-input searchable-player-search" placeholder="Spieler suchen / wählen..." autocomplete="off" style="height: 34px;">
+                    <input type="text" id="input-search-ref-report-card-player-away" class="admin-input searchable-player-search" placeholder="Spieler suchen oder Name eingeben..." autocomplete="off" style="height: 34px;">
                     <span class="combobox-indicator-icon">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </span>
@@ -1880,9 +1911,21 @@ export const bindRefereeAdmin = async () => {
                 </div>
                 <input type="text" id="ref-report-card-min-away" class="admin-input" placeholder="Min." title="Spielminute (optional)" style="width: 52px; text-align: center; height: 34px; font-weight: 700; padding: 2px;">
               </div>
-              <div style="display: flex; gap: 6px;">
-                <input type="text" id="ref-report-card-reason-away" class="admin-input" placeholder="Begründung (optional)..." style="flex: 1; font-size: 0.8rem;">
-                <button type="button" id="btn-add-ref-card-away" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700;">+ Hinzufügen</button>
+              <div style="display: flex; gap: 6px; align-items: stretch; flex-wrap: wrap;">
+                <select id="ref-report-card-reason-select-away" class="admin-input" style="flex: 1; min-width: 140px; font-size: 0.8rem; height: 34px;">
+                  <option value="">Grund wählen (optional)...</option>
+                  <option value="Foul">Foul</option>
+                  <option value="Absichtliches Handspiel">Absichtliches Handspiel</option>
+                  <option value="Kritik">Kritik</option>
+                  <option value="Beleidigung">Beleidigung</option>
+                  <option value="Unsportlichkeit">Unsportlichkeit</option>
+                  <option value="Bedrohung">Bedrohung</option>
+                  <option value="Tätlichkeit">Tätlichkeit</option>
+                  <option value="Torraub">Torraub</option>
+                  <option value="Sonstiges">Sonstiges...</option>
+                </select>
+                <input type="text" id="ref-report-card-reason-custom-away" class="admin-input" placeholder="Eigener Grund..." style="flex: 1; min-width: 120px; font-size: 0.8rem; height: 34px; display: none;">
+                <button type="button" id="btn-add-ref-card-away" class="btn-dsg" style="padding: 4px 10px; font-size: 0.8rem; background: var(--color-accent); color: #fff; font-weight: 700; height: 34px; white-space: nowrap;">+ Hinzufügen</button>
               </div>
               <div id="ref-report-cards-list-away" style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;"></div>
             </div>
@@ -2287,30 +2330,66 @@ export const bindRefereeAdmin = async () => {
     }
 
     // Card buttons
+    // Helper to get structured or custom card reason
+    const getRefCardReason = (side) => {
+      const selectEl = document.getElementById(`ref-report-card-reason-select-${side}`);
+      const customEl = document.getElementById(`ref-report-card-reason-custom-${side}`);
+      if (!selectEl) return '';
+      if (selectEl.value === 'Sonstiges') {
+        return (customEl?.value || '').trim() || 'Sonstiges';
+      }
+      return selectEl.value || (customEl?.value || '').trim();
+    };
+
+    const resetRefCardReason = (side) => {
+      const selectEl = document.getElementById(`ref-report-card-reason-select-${side}`);
+      const customEl = document.getElementById(`ref-report-card-reason-custom-${side}`);
+      if (selectEl) selectEl.value = '';
+      if (customEl) {
+        customEl.value = '';
+        customEl.style.display = 'none';
+      }
+    };
+
+    // Wire reason select onchange & custom input keydown
+    ['home', 'away'].forEach(side => {
+      const selectEl = document.getElementById(`ref-report-card-reason-select-${side}`);
+      const customEl = document.getElementById(`ref-report-card-reason-custom-${side}`);
+      const addBtn = document.getElementById(`btn-add-ref-card-${side}`);
+      if (selectEl && customEl) {
+        selectEl.onchange = () => {
+          if (selectEl.value === 'Sonstiges') {
+            customEl.style.display = 'block';
+            customEl.focus();
+          } else {
+            customEl.style.display = 'none';
+            customEl.value = '';
+          }
+        };
+        customEl.onkeydown = (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            if (addBtn) addBtn.click();
+          }
+        };
+      }
+    });
+
     const addCardH = document.getElementById('btn-add-ref-card-home');
     const cardTypeH = document.getElementById('ref-report-card-type-home');
     const minCardH = document.getElementById('ref-report-card-min-home');
-    const reasonCardH = document.getElementById('ref-report-card-reason-home');
     if (addCardH) {
       addCardH.onclick = () => {
         const val = getRefComboboxValue('ref-report-card-player-home');
         const minVal = minCardH ? minCardH.value.replace(/['"]/g, '').trim() : '';
-        const reasonVal = reasonCardH ? reasonCardH.value.trim() : '';
+        const reasonVal = getRefCardReason('home');
         const typeVal = cardTypeH ? cardTypeH.value : 'yellow';
         if (val) {
           refReportCardsHome.push({ player: val, type: typeVal, minute: minVal, reason: reasonVal });
           renderRefReportLists();
           resetRefPlayerCombobox('ref-report-card-player-home', true);
+          resetRefCardReason('home');
           if (minCardH) minCardH.value = '';
-          if (reasonCardH) reasonCardH.value = '';
-        }
-      };
-    }
-    if (reasonCardH) {
-      reasonCardH.onkeydown = (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          if (addCardH) addCardH.click();
         }
       };
     }
@@ -2318,27 +2397,18 @@ export const bindRefereeAdmin = async () => {
     const addCardA = document.getElementById('btn-add-ref-card-away');
     const cardTypeA = document.getElementById('ref-report-card-type-away');
     const minCardA = document.getElementById('ref-report-card-min-away');
-    const reasonCardA = document.getElementById('ref-report-card-reason-away');
     if (addCardA) {
       addCardA.onclick = () => {
         const val = getRefComboboxValue('ref-report-card-player-away');
         const minVal = minCardA ? minCardA.value.replace(/['"]/g, '').trim() : '';
-        const reasonVal = reasonCardA ? reasonCardA.value.trim() : '';
+        const reasonVal = getRefCardReason('away');
         const typeVal = cardTypeA ? cardTypeA.value : 'yellow';
         if (val) {
           refReportCardsAway.push({ player: val, type: typeVal, minute: minVal, reason: reasonVal });
           renderRefReportLists();
           resetRefPlayerCombobox('ref-report-card-player-away', true);
+          resetRefCardReason('away');
           if (minCardA) minCardA.value = '';
-          if (reasonCardA) reasonCardA.value = '';
-        }
-      };
-    }
-    if (reasonCardA) {
-      reasonCardA.onkeydown = (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          if (addCardA) addCardA.click();
         }
       };
     }

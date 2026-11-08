@@ -95,14 +95,14 @@
             "player": "Dominik Penninger",
             "name": "Dominik Penninger",
             "team": "Union Heiligenberg",
-            "goals": 11,
+            "goals": 8,
             "rank": 1
           },
           {
             "player": "Mohammad Sharifi",
             "name": "Mohammad Sharifi",
             "team": "Etehad Linz",
-            "goals": 8,
+            "goals": 7,
             "rank": 2
           },
           {
@@ -113,310 +113,310 @@
             "rank": 3
           },
           {
-            "player": "Zia Ghaderi",
-            "name": "Zia Ghaderi",
-            "team": "Etehad Linz",
-            "goals": 6,
-            "rank": 4
-          },
-          {
-            "player": "Leonardo Glavas",
-            "name": "Leonardo Glavas",
-            "team": "SV Croatia Linz",
-            "goals": 5,
-            "rank": 5
-          },
-          {
-            "player": "Abdullah Temori",
-            "name": "Abdullah Temori",
-            "team": "Etehad Linz",
-            "goals": 5,
-            "rank": 6
-          },
-          {
-            "player": "Hamid Fouladi",
-            "name": "Hamid Fouladi",
-            "team": "Etehad Linz",
-            "goals": 5,
-            "rank": 7
-          },
-          {
             "player": "Paul Feichtenschlager",
             "name": "Paul Feichtenschlager",
             "team": "DSG St. Josef/Oed FC",
-            "goals": 5,
-            "rank": 8
-          },
-          {
-            "player": "Robert Matisic",
-            "name": "Robert Matisic",
-            "team": "SV Croatia Linz",
-            "goals": 4,
-            "rank": 9
-          },
-          {
-            "player": "Manuel Zauner-Wagner",
-            "name": "Manuel Zauner-Wagner",
-            "team": "Union Heiligenberg",
             "goals": 3,
-            "rank": 10
-          },
-          {
-            "player": "Wolfgang Lehner",
-            "name": "Wolfgang Lehner",
-            "team": "Union Heiligenberg",
-            "goals": 3,
-            "rank": 11
-          },
-          {
-            "player": "Branko Marin",
-            "name": "Branko Marin",
-            "team": "SV Croatia Linz",
-            "goals": 3,
-            "rank": 12
+            "rank": 4
           },
           {
             "player": "Dominik Prilmüller",
             "name": "Dominik Prilmüller",
             "team": "DSG Union Traun",
             "goals": 3,
-            "rank": 13
+            "rank": 5
           },
           {
             "player": "Ioan Gafincu",
             "name": "Ioan Gafincu",
             "team": "DSG Union Traun",
             "goals": 3,
-            "rank": 14
+            "rank": 6
+          },
+          {
+            "player": "Abdullah Temori",
+            "name": "Abdullah Temori",
+            "team": "Etehad Linz",
+            "goals": 3,
+            "rank": 7
           },
           {
             "player": "Qasem Nabawi",
             "name": "Qasem Nabawi",
             "team": "Etehad Linz",
             "goals": 3,
-            "rank": 15
+            "rank": 8
+          },
+          {
+            "player": "Manuel Zauner-Wagner",
+            "name": "Manuel Zauner-Wagner",
+            "team": "Union Heiligenberg",
+            "goals": 3,
+            "rank": 9
           },
           {
             "player": "Max Grund",
             "name": "Max Grund",
             "team": "Walker FC",
             "goals": 3,
-            "rank": 16
-          },
-          {
-            "player": "Benedict Humer",
-            "name": "Benedict Humer",
-            "team": "Union Heiligenberg",
-            "goals": 2,
-            "rank": 17
-          },
-          {
-            "player": "Josip Peric",
-            "name": "Josip Peric",
-            "team": "SV Croatia Linz",
-            "goals": 2,
-            "rank": 18
-          },
-          {
-            "player": "Ilija Stojchovski",
-            "name": "Ilija Stojchovski",
-            "team": "FC Gornjak",
-            "goals": 2,
-            "rank": 19
-          },
-          {
-            "player": "Thomas Wagner",
-            "name": "Thomas Wagner",
-            "team": "Union Heiligenberg",
-            "goals": 2,
-            "rank": 20
-          },
-          {
-            "player": "Manuel Winklehner",
-            "name": "Manuel Winklehner",
-            "team": "DSG Union Traun",
-            "goals": 2,
-            "rank": 21
-          },
-          {
-            "player": "Michael Mayr",
-            "name": "Michael Mayr",
-            "team": "DSG Union Traun",
-            "goals": 2,
-            "rank": 22
-          },
-          {
-            "player": "Florian Rebhandl",
-            "name": "Florian Rebhandl",
-            "team": "Walker FC",
-            "goals": 2,
-            "rank": 23
+            "rank": 10
           },
           {
             "player": "Nicolaus Steurer",
             "name": "Nicolaus Steurer",
             "team": "DSG St. Josef/Oed FC",
             "goals": 2,
-            "rank": 24
+            "rank": 11
+          },
+          {
+            "player": "Lukas Wahl",
+            "name": "Lukas Wahl",
+            "team": "DSG Union Traun",
+            "goals": 2,
+            "rank": 12
+          },
+          {
+            "player": "Michael Mayr",
+            "name": "Michael Mayr",
+            "team": "DSG Union Traun",
+            "goals": 2,
+            "rank": 13
           },
           {
             "player": "Ahmad Sharifi",
             "name": "Ahmad Sharifi",
             "team": "Etehad Linz",
             "goals": 2,
-            "rank": 25
+            "rank": 14
           },
           {
-            "player": "Paul Steininger",
-            "name": "Paul Steininger",
-            "team": "Union Heiligenberg",
-            "goals": 1,
-            "rank": 26
-          },
-          {
-            "player": "Ernst Zahrer",
-            "name": "Ernst Zahrer",
-            "team": "Union Heiligenberg",
-            "goals": 1,
-            "rank": 27
-          },
-          {
-            "player": "Ante Zuljevic",
-            "name": "Ante Zuljevic",
-            "team": "SV Croatia Linz",
-            "goals": 1,
-            "rank": 28
-          },
-          {
-            "player": "Lorenz Moser",
-            "name": "Lorenz Moser",
-            "team": "Union Heiligenberg",
-            "goals": 1,
-            "rank": 29
-          },
-          {
-            "player": "Sebastian Boubenicek",
-            "name": "Sebastian Boubenicek",
-            "team": "Union Heiligenberg",
-            "goals": 1,
-            "rank": 30
-          },
-          {
-            "player": "Askraf Laeli",
-            "name": "Askraf Laeli",
+            "player": "Zia Ghaderi",
+            "name": "Zia Ghaderi",
             "team": "Etehad Linz",
-            "goals": 1,
-            "rank": 31
+            "goals": 2,
+            "rank": 15
           },
           {
-            "player": "Darko Dovoda",
-            "name": "Darko Dovoda",
+            "player": "Branko Marin",
+            "name": "Branko Marin",
             "team": "SV Croatia Linz",
-            "goals": 1,
-            "rank": 32
+            "goals": 2,
+            "rank": 16
           },
           {
-            "player": "Taher Akbar",
-            "name": "Taher Akbar",
-            "team": "DSG Union Traun",
-            "goals": 1,
-            "rank": 33
+            "player": "Robert Matisic",
+            "name": "Robert Matisic",
+            "team": "SV Croatia Linz",
+            "goals": 2,
+            "rank": 17
           },
           {
-            "player": "Lukas Wahl",
-            "name": "Lukas Wahl",
-            "team": "DSG Union Traun",
-            "goals": 1,
-            "rank": 34
+            "player": "Benedict Humer",
+            "name": "Benedict Humer",
+            "team": "Union Heiligenberg",
+            "goals": 2,
+            "rank": 18
           },
           {
-            "player": "Philipp Schoder",
-            "name": "Philipp Schoder",
-            "team": "DSG St. Josef/Oed FC",
-            "goals": 1,
-            "rank": 35
+            "player": "Benjamin Stenhaug",
+            "name": "Benjamin Stenhaug",
+            "team": "Walker FC",
+            "goals": 2,
+            "rank": 19
+          },
+          {
+            "player": "Florian Rebhandl",
+            "name": "Florian Rebhandl",
+            "team": "Walker FC",
+            "goals": 2,
+            "rank": 20
+          },
+          {
+            "player": "Martin Brenner",
+            "name": "Martin Brenner",
+            "team": "Walker FC",
+            "goals": 2,
+            "rank": 21
           },
           {
             "player": "Kevin Tiepelt",
             "name": "Kevin Tiepelt",
             "team": "DSG St. Josef/Oed FC",
             "goals": 1,
-            "rank": 36
+            "rank": 22
           },
           {
-            "player": "Rohullah Sharifi",
-            "name": "Rohullah Sharifi",
-            "team": "Etehad Linz",
+            "player": "Philipp Schoder",
+            "name": "Philipp Schoder",
+            "team": "DSG St. Josef/Oed FC",
             "goals": 1,
-            "rank": 37
-          },
-          {
-            "player": "Slaven Steko",
-            "name": "Slaven Steko",
-            "team": "SV Croatia Linz",
-            "goals": 1,
-            "rank": 38
-          },
-          {
-            "player": "Simon Penninger",
-            "name": "Simon Penninger",
-            "team": "Union Heiligenberg",
-            "goals": 1,
-            "rank": 39
-          },
-          {
-            "player": "Thomas Mathis",
-            "name": "Thomas Mathis",
-            "team": "DSG Union Traun",
-            "goals": 1,
-            "rank": 40
+            "rank": 23
           },
           {
             "player": "Stefan Woschitz",
             "name": "Stefan Woschitz",
             "team": "DSG St. Josef/Oed FC",
             "goals": 1,
-            "rank": 41
+            "rank": 24
           },
           {
-            "player": "Martin Brenner",
-            "name": "Martin Brenner",
-            "team": "Walker FC",
+            "player": "Manuel Winklehner",
+            "name": "Manuel Winklehner",
+            "team": "DSG Union Traun",
             "goals": 1,
-            "rank": 42
+            "rank": 25
           },
           {
-            "player": "Benjamin Stenhaug",
-            "name": "Benjamin Stenhaug",
-            "team": "Walker FC",
+            "player": "Taher Akbar",
+            "name": "Taher Akbar",
+            "team": "DSG Union Traun",
             "goals": 1,
-            "rank": 43
+            "rank": 26
           },
           {
-            "player": "Sergey Stepanov",
-            "name": "Sergey Stepanov",
+            "player": "Thomas Mathis",
+            "name": "Thomas Mathis",
+            "team": "DSG Union Traun",
+            "goals": 1,
+            "rank": 27
+          },
+          {
+            "player": "Habib Mohseni",
+            "name": "Habib Mohseni",
+            "team": "Etehad Linz",
+            "goals": 1,
+            "rank": 28
+          },
+          {
+            "player": "Hamid Fouladi",
+            "name": "Hamid Fouladi",
+            "team": "Etehad Linz",
+            "goals": 1,
+            "rank": 29
+          },
+          {
+            "player": "Raschid Asghari",
+            "name": "Raschid Asghari",
+            "team": "Etehad Linz",
+            "goals": 1,
+            "rank": 30
+          },
+          {
+            "player": "Rohullah Sharifi",
+            "name": "Rohullah Sharifi",
+            "team": "Etehad Linz",
+            "goals": 1,
+            "rank": 31
+          },
+          {
+            "player": "Zaker Gulzari",
+            "name": "Zaker Gulzari",
+            "team": "Etehad Linz",
+            "goals": 1,
+            "rank": 32
+          },
+          {
+            "player": "Amirkhov Maripov",
+            "name": "Amirkhov Maripov",
             "team": "FC Gornjak",
             "goals": 1,
-            "rank": 44
+            "rank": 33
           },
           {
-            "player": "Vladica Petrovic",
-            "name": "Vladica Petrovic",
+            "player": "Eigentor",
+            "name": "Eigentor",
             "team": "FC Gornjak",
             "goals": 1,
-            "rank": 45
+            "rank": 34
+          },
+          {
+            "player": "Ilija Stojchovski",
+            "name": "Ilija Stojchovski",
+            "team": "FC Gornjak",
+            "goals": 1,
+            "rank": 35
+          },
+          {
+            "player": "Marko Aleksic",
+            "name": "Marko Aleksic",
+            "team": "FC Gornjak",
+            "goals": 1,
+            "rank": 36
           },
           {
             "player": "Sasa Nedic",
             "name": "Sasa Nedic",
             "team": "FC Gornjak",
             "goals": 1,
-            "rank": 46
+            "rank": 37
+          },
+          {
+            "player": "Sergey Stepanov",
+            "name": "Sergey Stepanov",
+            "team": "FC Gornjak",
+            "goals": 1,
+            "rank": 38
+          },
+          {
+            "player": "Vladica Petrovic",
+            "name": "Vladica Petrovic",
+            "team": "FC Gornjak",
+            "goals": 1,
+            "rank": 39
           },
           {
             "player": "Mario Peric",
             "name": "Mario Peric",
             "team": "SV Croatia Linz",
+            "goals": 1,
+            "rank": 40
+          },
+          {
+            "player": "Slaven Steko",
+            "name": "Slaven Steko",
+            "team": "SV Croatia Linz",
+            "goals": 1,
+            "rank": 41
+          },
+          {
+            "player": "Andreas Lederer",
+            "name": "Andreas Lederer",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 42
+          },
+          {
+            "player": "Ernst Zahrer",
+            "name": "Ernst Zahrer",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 43
+          },
+          {
+            "player": "Paul Steininger",
+            "name": "Paul Steininger",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 44
+          },
+          {
+            "player": "Simon Penninger",
+            "name": "Simon Penninger",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 45
+          },
+          {
+            "player": "Thomas Wagner",
+            "name": "Thomas Wagner",
+            "team": "Union Heiligenberg",
+            "goals": 1,
+            "rank": 46
+          },
+          {
+            "player": "Wolfgang Lehner",
+            "name": "Wolfgang Lehner",
+            "team": "Union Heiligenberg",
             "goals": 1,
             "rank": 47
           },
@@ -428,79 +428,14 @@
             "rank": 48
           },
           {
-            "player": "Habib Mohseni",
-            "name": "Habib Mohseni",
-            "team": "Etehad Linz",
+            "player": "Marco Schmidt",
+            "name": "Marco Schmidt",
+            "team": "Walker FC",
             "goals": 1,
             "rank": 49
-          },
-          {
-            "player": "Marko Aleksic",
-            "name": "Marko Aleksic",
-            "team": "FC Gornjak",
-            "goals": 1,
-            "rank": 50
-          },
-          {
-            "player": "Amirkhov Maripov",
-            "name": "Amirkhov Maripov",
-            "team": "FC Gornjak",
-            "goals": 1,
-            "rank": 51
-          },
-          {
-            "player": "Zaker Gulzari",
-            "name": "Zaker Gulzari",
-            "team": "Etehad Linz",
-            "goals": 1,
-            "rank": 52
-          },
-          {
-            "player": "Raschid Asghari",
-            "name": "Raschid Asghari",
-            "team": "Etehad Linz",
-            "goals": 1,
-            "rank": 53
-          },
-          {
-            "player": "Florian Steininger",
-            "name": "Florian Steininger",
-            "team": "Walker FC",
-            "goals": 1,
-            "rank": 54
-          },
-          {
-            "player": "Tobias Pree",
-            "name": "Tobias Pree",
-            "team": "Walker FC",
-            "goals": 1,
-            "rank": 55
-          },
-          {
-            "player": "Mario Reisinger",
-            "name": "Mario Reisinger",
-            "team": "Walker FC",
-            "goals": 1,
-            "rank": 56
-          },
-          {
-            "player": "Daniel Aflenzer",
-            "name": "Daniel Aflenzer",
-            "team": "DSG Union Traun",
-            "goals": 1,
-            "rank": 57
           }
         ],
         "cards": [
-          {
-            "player": "Aleksandar Kostic",
-            "name": "Aleksandar Kostic",
-            "team": "FC Gornjak",
-            "yellow": 0,
-            "yellowRed": 0,
-            "red": 1,
-            "rank": 1
-          },
           {
             "player": "Mohammad Sharifi",
             "name": "Mohammad Sharifi",
@@ -508,52 +443,25 @@
             "yellow": 0,
             "yellowRed": 1,
             "red": 0,
-            "rank": 2
+            "rank": 1
           },
           {
             "player": "Sani Stancic",
             "name": "Sani Stancic",
             "team": "FC Gornjak",
-            "yellow": 3,
+            "yellow": 2,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 2
+          },
+          {
+            "player": "Andreas Lederer",
+            "name": "Andreas Lederer",
+            "team": "Union Heiligenberg",
+            "yellow": 2,
             "yellowRed": 0,
             "red": 0,
             "rank": 3
-          },
-          {
-            "player": "Vladica Petrovic",
-            "name": "Vladica Petrovic",
-            "team": "FC Gornjak",
-            "yellow": 3,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 4
-          },
-          {
-            "player": "Kevin Tiepelt",
-            "name": "Kevin Tiepelt",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 2,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 5
-          },
-          {
-            "player": "Paul Feichtenschlager",
-            "name": "Paul Feichtenschlager",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 2,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 6
-          },
-          {
-            "player": "Robert Matisic",
-            "name": "Robert Matisic",
-            "team": "SV Croatia Linz",
-            "yellow": 2,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 7
           },
           {
             "player": "Simon Pohl",
@@ -562,331 +470,7 @@
             "yellow": 2,
             "yellowRed": 0,
             "red": 0,
-            "rank": 8
-          },
-          {
-            "player": "Georgia Adrian Melci",
-            "name": "Georgia Adrian Melci",
-            "team": "DSG Union Traun",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 9
-          },
-          {
-            "player": "Thomas Mathis",
-            "name": "Thomas Mathis",
-            "team": "DSG Union Traun",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 10
-          },
-          {
-            "player": "Thomas Wagner",
-            "name": "Thomas Wagner",
-            "team": "Union Heiligenberg",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 11
-          },
-          {
-            "player": "Christoph Doleschal",
-            "name": "Christoph Doleschal",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 12
-          },
-          {
-            "player": "Nicolaus Steurer",
-            "name": "Nicolaus Steurer",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 13
-          },
-          {
-            "player": "Manuel Stadler",
-            "name": "Manuel Stadler",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 14
-          },
-          {
-            "player": "Florian Trefflinger",
-            "name": "Florian Trefflinger",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 15
-          },
-          {
-            "player": "Tobias Loizenbauer",
-            "name": "Tobias Loizenbauer",
-            "team": "FC Gornjak",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 16
-          },
-          {
-            "player": "Sasa Nedic",
-            "name": "Sasa Nedic",
-            "team": "FC Gornjak",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 17
-          },
-          {
-            "player": "Lorenz Moser",
-            "name": "Lorenz Moser",
-            "team": "Union Heiligenberg",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 18
-          },
-          {
-            "player": "Martin Brenner",
-            "name": "Martin Brenner",
-            "team": "Walker FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 19
-          },
-          {
-            "player": "Manuel Kapfhammer",
-            "name": "Manuel Kapfhammer",
-            "team": "DSG Union Traun",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 20
-          },
-          {
-            "player": "Marko Burg",
-            "name": "Marko Burg",
-            "team": "SV Croatia Linz",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 21
-          },
-          {
-            "player": "Christoph Mühlbacher",
-            "name": "Christoph Mühlbacher",
-            "team": "Walker FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 22
-          },
-          {
-            "player": "Ioan Gafincu",
-            "name": "Ioan Gafincu",
-            "team": "DSG Union Traun",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 23
-          },
-          {
-            "player": "Sebastian Göttfert",
-            "name": "Sebastian Göttfert",
-            "team": "DSG Union Traun",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 24
-          },
-          {
-            "player": "Marco Rajcic",
-            "name": "Marco Rajcic",
-            "team": "FC Gornjak",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 25
-          },
-          {
-            "player": "Taher Akbar",
-            "name": "Taher Akbar",
-            "team": "DSG Union Traun",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 26
-          },
-          {
-            "player": "Ninoslav Matanovic",
-            "name": "Ninoslav Matanovic",
-            "team": "DSG Union Traun",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 27
-          },
-          {
-            "player": "Süleyman Targil",
-            "name": "Süleyman Targil",
-            "team": "DSG Union Traun",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 28
-          },
-          {
-            "player": "Peter Ksen",
-            "name": "Peter Ksen",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 29
-          },
-          {
-            "player": "Ahmad Sharifi",
-            "name": "Ahmad Sharifi",
-            "team": "Etehad Linz",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 30
-          },
-          {
-            "player": "Hamid Fouladi",
-            "name": "Hamid Fouladi",
-            "team": "Etehad Linz",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 31
-          },
-          {
-            "player": "Raschid Asghari",
-            "name": "Raschid Asghari",
-            "team": "Etehad Linz",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 32
-          },
-          {
-            "player": "Max Grund",
-            "name": "Max Grund",
-            "team": "Walker FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 33
-          },
-          {
-            "player": "David Exl",
-            "name": "David Exl",
-            "team": "DSG Union Traun",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 34
-          },
-          {
-            "player": "Mateo Zuljevic",
-            "name": "Mateo Zuljevic",
-            "team": "SV Croatia Linz",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 35
-          },
-          {
-            "player": "Dominik Prilmüller",
-            "name": "Dominik Prilmüller",
-            "team": "DSG Union Traun",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 36
-          },
-          {
-            "player": "Jonas Kloibhofer",
-            "name": "Jonas Kloibhofer",
-            "team": "DSG St. Josef/Oed FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 37
-          },
-          {
-            "player": "Sergey Stepanov",
-            "name": "Sergey Stepanov",
-            "team": "FC Gornjak",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 38
-          },
-          {
-            "player": "Wolfgang Lehner",
-            "name": "Wolfgang Lehner",
-            "team": "Union Heiligenberg",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 39
-          },
-          {
-            "player": "Dominik Pfannhauser",
-            "name": "Dominik Pfannhauser",
-            "team": "Walker FC",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 40
-          },
-          {
-            "player": "Zaker Gulzari",
-            "name": "Zaker Gulzari",
-            "team": "Etehad Linz",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 41
-          },
-          {
-            "player": "Farhad Karmand",
-            "name": "Farhad Karmand",
-            "team": "Etehad Linz",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 42
-          },
-          {
-            "player": "Andreas Lederer",
-            "name": "Andreas Lederer",
-            "team": "Union Heiligenberg",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 43
-          },
-          {
-            "player": "Dominik Penninger",
-            "name": "Dominik Penninger",
-            "team": "Union Heiligenberg",
-            "yellow": 1,
-            "yellowRed": 0,
-            "red": 0,
-            "rank": 44
+            "rank": 4
           },
           {
             "player": "Andreas Gillhofer",
@@ -895,7 +479,124 @@
             "yellow": 1,
             "yellowRed": 0,
             "red": 0,
-            "rank": 45
+            "rank": 5
+          },
+          {
+            "player": "Jonas Kloibhofer",
+            "name": "Jonas Kloibhofer",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 6
+          },
+          {
+            "player": "Kevin Tiepelt",
+            "name": "Kevin Tiepelt",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 7
+          },
+          {
+            "player": "Paul Feichtenschlager",
+            "name": "Paul Feichtenschlager",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 8
+          },
+          {
+            "player": "Peter Ksen",
+            "name": "Peter Ksen",
+            "team": "DSG St. Josef/Oed FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 9
+          },
+          {
+            "player": "David Exl",
+            "name": "David Exl",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 10
+          },
+          {
+            "player": "Dominik Prilmüller",
+            "name": "Dominik Prilmüller",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 11
+          },
+          {
+            "player": "Georgia Adrian Melci",
+            "name": "Georgia Adrian Melci",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 12
+          },
+          {
+            "player": "Ninoslav Matanovic",
+            "name": "Ninoslav Matanovic",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 13
+          },
+          {
+            "player": "Süleyman Targil",
+            "name": "Süleyman Targil",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 14
+          },
+          {
+            "player": "Taher Akbar",
+            "name": "Taher Akbar",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 15
+          },
+          {
+            "player": "Thomas Mathis",
+            "name": "Thomas Mathis",
+            "team": "DSG Union Traun",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 16
+          },
+          {
+            "player": "Ahmad Sharifi",
+            "name": "Ahmad Sharifi",
+            "team": "Etehad Linz",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 17
+          },
+          {
+            "player": "Farhad Karmand",
+            "name": "Farhad Karmand",
+            "team": "Etehad Linz",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 18
           },
           {
             "player": "Habib Mohseni",
@@ -904,7 +605,115 @@
             "yellow": 1,
             "yellowRed": 0,
             "red": 0,
-            "rank": 46
+            "rank": 19
+          },
+          {
+            "player": "Hamid Fouladi",
+            "name": "Hamid Fouladi",
+            "team": "Etehad Linz",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 20
+          },
+          {
+            "player": "Raschid Asghari",
+            "name": "Raschid Asghari",
+            "team": "Etehad Linz",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 21
+          },
+          {
+            "player": "Zaker Gulzari",
+            "name": "Zaker Gulzari",
+            "team": "Etehad Linz",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 22
+          },
+          {
+            "player": "Sergey Stepanov",
+            "name": "Sergey Stepanov",
+            "team": "FC Gornjak",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 23
+          },
+          {
+            "player": "Vladica Petrovic",
+            "name": "Vladica Petrovic",
+            "team": "FC Gornjak",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 24
+          },
+          {
+            "player": "Mateo Zuljevic",
+            "name": "Mateo Zuljevic",
+            "team": "SV Croatia Linz",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 25
+          },
+          {
+            "player": "Robert Matisic",
+            "name": "Robert Matisic",
+            "team": "SV Croatia Linz",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 26
+          },
+          {
+            "player": "Dominik Penninger",
+            "name": "Dominik Penninger",
+            "team": "Union Heiligenberg",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 27
+          },
+          {
+            "player": "Thomas Wagner",
+            "name": "Thomas Wagner",
+            "team": "Union Heiligenberg",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 28
+          },
+          {
+            "player": "Wolfgang Lehner",
+            "name": "Wolfgang Lehner",
+            "team": "Union Heiligenberg",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 29
+          },
+          {
+            "player": "Dominik Pfannhauser",
+            "name": "Dominik Pfannhauser",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 30
+          },
+          {
+            "player": "Max Grund",
+            "name": "Max Grund",
+            "team": "Walker FC",
+            "yellow": 1,
+            "yellowRed": 0,
+            "red": 0,
+            "rank": 31
           }
         ]
       },
@@ -3210,83 +3019,105 @@
           "date": "30.10.2026",
           "refereeNotes": "",
           "score": "4:1",
-          "status": "Played",
+          "status": "Gespielt",
           "confirmedAt": 1793431245319,
           "scorers": [
             {
-              "player": "Thomas Wagner",
-              "minute": "",
-              "team": "Union Heiligenberg",
               "name": "Thomas Wagner",
-              "type": "goal"
-            },
-            {
-              "player": "Dominik Penninger",
-              "minute": "",
+              "player": "Thomas Wagner",
               "team": "Union Heiligenberg",
               "type": "goal",
-              "name": "Dominik Penninger"
+              "minute": ""
             },
             {
-              "minute": "",
+              "name": "Andreas Lederer",
+              "player": "Andreas Lederer",
+              "team": "Union Heiligenberg",
+              "type": "goal",
+              "minute": ""
+            },
+            {
+              "name": "Dominik Penninger",
+              "player": "Dominik Penninger",
+              "team": "Union Heiligenberg",
+              "type": "goal",
+              "minute": ""
+            },
+            {
+              "name": "Manuel Zauner-Wagner",
               "player": "Manuel Zauner-Wagner",
               "team": "Union Heiligenberg",
-              "name": "Manuel Zauner-Wagner",
-              "type": "goal"
+              "type": "goal",
+              "minute": ""
             },
             {
-              "team": "DSG St. Josef/Oed FC",
               "name": "Paul Feichtenschlager",
-              "type": "goal",
               "player": "Paul Feichtenschlager",
+              "team": "DSG St. Josef/Oed FC",
+              "type": "goal",
               "minute": ""
             }
           ],
           "location": "Sportplatz Heiligenberg",
           "events": [
             {
+              "type": "goal",
+              "name": "Thomas Wagner",
               "player": "Thomas Wagner",
               "team": "Union Heiligenberg",
-              "minute": "",
-              "name": "Thomas Wagner",
-              "type": "goal"
+              "minute": ""
             },
             {
-              "player": "Dominik Penninger",
-              "minute": "",
+              "type": "goal",
+              "name": "Andreas Lederer",
+              "player": "Andreas Lederer",
+              "team": "Union Heiligenberg",
+              "minute": ""
+            },
+            {
+              "type": "goal",
               "name": "Dominik Penninger",
-              "type": "goal",
-              "team": "Union Heiligenberg"
+              "player": "Dominik Penninger",
+              "team": "Union Heiligenberg",
+              "minute": ""
             },
             {
-              "minute": "",
-              "player": "Manuel Zauner-Wagner",
-              "name": "Manuel Zauner-Wagner",
               "type": "goal",
-              "team": "Union Heiligenberg"
+              "name": "Manuel Zauner-Wagner",
+              "player": "Manuel Zauner-Wagner",
+              "team": "Union Heiligenberg",
+              "minute": ""
             },
             {
               "type": "goal",
               "name": "Paul Feichtenschlager",
-              "minute": "",
               "player": "Paul Feichtenschlager",
-              "team": "DSG St. Josef/Oed FC"
+              "team": "DSG St. Josef/Oed FC",
+              "minute": ""
             },
             {
-              "player": "Dominik Penninger",
-              "minute": "",
-              "team": "Union Heiligenberg",
-              "name": "Dominik Penninger",
               "type": "yellow",
-              "reason": "Foul"
+              "name": "Andreas Lederer",
+              "player": "Andreas Lederer",
+              "team": "Union Heiligenberg",
+              "reason": "Foul",
+              "minute": ""
             },
             {
+              "type": "yellow",
+              "name": "Dominik Penninger",
+              "player": "Dominik Penninger",
+              "team": "Union Heiligenberg",
               "reason": "Foul",
-              "player": "Andreas Gillhofer",
-              "minute": "",
+              "minute": ""
+            },
+            {
               "type": "yellow",
               "name": "Andreas Gillhofer",
-              "team": "DSG St. Josef/Oed FC"
+              "player": "Andreas Gillhofer",
+              "team": "DSG St. Josef/Oed FC",
+              "reason": "Foul",
+              "minute": ""
             }
           ],
           "home": "Union Heiligenberg",
@@ -3295,26 +3126,34 @@
           "seasonKey": "2026/2027",
           "cards": [
             {
-              "name": "Dominik Penninger",
+              "name": "Andreas Lederer",
+              "player": "Andreas Lederer",
+              "team": "Union Heiligenberg",
               "type": "yellow",
-              "minute": "",
-              "player": "Dominik Penninger",
               "reason": "Foul",
-              "team": "Union Heiligenberg"
+              "minute": ""
             },
             {
-              "player": "Andreas Gillhofer",
-              "minute": "",
-              "name": "Andreas Gillhofer",
+              "name": "Dominik Penninger",
+              "player": "Dominik Penninger",
+              "team": "Union Heiligenberg",
               "type": "yellow",
+              "reason": "Foul",
+              "minute": ""
+            },
+            {
+              "name": "Andreas Gillhofer",
+              "player": "Andreas Gillhofer",
               "team": "DSG St. Josef/Oed FC",
-              "reason": "Foul"
+              "type": "yellow",
+              "reason": "Foul",
+              "minute": ""
             }
           ],
           "round": "9. Runde",
           "substitutions": [],
           "ht": "2:1",
-          "referee": "",
+          "referee": "Christoph Wagner",
           "halfTime": "2:1",
           "weekday": "Fr",
           "htScore": "2:1",
@@ -3331,66 +3170,66 @@
           "scorers": [
             {
               "name": "Zia Ghaderi",
-              "type": "goal",
+              "player": "Zia Ghaderi",
               "team": "Etehad Linz",
-              "minute": "3",
-              "player": "Zia Ghaderi"
+              "type": "goal",
+              "minute": "3"
             },
             {
-              "team": "Etehad Linz",
               "name": "Hamid Fouladi",
-              "type": "goal",
               "player": "Hamid Fouladi",
+              "team": "Etehad Linz",
+              "type": "goal",
               "minute": "13"
             },
             {
               "name": "Abdullah Temori",
-              "type": "goal",
-              "team": "Etehad Linz",
               "player": "Abdullah Temori",
+              "team": "Etehad Linz",
+              "type": "goal",
               "minute": "31"
             },
             {
+              "name": "Marko Aleksic",
               "player": "Marko Aleksic",
-              "minute": "37",
               "team": "FC Gornjak",
               "type": "goal",
-              "name": "Marko Aleksic"
+              "minute": "37"
             },
             {
-              "minute": "40",
-              "player": "Amirkhov Maripov",
-              "type": "goal",
               "name": "Amirkhov Maripov",
-              "team": "FC Gornjak"
+              "player": "Amirkhov Maripov",
+              "team": "FC Gornjak",
+              "type": "goal",
+              "minute": "40"
             },
             {
-              "type": "goal",
               "name": "Zaker Gulzari",
               "player": "Zaker Gulzari",
-              "minute": "52",
-              "team": "Etehad Linz"
+              "team": "Etehad Linz",
+              "type": "goal",
+              "minute": "52"
             },
             {
-              "type": "goal",
               "name": "Raschid Asghari",
               "player": "Raschid Asghari",
               "team": "Etehad Linz",
+              "type": "goal",
               "minute": "63"
             },
             {
-              "type": "goal",
               "name": "Qasem Nabawi",
-              "minute": "70",
               "player": "Qasem Nabawi",
-              "team": "Etehad Linz"
+              "team": "Etehad Linz",
+              "type": "goal",
+              "minute": "70"
             },
             {
-              "player": "Qasem Nabawi",
-              "minute": "87",
               "name": "Qasem Nabawi",
+              "player": "Qasem Nabawi",
+              "team": "Etehad Linz",
               "type": "goal",
-              "team": "Etehad Linz"
+              "minute": "87"
             }
           ],
           "htScore": "2:3",
@@ -3404,85 +3243,85 @@
           "league": "DSG Liga",
           "cards": [
             {
-              "reason": "Foul",
-              "player": "Habib Mohseni",
-              "minute": "35",
-              "type": "yellow",
               "name": "Habib Mohseni",
-              "team": "Etehad Linz"
+              "player": "Habib Mohseni",
+              "team": "Etehad Linz",
+              "type": "yellow",
+              "reason": "Foul",
+              "minute": "35"
             }
           ],
           "events": [
             {
-              "minute": "3",
+              "name": "Zia Ghaderi",
               "player": "Zia Ghaderi",
               "team": "Etehad Linz",
               "type": "goal",
-              "name": "Zia Ghaderi"
+              "minute": "3"
             },
             {
-              "team": "Etehad Linz",
               "name": "Hamid Fouladi",
+              "player": "Hamid Fouladi",
+              "team": "Etehad Linz",
               "type": "goal",
-              "minute": "13",
-              "player": "Hamid Fouladi"
+              "minute": "13"
             },
             {
-              "player": "Abdullah Temori",
-              "minute": "31",
               "name": "Abdullah Temori",
+              "player": "Abdullah Temori",
+              "team": "Etehad Linz",
               "type": "goal",
-              "team": "Etehad Linz"
+              "minute": "31"
             },
             {
+              "name": "Habib Mohseni",
+              "player": "Habib Mohseni",
+              "team": "Etehad Linz",
+              "type": "yellow",
+              "reason": "Foul",
+              "minute": "35"
+            },
+            {
+              "name": "Marko Aleksic",
               "player": "Marko Aleksic",
               "team": "FC Gornjak",
-              "minute": "37",
-              "name": "Marko Aleksic",
-              "type": "goal"
+              "type": "goal",
+              "minute": "37"
             },
             {
-              "team": "FC Gornjak",
               "name": "Amirkhov Maripov",
               "player": "Amirkhov Maripov",
-              "minute": "40",
-              "type": "goal"
+              "team": "FC Gornjak",
+              "type": "goal",
+              "minute": "40"
             },
             {
-              "minute": "52",
-              "player": "Zaker Gulzari",
               "name": "Zaker Gulzari",
+              "player": "Zaker Gulzari",
+              "team": "Etehad Linz",
               "type": "goal",
-              "team": "Etehad Linz"
+              "minute": "52"
             },
             {
               "name": "Raschid Asghari",
-              "type": "goal",
-              "team": "Etehad Linz",
               "player": "Raschid Asghari",
+              "team": "Etehad Linz",
+              "type": "goal",
               "minute": "63"
             },
             {
-              "type": "goal",
-              "name": "Qasem Nabawi",
-              "team": "Etehad Linz",
-              "minute": "70",
-              "player": "Qasem Nabawi"
-            },
-            {
-              "team": "Etehad Linz",
-              "type": "goal",
               "name": "Qasem Nabawi",
               "player": "Qasem Nabawi",
-              "minute": "87"
+              "team": "Etehad Linz",
+              "type": "goal",
+              "minute": "70"
             },
             {
+              "name": "Qasem Nabawi",
+              "player": "Qasem Nabawi",
               "team": "Etehad Linz",
-              "reason": "Foul",
-              "player": "Habib Mohseni",
-              "minute": "35",
-              "name": "Habib Mohseni",
-              "type": "yellow"
+              "type": "goal",
+              "minute": "87"
             }
           ],
           "id": 26,
@@ -3500,31 +3339,31 @@
           "ht": "0:0",
           "events": [
             {
-              "type": "goal",
-              "player": "Florian Steininger",
-              "name": "Florian Steininger",
+              "name": "Marco Schmidt",
+              "player": "Marco Schmidt",
               "team": "Walker FC",
+              "type": "goal",
               "minute": "53"
             },
             {
-              "type": "goal",
-              "player": "Tobias Pree",
-              "name": "Tobias Pree",
+              "name": "Martin Brenner",
+              "player": "Martin Brenner",
               "team": "Walker FC",
-              "minute": "58"
+              "type": "goal",
+              "minute": "67"
             },
             {
-              "type": "goal",
-              "player": "Mario Reisinger",
-              "name": "Mario Reisinger",
+              "name": "Benjamin Stenhaug",
+              "player": "Benjamin Stenhaug",
               "team": "Walker FC",
+              "type": "goal",
               "minute": "72"
             },
             {
-              "type": "goal",
-              "player": "Daniel Aflenzer",
-              "name": "Daniel Aflenzer",
+              "name": "Lukas Wahl",
+              "player": "Lukas Wahl",
               "team": "DSG Union Traun",
+              "type": "goal",
               "minute": "89"
             }
           ],
@@ -3546,29 +3385,29 @@
           "confirmedBy": "Liga-Vorstand",
           "scorers": [
             {
-              "name": "Florian Steininger",
-              "player": "Florian Steininger",
+              "name": "Marco Schmidt",
+              "player": "Marco Schmidt",
               "team": "Walker FC",
               "type": "goal",
               "minute": "53"
             },
             {
-              "name": "Tobias Pree",
-              "player": "Tobias Pree",
+              "name": "Martin Brenner",
+              "player": "Martin Brenner",
               "team": "Walker FC",
               "type": "goal",
-              "minute": "58"
+              "minute": "67"
             },
             {
-              "name": "Mario Reisinger",
-              "player": "Mario Reisinger",
+              "name": "Benjamin Stenhaug",
+              "player": "Benjamin Stenhaug",
               "team": "Walker FC",
               "type": "goal",
               "minute": "72"
             },
             {
-              "name": "Daniel Aflenzer",
-              "player": "Daniel Aflenzer",
+              "name": "Lukas Wahl",
+              "player": "Lukas Wahl",
               "team": "DSG Union Traun",
               "type": "goal",
               "minute": "89"
